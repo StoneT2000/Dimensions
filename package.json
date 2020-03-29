@@ -2,7 +2,7 @@
   "name": "dimensions-ai",
   "version": "1.0.1",
   "description": "A generic, multi-level ai competition framework",
-  "main": "/build/index.js",
+  "main": "./build/index.js",
   "scripts": {
     "test": "jest tests --collectCoverage",
     "test-watch": "jest --watch tests --collectCoverage",
