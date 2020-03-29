@@ -1,4 +1,4 @@
-const Agent = require('./domination/agent');
+const Agent = require('./agent');
 
 const agent = new Agent();
 
@@ -34,9 +34,23 @@ try {
 				return false;
 			}
 
-			let x = Math.floor(Math.random()* map.length);
-			let y = Math.floor(Math.random()* map.length);
-			expand(map.length, y);
+			// Loop through entire map and look for first tile this player owns with available empty neighbor cells to take 
+			// over that aren't our own cells. Expand towards a random available neighboring cell.
+			loop1: {
+				for (let i = 0; i < map.length; i++) {
+					for (let j = 0; j < map.length; j++) {
+						if (map[i][j] === agent.id) {
+							let n = getNeighbors(j, i).filter((coords) => inMap(...coords) && canTake(...coords));
+							
+							if (n.length) {
+								let coords = n[0];
+								expand(coords[0], coords[1]);
+								break loop1;
+							}
+						}
+					}
+				}
+			}
 			console.log(commands.join(','));
 			agent.endTurn();
 		}

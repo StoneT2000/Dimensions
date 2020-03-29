@@ -1,4 +1,4 @@
-const Agent = require('./domination/agent');
+const Agent = require('./agent');
 
 const agent = new Agent();
 

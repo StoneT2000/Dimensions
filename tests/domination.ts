@@ -181,7 +181,7 @@ export class DominationDesign extends Dimension.Design {
 		})
 	}
 
-	async storeResults(match: Dimension.Match) {
+	async getResults(match: Dimension.Match) {
 		let results = {
 			scores: {},
 			winner: '',
@@ -218,8 +218,11 @@ export class DominationDesign extends Dimension.Design {
 		results.winner = highestScoringAgent.name;
 		results.winningScore = highestScore;
 		
-		match.results = results;
-		return true;
+		return new Promise((res) => {
+			res(results);
+		});
+
+		// can also just use return results; but typescript isn't happy about that
 	}
 
 	

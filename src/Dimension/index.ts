@@ -46,7 +46,6 @@ export class Dimension {
 	 */
 	public async createMatch(files: Array<string> | Array<{file: string, name: string}>, configs: MatchConfigs = {}): Promise<Match> {
 		return new Promise( async (resolve, reject) => {
-
 			if (!files.length) reject(new FatalError('No files provided for match'));
 
 			// override defaults with provided configs
@@ -88,44 +87,49 @@ export class Dimension {
 	public async runMatch(files: Array<string> | Array<{file: string, name: string}>, configs: MatchConfigs = {}) {
 		return new Promise( async (resolve, reject) => {
 			
-			if (!files.length) throw new FatalError('No files provided for match');
+			try {
+				if (!files.length) reject (new FatalError('No files provided for match'));
 
-			// override defaults with provided configs
-			// TOOD: change to deep copy
-			let matchConfigs = {...this.defaultMatchConfigs};
-			Object.assign(matchConfigs, configs);
+				// override defaults with provided configs
+				// TOOD: change to deep copy
+				let matchConfigs = {...this.defaultMatchConfigs};
+				Object.assign(matchConfigs, configs);
 
-			let match: Match;
-			if (typeof files[0] === 'string') {
-				match = new Match(this.design, <Array<string>> files, matchConfigs);
-			} else {
-				match = new Match(this.design, <Array<{file: string, name: string}>> files, matchConfigs);
-			}
-			this.matches.push(match);
-			
-
-			// Initialize match with initialization configuration
-			await match.initialize();
-
-			let status: MatchStatus;
-			// Run match
-			do {
-				status = await match.run();
-			}
-			while (status != MatchStatus.FINISHED)
-			
-			// Store results
-			await match.storeResults();
-
-			// remove match from list
-			for (let i = 0; i < this.matches.length; i++) {
-				if (this.matches[i].id === match.id) {
-					this.matches.splice(i, 1);
+				let match: Match;
+				if (typeof files[0] === 'string') {
+					match = new Match(this.design, <Array<string>> files, matchConfigs);
+				} else {
+					match = new Match(this.design, <Array<{file: string, name: string}>> files, matchConfigs);
 				}
-			}
+				this.matches.push(match);
+				
 
-			// Resolve the results
-			resolve(match.results);
+				// Initialize match with initialization configuration
+				await match.initialize();
+
+				let status: MatchStatus;
+				// Run match
+				do {
+					status = await match.run();
+				}
+				while (status != MatchStatus.FINISHED)
+				
+				// Store results
+				let results = await match.getResults();
+
+				// remove match from list
+				for (let i = 0; i < this.matches.length; i++) {
+					if (this.matches[i].id === match.id) {
+						this.matches.splice(i, 1);
+					}
+				}
+				// Resolve the results
+				resolve(results);
+			}
+			catch(error) {
+				reject(error);
+			}
+			
 		});
 	}
 

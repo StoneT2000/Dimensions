@@ -61,13 +61,13 @@ export abstract class Design {
   abstract async update(match: Match, commands: Array<Command>, config?: any): Promise<MatchStatus>
 
   /**
-   * Abstract function required to store the result of a `match`
-   * This function is used by the `match` to update the results stored in the `match`
+   * Abstract function required to get the result of a `match`
+   * This function is used by the `match` to update the results stored in the `match` and return results
    * 
    * @param match - The `Match` used to process results
    * * @param config - Any user configurations that can be added as parameters
    */
-  abstract async storeResults(match: Match, config?: any): Promise<boolean>
+  abstract async getResults(match: Match, config?: any): Promise<boolean>
 
 }
 

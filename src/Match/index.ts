@@ -157,12 +157,12 @@ export class Match {
     await this.matchEngine.killAndClean();
   }
 
-  public async storeResults() {
+  public async getResults() {
     return new Promise( async (resolve, reject) => {
       try {
         // Retrieve match results according to `design` by delegating storeResult task to the enforced `design`
-        await this.design.storeResults(this, this.configs.storeResultConfig);
-        resolve(true);
+        let res = await this.design.getResults(this, this.configs.storeResultConfig);
+        resolve(res);
       }
       catch(error) {
         reject(error);
