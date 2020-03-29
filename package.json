@@ -3,12 +3,13 @@
   "version": "1.0.2",
   "description": "A generic, multi-level ai competition framework",
   "main": "./build/index.js",
+  "prepublish": "tsc",
   "scripts": {
     "test": "jest tests --collectCoverage",
     "test-watch": "jest --watch tests --collectCoverage",
     "docs": "typedoc --out docs src",
     "build": "tsc src/index.ts --outDIR build && tsc tests/main.ts",
-    "watch": "tsc -w src/index.ts --outDIR build"
+    "watch": "tsc -w"
   },
   "keywords": [
     "AI",

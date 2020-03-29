@@ -1,4 +1,4 @@
-const Dimension = require('../src');
+import * as Dimension from '../src';
 const { DominationDesign } = require('./domination');
 
 
