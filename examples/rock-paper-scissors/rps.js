@@ -1,5 +1,4 @@
-// const Dimension = require('dimensions-ai'); TODO ADD BACK
-const Dimension = require('../src');
+const Dimension = require('dimensions-ai');
 const MatchStatus = Dimension.MatchStatus;
 
 /**
@@ -161,11 +160,12 @@ class RockPaperScissorsDesign extends Dimension.Design{
 }
 
 let RPSDesign = new RockPaperScissorsDesign('RPS!');
-let myDimension = Dimension.create(RPSDesign, 'Domination', Dimension.Logger.LEVEL.NONE);
-let results = await myDimension.runMatch(
-  ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/rock.js'],
+let myDimension = Dimension.create(RPSDesign, 'Domination', Dimension.Logger.LEVEL.INFO);
+myDimension.runMatch(
+  ['./bots/js/smarter.js', './bots/python/rock.py'],
   {
     bestOf: 5
   }
-)
-console.log(results);
+).then((results) => {
+  console.log(results);
+})
