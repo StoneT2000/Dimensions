@@ -51,7 +51,7 @@ class RockPaperScissorsDesign extend Dimension.Design {
   async update(match, commands) {
     ...
   }
-	async getResults(match) {
+  async getResults(match) {
     ...
   }
 }
@@ -93,7 +93,7 @@ class RockPaperScissorsDesign extend Dimension.Design {
       // we return this to end the match
       return MatchStatus.FINISHED;
     }
-	async getResults(match) {
+  async getResults(match) {
     let results = {}
     ... // determine results
     return results; // return them
@@ -136,23 +136,23 @@ const Agent = require('./agent');
 const agent = new Agent();
 
 try {
-	// first initialize the agent, and then proceed to go in a loop waiting for updates
-	agent.initialize().then(async () => {
-		while(true) {
-			
+  // first initialize the agent, and then proceed to go in a loop waiting for updates
+  agent.initialize().then(async () => {
+    while(true) {
+      
       // send a command by printing to stdout
-			console.log('P');
+      console.log('P');
 
-			// now we end our turn
-			agent.endTurn();
+      // now we end our turn
+      agent.endTurn();
 
-			// wait for update from match engine
-			await agent.update();
-		}
-	});
+      // wait for update from match engine
+      await agent.update();
+    }
+  });
 }
 catch(error) {
-	console.error(error);
+  console.error(error);
 }
 ```
 
@@ -173,11 +173,11 @@ We can now run our first match by passing in an array of paths to the bot codes,
 
 ```js
 let results = await myDimension.runMatch(
-	['./examples/rock-paper-scissors/bots/smarter.js', 
+  ['./examples/rock-paper-scissors/bots/smarter.js', 
    './examples/rock-paper-scissors/bots/smarter.js'],
-	{
-		bestOf: 5
-	}
+  {
+    bestOf: 5
+  }
 )
 ```
 

@@ -3,10 +3,10 @@
  * @classdesc Standard Match Errors that do not stop a game, but signal to user of some kind of error with match
  */
 export class MatchError extends Error {
-	constructor(m: string) {
-		super(m);
-		this.name = "Dimension.MatchError"
-	}
+  constructor(m: string) {
+    super(m);
+    this.name = "Dimension.MatchError"
+  }
 }
 
 /**
@@ -14,10 +14,10 @@ export class MatchError extends Error {
  * @classdesc Simple, standard errors reported by the Dimension framework
  */
 export class DimensionError extends Error {
-	constructor(m: string) {
-		super(m);
-		this.name = "Dimension.Error"
-	}
+  constructor(m: string) {
+    super(m);
+    this.name = "Dimension.Error"
+  }
 }
 
 /**
@@ -25,8 +25,8 @@ export class DimensionError extends Error {
  * @classdesc A fatal error that caused the Dimension framework to break
  */
 export class FatalError extends Error {
-	constructor(m: string) {
-		super(m);
-		this.name = "Dimension.FatalError"
-	}
+  constructor(m: string) {
+    super(m);
+    this.name = "Dimension.FatalError"
+  }
 }

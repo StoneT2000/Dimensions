@@ -13,7 +13,7 @@ export abstract class Design {
   
   public designOptions: DesignOptions;
   private log = new Logger();
-	constructor(public name: String, designOptions?: Partial<DesignOptions>) {
+  constructor(public name: String, designOptions?: Partial<DesignOptions>) {
 
     // TODO: [Strange] - This design option breaks jest when placed outside, jest thinks LoggerLEVEL.info isn't real
     const DEFAULT_DESIGN_OPTIONS: DesignOptions = {
@@ -49,7 +49,7 @@ export abstract class Design {
    */
   abstract async initialize(match: Match, config?: any): Promise<boolean>
 
-	/**
+  /**
    * Abstract function required to update `match` state with commands from Agents and send commands to Agents
    * along with returning the current match status, one of which can be MatchStatus.FINISHED
    * This function is used by the `match` to update the `match` state
@@ -73,8 +73,8 @@ export abstract class Design {
 
 // Standard ways for commands from agents to be streamed to `MatchEngine` for the `Design` to handle
 export enum COMMAND_STREAM_TYPE {
-	PARALLEL, // first come first serve for commands run, leads to all Agents sending commands based on old states
-	SEQUENTIAL // each agent's set of command sequence is run before the next agent
+  PARALLEL, // first come first serve for commands run, leads to all Agents sending commands based on old states
+  SEQUENTIAL // each agent's set of command sequence is run before the next agent
 };
 export type CommandSequence = {
   commands: Array<string>
