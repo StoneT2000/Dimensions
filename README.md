@@ -67,7 +67,13 @@ Start development by running
 npm run watch
 ```
 
-to watch for code changes and reload the build folder```
+to watch for code changes and reload the build folder
+
+Start testing by running 
+
+```
+npm run test-watch
+```
 
 to constantly test as you develop. Tests are written using [Jest](jestjs.io/)
 
