@@ -247,6 +247,7 @@ to constantly test as you develop. Tests are written using [Jest](jestjs.io/)
 - Generalize a match visualizer
 - Add more example `Designs` and starter kits for other games
   - Recreate Kaggle Simulation's xConnect
+  - Recreate Halite 3
 - Make it easier to create a `Design` (design a competition)
   - Online site to generate a `Design`
   - Online site to generate starter kit as well (in as many languages possible)
