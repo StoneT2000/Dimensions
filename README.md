@@ -106,7 +106,7 @@ An example of a rock paper scissors competition design can be found [here](https
 Some existing `designs` are provided as examples at [/examples](https://github.com/StoneT2000/Dimensions/blob/master/examples/), which include
 Rock Paper Scissors, Domination, TODO (Add halite and xConnect later)
 
-If you want to kick start development on your own `design`, check out [/templates](https://github.com/StoneT2000/Dimensions/blob/master/templates/design)
+If you want to kick start development on your own `design`, check out [/templates/designs](https://github.com/StoneT2000/Dimensions/tree/master/templates/designs)
 
 Full documentation on `Match, Agent` and other data that can be used, along with configuration can be found here: TODO add link
 
