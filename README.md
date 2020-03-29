@@ -39,7 +39,11 @@ Let's first design a simple RockPaperScissors competition. To design a competiti
 
 To design the competition we need to create a `class` that extends `Dimension.Design`. Let's call this design `RockPaperScissorsDesign`. All `design` classes requires the implementation of 3 `async` lifecycle functions, namely
 
-`initialize, update, getResults`
+| Design Lifecycle Functions | Purpose                                        |
+| -------------------------- | ---------------------------------------------- |
+| `initialize`               | Perform match initializations                  |
+| `update`                   | Update the match state and return match status |
+| `getResults`               | Return the match results                       |
 
 So now we would have something like
 
@@ -201,7 +205,11 @@ You can now log the results, of which are the same results returned by your `des
 console.log(resultS)
 ```
 
+## Contributing
 
+Everyone is more than welcome to contribute to this project! You can open an issue or submit a PR
+
+Check out the issues for this repository to get an idea on something you can help out with!
 
 ## Development
 
