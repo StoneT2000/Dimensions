@@ -97,6 +97,13 @@ class RockPaperScissorsDesign extends Dimension.Design{
 
     // update the match state
     match.state.results.push(winningAgent);
+    // log the winner at the info level
+    if (winningAgent != -1) {
+      match.log.info(`Agent ${winningAgent} won`);
+    }
+    else {
+      match.log.info(`Tie`);
+    }
     // we increment the round if it wasn't a tie
     if (winningAgent != -1) match.state.rounds++;
 
@@ -166,10 +173,10 @@ describe('Rock Paper Scissors Run', () => {
     )
     expect(results.scores).toStrictEqual({'0': 0, '1': 3});
   });
-  test('Test run smarter bot against rock.py 5 times', async () => {
+  test('Test multi-language support, run smarter bot against rock.py 5 times', async () => {
     expect.assertions(1);
     let results = await myDimension.runMatch(
-      ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/rock.py'],
+      ['./tests/js-kit/rps/smarter.js', './tests/python-kit/rps/rock.py'],
       {
         bestOf: 5
       }

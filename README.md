@@ -103,7 +103,10 @@ class RockPaperScissorsDesign extend Dimension.Design {
 
 An example of a rock paper scissors competition design can be found [here](https://github.com/StoneT2000/Dimensions/blob/master/examples/rock-paper-scissors/rps.js#L8)
 
-Some existing designs are provided as examples at [/examples](https://github.com/StoneT2000/Dimensions/blob/master/examples/)
+Some existing `designs` are provided as examples at [/examples](https://github.com/StoneT2000/Dimensions/blob/master/examples/), which include
+Rock Paper Scissors, Domination, TODO (Add halite and xConnect later)
+
+If you want to kick start development on your own `design`, check out [/templates](https://github.com/StoneT2000/Dimensions/blob/master/templates/design)
 
 Full documentation on `Match, Agent` and other data that can be used, along with configuration can be found here: TODO add link
 
@@ -113,7 +116,7 @@ An AI Starter kit is just basic code implemented to help you create an AI to com
 
 This part is not language bound, so you can program an AI in any language you want for your design! (Just because your friend only codes in Rust and you are a die hard JavaScript fan doesn't mean you two can't compete)
 
-Other starter kits in other languages can be found in [/templates/starter-kits](https://github.com/StoneT2000/Dimensions/tree/master/templates/starter-kits/)
+Other starter kit templates in other languages can be found in [/templates/starter-kits](https://github.com/StoneT2000/Dimensions/tree/master/templates/starter-kits/) and you can use them to help kickstart development for your own starter kit for your own `design`
 
 AI Starter kits consist at least two files, `agent.js` (or whsichever extension matches your language) and [`myBot.js`](https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/myBot.js). It can be merged into one but for organization, splitting it up is better.
 

@@ -1,4 +1,4 @@
-// const Dimension = require('dimensions-ai');
+// const Dimension = require('dimensions-ai'); TODO ADD BACK
 const Dimension = require('../src');
 const MatchStatus = Dimension.MatchStatus;
 
@@ -97,6 +97,13 @@ class RockPaperScissorsDesign extends Dimension.Design{
 
     // update the match state
     match.state.results.push(winningAgent);
+    // log the winner at the info level
+    if (winningAgent != -1) {
+      match.log.info(`Agent ${winningAgent} won`);
+    }
+    else {
+      match.log.info(`Tie`);
+    }
     // we increment the round if it wasn't a tie
     if (winningAgent != -1) match.state.rounds++;
 

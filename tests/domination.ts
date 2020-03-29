@@ -1,5 +1,4 @@
 import * as Dimension from '../src';
-import { Logger } from '../src';
 
 // Test design for Domination Game
 // Basic overview
@@ -8,10 +7,6 @@ import { Logger } from '../src';
 //    that is adjacent to a cell they own already
 // 3. If two or more teams expand towards the same cell, that cell is removed of ownership
 // 4. Winner is whoever controls the most cells
-// 
-const log = new Dimension.Logger();
-log.level = Logger.LEVEL.WARN
-
 
 // Good practices for making new AI designs easy. 
 // 1. Apply functional programming when dealing with anything with the match
@@ -80,9 +75,9 @@ export class DominationDesign extends Dimension.Design {
   }
 
   async update(match, commands: Array<Dimension.Command>) {
-    log.infobar();
-    log.info("Round - " + (match.state.round));
-    log.info("Updating state");
+    match.log.infobar();
+    match.log.info("Round - " + (match.state.round));
+    match.log.info("Updating state");
 
     let updatedTileSet = new Set();
     let updates = [];
@@ -171,8 +166,8 @@ export class DominationDesign extends Dimension.Design {
       match.state.map[update[1]][update[0]] = update[2];
     })
 
-    log.info('End of Round ' + (match.state.round));
-    log.infobar();
+    match.log.info('End of Round ' + (match.state.round));
+    match.log.infobar();
     
     if (match.state.round === match.state.MAX_ROUNDS) {
       return Dimension.MatchStatus.FINISHED;
