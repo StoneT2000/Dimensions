@@ -224,4 +224,10 @@ to constantly test as you develop. Tests are written using [Jest](jestjs.io/)
 - Make it easier for users to dive deeper into the `MatchEngine`, `Matches`, `Dimensions` to give them greater flexibility over the backend infrastructure
   - At the moment, there are plans for a parallel command stream option, where all agents send commands whenever they want and the engine just sends them to the update function
   - Allow users to tinker the MatchEngine to their needs somehow. (Extend it as a class and pass it to Dimensions)
-
+- Provide more out of the box design agnostic starter kits for other languages
+  - These starter kits will provide the classes needed and make it easier with something like a parser to make it easier to process commands sent by `MatchEngine`. These classes methods will mostly be empty and to be filled in by user
+- Starting, resuming, and stopping tournaments and matches
+- Security Designs to help ensure that users won't create `Designs` susceptible to cheating and match breaking behavior from bots participating in a `Match` 
+  - Give some guidelines
+  - Add some options and default values for certain configurations, e.g.
+    - Max command limit per `timeStep` (for a game of rock paper scissors, this would be 1, it wouldn't make sense to flood the `MatchEngine` with several commands, which could break the `Match`)
