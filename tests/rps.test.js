@@ -166,10 +166,10 @@ describe('Rock Paper Scissors Run', () => {
     )
     expect(results.scores).toStrictEqual({'0': 0, '1': 3});
   });
-  test('Test run smarter bot against rock 5 times', async () => {
+  test('Test run smarter bot against rock.py 5 times', async () => {
     expect.assertions(1);
     let results = await myDimension.runMatch(
-      ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/rock.js'],
+      ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/rock.py'],
       {
         bestOf: 5
       }
