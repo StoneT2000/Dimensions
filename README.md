@@ -103,19 +103,21 @@ class RockPaperScissorsDesign extend Dimension.Design {
 
 An example of a rock paper scissors competition design can be found [here](https://github.com/StoneT2000/Dimensions/blob/master/examples/rock-paper-scissors/rps.js#L8)
 
+Some existing designs are provided as examples at [/examples](https://github.com/StoneT2000/Dimensions/blob/master/examples/)
+
 Full documentation on `Match, Agent` and other data that can be used, along with configuration can be found here: TODO add link
 
 ### Design an AI Starter Kit
 
-An AI Starter kit is just basic code implemented to help you create an AI to compete in the `design` you made really quickly. This will lead you through how the JavaScript starter kit works, a template of which can be found in TODO: add link
+An AI Starter kit is just basic code implemented to help you create an AI to compete in the `design` you made really quickly. This will lead you through how the JavaScript starter kit works, a template of which can be found in [/templates/starter-kits/js](https://github.com/StoneT2000/Dimensions/tree/master/templates/starter-kits/js)
 
 This part is not language bound, so you can program an AI in any language you want for your design! (Just because your friend only codes in Rust and you are a die hard JavaScript fan doesn't mean you two can't compete)
 
-Other starter kits in other languages can be found in TODO: Add starter kits
+Other starter kits in other languages can be found in [/templates/starter-kits](https://github.com/StoneT2000/Dimensions/tree/master/templates/starter-kits/)
 
-AI Starter kits consist of two files, `agent.js` (or whichever extension matches your language) and `myBot.js`. It can be merged into one but for organization, splitting it up is better.
+AI Starter kits consist at least two files, `agent.js` (or whsichever extension matches your language) and [`myBot.js`](https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/myBot.js). It can be merged into one but for organization, splitting it up is better.
 
-`agent.js` (TODO LINK TO FILE) should have a `AgentControl` class with some kind of asynchronous  `initialize, update` functions and a `endTurn` function.
+[`agent.js`](https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/agent.js) should have a `AgentControl` class with some kind of asynchronous  `initialize, update` functions and a `endTurn` function.
 
 `initialize` should have the agent wait for a line input from `stdin` (standard in) if anything is being sent to the agent through `match.send` in the `design` in `initialize(match)`.
 
@@ -136,18 +138,27 @@ const Agent = require('./agent');
 const agent = new Agent();
 
 try {
-  // first initialize the agent, and then proceed to go in a loop waiting for updates
+  // first initialize the agent, and then proceed to go in a loop waiting for updates and running the AI
   agent.initialize().then(async () => {
     while(true) {
       
-      // send a command by printing to stdout
-      console.log('P');
-
-      // now we end our turn
-      agent.endTurn();
-
       // wait for update from match engine
       await agent.update();
+
+      /** AI Code goes here */
+
+      let commands = [];
+
+      // push some commands in to be processed by the `MatchEngine` working under a `Design`
+      commands.push('somecommand');
+      commands.push('anothercommand');
+
+      // submit commands to the `MatchEngine` and the `Match`, using ',' as the delimiter
+      console.log(commands.join(','));
+      
+      // now we end our turn
+      agent.endTurn();
+      
     }
   });
 }
@@ -156,7 +167,7 @@ catch(error) {
 }
 ```
 
-Note that the `await agent.update()` can be moved before `agent.endTurn()` if needed, this really depends on how you make the `design` .
+Note that the `await agent.update()` can be moved after `agent.endTurn()` if needed, this really depends on how you make the `design` .
 
 ### Run a Match
 
