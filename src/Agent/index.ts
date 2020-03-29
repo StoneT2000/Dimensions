@@ -39,7 +39,7 @@ export class Agent {
 				this.cmd = 'node'
 				break;
 			default:
-				throw new DimensionError(`${ext} is not a valid file type`);
+				// throw new DimensionError(`${ext} is not a valid file type`);
 		}
 
 		// check if file exists

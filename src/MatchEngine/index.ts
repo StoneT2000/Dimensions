@@ -153,7 +153,7 @@ export class MatchEngine {
 						agent._setupMove();
 					});
 
-					this.log.system(`Commands at end of time step ${this.match.timeStep} to be sent to agents on time step ${this.match.timeStep + 1} `);
+					this.log.system(`Agent commands at end of time step ${this.match.timeStep} to be sent to match on time step ${this.match.timeStep + 1} `);
 					this.log.system(commands.length ? JSON.stringify(commands) : 'No commands');
 					resolve(commands);
 				});

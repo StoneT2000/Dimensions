@@ -150,21 +150,46 @@ class RockPaperScissorsDesign extends Dimension.Design{
 	}
 }
 
+let RPSDesign = new RockPaperScissorsDesign('RPS!');
+let myDimension = Dimension.create(RPSDesign, 'Domination', Dimension.Logger.LEVEL.WARN);
 describe('Rock Paper Scissors Run', () => {
 	test('Test', () => {
 		expect(true).toBe(true);
 	})
-	test('Test run', async () => {
-		let RPSDesign = new RockPaperScissorsDesign('RPS!');
-		let myDimension = Dimension.create(RPSDesign, 'Domination', Dimension.Logger.LEVEL.WARN);
+	test('Test run rock vs paper 3 times', async () => {
+		
 		let results = await myDimension.runMatch(
 			['./tests/js-kit/rps/rock.js', './tests/js-kit/rps/paper.js'],
+			{
+				initializeConfig: {
+					bestOf: 3
+				}
+			}
+		)
+		expect(results.scores).toStrictEqual({'0': 0, '1': 3});
+	});
+	test('Test run smarter bot against rock 5 times', async () => {
+		let results = await myDimension.runMatch(
+			['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/rock.js'],
 			{
 				initializeConfig: {
 					bestOf: 5
 				}
 			}
 		)
-		expect(results.scores).toStrictEqual({'0': 0, '1': 5});
-	})
+		// smarter agent defaults to scissors round 1 and loses to rock, then chooses paper afterward due to rock last move
+		expect(results.scores).toStrictEqual({'0': 4, '1': 1});
+	});
+	test('Test run smarter bot against paper 5 times', async () => {
+		let results = await myDimension.runMatch(
+			['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/paper.js'],
+			{
+				initializeConfig: {
+					bestOf: 5
+				}
+			}
+		)
+		// smarter agent defaults to scissors round 1 and loses to rock, then chooses paper afterward due to rock last move
+		expect(results.scores).toStrictEqual({'0': 5, '1': 0});
+	});
 })
