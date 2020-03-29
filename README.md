@@ -106,7 +106,7 @@ An example of a rock paper scissors competition design can be found [here](https
 Some existing `designs` are provided as examples at [/examples](https://github.com/StoneT2000/Dimensions/blob/master/examples/), which include
 Rock Paper Scissors, Domination, TODO (Add halite and xConnect later)
 
-If you want to kick start development on your own `design`, check out [/templates](https://github.com/StoneT2000/Dimensions/blob/master/templates/design)
+If you want to kick start development on your own `design`, check out [/templates/designs](https://github.com/StoneT2000/Dimensions/tree/master/templates/designs)
 
 Full documentation on `Match, Agent` and other data that can be used, along with configuration can be found here: TODO add link
 
@@ -118,7 +118,7 @@ This part is not language bound, so you can program an AI in any language you wa
 
 Other starter kit templates in other languages can be found in [/templates/starter-kits](https://github.com/StoneT2000/Dimensions/tree/master/templates/starter-kits/) and you can use them to help kickstart development for your own starter kit for your own `design`
 
-AI Starter kits consist at least two files, `agent.js` (or whsichever extension matches your language) and [`myBot.js`](https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/myBot.js). It can be merged into one but for organization, splitting it up is better.
+AI Starter kits consist at least two files, `agent.js` (or whichever extension matches your language) and [`myBot.js`](https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/myBot.js). It can be merged into one but for organization, splitting it up is better.
 
 [`agent.js`](https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/agent.js) should have a `AgentControl` class with some kind of asynchronous  `initialize, update` functions and a `endTurn` function.
 
