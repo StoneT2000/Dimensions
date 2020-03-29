@@ -1,8 +1,8 @@
 const Dimension = require('../src');
-const DominationDesign = require('./domination');
+const { DominationDesign } = require('./domination');
 
 
-let dominationDesign = new DominationDesign.DominationDesign('Domination');
+let dominationDesign = new DominationDesign('Domination');
 let myDimension = Dimension.create(dominationDesign, 'Domination', Dimension.Logger.LEVEL.NONE);
 
 test('Test Run A match of Domination', async () => {

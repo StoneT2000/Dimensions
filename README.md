@@ -101,13 +101,13 @@ class RockPaperScissorsDesign extend Dimension.Design {
 }
 ```
 
-An example of a rock paper scissors competition design can be found here: https://github.com/StoneT2000/Dimensions/tree/master/examples/rock-paper-scissors/rps.js
+An example of a rock paper scissors competition design can be found [here](https://github.com/StoneT2000/Dimensions/blob/master/examples/rock-paper-scissors/rps.js#L8)
 
 Full documentation on `Match, Agent` and other data that can be used, along with configuration can be found here: TODO add link
 
 ### Design an AI Starter Kit
 
-An AI Starter kit is just basic code implemented to help you create an AI to compete in the `design` you made really quickly. This will lead you through how the JavaScript starter kit works, which can be found in TODO: add link
+An AI Starter kit is just basic code implemented to help you create an AI to compete in the `design` you made really quickly. This will lead you through how the JavaScript starter kit works, a template of which can be found in TODO: add link
 
 This part is not language bound, so you can program an AI in any language you want for your design! (Just because your friend only codes in Rust and you are a die hard JavaScript fan doesn't mean you two can't compete)
 
