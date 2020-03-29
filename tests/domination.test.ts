@@ -104,7 +104,7 @@ describe('Receive MatchErrors and FatalErrors from a match of Domination', () =>
           maxRounds: 5
         }
       }
-    )).rejects.toThrowError(Dimension.FatalError);
+    )).rejects.toThrow(Dimension.FatalError);
 
     // Throw missing file error
     expect(myDimension.createMatch(
@@ -117,7 +117,7 @@ describe('Receive MatchErrors and FatalErrors from a match of Domination', () =>
           maxRounds: 5
         }
       }
-    )).rejects.toThrowError(Dimension.FatalError);
+    )).rejects.toThrow(Dimension.FatalError);
   });
 });
 
