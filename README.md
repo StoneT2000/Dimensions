@@ -10,13 +10,13 @@ Dimensions handles the rest
 
 Dimensions utilizes an I/O based model to run competitions and pit AI agents against each other, allowing it to be generic and fairly language agnostic.
 
-This was inspired by Battlecode and Halite
+This was inspired by [Battlecode](battlecode.org/) and [Halite](https://halite.io/)
 
 ## Getting Started
 
 At the moment, Dimensions supports competition designing through JavaScript / TypeScript only. However, all AI agents can be coded in any language due to the I/O model.
 
-First, install the `Dimensions` package
+First, install the `dimensions-ai` package
 
 ```
 npm install dimensions-ai
@@ -80,6 +80,7 @@ For `update`, if you don't return anything, the engine assumes the match is stil
 For `getResults`, it must return or resolve a value, could be a number, an object, etc. 
 
 ```js
+const MatchStatus = Dimension.MatchStatus;
 class RockPaperScissorsDesign extend Dimension.Design {
   async initialize(match) {
     ... // often communicate to agents via match.send about configurations and state
@@ -100,7 +101,7 @@ class RockPaperScissorsDesign extend Dimension.Design {
 }
 ```
 
-An example of a rock paper scissors competition design can be found here: TODO add link
+An example of a rock paper scissors competition design can be found here: https://github.com/StoneT2000/Dimensions/tree/master/examples/rock-paper-scissors/rps.js
 
 Full documentation on `Match, Agent` and other data that can be used, along with configuration can be found here: TODO add link
 
@@ -231,3 +232,11 @@ to constantly test as you develop. Tests are written using [Jest](jestjs.io/)
   - Give some guidelines
   - Add some options and default values for certain configurations, e.g.
     - Max command limit per `timeStep` (for a game of rock paper scissors, this would be 1, it wouldn't make sense to flood the `MatchEngine` with several commands, which could break the `Match`)
+- Add visualizers for rock paper scissors example and domination example (and others if possible)
+- Generalize a match visualizer
+- Add more example `Designs` and starter kits for other games
+  - Recreate Kaggle Simulation's xConnect
+- Make it easier to create a `Design` (design a competition)
+  - Online site to generate a `Design`
+  - Online site to generate starter kit as well (in as many languages possible)
+
