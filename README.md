@@ -118,7 +118,7 @@ This part is not language bound, so you can program an AI in any language you wa
 
 Other starter kit templates in other languages can be found in [/templates/starter-kits](https://github.com/StoneT2000/Dimensions/tree/master/templates/starter-kits/) and you can use them to help kickstart development for your own starter kit for your own `design`
 
-AI Starter kits consist at least two files, `agent.js` (or whsichever extension matches your language) and [`myBot.js`](https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/myBot.js). It can be merged into one but for organization, splitting it up is better.
+AI Starter kits consist at least two files, `agent.js` (or whichever extension matches your language) and [`myBot.js`](https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/myBot.js). It can be merged into one but for organization, splitting it up is better.
 
 [`agent.js`](https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/agent.js) should have a `AgentControl` class with some kind of asynchronous  `initialize, update` functions and a `endTurn` function.
 
