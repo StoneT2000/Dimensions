@@ -243,6 +243,7 @@ to constantly test as you develop. Tests are written using [Jest](jestjs.io/)
   - Single and Double elimination, seeded and random options
   - Trueskill / ELO rankings based, giving option of number of matches to run and other configs
   - Simple round robins
+- Run a server upon creation of a dimension to view ongoing matches, tournaments, agents per match etc.
 - Make the `Design` language agnostic through developing an I/O based API for other languages in order to implement the 3 Lifecycle functions `initialize, update, getResults`  
 - Make it easier for users to dive deeper into the `MatchEngine`, `Matches`, `Dimensions` to give them greater flexibility over the backend infrastructure
   - At the moment, there are plans for a parallel command stream option, where all agents send commands whenever they want and the engine just sends them to the update function
