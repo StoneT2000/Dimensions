@@ -67,7 +67,7 @@ export abstract class Design {
    * @param match - The `Match` used to process results
    * * @param config - Any user configurations that can be added as parameters
    */
-  abstract async getResults(match: Match, config?: any): Promise<boolean>
+  abstract async getResults(match: Match, config?: any): Promise<any>
 
 }
 

@@ -62,8 +62,8 @@ class RockPaperScissorsDesign extends Dimension.Design{
 		// We have that each agent will give us a command that is one of 'R', 'P', or 'S' indicating Rock, Paper, Scissors
 		// if it isn't one of them, then we throw a MatchError, which doesn't stop the match but prints to console the error
 		let validChoices = new Set(['R', 'P', 'S']);
-		if (!validChoices.has(agent0Command)) match.throw(0, new Dimension.MatchError('agent 0\'s ' + agent0Command + ' is not a valid command!'));
-		if (!validChoices.has(agent1Command)) match.throw(1, new Dimension.MatchError('agent 1\'s ' + agent1Command + ' is not a valid command!'));
+		if (!validChoices.has(agent0Command)) throw new Dimension.MatchError('agent 0\'s ' + agent0Command + ' is not a valid command!')
+		if (!validChoices.has(agent1Command)) throw new Dimension.MatchError('agent 1\'s ' + agent1Command + ' is not a valid command!')
 
 		// now we determine the winner, agent0 or agent1? or is it a tie?
 		if (agent0Command === agent1Command) {
@@ -154,51 +154,11 @@ class RockPaperScissorsDesign extends Dimension.Design{
 }
 
 let RPSDesign = new RockPaperScissorsDesign('RPS!');
-let myDimension = Dimension.create(RPSDesign, 'Domination', Dimension.Logger.LEVEL.WARN);
-describe('Rock Paper Scissors Run', () => {
-	test('Test run rock vs paper 3 times', async () => {
-		expect.assertions(1);
-		let results = await myDimension.runMatch(
-			['./tests/js-kit/rps/rock.js', './tests/js-kit/rps/paper.js'],
-			{
-				bestOf: 3
-			}
-		)
-		expect(results.scores).toStrictEqual({'0': 0, '1': 3});
-	});
-	test('Test run smarter bot against rock 5 times', async () => {
-		expect.assertions(1);
-		let results = await myDimension.runMatch(
-			['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/rock.js'],
-			{
-				bestOf: 5
-			}
-		)
-		// smarter agent defaults to scissors round 1 and loses to rock, then chooses paper afterward due to rock last move
-		expect(results.scores).toStrictEqual({'0': 4, '1': 1});
-	});
-	test('Test run smarter bot against paper 5 times', async () => {
-		expect.assertions(1);
-		let results = await myDimension.runMatch(
-			['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/paper.js'],
-			{
-				bestOf: 5
-			}
-		)
-		// smarter agent defaults to scissors round 1 and loses to rock, then chooses paper afterward due to rock last move
-		expect(results.scores).toStrictEqual({'0': 5, '1': 0});
-	});
-
-	test('Test RPS to log match errors', async () => {
-		const logSpy = jest.spyOn(console, 'log');
-		expect.assertions(1);
-		await myDimension.runMatch(
-			['./tests/js-kit/rps/errorBot.js', './tests/js-kit/rps/paper.js'],
-			{
-				bestOf: 5,
-				loggingLevel: Dimension.Logger.LEVEL.WARN
-			}
-		);
-		expect(logSpy).toBeCalledTimes(5);
-	});
-})
+let myDimension = Dimension.create(RPSDesign, 'Domination', Dimension.Logger.LEVEL.NONE);
+let results = await myDimension.runMatch(
+	['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/rock.js'],
+	{
+		bestOf: 5
+	}
+)
+console.log(results);

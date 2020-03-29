@@ -37,7 +37,9 @@ export class DominationDesign extends Dimension.Design {
 			round: 1,
 			MAX_ROUNDS: config.maxRounds
 		};
-		for (let i = 0; i < config.size; i++) {
+
+		// can access the config through input config or directly from match
+		for (let i = 0; i < match.configs.initializeConfig.size; i++) {
 			state.map.push([]);
 			for (let j = 0; j < config.size; j++) {
 				state.map[i].push(-1);
@@ -77,108 +79,106 @@ export class DominationDesign extends Dimension.Design {
 		return true;
 	}
 
-	async update(match, commands: Array<Dimension.Command>) : Promise<Dimension.MatchStatus> {
-		return new Promise((resolve, reject) => {
-			log.infobar();
-			log.info("Round - " + (match.state.round));
-			log.info("Updating state");
+	async update(match, commands: Array<Dimension.Command>) {
+		log.infobar();
+		log.info("Round - " + (match.state.round));
+		log.info("Updating state");
 
-			let updatedTileSet = new Set();
-			let updates = [];
-			let commandsRanThisround = {};
-			match.agents.forEach((agent) => {
-				commandsRanThisround[agent.id] = 0;
-			})
-			const expand = (agentID: number, x: number, y: number) => {
-				if (!inMap(x,y)) {
-					match.throw(agentID, new Dimension.MatchError(`(${x}, ${y}) is out of bounds`))
-					return;
+		let updatedTileSet = new Set();
+		let updates = [];
+		let commandsRanThisround = {};
+		match.agents.forEach((agent) => {
+			commandsRanThisround[agent.id] = 0;
+		})
+		const expand = (agentID: number, x: number, y: number) => {
+			if (!inMap(x,y)) {
+				match.throw(agentID, new Dimension.MatchError(`(${x}, ${y}) is out of bounds`))
+				return;
+			}
+			if (match.state.map[y][x] !== -1 && match.state.map[y][x] != agentID) {
+				match.throw(agentID, new Dimension.MatchError(`(${x}, ${y}) is not empty nor owned by agent`))
+				return;
+			}
+			let neighbors = getNeighbors(x,y);
+			let adjacent = false;
+			for (let i = 0; i < neighbors.length; i++) {
+				let coords = neighbors[i];
+				if (inMap(coords[0], coords[1]) && match.state.map[coords[1]][coords[0]] === agentID) {
+					adjacent = true;
+					break;
 				}
-				if (match.state.map[y][x] !== -1 && match.state.map[y][x] != agentID) {
-					match.throw(agentID, new Dimension.MatchError(`(${x}, ${y}) is not empty nor owned by agent`))
-					return;
-				}
-				let neighbors = getNeighbors(x,y);
-				let adjacent = false;
-				for (let i = 0; i < neighbors.length; i++) {
-					let coords = neighbors[i];
-					if (inMap(coords[0], coords[1]) && match.state.map[coords[1]][coords[0]] === agentID) {
-						adjacent = true;
+			}
+			if (!adjacent) {
+				match.throw(agentID, new Dimension.MatchError(`(${x}, ${y}) is not adjacent to an owned tile`));
+				return;
+			}
+
+
+			if (updatedTileSet.has(hashCoords(x, y))) {
+				// if this map tile was just owned by another player this round, then this counts as collision and no one
+				// gets the tile it is removed
+				updates.push([x,y,-1]);
+			}
+			else {
+				updatedTileSet.add(hashCoords(x, y));
+				updates.push([x,y,agentID]);
+			}
+			commandsRanThisround[agentID]++;
+		}
+		const getNeighbors = (x: number, y: number) => {
+			return [[x-1, y], [x, y-1], [x, y], [x, y+1], [x+1, y]];
+		}
+		const inMap = (x, y): boolean => {
+			if (x >= match.state.size || y >= match.state.size || x < 0 || y < 0) {
+				return false;
+			}
+			return true;
+		}
+
+		const hashCoords = (x, y) => {
+			return y * match.state.size + x;
+		}
+		const parseHash = (hash) => {
+			hash = parseInt(hash);
+			return [hash % match.state.size, Math.floor(hash / match.state.size)]
+		}
+
+		// filter commands and sort them accordingly?
+		// the order in which commands / output from agents stream into the match engine can be configured when initializing the Design
+
+		
+		for (let i = 0; i < commands.length; i++) {
+			let cmd = commands[i].command;
+			let id = commands[i].agentID;
+			switch (cmd[0]) {
+				case "e":
+					if (commandsRanThisround[id] >= 1) {
+						match.throw(id, new Dimension.MatchError('Past command limit!'));
 						break;
 					}
-				}
-				if (!adjacent) {
-					match.throw(agentID, new Dimension.MatchError(`(${x}, ${y}) is not adjacent to an owned tile`));
-					return;
-				}
+					let x = parseInt(cmd.slice(1,3));
+					let y = parseInt(cmd.slice(3,5));
 
-
-				if (updatedTileSet.has(hashCoords(x, y))) {
-					// if this map tile was just owned by another player this round, then this counts as collision and no one
-					// gets the tile it is removed
-					updates.push([x,y,-1]);
-				}
-				else {
-					updatedTileSet.add(hashCoords(x, y));
-					updates.push([x,y,agentID]);
-				}
-				commandsRanThisround[agentID]++;
+					// try expanding at x y for this Agent
+					expand(id, x, y);
+					break;
 			}
-			const getNeighbors = (x: number, y: number) => {
-				return [[x-1, y], [x, y-1], [x, y], [x, y+1], [x+1, y]];
-			}
-			const inMap = (x, y): boolean => {
-				if (x >= match.state.size || y >= match.state.size || x < 0 || y < 0) {
-					return false;
-				}
-				return true;
-			}
-
-			const hashCoords = (x, y) => {
-				return y * match.state.size + x;
-			}
-			const parseHash = (hash) => {
-				hash = parseInt(hash);
-				return [hash % match.state.size, Math.floor(hash / match.state.size)]
-			}
-
-			// filter commands and sort them accordingly?
-			// the order in which commands / output from agents stream into the match engine can be configured when initializing the Design
-
-			
-			for (let i = 0; i < commands.length; i++) {
-				let cmd = commands[i].command;
-				let id = commands[i].agentID;
-				switch (cmd[0]) {
-					case "e":
-						if (commandsRanThisround[id] >= 1) {
-							match.throw(id, new Dimension.MatchError('Past command limit!'));
-							break;
-						}
-						let x = parseInt(cmd.slice(1,3));
-						let y = parseInt(cmd.slice(3,5));
-
-						// try expanding at x y for this Agent
-						expand(id, x, y);
-						break;
-				}
-			}
-			match.sendAll(updates.length);
-			updates.forEach((update) => {
-				// send the updated ownership of cell at x=update[0], y=update[1]
-				match.sendAll(`${update[0]},${update[1]},${update[2]}`);
-				match.state.map[update[1]][update[0]] = update[2];
-			})
-
-			log.info('End of Round ' + (match.state.round));
-			log.infobar();
-			
-			if (match.state.round === match.state.MAX_ROUNDS) {
-				resolve(Dimension.MatchStatus.FINISHED);
-			}
-			resolve(Dimension.MatchStatus.RUNNING);
-			match.state.round++;
+		}
+		match.sendAll(updates.length);
+		updates.forEach((update) => {
+			// send the updated ownership of cell at x=update[0], y=update[1]
+			match.sendAll(`${update[0]},${update[1]},${update[2]}`);
+			match.state.map[update[1]][update[0]] = update[2];
 		})
+
+		log.info('End of Round ' + (match.state.round));
+		log.infobar();
+		
+		if (match.state.round === match.state.MAX_ROUNDS) {
+			return Dimension.MatchStatus.FINISHED;
+		}
+		match.state.round++;
+		
 	}
 
 	async getResults(match: Dimension.Match) {
@@ -218,11 +218,7 @@ export class DominationDesign extends Dimension.Design {
 		results.winner = highestScoringAgent.name;
 		results.winningScore = highestScore;
 		
-		return new Promise((res) => {
-			res(results);
-		});
-
-		// can also just use return results; but typescript isn't happy about that
+		return results;
 	}
 
 	

@@ -40,7 +40,7 @@ test('Test Run A match of Domination', async () => {
 describe('Receive MatchErrors and FatalErrors from a match of Domination', () => {
 	
 
-	// expect.assertions(3);
+	expect.assertions(3);
 	test('Match Errors', async () => {
 		let jsSource = "./tests/js-kit/domination/errorProvokingBot.js";
 		let botSources = [];
@@ -83,11 +83,10 @@ describe('Receive MatchErrors and FatalErrors from a match of Domination', () =>
 		expect(results.finalMap).toStrictEqual(expectedResultMap)
 		expect(results.winningScore).toStrictEqual(expectedScore);
 		expect(matchEngineLogSpy).toBeCalledTimes(12);
-		// console.table(results.finalMap)
-		// console.log(results);
 	});
 
 	test('Fatal Errors', async () => {
+		expect.assertions(2);
 		let botSources = [];
 		for (let i = 0; i < 3; i++) {
 			botSources.push('./tests/js-kit/domination/deterministic.js');
@@ -144,7 +143,7 @@ describe('Test Create Match and Validate its contents', () => {
 			}
 		);
 	});
-	test('Validate Agents', async () => {
+	test('Validate Agents', () => {
 		
 		expect(match.agents.length).toBe(agentCount);
 		expect(match.agentFiles.length).toBe(agentCount);
