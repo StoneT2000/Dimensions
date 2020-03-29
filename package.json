@@ -26,5 +26,10 @@
     "jest": "^25.2.3",
     "ts-jest": "^25.2.1",
     "typescript": "^3.8.3"
+  },
+  "files": ["build/**/*"],
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/StoneT2000/Dimensions.git"
   }
 }
