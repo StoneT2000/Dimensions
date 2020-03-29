@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+		"module": "commonjs",
+		"outDir": "build/",
+		"sourceMap": true,
+		"declaration": true,
+		"allowJs": true
+	},
+	"include": [
+		"src/**/*",
+		"tests/**/*"
+	],
+	"exclude": [
+		"node_modules",
+		"docs",
+		"build"
+	]
+}

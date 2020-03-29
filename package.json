@@ -1,0 +1,30 @@
+{
+  "name": "dimensions",
+  "version": "1.0.0",
+  "description": "A generic, multi-level ai competition framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest tests --collectCoverage",
+    "test-watch": "jest --watch tests --collectCoverage",
+    "docs": "typedoc --out docs src",
+    "build": "tsc src/index.ts --outDIR build && tsc tests/main.ts",
+    "watch": "tsc -w src/index.ts --outDIR build"
+  },
+  "keywords": [
+    "AI",
+    "competition",
+    "framework"
+  ],
+  "author": "StoneT2000",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/preset-env": "^7.9.0",
+    "@babel/preset-typescript": "^7.9.0",
+    "@types/jest": "^25.1.4",
+    "@types/node": "^12.12.31",
+    "jest": "^25.2.3",
+    "ts-jest": "^25.2.1",
+    "typescript": "^3.8.3"
+  }
+}
