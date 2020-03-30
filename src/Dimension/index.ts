@@ -1,5 +1,10 @@
-import { Design, Match, Logger, LoggerLEVEL, MatchConfigs, MatchStatus, FatalError, Station } from '..';
+import { Design, Match, MatchConfigs, FatalError, Station } from '..';
+import { Logger, LoggerLEVEL} from '../Logger';
 
+export type DimensionConfigs = {
+  activateStation?: boolean
+  observe?: boolean
+}
 /**
  * @class Dimension
  * @classdesc The Dimension framework for intiating a `Design` to then run `Matches` on. Interacts with `Match` class
@@ -19,9 +24,16 @@ export class Dimension {
 
   public defaultMatchConfigs: MatchConfigs = { loggingLevel: Logger.LEVEL.INFO }
 
-  public static Station: Station = new Station('Dimension Station', []);
+  // Default station for current node instance
+  public static Station: Station = null;
 
-  constructor(public design: Design, name?: string, public loggingLevel: LoggerLEVEL = Logger.LEVEL.INFO) {
+  constructor(public design: Design, name?: string, public loggingLevel: LoggerLEVEL = Logger.LEVEL.INFO, configs: DimensionConfigs = {
+    activateStation: true,
+    observe: true
+  }) {
+    if (configs.activateStation === true && Dimension.Station == null) {
+      Dimension.Station = new Station('Dimension Station', [], Logger.LEVEL.INFO);
+    }
     this.log.level = loggingLevel;
     this.defaultMatchConfigs.loggingLevel = loggingLevel;
 
@@ -38,7 +50,7 @@ export class Dimension {
     Dimension.id++;
 
     // make the station observe this dimension when this dimension is created
-    Dimension.Station.observe(this);
+    if (configs.observe === true) Dimension.Station.observe(this);
   }
   /**
    * Create a match with the given files with the given unique name. It rejects if a fatal error occurs and resolves 
@@ -130,6 +142,6 @@ export class Dimension {
  * @param design The design to use
  * @param name The optional name of the dimension
  */
-export function create(design: Design, name?: string, loggingLevel?: LoggerLEVEL): Dimension {
-  return new Dimension(design, name, loggingLevel);
+export function create(design: Design, name?: string, loggingLevel?: LoggerLEVEL, configs?: DimensionConfigs): Dimension {
+  return new Dimension(design, name, loggingLevel, configs);
 }

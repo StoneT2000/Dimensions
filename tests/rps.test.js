@@ -160,9 +160,17 @@ class RockPaperScissorsDesign extends Dimension.Design{
   }
 }
 
-let RPSDesign = new RockPaperScissorsDesign('RPS!');
-let myDimension = Dimension.create(RPSDesign, 'Domination', Dimension.Logger.LEVEL.WARN);
+
 describe('Rock Paper Scissors Run', () => {
+  let RPSDesign;
+  let myDimension;
+  beforeAll(() => {
+    RPSDesign = new RockPaperScissorsDesign('RPS!');
+    myDimension = Dimension.create(RPSDesign, 'RPS', Dimension.Logger.LEVEL.WARN, {
+      activateStation: false,
+      observe: false
+    });
+  })
   test('Test run rock vs paper 3 times', async () => {
     expect.assertions(1);
     let results = await myDimension.runMatch(

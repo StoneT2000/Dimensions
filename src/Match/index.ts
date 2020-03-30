@@ -72,7 +72,9 @@ export class Match {
     }
 
     // set logging level to what was given
-    this.log.level = configs.loggingLevel;
+    if (configs.loggingLevel) {
+      this.log.level = configs.loggingLevel;
+    }
     this.log.identifier = this.name;
 
     // store reference to the matchEngine used

@@ -1,6 +1,6 @@
 //nodemon --watch 'tests/**/*.ts' --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' -exec 'ts-node' tests/server.ts 
 
-import * as Dimension from '../src';
+import * as Dimension from '../src/';
 const { DominationDesign } = require('./domination');
 
 let dominationDesign = new DominationDesign('Domination');
