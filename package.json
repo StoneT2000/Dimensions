@@ -41,8 +41,8 @@
     "url": "https://github.com/StoneT2000/Dimensions.git"
   },
   "jest": {
-    "testPathIgnorePatterns" : [
-      "build" 
+    "testPathIgnorePatterns": [
+      "build"
     ]
   }
 }

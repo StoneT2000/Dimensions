@@ -76,3 +76,20 @@ export class NotImplemented extends HttpError {
     super(501, message || 'Not Implemented');
   }
 }
+
+
+/**
+ * General error handling middleware. Attaches to Express so that throwing or calling next() with
+ * an error ends up here and all errors are handled uniformly.
+ */
+export const errorHandler = (err, req, res, next) => {
+  if (!err) err = new InternalServerError('An unknown error occurred');
+  if (!err.status) err = new InternalServerError(err.message);
+  
+  res.status(err.status).json({
+    error: {
+      status: err.status,
+      message: err.message,
+    },
+  });
+};

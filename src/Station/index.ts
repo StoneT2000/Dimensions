@@ -6,6 +6,9 @@ import dimensionsAPI from './routes/api/dimensions';
 import { Dimension } from '../Dimension';
 import { Match } from '../Match';
 
+import * as error from './error';
+import winston from 'winston';
+import expressWinston from 'express-winston';
 
 // declare global and merge declaration with Express Request to allow storage of data across middlewhere in typescript 
 declare global {
@@ -58,9 +61,14 @@ export class Station {
     
     /**
      * Link up routes
+     * Status
+     * Dimensions - Api to access all dimensions functions, match functions, etc.
      */
     this.app.use('/api/status', statusAPI);
     this.app.use('/api/dimensions', dimensionsAPI);
+
+    // Set up error handler
+    this.app.use(error.errorHandler);
     
   }
 }

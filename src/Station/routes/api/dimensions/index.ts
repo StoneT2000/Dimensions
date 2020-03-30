@@ -4,6 +4,7 @@
 import express, { Request, Response } from 'express';
 import { Dimension } from '../../../../Dimension';
 import matchAPI from './match';
+import * as error from '../../../error'
 const router = express.Router();
 
 
@@ -15,15 +16,16 @@ router.get('/', (req:Request, res: Response) => {
 // middle ware for finding dimension by id
 const findDimension = (req: Request, res, next: express.NextFunction) => {
   let id = req.params.id;
-  if (!id) return next(new Error('ID must be provided'));
+  if (!id) return next(new error.BadRequest('ID must be provided'));
   let dimension: Dimension = req.app.get('dimensions').filter((d: Dimension) => d.id == parseInt(id))[0];
   if (!dimension) {
-    res.json({error: `No dimension found with id '${req.params.id}'`});
-    return;
+    
+    return next(new error.BadRequest('No Dimension found'));
   }
   req.data.dimension = dimension;
   next();
 };
+
 // use the middleware
 router.use('/:id', findDimension);
 

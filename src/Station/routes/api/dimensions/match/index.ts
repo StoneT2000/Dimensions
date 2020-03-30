@@ -11,8 +11,7 @@ const findMatch = (req: Request, res: Response, next: NextFunction) => {
   let match = 
     req.data.dimension.matches.filter((match) => match.id == parseInt(req.params.matchID) || match.name == req.params.matchID)[0];
   if (!match) {
-    res.json({error: `No match found with name / id of '${req.params.matchID}' in dimension ${req.data.dimension.id} - '${req.data.dimension.name}'`})
-    return;
+    return next(new error.BadRequest(`No match found with name or id of '${req.params.matchID}' in dimension ${req.data.dimension.id} - '${req.data.dimension.name}'`));
   }
   req.data.match = match;
   next();
@@ -36,7 +35,7 @@ router.post('/:matchID/run', (req: Request, res: Response, next: NextFunction) =
     res.json({error: null, msg:'Running Match'})
   }
   catch(error) {
-    return next(new error.InternalServerError('Match Failed to run'));
+    return next(new error.InternalServerError('Match Failed to Run'));
   }
 })
 
