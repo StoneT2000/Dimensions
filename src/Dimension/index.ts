@@ -1,5 +1,4 @@
-import { Design, Match, Logger, LoggerLEVEL, MatchConfigs, MatchStatus } from '..';
-import { FatalError } from '../DimensionError';
+import { Design, Match, Logger, LoggerLEVEL, MatchConfigs, MatchStatus, FatalError } from '..';
 
 /**
  * @class Dimension

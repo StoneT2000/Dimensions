@@ -18,7 +18,9 @@
   ],
   "author": "StoneT2000",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "express": "^4.17.1"
+  },
   "devDependencies": {
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-typescript": "^7.9.0",
@@ -28,9 +30,11 @@
     "ts-jest": "^25.2.1",
     "typescript": "^3.8.3"
   },
-  "files": ["build/**/*"],
+  "files": [
+    "build/**/*"
+  ],
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/StoneT2000/Dimensions.git"
+    "type": "git",
+    "url": "https://github.com/StoneT2000/Dimensions.git"
   }
 }
