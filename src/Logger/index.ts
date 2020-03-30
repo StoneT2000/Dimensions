@@ -12,12 +12,12 @@ export enum LoggerLEVEL  {
  */
 export class Logger {
   public static LEVEL = LoggerLEVEL;
-  public identifier = 'Log'
-  constructor(public level: LoggerLEVEL = Logger.LEVEL.INFO) {
-
+  public identifier: string; // an identifier for who is logging this
+  constructor(public level: LoggerLEVEL = Logger.LEVEL.INFO, identifier = 'Log') {
+    this.identifier = identifier;
   }
   bar() {
-     return `-=-=-=-=-=-=-=-=-=-=-=-| ${this.identifier} |-=-=-=-=-=-=-=-=-=-=-=-`;
+     return `\n-=-=-=-=-=-=-=-=-=-=-=-| ${this.identifier} |-=-=-=-=-=-=-=-=-=-=-=-\n`;
   }
   systembar() {
     if (this.level >= Logger.LEVEL.SYSTEM) console.log(this.bar());

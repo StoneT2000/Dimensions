@@ -76,7 +76,7 @@ export class Match {
     this.log.identifier = this.name;
 
     // store reference to the matchEngine used
-    this.matchEngine = new MatchEngine(this.design);
+    this.matchEngine = new MatchEngine(this.design, this.log.level);
     this.id = Match._id;
     Match._id++;
   }
@@ -100,7 +100,7 @@ export class Match {
         })
 
         // Initialize the matchEngine and get it ready to run and process I/O for agents
-        await this.matchEngine.initialize(this.agents, this, this.log.level);
+        await this.matchEngine.initialize(this.agents, this);
         
         // Initialize match according to `design` by delegating intialization task to the enforced `design`
         await this.design.initialize(this, this.configs.initializeConfig);

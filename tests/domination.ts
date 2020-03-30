@@ -167,7 +167,6 @@ export class DominationDesign extends Dimension.Design {
     })
 
     match.log.info('End of Round ' + (match.state.round));
-    match.log.infobar();
     
     if (match.state.round === match.state.MAX_ROUNDS) {
       return Dimension.MatchStatus.FINISHED;

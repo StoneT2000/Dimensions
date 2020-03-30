@@ -29,21 +29,26 @@ export class MatchEngine {
 
   private log = new Logger();
   
-  constructor(design: Design) {
+  constructor(design: Design, loggingLevel: LoggerLEVEL) {
     this.design = design;
     let { commandStreamType, commandDelimiter } = this.design.getDesignOptions();
     this.engineOptions = {
       commandStreamType: commandStreamType,
       commandDelimiter: commandDelimiter
     }
+    this.log.identifier = `Engine`
+    this.setLogLevel(loggingLevel);
+  }
+
+  setLogLevel(loggingLevel: LoggerLEVEL) {
+    this.log.level = loggingLevel;
   }
 
   /**
    * Starts up the engine by intializing processes for all the agents and setting some variables for a match
    * @param agents 
    */
-  async initialize(agents: Array<Agent>, match: Match, loggingLevel: LoggerLEVEL) {
-    this.log.level = loggingLevel;
+  async initialize(agents: Array<Agent>, match: Match) {
     
     this.log.systembar();
 
