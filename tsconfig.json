@@ -17,5 +17,10 @@
     "tests",
     "examples",
     "templates"
-  ]
+  ],
+  "typeAcquisition": {
+    "include": [
+        "jest"
+    ]
+  }
 }
