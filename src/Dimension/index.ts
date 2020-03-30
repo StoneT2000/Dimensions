@@ -14,6 +14,7 @@ export class Dimension {
   public nameToMatches: Map<string, Match>;
   static id: number = 0;
   public name: string;
+  public id: number = 0;
 
   public log = new Logger();
 
@@ -31,7 +32,7 @@ export class Dimension {
     else {
       this.name = `dimension_${Dimension.id}`;
     }
-
+    this.id = Dimension.id;
     this.log.detail(`Created Dimension: ` + this.name);
     Dimension.id++;
   }
