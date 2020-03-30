@@ -4,6 +4,7 @@ import statusAPI from './routes/api/status';
 import dimensionsAPI from './routes/api/dimensions';
 
 import { Dimension } from '../Dimension';
+import { Match } from '../Match';
 
 
 // declare global and merge declaration with Express Request to allow storage of data across middlewhere in typescript 
@@ -12,6 +13,7 @@ declare global {
     interface Request {
       data: {
         dimension?: Dimension,
+        match?: Match,
         [x: string]: any
       }
     }

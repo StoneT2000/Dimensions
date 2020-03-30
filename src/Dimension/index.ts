@@ -101,20 +101,12 @@ export class Dimension {
           match = new Match(this.design, <Array<{file: string, name: string}>> files, matchConfigs);
         }
         this.matches.push(match);
-        
 
         // Initialize match with initialization configuration
         await match.initialize();
-
-        let status: MatchStatus;
-        // Run match
-        do {
-          status = await match.run();
-        }
-        while (status != MatchStatus.FINISHED)
         
-        // Store results
-        let results = await match.getResults();
+        // Get results
+        let results = await match.run();
 
         // Resolve the results
         resolve(results);

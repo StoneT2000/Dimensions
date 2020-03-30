@@ -71,9 +71,10 @@ describe('Receive MatchErrors and FatalErrors from a match of Domination', () =>
     const matchEngineLogSpy = jest.spyOn(console, 'log')
 
     let status: Dimension.MatchStatus;
-    // Run match
+    
+    // Run match, equiv to match.run();
     do {
-      status = await match.run();
+      status = await match.next();
     }
     while (status != Dimension.MatchStatus.FINISHED)
     

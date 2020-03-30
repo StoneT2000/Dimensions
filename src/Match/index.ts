@@ -55,6 +55,7 @@ export class Match {
 
   private log = new Logger();
 
+  public results: any;
   public matchStatus = MatchStatus.UNINITIALIZED
 
   constructor(
@@ -113,10 +114,26 @@ export class Match {
       }
     });
   }
+
+
   /**
-   * Run function. Resolves when match marks itself as complete. 
+   * Runs this match to completion
    */
-  public async run(): Promise<MatchStatus> {
+  public async run(): Promise<any> {
+    let status: MatchStatus;
+    // Run match
+    do {
+      status = await this.next();
+    }
+    while (status != MatchStatus.FINISHED)
+    this.results = this.getResults();
+    return this.results;
+  }
+  
+  /**
+   * Next function. Moves match forward by one timestep. Resolves with the match status
+   */
+  public async next(): Promise<MatchStatus> {
     return new Promise(async (resolve, reject) => {
       if (this.matchEngine.engineOptions.commandStreamType === COMMAND_STREAM_TYPE.SEQUENTIAL) {
         // at the start of each time step, we send any updates based on what agents sent us on the previous timestep

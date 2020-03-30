@@ -4,7 +4,7 @@ import * as Dimension from '../src';
 const { DominationDesign } = require('./domination');
 
 let dominationDesign = new DominationDesign('Domination');
-let dominationDimension = Dimension.create(dominationDesign, 'Domination No Log', Dimension.Logger.LEVEL.NONE);
+let dominationDimension = Dimension.create(dominationDesign, 'Domination ALL logs', Dimension.Logger.LEVEL.ALL);
 
 let dominationDimension2 = Dimension.create(dominationDesign, 'Domination Info', Dimension.Logger.LEVEL.INFO);
 
