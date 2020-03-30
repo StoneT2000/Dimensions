@@ -3,15 +3,15 @@
   "version": "1.0.2",
   "description": "A generic, multi-level ai competition framework",
   "main": "./build/index.js",
-  "prepublish": "tsc",
+  "prepublish": "npm run build",
   "scripts": {
     "install": "npm install && cd src/Station/web && npm install",
     "test": "jest tests --collectCoverage",
     "test-watch": "jest --watch tests --collectCoverage",
     "docs": "typedoc --out docs src",
-    "build": "tsc src/index.ts --outDIR build && tsc tests/main.ts",
+    "build": "npm run buildStation && tsc",
     "watch": "tsc -w",
-    "buildStation": "npm run start --prefix=src/Station/web"
+    "buildStation": "npm run build --prefix=src/Station/web && rm -rf build/src/Station/web && mkdir build/src/Station/web && cp -r src/Station/web/build build/src/Station/web/"
   },
   "keywords": [
     "AI",
