@@ -1,9 +1,13 @@
 import { Agent, Design, MatchEngine, agentID, Logger, LoggerLEVEL, Command, FatalError, COMMAND_STREAM_TYPE } from '..';
 
 export enum MatchStatus {
-  RUNNING,
-  STOPPED,
-  FINISHED
+  UNINITIALIZED, // the status when you just created a match and didn't call initialize
+  READY, // if match has been initialized and checks passed and is ready to run using match.run()
+  RUNNING, // if match is running at the moment
+  STOPPED, // if match is stopped, not used at the moment
+  FINISHED, // if match is done
+  ERROR // if error occurs, currently not used, but should be somehow integrated into the Match class, appearing when 
+  // match stops by itself due to an error
 }
 
 // Life cycle configurations for a match, dependent on the `Design`
@@ -47,9 +51,11 @@ export class Match {
   // The time step of the Match. All agents are coordinated against this timeStep
   public timeStep: number = 0;
 
-  private matchEngine: MatchEngine;
+  private matchEngine: MatchEngine; // could potentially made MatchEngine all static, but each match engine does have configurations dependent on design and per match, so holding this as a private field 
 
   private log = new Logger();
+
+  public matchStatus = MatchStatus.UNINITIALIZED
 
   constructor(
     public design: Design, 
@@ -95,7 +101,10 @@ export class Match {
         
         // Initialize match according to `design` by delegating intialization task to the enforced `design`
         await this.design.initialize(this, this.configs.initializeConfig);
-        
+
+        // remove initialized status and set as READY
+        // TODO: add more security checks etc. before marking match as ready to run
+        this.matchStatus = MatchStatus.READY;
         resolve(true);
         
       }
@@ -118,8 +127,17 @@ export class Match {
   
         // Updates the match state and sends appropriate signals to all Agents based on the stored `Design`
         const status: MatchStatus = await this.design.update(this, commands, this.configs.updateConfig);
-        
+
+        // default status is running if no status returned
+        if (!status) {
+          this.matchStatus = MatchStatus.RUNNING
+        }
+        else {
+          this.matchStatus = status;
+        }
+
         if (status === MatchStatus.FINISHED) {
+          // TODO: Perhaps add a cleanup status if cleaning up processes takes a long time
           await this.stopAndCleanUp();
         }
         // update timestep now
