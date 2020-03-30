@@ -24,9 +24,11 @@
   "devDependencies": {
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-typescript": "^7.9.0",
+    "@types/express": "^4.17.3",
     "@types/jest": "^25.1.4",
     "@types/node": "^12.12.31",
     "jest": "24.9.0",
+    "ts-jest": "^25.2.1",
     "typescript": "^3.8.3"
   },
   "files": [

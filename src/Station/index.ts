@@ -1,9 +1,15 @@
-const express = require('express');
-const path = require('path');
-const app = express();
-app.use(express.static(path.join(__dirname, 'web/build')));
-app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname, 'web/build', 'index.html'));
-});
-app.listen(9000);
-console.log("Running station at localhost:9000");
+import express from 'express';
+import path from 'path';
+
+export class Station {
+  public app: express.Application;
+  constructor() {
+    this.app = express();
+    this.app.use(express.static(path.join(__dirname, 'web/build')));
+    this.app.get('/', function(req, res) {
+      res.sendFile(path.join(__dirname, 'web/build', 'index.html'));
+    });
+    this.app.listen(9000);
+    console.log("Running station at localhost:9000");
+  }
+}

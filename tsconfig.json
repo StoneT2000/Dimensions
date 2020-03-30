@@ -5,7 +5,8 @@
     "outDir": "build/",
     "sourceMap": true,
     "declaration": true,
-    "allowJs": true
+    "allowJs": true,
+    "esModuleInterop": true
   },
   "include": [
     "src/**/*"
