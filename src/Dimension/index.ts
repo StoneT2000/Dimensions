@@ -13,6 +13,7 @@ export type DimensionConfigs = {
  * @param loggingLevel - Specified logging level applied to entire Dimension, including the associated design and sets
  * the defaults for all future `matches`, `matchEngines` and `agents`
  */
+
 export class Dimension {
   
   public matches: Array<Match> = [];

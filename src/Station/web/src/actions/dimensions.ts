@@ -2,10 +2,10 @@ import axios, { AxiosResponse } from 'axios';
 import { Dimension } from '../../../../Dimension';
 
 
-
-export const getDimensions = async (): Promise<Array<Dimension>> => {
+// Returns all dimensions if no input
+export const getDimension = async (id: number = -1): Promise<Array<Dimension> | Dimension> => {
   return new Promise((resolve, reject) => {
-    axios.get(process.env.REACT_APP_API + '/api/dimensions/').then((res: AxiosResponse) => {
+    axios.get(process.env.REACT_APP_API + '/api/dimensions/' + (id === -1 ? '' : id)).then((res: AxiosResponse) => {
       resolve(res.data.dimensions);
     }).catch((error) => {
       reject(error);

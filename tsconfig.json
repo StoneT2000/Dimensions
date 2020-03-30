@@ -8,6 +8,7 @@
     "allowJs": true,
     "esModuleInterop": true,
     "baseUrl": "./",
+    "declarationDir": "build/types"
   },
   "include": [
     "src/**/*",
