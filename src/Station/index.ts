@@ -1,10 +1,22 @@
 import express from 'express';
 import path from 'path';
-import status from './routes/api/status';
+import statusAPI from './routes/api/status';
 import dimensionsAPI from './routes/api/dimensions';
 
 import { Dimension } from '../Dimension';
 
+
+// declare global and merge declaration with Express Request to allow storage of data across middlewhere in typescript 
+declare global {
+  namespace Express {
+    interface Request {
+      data: {
+        dimension?: Dimension,
+        [x: string]: any
+      }
+    }
+  }
+}
 export class Station {
   public app: express.Application;
   public static _id: number = 0;
@@ -34,11 +46,18 @@ export class Station {
     else {
       this.app.set('dimensions', [observedDimensions]);
     }
+
+    // store in each request a data object
+    const initReqData = (req, res, next) => {
+      req.data = {};
+      next();
+    }
+    this.app.use('/**/*', initReqData)
     
     /**
      * Link up routes
      */
-    this.app.use('/api/status', status);
+    this.app.use('/api/status', statusAPI);
     this.app.use('/api/dimensions', dimensionsAPI);
     
   }

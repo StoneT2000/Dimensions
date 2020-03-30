@@ -18,7 +18,7 @@ let botSources = [];
 for (let i = 0; i < 2; i++) {
   botSources.push(jsSource);
 }
-dominationDimension2.createMatch(
+dominationDimension.createMatch(
   botSources,
   {
     name: 'Match with INFO',
@@ -29,5 +29,5 @@ dominationDimension2.createMatch(
       maxRounds: 10
     }
   }).then((res) => {
-    console.log(res);
+    // console.log(res);
   })
