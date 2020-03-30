@@ -7,8 +7,8 @@ import { Dimension } from '../Dimension';
 import { Match } from '../Match';
 
 import * as error from './error';
-import winston from 'winston';
-import expressWinston from 'express-winston';
+
+import cors from 'cors';
 
 // declare global and merge declaration with Express Request to allow storage of data across middlewhere in typescript 
 declare global {
@@ -29,6 +29,10 @@ export class Station {
   public name: string;
   constructor(name: string = '', observedDimensions: Dimension | Array<Dimension>) {
     this.app = express();
+
+    // CORS
+    this.app.use(cors());
+
     this.app.use(express.static(path.join(__dirname, 'web/build')));
     this.app.get('/', function(req, res) {
       res.sendFile(path.join(__dirname, 'web/build', 'index.html'));

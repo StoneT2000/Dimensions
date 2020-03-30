@@ -1,0 +1,18 @@
+@import '../../styles/base.scss';
+
+.DimensionCard {
+  display: inline-block;
+  max-width: 300px;
+  background-color: $white;
+  border-radius: $radius-base2;
+  margin: $margin-base;
+  padding: $margin-base;
+  .matches {
+    color: $b1 !important;
+    font-size: $font2;
+    font-weight: 400;
+  }
+  h2 {
+    font-size: $font2;
+  }
+}

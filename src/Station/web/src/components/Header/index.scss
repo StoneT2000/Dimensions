@@ -1,0 +1,46 @@
+@import '../../styles/base.scss';
+.Header {
+  width: 100vw;
+  padding-left: 24px;
+  padding-right: 24px;
+  display: flex;
+  .logo {
+    padding-left: 12px;
+    img {
+      height:$navbar-height;
+      padding: 12px;
+    }
+  }
+  .logo:hover {
+    border-color:white;
+    border-width: 2px;
+  }
+  .ant-menu-item {
+    background-color: white;
+    	border-bottom: none;
+      top: 0px;
+      line-height: $navbar-height;
+      height: $navbar-height;
+      font-weight: 500;
+      > a {
+        color: $b2;
+      }
+      font-size: $font2;
+  }
+  .ant-menu-item:hover {
+    border-bottom: none;
+    a {
+      color: $b1;
+    }
+  }
+  .empty {
+    flex-grow: 1;
+    cursor: default;
+  }
+  .login-item {
+    padding-right: 0px;
+  }
+  .profile-item {
+    padding-right: 0px;
+  }
+}

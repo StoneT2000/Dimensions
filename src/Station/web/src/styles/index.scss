@@ -1,0 +1,128 @@
+@import '~antd/dist/antd.css';
+@import '~./reset.scss';
+@import './vars.scss';
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  font-family:'Open Sans', Arial, sans-serif;
+}
+html {
+  font-size:14px;
+}
+body {
+  font-family: 'Open Sans', Arial, sans-serif;
+  font-size: $font1;
+  font-weight:300;
+  line-height: 1.6;
+  margin:0px;
+  color:$b2;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+  background-color:#FEFEFE;
+  overflow-wrap: break-word;
+}
+h1 {
+  font-family:'TexGyre', 'Open Sans', Arial, sans-serif;
+  font-size: $font6;
+  font-weight:500;
+  margin-bottom: $margin-base * 2;
+  color:$b2;
+}
+h2 {
+  font-family:'TexGyre', 'Open Sans', Arial, sans-serif;
+  font-size: $font5;
+  font-weight:500;
+  margin-top: $margin-base;
+  margin-bottom: $margin-base * 2;
+  color:$b2;
+}
+h3 {
+  font-family:'TexGyre', 'Open Sans', Arial, sans-serif;
+  font-size:$font4;
+  font-weight:400;
+  margin-top: $margin-base;
+  margin-bottom: $margin-base * 2;
+  color:$b2;
+}
+h4 {
+  font-family:'TexGyre', 'Open Sans', Arial, sans-serif;
+  font-size:$font3;
+  font-weight:400;
+  margin-top: $margin-base;
+  margin-bottom: $margin-base * 2;
+  color:$b2;
+}
+h5 {
+  font-size: $font2;
+  font-weight: 400;
+  color:$b2;
+  margin-top: $margin-base;
+  margin-bottom: $margin-base;
+}
+a:hover {
+  text-decoration: none;
+}
+a[l] {
+  color:var(--b2);
+  padding-bottom: 2px;
+  position: relative;
+  font-style: normal;
+  cursor: pointer;
+}
+a[l]:hover,a[l]:focus {
+  text-decoration: none;
+}
+a[l]::before {
+  content: "";
+  left: 0;
+  background-color: var(--b2);
+  width: 0%;
+  height: 1px;
+  top:-webkit-calc(1em + 8px);
+  top:calc(1em + 8px);
+  position: absolute;
+  z-index: 2;
+  -webkit-transition: background-color 0.2s, height 0.2s, top 0.2s, width 0.2s;
+  -o-transition: background-color 0.2s, height 0.2s, top 0.2s, width 0.2s;
+  transition: background-color 0.2s, height 0.2s, top 0.2s, width 0.2s;;
+}
+a[l]:hover::before, a[l]:focus::before {
+  content: "";
+  left: 0;
+  background-color: var(--b2);
+  width: 100%;
+  height: 1px;
+  top:-webkit-calc(1em + 8px);
+  top:calc(1em + 8px);
+  position: absolute;
+  z-index: 2;
+  -webkit-transition: background-color 0.2s, height 0.2s, top 0.2s, width 0.2s;
+  -o-transition: background-color 0.2s, height 0.2s, top 0.2s, width 0.2s;
+  transition: background-color 0.2s, height 0.2s, top 0.2s, width 0.2s;
+  text-decoration: none;
+}
+// @font-face {
+//     font-family: 'TexGyre';
+//     src: url('../assets/fonts/texgyreadventor-bold.otf');
+//     font-style: normal;
+//     font-weight: 500;
+//     text-rendering: optimizeLegibility;
+// }
+// @font-face {
+//     font-family: 'TexGyre';
+//     src: url('../assets/fonts/texgyreadventor-regular.otf');
+//     font-style: normal;
+//     font-weight: 300;
+//     text-rendering: optimizeLegibility;
+// }

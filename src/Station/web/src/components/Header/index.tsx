@@ -1,0 +1,41 @@
+import React, {useState, useContext, useEffect} from 'react';
+import { Link } from 'react-router-dom';
+import { Menu, message, Button } from 'antd';
+import './index.scss';
+import { useHistory } from 'react-router-dom';
+
+import UserContext from '../../UserContext'
+const { SubMenu } = Menu;
+function Header(props: any) {
+  let history = useHistory();
+  const [key, setKey] = useState();
+
+  const userHooks = useContext(UserContext);
+
+
+  const handleClick = (e: any) => {
+    setKey(e.key);
+  };
+
+  return (
+    <Menu onClick={handleClick} selectedKeys={key} mode="horizontal" className="Header">
+      <Menu.Item className="logo">
+        {/* <Link to="/"><img src={logo} /></Link> */}
+      </Menu.Item>
+      <Menu.Item key="explore">
+        <Link to="/explore" rel="noopener noreferrer">
+          Explore
+        </Link>
+      </Menu.Item>
+      <Menu.Item key="about">
+        <Link to="#" rel="noopener noreferrer">
+          About
+        </Link>
+      </Menu.Item>
+      <Menu.Item className="empty">
+      </Menu.Item>
+    </Menu>
+  );
+}
+
+export default Header;

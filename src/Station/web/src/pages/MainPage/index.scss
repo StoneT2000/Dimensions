@@ -1,0 +1,40 @@
+@import '../../styles/base.scss';
+.Main {
+  #title {
+    color: $white;
+    display: inline;
+    margin-left: 10%;
+  }
+  .hero {
+    //background: linear-gradient(-25deg, #479aee, #003cdb); cool
+    background: $b1;
+    padding-top: 60px;
+    min-height: calc(100vh - 120px);
+    .subtext {
+      margin-left: 10%;
+      font-size: $font4;
+      color: $white;
+    }
+  }
+  .content {
+    width:100%;
+    margin: 0;
+  }
+  .main-section {
+    color: $white;
+    background: $b1;
+    height:500px;
+    position: relative;
+    padding:50px;
+  }
+  .main-section:nth-child(even) {
+    background: $white;
+    color: $b2;
+    box-shadow:0px 0px 40px rgba(30, 55, 77, 0.52);
+    z-index:10;
+  }
+  .main-section .statement {
+    font-size:40px;
+    font-weight:300;
+  }
+}
