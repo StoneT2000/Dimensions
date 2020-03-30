@@ -71,7 +71,9 @@ export class Match {
       this.name = `match_${Match._id}`;
     }
 
+    // set logging level to what was given
     this.log.level = configs.loggingLevel;
+    this.log.identifier = this.name;
 
     // store reference to the matchEngine used
     this.matchEngine = new MatchEngine(this.design);
@@ -89,7 +91,7 @@ export class Match {
       try {
 
         this.log.infobar();
-        this.log.info(`${this.design.name} | Initializing match: ${this.name}`);
+        this.log.info(`Design: ${this.design.name} | Initializing match: ${this.name}`);
 
         // Initialize agent files to agents, no names specified, and use the same logging level as this `match`
         this.agents = Agent.generateAgents(this.agentFiles, this.log.level);
@@ -117,7 +119,7 @@ export class Match {
 
 
   /**
-   * Runs this match to completion
+   * Runs this match to completion. Resolves / returns the match results when done
    */
   public async run(): Promise<any> {
     let status: MatchStatus;
@@ -126,10 +128,10 @@ export class Match {
       status = await this.next();
     }
     while (status != MatchStatus.FINISHED)
-    this.results = this.getResults();
+    this.results = await this.getResults();
     return this.results;
   }
-  
+
   /**
    * Next function. Moves match forward by one timestep. Resolves with the match status
    */

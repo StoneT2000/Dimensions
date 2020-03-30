@@ -31,6 +31,7 @@ router.get('/:matchID', (req, res) => {
 router.post('/:matchID/run', (req: Request, res: Response, next: NextFunction) => {
   
   try {
+    // run the match
     req.data.match.run()
     res.json({error: null, msg:'Running Match'})
   }
