@@ -4,12 +4,9 @@ import * as Dimension from '../src';
 const { DominationDesign } = require('./domination');
 
 let dominationDesign = new DominationDesign('Domination');
-let dominationDimension = Dimension.create(dominationDesign, 'Domination INFO logs', Dimension.Logger.LEVEL.INFO);
+let dominationDimension = Dimension.create(dominationDesign, 'Domination INFO logs', Dimension.Logger.LEVEL.ALL);
 
 let dominationDimension2 = Dimension.create(dominationDesign, 'Domination NONE', Dimension.Logger.LEVEL.NONE);
-
-
-let station = new Dimension.Station('', [dominationDimension, dominationDimension2]);
 
 let jsSource = "./tests/js-kit/domination/random.js";
 let botSources = [];

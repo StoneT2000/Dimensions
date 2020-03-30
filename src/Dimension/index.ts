@@ -1,4 +1,4 @@
-import { Design, Match, Logger, LoggerLEVEL, MatchConfigs, MatchStatus, FatalError } from '..';
+import { Design, Match, Logger, LoggerLEVEL, MatchConfigs, MatchStatus, FatalError, Station } from '..';
 
 /**
  * @class Dimension
@@ -19,6 +19,8 @@ export class Dimension {
 
   public defaultMatchConfigs: MatchConfigs = { loggingLevel: Logger.LEVEL.INFO }
 
+  public static Station: Station = new Station('Dimension Station', []);
+
   constructor(public design: Design, name?: string, public loggingLevel: LoggerLEVEL = Logger.LEVEL.INFO) {
     this.log.level = loggingLevel;
     this.defaultMatchConfigs.loggingLevel = loggingLevel;
@@ -34,6 +36,9 @@ export class Dimension {
     this.id = Dimension.id;
     this.log.detail(`Created Dimension: ` + this.name);
     Dimension.id++;
+
+    // make the station observe this dimension when this dimension is created
+    Dimension.Station.observe(this);
   }
   /**
    * Create a match with the given files with the given unique name. It rejects if a fatal error occurs and resolves 

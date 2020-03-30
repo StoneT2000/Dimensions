@@ -75,4 +75,8 @@ export class Station {
     this.app.use(error.errorHandler);
     
   }
+
+  public observe(dimension: Dimension) {
+    this.app.set('dimensions', [...this.app.get('dimensions'), dimension]);
+  }
 }
