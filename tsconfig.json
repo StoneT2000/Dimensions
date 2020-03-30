@@ -9,13 +9,13 @@
     "esModuleInterop": true
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "tests/**/*"
   ],
   "exclude": [
     "node_modules",
     "docs",
     "build",
-    "tests",
     "examples",
     "templates",
     "src/Station/web"

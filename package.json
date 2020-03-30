@@ -5,11 +5,13 @@
   "main": "./build/index.js",
   "prepublish": "tsc",
   "scripts": {
+    "install": "npm install && cd src/Station/web && npm install",
     "test": "jest tests --collectCoverage",
     "test-watch": "jest --watch tests --collectCoverage",
     "docs": "typedoc --out docs src",
     "build": "tsc src/index.ts --outDIR build && tsc tests/main.ts",
-    "watch": "tsc -w"
+    "watch": "tsc -w",
+    "buildStation": "npm run start --prefix=src/Station/web"
   },
   "keywords": [
     "AI",
@@ -37,5 +39,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/StoneT2000/Dimensions.git"
+  },
+  "jest": {
+    "testPathIgnorePatterns" : [
+      "build" 
+    ]
   }
 }
