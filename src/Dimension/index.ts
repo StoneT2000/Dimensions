@@ -11,7 +11,6 @@ import { Design, Match, Logger, LoggerLEVEL, MatchConfigs, MatchStatus, FatalErr
 export class Dimension {
   
   public matches: Array<Match> = [];
-  public nameToMatches: Map<string, Match>;
   static id: number = 0;
   public name: string;
   public id: number = 0;
@@ -117,12 +116,6 @@ export class Dimension {
         // Store results
         let results = await match.getResults();
 
-        // remove match from list
-        for (let i = 0; i < this.matches.length; i++) {
-          if (this.matches[i].id === match.id) {
-            this.matches.splice(i, 1);
-          }
-        }
         // Resolve the results
         resolve(results);
       }
