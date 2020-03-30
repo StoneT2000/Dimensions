@@ -114,7 +114,7 @@ export class Match {
         // Updates sent by agents on previous timestep can be obtained with MatchEngine.getCommands
         // This is also the COORDINATION step, where we essentially wait for all commands from all agents to be
         // delivered out
-        const commands: Array<Command> = await this.matchEngine.getCommands();
+        const commands: Array<Command> = await this.matchEngine.getCommands(this);
   
         // Updates the match state and sends appropriate signals to all Agents based on the stored `Design`
         const status: MatchStatus = await this.design.update(this, commands, this.configs.updateConfig);
@@ -152,7 +152,7 @@ export class Match {
   }
 
   public async stopAndCleanUp() {
-    await this.matchEngine.killAndClean();
+    await this.matchEngine.killAndClean(this);
   }
 
   public async getResults() {
@@ -194,10 +194,10 @@ export class Match {
    */
   public async send(message: string, receiver: Agent | agentID) {
     if (receiver instanceof Agent) {
-      return this.matchEngine.send(message, receiver.id);
+      return this.matchEngine.send(this, message, receiver.id);
     }
     else {
-      return this.matchEngine.send(message, receiver);
+      return this.matchEngine.send(this, message, receiver);
     }
   }
 

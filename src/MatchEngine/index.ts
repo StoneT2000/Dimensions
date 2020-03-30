@@ -17,14 +17,13 @@ export type EngineOptions = {
  * @class MatchEngine
  * @classdesc The Match Engine that takes a `Design` and starts matches by spawning new processes for each `Agent`
  * It returns results while a game is running and returns final results as well. Can start and stop the engine
+ * Functionally runs matches as storing the match causes circular problems 
+ * (previously Match has Engine, Engine has Match)
  */
 export class MatchEngine {
 
   // The design the MatchEngine runs on
   private design: Design;
-
-  // The match the engine is working on, which contains the list of agents and their associated processes
-  private match: Match;
 
   public engineOptions: EngineOptions;
 
@@ -40,22 +39,22 @@ export class MatchEngine {
   }
 
   /**
-   * Starts up the engine by intializing processes for all the agents and setting some variables
+   * Starts up the engine by intializing processes for all the agents and setting some variables for a match
    * @param agents 
    */
   async initialize(agents: Array<Agent>, match: Match, loggingLevel: LoggerLEVEL) {
     this.log.level = loggingLevel;
     
     this.log.systembar();
-    this.match = match;
-    this.match.agents.forEach((agent: Agent, index: number) => {
+
+    match.agents.forEach((agent: Agent, index: number) => {
       // spawn a process
       this.log.system("Setting up and spawning " + agent.name + ` | Command: ${agent.cmd} ${agent.src}`);
 
       // TODO: make this async and use promise
       let p = spawn(agent.cmd, [agent.src]).on('error', function( err ){ throw err })
 
-      this.match.idToAgentsMap.set(agent.id, agent);
+      match.idToAgentsMap.set(agent.id, agent);
 
       // handler for stdout of Agent processes. Stores their output commands and resolves move promises
       
@@ -111,9 +110,9 @@ export class MatchEngine {
 
   }
 
-  // kills all agents and processes and cleans up
-  public async killAndClean() {
-    this.match.agents.forEach((agent) => {
+  // kills all agents and processes from a match and cleans up
+  public async killAndClean(match: Match) {
+    match.agents.forEach((agent) => {
       agent.process.kill('SIGTERM')
     });
   }
@@ -121,19 +120,19 @@ export class MatchEngine {
 
 
   /**
-   * Returns a promise that resolves with all the commands loaded from the previous time step of the associated match
+   * Returns a promise that resolves with all the commands loaded from the previous time step of the provided match
    * This coordinates all the Agents and waits for each one to finish their step
    */
-  public async getCommands(): Promise<Array<Command>> {
+  public async getCommands(match: Match): Promise<Array<Command>> {
     return new Promise((resolve, reject) => {
       try {
         let commands: Array<Command> = [];
-        let allAgentMovePromises = this.match.agents.map((agent: Agent) => {
+        let allAgentMovePromises = match.agents.map((agent: Agent) => {
           return agent.currentMovePromise;
         });
 
         Promise.all(allAgentMovePromises).then(() => {
-          this.match.agents.forEach((agent: Agent) => {
+          match.agents.forEach((agent: Agent) => {
             // TODO: Add option to store sets of commands delimited by '\n' for an Agent as different sets of commands /// for that Agent. Default right now is store every command delimited by the delimiter
 
             // for each set of commands delimited by '\n' in stdout of process, split it by delimiter and push to 
@@ -149,11 +148,11 @@ export class MatchEngine {
           });
 
           // once we collected all the commands, we now reset each Agent for the next move
-          this.match.agents.forEach((agent: Agent) => {
+          match.agents.forEach((agent: Agent) => {
             agent._setupMove();
           });
 
-          this.log.system(`Agent commands at end of time step ${this.match.timeStep} to be sent to match on time step ${this.match.timeStep + 1} `);
+          this.log.system(`Agent commands at end of time step ${match.timeStep} to be sent to match on time step ${match.timeStep + 1} `);
           this.log.system(commands.length ? JSON.stringify(commands) : 'No commands');
           resolve(commands);
         });
@@ -165,10 +164,10 @@ export class MatchEngine {
     });
   }
 
-  // send a message to a particular process governed by an Agent, resolves true if succesfully written
-  public async send(message: string, id: agentID) {
+  // send a message in a match to a particular process governed by an Agent, resolves true if succesfully written
+  public async send(match: Match, message: string, id: agentID) {
     return new Promise((resolve, reject) => {
-      let agent = this.match.idToAgentsMap.get(id);
+      let agent = match.idToAgentsMap.get(id);
       agent.process.stdin.write(`${message}\n`, (error: Error) => {
         if (error) reject(error);
         resolve(true);
