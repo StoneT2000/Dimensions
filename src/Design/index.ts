@@ -42,30 +42,36 @@ export abstract class Design {
   }
 
   /**
+   * Abstract function required to initialize `match` state and the `agents` participating in the `match`
+   * @see Agents for what properties and methods related to `agents` are exposed to the user for use.
+   * @see Match for what properties and methods are exposed to the user for use e.g match.send() and match.state
    * 
    * @param match - The `Match` to initialize state with
-   * @param config - Any user configurations that can be added as parameters
-   * @returns true if initialized correctly
+   * @param config - Any user configurations that can be added as parameters @see MatchConfigs
+   * @returns Nothing needed, return result is not used by `match`
    */
   abstract async initialize(match: Match, config?: any): Promise<void>
 
   /**
    * Abstract function required to update `match` state with commands from Agents and send commands to Agents
    * along with returning the current match status, one of which can be MatchStatus.FINISHED
-   * This function is used by the `match` to update the `match` state
+   * 
+   * @see Match - This function is used by the `match` to update the `match` state and move forward a time step
    * 
    * @param match - The `Match` to update state with `Commands`
    * @param commands - The `Commands` used to update the state in a `Match`
    * @param config - Any user configurations that can be added as parameters
+   * @returns A promise that resolves with the current MatchStatus at the end of this time step
    */
   abstract async update(match: Match, commands: Array<Command>, config?: any): Promise<MatchStatus>
 
   /**
    * Abstract function required to get the result of a `match`
-   * This function is used by the `match` to update the results stored in the `match` and return results
+   * 
+   * @see Match - This function is used by the `match` to update the results stored in the `match` and return results
    * 
    * @param match - The `Match` used to process results
-   * * @param config - Any user configurations that can be added as parameters
+   * @param config - Any user configurations that can be added as parameters
    */
   abstract async getResults(match: Match, config?: any): Promise<any>
 

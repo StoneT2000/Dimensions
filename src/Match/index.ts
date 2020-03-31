@@ -58,7 +58,7 @@ export class Match {
 
   private matchEngine: MatchEngine; // could potentially made MatchEngine all static, but each match engine does have configurations dependent on design and per match, so holding this as a private field 
 
-  private log = new Logger();
+  public log = new Logger();
 
   public results: any;
   public matchStatus = MatchStatus.UNINITIALIZED
