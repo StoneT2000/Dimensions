@@ -82,6 +82,13 @@ export class Agent {
 
     this.status = AgentStatus.RUNNING;
 
+    // initialize promise functions
+    this.currentMoveCommands = [];
+    this.currentMovePromise = new Promise((resolve, reject) => {
+      this.currentMoveResolve = resolve;
+      this.currentMoveReject = reject;
+    });
+
   }
 
   // Start an Agent's move and setup the promise structures
