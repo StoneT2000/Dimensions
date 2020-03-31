@@ -9,8 +9,8 @@
     "test": "jest tests --collectCoverage",
     "test-watch": "jest --watch tests --collectCoverage",
     "docs": "typedoc --exclude ./src/Station/web/ --out docs src",
-    "build": "npm run buildStation && tsc -d",
-    "watch": "tsc -w -d",
+    "build": "npm run buildStation && tsc",
+    "watch": "tsc -w",
     "buildStation": "npm run build --prefix=src/Station/web && rm -rf build/src/Station/web && mkdir build/src/Station/web && cp -r src/Station/web/build build/src/Station/web/"
   },
   "keywords": [
