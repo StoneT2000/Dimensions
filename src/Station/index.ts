@@ -31,22 +31,16 @@ export class Station {
   public name: string;
   public port: number = 9000;
 
+  public webport: number = 3000;
+
   public maxAttempts:number = 16;
   private log: Logger = new Logger(Logger.LEVEL.INFO, 'Station Log');
   private server: Server;
+  public webapp: express.Application;
   constructor(name: string = '', observedDimensions: Dimension | Array<Dimension>, loggingLevel?: LoggerLEVEL) {
-    this.app = express();
-
+    // set logging level
     this.log.level = loggingLevel;
-
-    // CORS
-    this.app.use(cors());
-
-    // serve the web app
-    this.app.use(express.static(path.join(__dirname, 'web/build')));
-    this.app.get('/', function(req, res) {
-      res.sendFile(path.join(__dirname, 'web/build', 'index.html'));
-    });
+    
 
     // store ID, set name and logger identifier
     this.id = Station._id;
@@ -59,7 +53,32 @@ export class Station {
     Station._id++;
 
     this.log.identifier = this.name + ' Log';
+     
+
+    this.app = express(); // api app
+    this.webapp = express(); // web app
+
+    // CORS
+    this.webapp.use(cors());
     
+    this.webapp.use(express.static(path.join(__dirname, 'web/build')));
+    this.webapp.get('/*', function (req, res) {
+      res.sendFile(path.join(__dirname, 'web/build', 'index.html'));
+    });
+
+    // Try to start up web app
+    const webSuccessStart = () => {
+      this.log.infobar();
+      this.log.info(`Running '${this.name}' Web at http://localhost:${this.webport}`);
+    }
+    this.tryToListen(this.webapp, this.webport).then((port: number) => {
+      this.webport = port;
+      webSuccessStart();
+    }).catch(() => {
+      this.log.error(`Station Web: ${this.name}, couldn't find an open port after 16 attempts`);
+    })
+
+   
 
     // store all observed dimensions
     if (observedDimensions instanceof Array) {
@@ -89,56 +108,53 @@ export class Station {
 
     this.log.system(`All middleware setup`);
 
-    this.tryToListenToOpenPort();
-    
-  }
-
-  private async tryToListenToOpenPort() {
     // Successful start of app messages and setups
     const successStart = () => {
       this.log.infobar();
-      this.log.info(`Running ${this.name} at localhost:${this.port}`);
+      this.log.info(`Running '${this.name}' API at port ${this.port}`);
       this.log.info(`Observing dimensions: ${this.app.get('dimensions').map((dim: Dimension) => dim.name)}`);
     }
-
-    // Try to listen and run successStart, otherwise print error
-    this.tryToListen().then(() => {
+    this.tryToListen(this.app, this.port).then((port: number) => {
+      this.port = port;
       successStart();
     }).catch(() => {
       this.log.error(`Station: ${this.name}, couldn't find an open port after 16 attempts`);
     })
+    
   }
-
   /**
    * Try to listen to this.maxAttempts ports
    */
-  private async tryToListen() {
+  private async tryToListen(app: express.Application, startingPort: number) {
     // Try to listen function without breaking if port is busy. try up to an 16 ports (16 is arbitrary #)
     let attempts = 0;
     return new Promise((resolve, reject) => {
-      this.server = this.app.listen(this.port).on('error', () => {
+      this.server = app.listen(startingPort).on('error', () => {
         attempts++;
         // this.log.warn(`${this.name} - Failed attempt ${attempts}`);
-        this.port++;
         if (attempts < this.maxAttempts) {
-          this.tryToListen().then(resolve);
+          this.tryToListen(app, startingPort + 1).then(() => {
+            resolve(startingPort + 1)
+          });
         }
         else {
           reject();
         }
-      }).on('listening', resolve)
+      }).on('listening', () => {
+        resolve(startingPort);
+      });
     })
   }
 
   /**
-   * Restart Station server
+   * Restart Station server / API
    */
   public async restart() {
     return new Promise((resolve, reject) => {
       this.log.warn("RESTARTING");
       this.server.close((err) => {
         if (err) reject(err);
-        this.tryToListenToOpenPort().then(resolve).catch(reject)
+        this.tryToListen(this.app, this.port).then(resolve).catch(reject)
       });
     })
   }
