@@ -3,6 +3,13 @@ import { ChildProcess } from "child_process";
 
 const fs = require('fs');
 
+export enum AgentStatus {
+  UNINITIALIZED,
+  READY, // unused
+  RUNNING,
+  CRASHED,
+  KILLED
+}
 export type agentID = number;
 /**
  * @class Agent
@@ -17,8 +24,11 @@ export class Agent {
 
   public process: ChildProcess = null;
 
+  public status: AgentStatus = AgentStatus.UNINITIALIZED;
+
   public currentMoveCommands: Array<string> = [];
 
+  public creationDate: Date;
   // a promise that resolves when the Agent's current move in the `Match` is finished
   public currentMovePromise: Promise<void>;
   public currentMoveResolve: Function;
@@ -29,6 +39,7 @@ export class Agent {
   private log = new Logger();
   
   constructor(file: string, options: any) {
+    this.creationDate = new Date();
     this.src = file;
     let ext = this.src.slice(-3);
     switch(ext) {
@@ -68,6 +79,8 @@ export class Agent {
     this.log.level = options.loggingLevel;
 
     this.log.system(`Created agent: ${this.name}`);
+
+    this.status = AgentStatus.RUNNING;
 
   }
 

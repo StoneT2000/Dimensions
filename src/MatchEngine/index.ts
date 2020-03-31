@@ -1,5 +1,6 @@
 import { Design, Agent, DimensionError, agentID, Logger, LoggerLEVEL, Match, COMMAND_STREAM_TYPE, Command } from "..";
 import { spawn } from 'child_process';
+import { AgentStatus } from "../";
 
 const log = new Logger();
 
@@ -119,6 +120,7 @@ export class MatchEngine {
   public async killAndClean(match: Match) {
     match.agents.forEach((agent) => {
       agent.process.kill('SIGTERM')
+      agent.status = AgentStatus.KILLED;
     });
   }
   

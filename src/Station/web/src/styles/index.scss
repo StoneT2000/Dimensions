@@ -36,6 +36,7 @@ h1 {
   font-family:'TexGyre', 'Open Sans', Arial, sans-serif;
   font-size: $font6;
   font-weight:600;
+  margin-top: $margin-base * 2;
   margin-bottom: $margin-base * 2;
   color:$b2;
 }
@@ -43,24 +44,21 @@ h2 {
   font-family:'TexGyre', 'Open Sans', Arial, sans-serif;
   font-size: $font5;
   font-weight:600;
-  margin-top: $margin-base;
-  margin-bottom: $margin-base * 2;
+  margin-top: $margin-base * 2;
   color:$b2;
 }
 h3 {
   font-family:'TexGyre', 'Open Sans', Arial, sans-serif;
   font-size:$font4;
   font-weight:600;
-  margin-top: $margin-base;
-  margin-bottom: $margin-base * 2;
+  margin-top: $margin-base * 2;
   color:$b2;
 }
 h4 {
   font-family:'TexGyre', 'Open Sans', Arial, sans-serif;
   font-size:$font3;
   font-weight:600;
-  margin-top: $margin-base;
-  margin-bottom: $margin-base * 2;
+  margin-top: $margin-base * 2;
   color:$b2;
 }
 h5 {

@@ -29,3 +29,12 @@ export const getMatchesFromDimension = async (dimensionID: number): Promise<Arra
     })
   })
 }
+export const getMatchFromDimension = async (dimensionID: number, matchID: number): Promise<Match> => {
+  return new Promise((resolve, reject) => {
+    axios.get(process.env.REACT_APP_API + `/api/dimensions/${dimensionID}/match/${matchID}`).then((res: AxiosResponse) => {
+      resolve(res.data.match);
+    }).catch((error) => {
+      reject(error);
+    })
+  })
+}

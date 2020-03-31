@@ -22,11 +22,13 @@ router.get('/', (req: Request, res: Response) => {
 router.use('/:matchID', findMatch);
 // Get match details
 router.get('/:matchID', (req, res) => {
-  
   res.json({error: null, match: req.data.match});
-  
 });
 
+// Get match results
+router.get('/:matchID/results', (req, res) => {
+  res.json({error: null, results: req.data.match.results || null});
+});
 router.post('/:matchID/run', (req: Request, res: Response, next: NextFunction) => {
   
   try {

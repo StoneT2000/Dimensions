@@ -4,7 +4,7 @@ import { Button, Table } from 'antd';
 import { Tree } from 'antd';
 
 import DefaultLayout from '../../components/layouts/default';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory, Link } from 'react-router-dom';
 
 import { getDimension, getMatchesFromDimension } from '../../actions/dimensions';
 
@@ -17,6 +17,7 @@ const { TreeNode } = Tree;
 
 function DimensionsPage(props: any) {
   const params: any = useParams();
+  const history: any = useHistory();
   const [dimension, setDimension] = useState<Dimension>();
   const [matches, setMatches] = useState<Array<Match>>([]);
   const [data, setData] = useState<Array<any>>([]);
@@ -24,7 +25,7 @@ function DimensionsPage(props: any) {
     {
       title: 'Match Name',
       dataIndex: 'matchname',
-      render: (text: any) => <a>{text}</a>,
+      render: (match: Match) => <Link to={`${history.location.pathname}/matches/${match.id}`}>{match.name}</Link>,
     },
     {
       title: 'Creation Date',
@@ -36,6 +37,7 @@ function DimensionsPage(props: any) {
     },
   ];
   useEffect(() => {
+    console.log(history);
     if (params.id) {
       getDimension(params.id).then((res) => {
         if (!(res instanceof Array))  {
@@ -45,7 +47,7 @@ function DimensionsPage(props: any) {
             let newData = res.map((match: Match, index) => {
               return {
                 key: index,
-                matchname: match.name,
+                matchname: match,
                 creationdate: match.creationDate,
                 status: match.matchStatus
               }

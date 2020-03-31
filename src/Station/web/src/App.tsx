@@ -5,6 +5,7 @@ import './styles/index.scss';
 
 import MainPage from './pages/MainPage';
 import DimensionPage from './pages/DimensionsPage';
+import MatchPage from './pages/MatchPage';
 
 function App() {
   const [user, setUser] = useState({loggedIn: false});
@@ -16,6 +17,7 @@ function App() {
             <Route path="/" exact component={MainPage} />
             <Route path="/dimensions" exact component={DimensionPage.DimensionsListPage} />
             <Route path="/dimensions/:id" exact component={DimensionPage} />
+            <Route path="/dimensions/:id/matches/:matchID" exact component={MatchPage} />
             {/* <Route path="/register" exact component={RegisterUser} />
             <Route path="/login" exact component={LoginUser} />
             <Route path="/dashboard" exact component={DashboardPage} />
