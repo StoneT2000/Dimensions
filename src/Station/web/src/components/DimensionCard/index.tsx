@@ -15,4 +15,4 @@ const DimensionCard = (props: {dimension: Dimension}) => {
   )
 }
 
-export default DimensionCard
+export default DimensionCard;
