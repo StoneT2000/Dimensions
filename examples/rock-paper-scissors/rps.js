@@ -98,7 +98,7 @@ class RockPaperScissorsDesign extends Dimension.Design{
     match.state.results.push(winningAgent);
     // log the winner at the info level
     if (winningAgent != -1) {
-      match.log.info(`Agent ${winningAgent} won`);
+      match.log.info(`Round: ${match.state.rounds + 1} - Agent ${winningAgent} won`);
     }
     else {
       match.log.info(`Tie`);
