@@ -4,9 +4,9 @@
   "description": "A generic, multi-level ai competition framework",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
-  "prepare": "npm run build",
-  "prepublishOnly": "npm run test",
   "scripts": {
+    "prepublishOnly": "npm run test",
+    "prepare": "npm run build",
     "dev-install": "npm install && cd src/Station/web",
     "test": "jest tests --collectCoverage",
     "test-watch": "jest --watch tests --collectCoverage",

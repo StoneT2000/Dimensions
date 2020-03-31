@@ -136,12 +136,12 @@ export class Match {
     do {
       status = await this.next();
     }
-    while (status != MatchStatus.FINISHED && status != MatchStatus.STOPPED)
+    while (status != MatchStatus.FINISHED)
+     this.results = await this.getResults();
 
     // TODO: Perhaps add a cleanup status if cleaning up processes takes a long time
     await this.stopAndCleanUp();
-
-    this.results = await this.getResults();
+   
     return this.results;
   }
 

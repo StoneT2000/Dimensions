@@ -124,7 +124,6 @@ export class Dimension {
 
         // Initialize match with initialization configuration
         await match.initialize();
-        
         // Get results
         let results = await match.run();
 

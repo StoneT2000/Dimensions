@@ -5,7 +5,7 @@ const fs = require('fs');
 
 export enum AgentStatus {
   UNINITIALIZED,
-  READY, // unused
+  READY, 
   RUNNING,
   CRASHED,
   KILLED
@@ -31,7 +31,7 @@ export class Agent {
   public creationDate: Date;
   // a promise that resolves when the Agent's current move in the `Match` is finished
   public currentMovePromise: Promise<void>;
-  public currentMoveResolve: Function;
+  public currentMoveResolve: Function = () => {}; // set as a dummy function
   public currentMoveReject: Function;
 
   public agentTimeStep = 0;
@@ -80,14 +80,14 @@ export class Agent {
 
     this.log.system(`Created agent: ${this.name}`);
 
-    this.status = AgentStatus.RUNNING;
+    this.status = AgentStatus.READY;
 
     // initialize promise functions
-    this.currentMoveCommands = [];
-    this.currentMovePromise = new Promise((resolve, reject) => {
-      this.currentMoveResolve = resolve;
-      this.currentMoveReject = reject;
-    });
+    // this.currentMoveCommands = [];
+    // this.currentMovePromise = new Promise((resolve, reject) => {
+    //   this.currentMoveResolve = resolve;
+    //   this.currentMoveReject = reject;
+    // });
 
   }
 

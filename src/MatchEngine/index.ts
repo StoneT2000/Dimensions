@@ -62,6 +62,9 @@ export class MatchEngine {
 
       match.idToAgentsMap.set(agent.id, agent);
 
+      // set agent as running and resolve the currentMove for now
+      agent.status = AgentStatus.RUNNING;
+
       // handler for stdout of Agent processes. Stores their output commands and resolves move promises
       
       p.stdout.on('data', (data) => {
