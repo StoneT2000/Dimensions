@@ -3,7 +3,7 @@
   "version": "1.0.8",
   "description": "A generic, multi-level ai competition framework",
   "main": "./lib/index.js",
-  "types": "lib/index.d.ts",
+  "types": "./lib/index.d.ts",
   "prepare": "npm run build",
   "prepublishOnly": "npm run test",
   "scripts": {
