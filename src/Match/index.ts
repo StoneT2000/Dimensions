@@ -20,6 +20,7 @@ export type MatchConfigs = {
   storeResultConfig?: any,
   loggingLevel?: LoggerLEVEL,
   dimensionID?: number
+  [key: string]: any
 }
 /**
  * @class Match

@@ -47,7 +47,7 @@ export abstract class Design {
    * @param config - Any user configurations that can be added as parameters
    * @returns true if initialized correctly
    */
-  abstract async initialize(match: Match, config?: any): Promise<boolean>
+  abstract async initialize(match: Match, config?: any): Promise<void>
 
   /**
    * Abstract function required to update `match` state with commands from Agents and send commands to Agents

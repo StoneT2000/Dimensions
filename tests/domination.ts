@@ -71,7 +71,6 @@ export class DominationDesign extends Dimension.Design {
       await match.sendAll(rowData);
     }
     
-    return true;
   }
 
   async update(match, commands: Array<Dimension.Command>) {
