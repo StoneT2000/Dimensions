@@ -8,7 +8,8 @@ const DimensionCard = (props: {dimension: Dimension}) => {
 
   return (
     <div className="DimensionCard">
-      <Link to={'/dimensions/' + props.dimension.id}><h2>{props.dimension.name}</h2></Link>
+      <Link to={'/dimensions/' + props.dimension.id}><h2 className='title'>{props.dimension.name}</h2></Link>
+      <p className='matches'>Design: {props.dimension.design.name}</p>
       <p className='matches'>Matches: {props.dimension.matches.length}</p>
     </div>
   )

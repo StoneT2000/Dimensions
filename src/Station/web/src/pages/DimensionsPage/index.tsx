@@ -6,12 +6,14 @@ import { Tree } from 'antd';
 import DefaultLayout from '../../components/layouts/default';
 import { useParams, useHistory, Link } from 'react-router-dom';
 
+import { runMatch, stopMatch } from '../../actions/match';
 import { getDimension, getMatchesFromDimension } from '../../actions/dimensions';
 
 // NOTE!! Can import outside src as long as we dont use instanceof dimension or actually use it, we can just it for typings
 import { Dimension } from '../../../../../Dimension';
-import { Match } from '../../../../../Match';
+import { Match, MatchStatus } from '../../../../../Match';
 import DimensionCard from '../../components/DimensionCard';
+import MatchActionButton from '../../components/MatchActionButton';
 
 const { TreeNode } = Tree;
 
@@ -35,7 +37,33 @@ function DimensionsPage(props: any) {
       title: 'Status',
       dataIndex: 'status',
     },
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      render: (match: Match) => {
+        //@ts-ignore
+        return (<MatchActionButton match={match} />)
+      }
+    }
   ];
+  const mapMatchStatusToName = (status: number): string => {
+    switch(status) {
+      case 0:
+        return 'Uninitialized';
+      case 1:
+        return 'Ready';
+      case 2:
+        return 'Running';
+      case 3:
+        return 'Stopped';
+      case 4:
+        return 'Finished';
+      case 5:
+        return 'Error / Crash';
+      default:
+        return 'Unknown'
+    }
+  }
   useEffect(() => {
     console.log(history);
     if (params.id) {
@@ -49,7 +77,8 @@ function DimensionsPage(props: any) {
                 key: index,
                 matchname: match,
                 creationdate: match.creationDate,
-                status: match.matchStatus
+                status: mapMatchStatusToName(match.matchStatus),
+                action: match
               }
             });
             setData(newData);
@@ -101,6 +130,7 @@ function DimensionsListPage() {
   return (
     <DefaultLayout>
       <div className='DimensionPage'>
+        <h2>Dimensions Observed</h2>
         {dimensions.length &&
           dimensions.map((dimension: Dimension) => {
             return (

@@ -52,6 +52,8 @@ export class Dimension {
 
     // make the station observe this dimension when this dimension is created
     if (configs.observe === true) Dimension.Station.observe(this);
+
+    this.defaultMatchConfigs.dimensionID = this.id;
   }
   /**
    * Create a match with the given files with the given unique name. It rejects if a fatal error occurs and resolves 

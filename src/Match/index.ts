@@ -18,7 +18,8 @@ export type MatchConfigs = {
   initializeConfig?: any, 
   updateConfig?: any,
   storeResultConfig?: any,
-  loggingLevel?: LoggerLEVEL
+  loggingLevel?: LoggerLEVEL,
+  dimensionID?: number
 }
 /**
  * @class Match
@@ -35,6 +36,9 @@ export class Match {
 
   public name: string;
   public id: number;
+
+  // id of the dimension match resides in
+  public dimensionID: number;
 
   private static _id: number = 0;
 
@@ -76,6 +80,8 @@ export class Match {
       this.log.level = configs.loggingLevel;
     }
     this.log.identifier = this.name;
+
+    this.dimensionID = configs.dimensionID;
 
     // store reference to the matchEngine used
     this.matchEngine = new MatchEngine(this.design, this.log.level);
