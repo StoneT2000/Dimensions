@@ -1,6 +1,6 @@
 {
   "name": "dimensions-ai",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A generic, multi-level ai competition framework",
   "main": "./build/src/index.js",
   "prepublish": "npm run build",
