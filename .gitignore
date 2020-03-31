@@ -1,6 +1,5 @@
 node_modules
 build
-docs
 *.code-workspace
 coverage
 __pycache__

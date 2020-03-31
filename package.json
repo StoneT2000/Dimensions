@@ -8,7 +8,7 @@
     "install": "npm install && cd src/Station/web && npm install",
     "test": "jest tests --collectCoverage",
     "test-watch": "jest --watch tests --collectCoverage",
-    "docs": "typedoc --out docs src",
+    "docs": "typedoc --exclude ./src/Station/web/ --out docs src",
     "build": "npm run buildStation && tsc -d",
     "watch": "tsc -w -d",
     "buildStation": "npm run build --prefix=src/Station/web && rm -rf build/src/Station/web && mkdir build/src/Station/web && cp -r src/Station/web/build build/src/Station/web/"
@@ -26,6 +26,7 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
+    "@babel/plugin-transform-typescript": "^7.9.4",
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-typescript": "^7.9.0",
     "@types/express": "^4.17.3",
