@@ -2,16 +2,18 @@
   "name": "dimensions-ai",
   "version": "1.0.8",
   "description": "A generic, multi-level ai competition framework",
-  "main": "./build/src/index.js",
-  "prepublish": "npm run build",
+  "main": "./lib/index.js",
+  "types": "lib/index.d.ts",
+  "prepare": "npm run build",
+  "prepublishOnly": "npm run test",
   "scripts": {
     "dev-install": "npm install && cd src/Station/web",
     "test": "jest tests --collectCoverage",
     "test-watch": "jest --watch tests --collectCoverage",
     "docs": "typedoc --exclude ./src/Station/web/ --out docs src",
-    "build": "npm run buildStation && tsc",
+    "build": "tsc && npm run buildStation",
     "watch": "tsc -w",
-    "buildStation": "npm run build --prefix=src/Station/web && rm -rf build/src/Station/web && mkdir build/src/Station/web && cp -r src/Station/web/build build/src/Station/web/"
+    "buildStation": "npm run build --prefix=src/Station/web && rm -rf lib/Station/web && mkdir lib/Station/web && cp -r src/Station/web/build lib/Station/web/"
   },
   "keywords": [
     "AI",
@@ -37,7 +39,7 @@
     "typescript": "^3.8.3"
   },
   "files": [
-    "build/**/*"
+    "lib/**/*"
   ],
   "repository": {
     "type": "git",
