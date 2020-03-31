@@ -60,6 +60,7 @@ export class Station {
 
     // CORS
     this.webapp.use(cors());
+    this.app.use(cors());
     
     this.webapp.use(express.static(path.join(__dirname, 'web/build')));
     this.webapp.get('/*', function (req, res) {
