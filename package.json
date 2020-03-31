@@ -2,10 +2,10 @@
   "name": "dimensions-ai",
   "version": "1.0.3",
   "description": "A generic, multi-level ai competition framework",
-  "main": "./build/index.js",
+  "main": "./build/src/index.js",
   "prepublish": "npm run build",
   "scripts": {
-    "install": "npm install && cd src/Station/web && npm install",
+    "dev-install": "npm install && cd src/Station/web",
     "test": "jest tests --collectCoverage",
     "test-watch": "jest --watch tests --collectCoverage",
     "docs": "typedoc --exclude ./src/Station/web/ --out docs src",
