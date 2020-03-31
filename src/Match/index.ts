@@ -135,7 +135,11 @@ export class Match {
     do {
       status = await this.next();
     }
-    while (status != MatchStatus.FINISHED)
+    while (status != MatchStatus.FINISHED && status != MatchStatus.STOPPED)
+
+    // TODO: Perhaps add a cleanup status if cleaning up processes takes a long time
+    await this.stopAndCleanUp();
+
     this.results = await this.getResults();
     return this.results;
   }
@@ -163,10 +167,6 @@ export class Match {
           this.matchStatus = status;
         }
 
-        if (status === MatchStatus.FINISHED) {
-          // TODO: Perhaps add a cleanup status if cleaning up processes takes a long time
-          await this.stopAndCleanUp();
-        }
         // update timestep now
         this.timeStep += 1;
 

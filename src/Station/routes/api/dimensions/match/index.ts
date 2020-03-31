@@ -4,6 +4,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { Match } from '../../../../../';
 import * as error from '../../../../error';
+import { MatchStatus } from '../../../../../Match';
 const router = express.Router();
 
 // find match by name or ID middleware
@@ -29,9 +30,16 @@ router.get('/:matchID', (req, res) => {
 router.get('/:matchID/results', (req, res) => {
   res.json({error: null, results: req.data.match.results || null});
 });
-router.post('/:matchID/run', (req: Request, res: Response, next: NextFunction) => {
-  
+router.post('/:matchID/run', async (req: Request, res: Response, next: NextFunction) => {
   try {
+    // TODO: This route should also initialize a match if its not initialized yet or is finished (and so all agents are killed )
+    if (req.data.match.matchStatus === MatchStatus.FINISHED || 
+      req.data.match.matchStatus === MatchStatus.UNINITIALIZED) {
+      await req.data.match.initialize();
+    }
+    else if (req.data.matchStatus === MatchStatus.RUNNING) {
+      return next(new error.BadRequest('Match is already riunning'));
+    }
     // run the match
     req.data.match.run()
     res.json({error: null, msg:'Running Match'})
@@ -39,6 +47,6 @@ router.post('/:matchID/run', (req: Request, res: Response, next: NextFunction) =
   catch(error) {
     return next(new error.InternalServerError('Match Failed to Run'));
   }
-})
+});
 
 export default router;
