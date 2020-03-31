@@ -1,0 +1,12 @@
+@import '../../styles/base.scss';
+.DimensionPage {
+  h1 {
+    color: $b1;
+  }
+  .meta-data {
+    font-size: $font2;
+  }
+  .meta-data-title {
+    margin-bottom: 0px;
+  }
+}

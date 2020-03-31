@@ -5,6 +5,7 @@
     display: inline;
     margin-left: 10%;
   }
+  @include noContainer;
   .hero {
     //background: linear-gradient(-25deg, #479aee, #003cdb); cool
     background: $b1;

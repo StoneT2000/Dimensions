@@ -28,3 +28,16 @@ dominationDimension.createMatch(
   }).then((res) => {
     // console.log(res);
   })
+
+  dominationDimension.createMatch(
+    botSources,
+    {
+      timeout: 1000,
+      initializeConfig:{
+        
+        size: 4,
+        maxRounds: 10
+      }
+    }).then((res) => {
+      // console.log(res);
+    })

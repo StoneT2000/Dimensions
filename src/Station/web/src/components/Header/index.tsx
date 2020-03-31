@@ -22,14 +22,14 @@ function Header(props: any) {
       <Menu.Item className="logo">
         {/* <Link to="/"><img src={logo} /></Link> */}
       </Menu.Item>
-      <Menu.Item key="explore">
-        <Link to="/explore" rel="noopener noreferrer">
-          Explore
+      <Menu.Item key="home">
+        <Link to="/" rel="noopener noreferrer">
+          Home
         </Link>
       </Menu.Item>
-      <Menu.Item key="about">
-        <Link to="#" rel="noopener noreferrer">
-          About
+      <Menu.Item key="dimensions">
+        <Link to="/dimensions" rel="noopener noreferrer">
+          Dimensions
         </Link>
       </Menu.Item>
       <Menu.Item className="empty">

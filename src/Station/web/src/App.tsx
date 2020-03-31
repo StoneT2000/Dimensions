@@ -4,7 +4,7 @@ import { UserProvider } from './UserContext'
 import './styles/index.scss';
 
 import MainPage from './pages/MainPage';
-import DimensionPage from './pages/DimensionPage';
+import DimensionPage from './pages/DimensionsPage';
 
 function App() {
   const [user, setUser] = useState({loggedIn: false});
@@ -14,7 +14,8 @@ function App() {
         <Switch>
           <UserProvider value={{user: user, setUser: setUser}}>
             <Route path="/" exact component={MainPage} />
-            <Route path="/dimension/:id" exact component={DimensionPage} />
+            <Route path="/dimensions" exact component={DimensionPage.DimensionsListPage} />
+            <Route path="/dimensions/:id" exact component={DimensionPage} />
             {/* <Route path="/register" exact component={RegisterUser} />
             <Route path="/login" exact component={LoginUser} />
             <Route path="/dashboard" exact component={DashboardPage} />
