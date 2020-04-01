@@ -2,8 +2,6 @@ import { Design, Agent, DimensionError, agentID, Logger, LoggerLEVEL, Match, COM
 import { spawn } from 'child_process';
 import { AgentStatus } from "../";
 
-const log = new Logger();
-
 // All IO commands that are used for communication between `MatchEngine` and processes associated with `Agents`
 export enum IO_COMMANDS {
   MOVE_FNISH = 'D_FINISH', // indicate an Agent is done with their move at the current time step
@@ -112,7 +110,7 @@ export class MatchEngine {
 
     }, this);
 
-    this.log.system('INITIALIZATION PROCESSES END\n');
+    this.log.system('FINISHED INITIALIZATION OF PROCESSES\n');
     return true;
   }
   public async stop() {
@@ -136,12 +134,14 @@ export class MatchEngine {
   public async getCommands(match: Match): Promise<Array<Command>> {
     return new Promise((resolve, reject) => {
       try {
+        this.log.system(`Retrieving commands`);
         let commands: Array<Command> = [];
         let allAgentMovePromises = match.agents.map((agent: Agent) => {
           return agent.currentMovePromise;
         });
-
+        this.log.system(`Retrieved all move promises`)
         Promise.all(allAgentMovePromises).then(() => {
+          this.log.system(`All move promises resolved`);
           match.agents.forEach((agent: Agent) => {
             // TODO: Add option to store sets of commands delimited by '\n' for an Agent as different sets of commands /// for that Agent. Default right now is store every command delimited by the delimiter
 

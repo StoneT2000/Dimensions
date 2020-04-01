@@ -6,7 +6,6 @@
   "types": "./lib/index.d.ts",
   "scripts": {
     "prepublishOnly": "npm run test",
-    "prepare": "npm run build",
     "dev-install": "npm install && cd src/Station/web",
     "test": "jest tests --collectCoverage",
     "test-watch": "jest --watch tests --collectCoverage",

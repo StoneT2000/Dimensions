@@ -156,7 +156,7 @@ export class Match {
         // This is also the COORDINATION step, where we essentially wait for all commands from all agents to be
         // delivered out
         const commands: Array<Command> = await this.matchEngine.getCommands(this);
-  
+        this.log.system(`Retrieved ${commands.length} commands`);
         // Updates the match state and sends appropriate signals to all Agents based on the stored `Design`
         const status: MatchStatus = await this.design.update(this, commands, this.configs.updateConfig);
 
