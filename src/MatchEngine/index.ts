@@ -69,7 +69,7 @@ export class MatchEngine {
         
         // split chunks into line by line and handle each line of commands
         `${data}`.split('\n').forEach((str) => {
-          this.log.system(`${agent.name} - stdout: ${str}`);
+          this.log.systemIO(`${agent.name} - stdout: ${str}`);
 
           // TODO: Implement parallel command stream type
           // TODO: Implement timeout mechanism

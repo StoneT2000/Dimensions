@@ -3,10 +3,12 @@ import colors, { Color } from 'colors';
 export enum LoggerLEVEL  {
   NONE,
   ERROR,
-  WARN,
+  WARN, // TODO come up with a name that goes between warn and info
   INFO, // for informational things user should know about
   DETAIL, // for finer details
-  SYSTEM, // for practically all system output details
+  SYSTEM, // for high level system logs
+  SYSTEM2, // unused
+  SYSTEM_IO, // all lower level I/O related details (including the actual input and output of engine and agents)
   ALL
 }
 /**
@@ -25,6 +27,18 @@ export class Logger {
   }
   bar(type: string = '') {
      return `\n-=-=-=-=-=-=-=-=-=-=-=-| ${type} ${this.getIdentifier()} |-=-=-=-=-=-=-=-=-=-=-=-\n`;
+  }
+  systemIObar() {
+    if (this.level >= Logger.LEVEL.SYSTEM) console.log(this.bar(colors.red('[SYSTEM I/O]')));
+  }
+  systemIO(message?) {
+    if (this.level >= Logger.LEVEL.SYSTEM) console.log(`${colors.red('[SYSTEM I/O]')} (${this.identifier}) - ${message}`);
+  }
+  systembar2() {
+    if (this.level >= Logger.LEVEL.SYSTEM) console.log(this.bar(colors.red('[SYSTEM 2]')));
+  }
+  system2(message?) {
+    if (this.level >= Logger.LEVEL.SYSTEM) console.log(`${colors.red('[SYSTEM 2]')} (${this.identifier}) - ${message}`);
   }
   systembar() {
     if (this.level >= Logger.LEVEL.SYSTEM) console.log(this.bar(colors.red('[SYSTEM]')));

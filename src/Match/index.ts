@@ -214,6 +214,14 @@ export class Match {
     });
   }
 
+  /**
+   * Set the move resolve policy
+   * @param config - The configuration to use for the next update. Specifically set conditions for when MatchEngine 
+   * should call agent.currentMoveResolve() and thus return commands and move to next update
+   */
+  public async setAgentResolvePolicy(config = {}) {
+
+  }
 
   // sends a message string to every agent
   public async sendAll(message: string) {
@@ -266,6 +274,7 @@ export class Match {
     }
     if (error.name === 'Dimension.MatchError') {
       this.log.warn(`${this.idToAgentsMap.get(agentID).name} | ${error}`);
+      // TODO, if match is set to store an error log, this should be logged!
     }
   }
 }
