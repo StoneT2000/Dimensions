@@ -1,8 +1,8 @@
-import colors, { Color } from 'colors';
+import colors from 'colors';
 
 export enum LoggerLEVEL  {
-  NONE,
-  ERROR,
+  NONE, // no logs
+  ERROR, // error logs
   WARN, // TODO come up with a name that goes between warn and info
   INFO, // for informational things user should know about
   DETAIL, // for finer details
@@ -13,6 +13,8 @@ export enum LoggerLEVEL  {
 }
 /**
  * Dimensions Logging Class
+ * @param level - The logging level to use
+ * @param identifier - an identifier to identify which logger is being called
  */
 export class Logger {
   public static LEVEL = LoggerLEVEL;

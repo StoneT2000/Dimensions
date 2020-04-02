@@ -3,7 +3,10 @@ const { DominationDesign } = require('./domination');
 
 
 let dominationDesign = new DominationDesign('Domination');
-let myDimension = Dimension.create(dominationDesign, 'Domination', Dimension.Logger.LEVEL.NONE);
+let myDimension = Dimension.create(dominationDesign, {
+  name: 'Domination',
+  loggingLevel: Dimension.Logger.LEVEL.NONE
+});
 
 test('Test Run A match of Domination', async () => {
   expect.assertions(2);

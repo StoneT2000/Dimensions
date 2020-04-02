@@ -203,9 +203,11 @@ describe('Rock Paper Scissors Run', () => {
   let myDimension;
   beforeAll(() => {
     RPSDesign = new RockPaperScissorsDesign('RPS!');
-    myDimension = Dimension.create(RPSDesign, 'RPS', Dimension.Logger.LEVEL.WARN, {
+    myDimension = Dimension.create(RPSDesign, {
+      name: 'RPS',
       activateStation: false,
-      observe: false
+      observe: false,
+      loggingLevel: Dimension.Logger.LEVEL.WARN
     });
   })
   test('Test run rock vs paper 3 times', async () => {

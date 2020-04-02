@@ -4,9 +4,13 @@ import * as Dimension from '../src/';
 const { DominationDesign } = require('./domination');
 
 let dominationDesign = new DominationDesign('Domination');
-let dominationDimension = Dimension.create(dominationDesign, 'Domination INFO logs', Dimension.Logger.LEVEL.ALL);
+let dominationDimension = Dimension.create(dominationDesign, 
+  {name: 'Domination with INFO logs', loggingLevel: Dimension.Logger.LEVEL.ALL});
 
-let dominationDimension2 = Dimension.create(dominationDesign, 'Domination NONE', Dimension.Logger.LEVEL.NONE);
+let dominationDimension2 = Dimension.create(dominationDesign, {
+  name: 'Domination with NO logs', 
+  loggingLevel: Dimension.Logger.LEVEL.NONE
+});
 
 let jsSource = "./tests/js-kit/domination/random.js";
 let botSources = [];
@@ -29,15 +33,16 @@ dominationDimension.createMatch(
     // console.log(res);
   })
 
-  dominationDimension.createMatch(
-    botSources,
-    {
-      timeout: 1000,
-      initializeConfig:{
-        
-        size: 4,
-        maxRounds: 10
-      }
-    }).then((res) => {
-      // console.log(res);
-    })
+dominationDimension.createMatch(
+  botSources,
+  {
+    timeout: 1000,
+    initializeConfig:{
+      
+      size: 4,
+      maxRounds: 10
+    }
+  }
+).then((res) => {
+  // console.log(res);
+})

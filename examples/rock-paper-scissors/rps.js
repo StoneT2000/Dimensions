@@ -197,7 +197,10 @@ class RockPaperScissorsDesign extends Dimension.Design{
 }
 
 let RPSDesign = new RockPaperScissorsDesign('RPS!');
-let myDimension = Dimension.create(RPSDesign, 'Rock Paper Scissors', Dimension.Logger.LEVEL.INFO);
+let myDimension = Dimension.create(RPSDesign, {
+  name: 'Rock Paper Scissors',
+  loggingLevel: Dimension.Logger.LEVEL.INFO
+});
 myDimension.runMatch(
   ['./bots/js/smarter.js', './bots/python/rock.py'],
   {

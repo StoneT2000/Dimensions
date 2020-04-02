@@ -13,13 +13,13 @@ export enum MatchStatus {
 // Life cycle configurations for a match, dependent on the `Design`
 // TODO: add any property with type any
 export type MatchConfigs = {
-  name?: any
-  timeout?: number, // number of milliseconds to give each agent before stopping them
-  initializeConfig?: any, 
-  updateConfig?: any,
-  storeResultConfig?: any,
-  loggingLevel?: LoggerLEVEL,
-  dimensionID?: number
+  name: any
+  timeout: number, // number of milliseconds to give each agent before stopping them
+  initializeConfig: any, 
+  updateConfig: any,
+  getResultConfig: any,
+  loggingLevel: LoggerLEVEL,
+  dimensionID: number
   [key: string]: any
 }
 /**
@@ -63,13 +63,27 @@ export class Match {
   public results: any;
   public matchStatus = MatchStatus.UNINITIALIZED
 
+  public configs: MatchConfigs = {
+    name: '',
+    timeout: 1000,
+    initializeConfig: {},
+    updateConfig: {},
+    getResultConfig: {},
+    loggingLevel: Logger.LEVEL.INFO,
+    dimensionID: null
+  }
+
   constructor(
     public design: Design, 
     public agentFiles: Array<String> | Array<{file: string, name: string}>, 
-    public configs: MatchConfigs = {}
+    configs: Partial<MatchConfigs> = {}
   ) {
+
+    // override configs with provided configs argument
+    Object.assign(this.configs, configs);
+
     this.creationDate = new Date();
-    if (configs.name) {
+    if (this.configs.name) {
       this.name = configs.name;
     }
     else {
@@ -77,12 +91,8 @@ export class Match {
     }
 
     // set logging level to what was given
-    if (configs.loggingLevel) {
-      this.log.level = configs.loggingLevel;
-    }
+    this.log.level = this.configs.loggingLevel;
     this.log.identifier = this.name;
-
-    this.dimensionID = configs.dimensionID;
 
     // store reference to the matchEngine used
     this.matchEngine = new MatchEngine(this.design, this.log.level);
@@ -91,8 +101,7 @@ export class Match {
   }
 
   /**
-   * Initializes using this config dependeing on how `Design's` `initialize` is implemented
-   * @param config - Configurations for initializtion
+   * Initializes this match using its configurations and using `Design's` `initialize` function
    * @returns a promise that resolves true/false if initialized correctly
    */
   public async initialize(): Promise<boolean> {
@@ -102,9 +111,9 @@ export class Match {
         this.log.infobar();
         this.log.info(`Design: ${this.design.name} | Initializing match: ${this.name}`);
 
-        // Initialize agent files to agents, no names specified, and use the same logging level as this `match`
+        // Initialize agents with agent files
         this.agents = Agent.generateAgents(this.agentFiles, this.log.level);
-        this.agents.forEach((agent, index) => {
+        this.agents.forEach((agent) => {
           this.idToAgentsMap.set(agent.id, agent);
         })
 
@@ -137,7 +146,7 @@ export class Match {
       status = await this.next();
     }
     while (status != MatchStatus.FINISHED)
-     this.results = await this.getResults();
+    this.results = await this.getResults();
 
     // TODO: Perhaps add a cleanup status if cleaning up processes takes a long time
     await this.stopAndCleanUp();
@@ -201,11 +210,14 @@ export class Match {
     await this.matchEngine.killAndClean(this);
   }
 
+  /**
+   * Retrieve results through delegating the task to the design
+   */
   public async getResults() {
     return new Promise( async (resolve, reject) => {
       try {
         // Retrieve match results according to `design` by delegating storeResult task to the enforced `design`
-        let res = await this.design.getResults(this, this.configs.storeResultConfig);
+        let res = await this.design.getResults(this, this.configs.getResultConfig);
         resolve(res);
       }
       catch(error) {
@@ -214,7 +226,7 @@ export class Match {
     });
   }
 
-  /**
+  /** TODO
    * Set the move resolve policy
    * @param config - The configuration to use for the next update. Specifically set conditions for when MatchEngine 
    * should call agent.currentMoveResolve() and thus return commands and move to next update
@@ -223,8 +235,12 @@ export class Match {
 
   }
 
-  // sends a message string to every agent
-  public async sendAll(message: string) {
+  /**
+   * Sends a message to all agent's standard input
+   * @param message - the message to send to all agents available 
+   * @returns a promise resolving true/false if it was succesfully sent
+   */
+  public async sendAll(message: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       let sendPromises = [];
       this.agents.forEach((agent: Agent) => {

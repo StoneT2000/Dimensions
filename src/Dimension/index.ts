@@ -2,18 +2,26 @@ import { Design, Match, MatchConfigs, FatalError, Station } from '..';
 import { Logger, LoggerLEVEL} from '../Logger';
 
 export type DimensionConfigs = {
-  activateStation?: boolean
-  observe?: boolean
+  name: string
+  activateStation: boolean
+  observe: boolean,
+  loggingLevel: LoggerLEVEL
 }
 /**
  * @class Dimension
  * @classdesc The Dimension framework for intiating a `Design` to then run `Matches` on. Interacts with `Match` class
  * only
  * 
- * @param loggingLevel - Specified logging level applied to entire Dimension, including the associated design and sets
- * the defaults for all future `matches`, `matchEngines` and `agents`
+ * @param design - The design to use for this dimension
+ * @param configs - Dimension configurations
+ * @param configs.name - The optional name for the dimension
+ * @param configs.loggingLevel - The logging level to be set as the default for all components in the Dimension, 
+ *                               including matches, the design, and the match engine
+ * @param configs.observe - Whether or not this dimension should be observed. If set to true, a station will initialized
+ *                          to observe thihs dimension automatically
+ * @param configs.activateStation - Whether or not a station should be activated and intialized. If configs.observe or 
+ *                                  configs.activateStation are true, a station will be initialized .
  */
-
 export class Dimension {
   
   public matches: Array<Match> = [];
@@ -28,21 +36,34 @@ export class Dimension {
   // Default station for current node instance
   public static Station: Station = null;
 
-  constructor(public design: Design, name?: string, public loggingLevel: LoggerLEVEL = Logger.LEVEL.INFO, configs: DimensionConfigs = {
+  // default configs
+  public configs = {
+    name: '',
     activateStation: true,
-    observe: true
-  }) {
-    this.log.level = loggingLevel;
-    if (configs.activateStation === true && Dimension.Station == null) {
-      Dimension.Station = new Station('Dimension Station', [], loggingLevel);
+    observe: true,
+    loggingLevel: Logger.LEVEL.INFO
+  }
+
+  constructor(public design: Design, configs: Partial<DimensionConfigs> = {}) {
+
+    // override configs with user provided configs
+    Object.assign(this.configs, configs);
+
+    this.log.level = this.configs.loggingLevel;
+
+    // open up a new station for the current node process if it hasn't been opened yet and there is a dimension that 
+    // is asking for a station to be initiated
+    if ((this.configs.activateStation === true || this.configs.observe === true) && Dimension.Station == null) {
+      Dimension.Station = new Station('Dimension Station', [], this.configs.loggingLevel);
     }
     
-    this.defaultMatchConfigs.loggingLevel = loggingLevel;
+    // default match log level and design log level is the same as passed into the dimension
+    this.defaultMatchConfigs.loggingLevel = this.configs.loggingLevel;
+    this.design._setLogLevel(this.configs.loggingLevel);
 
-    this.design._setLogLevel(loggingLevel);
-
-    if (name) {
-      this.name = name;
+    // set name
+    if (this.configs.name) {
+      this.name = this.configs.name;
     }
     else {
       this.name = `dimension_${Dimension.id}`;
@@ -145,6 +166,6 @@ export class Dimension {
  * @param design The design to use
  * @param name The optional name of the dimension
  */
-export function create(design: Design, name?: string, loggingLevel?: LoggerLEVEL, configs?: DimensionConfigs): Dimension {
-  return new Dimension(design, name, loggingLevel, configs);
+export function create(design: Design, configs?: Partial<DimensionConfigs>): Dimension {
+  return new Dimension(design, configs);
 }
