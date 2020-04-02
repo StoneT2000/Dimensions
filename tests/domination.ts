@@ -33,6 +33,8 @@ export class DominationDesign extends Dimension.Design {
       MAX_ROUNDS: config.maxRounds
     };
 
+    match.log.info('Initial state', state);
+
     // can access the config through input config or directly from match
     for (let i = 0; i < match.configs.initializeConfig.size; i++) {
       state.map.push([]);
