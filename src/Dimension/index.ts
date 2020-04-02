@@ -41,7 +41,9 @@ export class Dimension {
     activateStation: true,
     observe: true,
     loggingLevel: Logger.LEVEL.INFO,
-    defaultMatchConfigs: {}
+    defaultMatchConfigs: {
+      dimensionID: this.id
+    }
   }
 
   constructor(public design: Design, configs: Partial<DimensionConfigs> = {}) {
@@ -56,6 +58,7 @@ export class Dimension {
     if ((this.configs.activateStation === true || this.configs.observe === true) && Dimension.Station == null) {
       Dimension.Station = new Station('Dimension Station', [], this.configs.loggingLevel);
     }
+    this.log.info('configs', this.configs);
     
     // default match log level and design log level is the same as passed into the dimension
     this.configs.defaultMatchConfigs.loggingLevel = this.configs.loggingLevel;
@@ -73,7 +76,7 @@ export class Dimension {
     Dimension.id++;
 
     // make the station observe this dimension when this dimension is created
-    if (configs.observe === true) Dimension.Station.observe(this);
+    if (this.configs.observe === true) Dimension.Station.observe(this);
 
     this.configs.defaultMatchConfigs.dimensionID = this.id;
   }

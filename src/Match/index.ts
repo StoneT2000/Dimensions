@@ -19,7 +19,7 @@ export type MatchConfigs = {
   updateConfig: any,
   getResultConfig: any,
   loggingLevel: LoggerLEVEL,
-  dimensionID: number
+  dimensionID: number, // id of the dimension match resides in
   [key: string]: any
 }
 /**
@@ -38,8 +38,7 @@ export class Match {
   public name: string;
   public id: number;
 
-  // id of the dimension match resides in
-  public dimensionID: number;
+  
 
   private static _id: number = 0;
 

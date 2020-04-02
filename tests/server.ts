@@ -1,4 +1,4 @@
-//nodemon --watch 'tests/**/*.ts' --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' -exec 'ts-node' tests/server.ts 
+//nodemon --watch 'tests/**/*.ts' --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' --exec 'ts-node' tests/server.ts 
 
 import * as Dimension from '../src/';
 const { DominationDesign } = require('./domination');
@@ -9,7 +9,8 @@ let dominationDimension = Dimension.create(dominationDesign,
 
 let dominationDimension2 = Dimension.create(dominationDesign, {
   name: 'Domination with NO logs', 
-  loggingLevel: Dimension.Logger.LEVEL.NONE
+  loggingLevel: Dimension.Logger.LEVEL.NONE,
+  
 });
 
 let jsSource = "./tests/js-kit/domination/random.js";
