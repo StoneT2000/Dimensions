@@ -1,0 +1,49 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+
+
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug Server Station",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/tests/server.ts",
+      "cwd":"${workspaceFolder}/tests/",
+      "outFiles": [
+        "${workspaceFolder}/**/*.js"
+      ],
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug A Match",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/tests/run.ts",
+      "cwd":"${workspaceFolder}/tests/",
+      "outFiles": [
+        "${workspaceFolder}/**/*.js"
+      ],
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug JS-Agent",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/tests/js-tester/index.js",
+      "cwd":"${workspaceFolder}/tests/",
+      "outFiles": [
+        "${workspaceFolder}/build/**/*.js"
+      ],
+    }
+  ]
+}

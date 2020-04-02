@@ -32,10 +32,11 @@ export class Dimension {
     activateStation: true,
     observe: true
   }) {
-    if (configs.activateStation === true && Dimension.Station == null) {
-      Dimension.Station = new Station('Dimension Station', [], Logger.LEVEL.INFO);
-    }
     this.log.level = loggingLevel;
+    if (configs.activateStation === true && Dimension.Station == null) {
+      Dimension.Station = new Station('Dimension Station', [], loggingLevel);
+    }
+    
     this.defaultMatchConfigs.loggingLevel = loggingLevel;
 
     this.design._setLogLevel(loggingLevel);

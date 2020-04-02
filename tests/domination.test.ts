@@ -28,7 +28,7 @@ test('Test Run A match of Domination', async () => {
         size: 4,
         maxRounds: 5
       },
-      loggingLevel: Dimension.Logger.LEVEL.INFO
+      loggingLevel: Dimension.Logger.LEVEL.WARN
     }
   );
   expect(results.finalMap).toStrictEqual(expectedResultMap)
@@ -50,8 +50,8 @@ describe('Receive MatchErrors and FatalErrors from a match of Domination', () =>
       botSources.push(jsSource);
     }
     botSources.push("./tests/js-kit/domination/deterministic.js")
-    let expectedResultMap = [ [ 0, 1, 2, 3 ], [ 3, 3, 3, 3 ], [ -1, -1, -1, -1 ], [ -1, -1, -1, -1 ] ];
-    let expectedScore = 5; 
+    let expectedResultMap = [ [ 0, 1, 2, 3 ], [ -1, -1, -1, 3 ], [ -1, -1, -1, -1 ], [ -1, -1, -1, -1 ] ];
+    let expectedScore = 2; 
 
     
     let match: any = await myDimension.createMatch(
@@ -62,7 +62,7 @@ describe('Receive MatchErrors and FatalErrors from a match of Domination', () =>
         initializeConfig:{
           
           size: 4,
-          maxRounds: 5
+          maxRounds: 2
         },
         loggingLevel: Dimension.Logger.LEVEL.WARN
       }
@@ -83,7 +83,7 @@ describe('Receive MatchErrors and FatalErrors from a match of Domination', () =>
 
     expect(results.finalMap).toStrictEqual(expectedResultMap)
     expect(results.winningScore).toStrictEqual(expectedScore);
-    expect(matchEngineLogSpy).toBeCalledTimes(12);
+    expect(matchEngineLogSpy).toBeCalledTimes(3);
   });
 
   test('Fatal Errors', async () => {
@@ -98,7 +98,7 @@ describe('Receive MatchErrors and FatalErrors from a match of Domination', () =>
     expect(myDimension.createMatch(
       botSources,
       {
-        name: 'test-domination-match-matcherrors',
+        name: 'test-domination-match-fatalerrors',
         timeout: 1000,
         initializeConfig:{
           size: 4,
@@ -111,7 +111,7 @@ describe('Receive MatchErrors and FatalErrors from a match of Domination', () =>
     expect(myDimension.createMatch(
       [],
       {
-        name: 'test-domination-match-matcherrors',
+        name: 'test-domination-match-fatalerrors',
         timeout: 1000,
         initializeConfig:{
           size: 4,
@@ -141,6 +141,7 @@ describe('Test Create Match and Validate its contents', () => {
           size: agentCount,
           maxRounds: agentCount + 1
         },
+        loggingLevel: Dimension.Logger.LEVEL.NONE
       }
     );
   });
