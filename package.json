@@ -5,13 +5,14 @@
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
+    "prepare": "npm run build",
     "prepublishOnly": "npm run test",
     "dev-install": "npm install && cd src/Station/web",
     "test": "jest tests --collectCoverage",
     "test-watch": "jest --watch tests --collectCoverage",
     "docs": "typedoc --exclude ./src/Station/web/ --out docs src",
-    "build": "tsc && npm run buildStation",
     "watch": "tsc -w",
+    "build": "tsc && npm run buildStation",
     "buildStation": "npm run build --prefix=src/Station/web && rm -rf lib/Station/web && mkdir lib/Station/web && cp -r src/Station/web/build lib/Station/web/"
   },
   "keywords": [

@@ -5,7 +5,8 @@ export type DimensionConfigs = {
   name: string
   activateStation: boolean
   observe: boolean,
-  loggingLevel: LoggerLEVEL
+  loggingLevel: LoggerLEVEL,
+  defaultMatchConfigs: Partial<MatchConfigs>
 }
 /**
  * @class Dimension
@@ -31,17 +32,16 @@ export class Dimension {
 
   public log = new Logger();
 
-  public defaultMatchConfigs: MatchConfigs = { loggingLevel: Logger.LEVEL.INFO }
-
   // Default station for current node instance
   public static Station: Station = null;
 
   // default configs
-  public configs = {
+  public configs: DimensionConfigs = {
     name: '',
     activateStation: true,
     observe: true,
-    loggingLevel: Logger.LEVEL.INFO
+    loggingLevel: Logger.LEVEL.INFO,
+    defaultMatchConfigs: {}
   }
 
   constructor(public design: Design, configs: Partial<DimensionConfigs> = {}) {
@@ -58,7 +58,7 @@ export class Dimension {
     }
     
     // default match log level and design log level is the same as passed into the dimension
-    this.defaultMatchConfigs.loggingLevel = this.configs.loggingLevel;
+    this.configs.defaultMatchConfigs.loggingLevel = this.configs.loggingLevel;
     this.design._setLogLevel(this.configs.loggingLevel);
 
     // set name
@@ -75,7 +75,7 @@ export class Dimension {
     // make the station observe this dimension when this dimension is created
     if (configs.observe === true) Dimension.Station.observe(this);
 
-    this.defaultMatchConfigs.dimensionID = this.id;
+    this.configs.defaultMatchConfigs.dimensionID = this.id;
   }
   /**
    * Create a match with the given files with the given unique name. It rejects if a fatal error occurs and resolves 
@@ -85,21 +85,24 @@ export class Dimension {
    * @param matchOptions - Options for the created match
    * @param configs - Configurations that are `Design` dependent
    */
-  public async createMatch(files: Array<string> | Array<{file: string, name: string}>, configs: MatchConfigs = {}): Promise<Match> {
+  public async createMatch(files: Array<string> | Array<{file: string, name: string}>, configs?: Partial<MatchConfigs>): Promise<Match> {
     return new Promise( async (resolve, reject) => {
       if (!files.length) reject(new FatalError('No files provided for match'));
 
-      // override defaults with provided configs
+      // override dimension defaults with provided configs
       // TOOD: change to deep copy
-      let matchConfigs = {...this.defaultMatchConfigs};
+      let matchConfigs = {...this.configs.defaultMatchConfigs};
       Object.assign(matchConfigs, configs);
 
+      // create new match
       let match: Match;
       if (typeof files[0] === 'string') {
         match = new Match(this.design, <Array<string>> files, matchConfigs);
       } else {
         match = new Match(this.design, <Array<{file: string, name: string}>> files, matchConfigs);
       }
+
+      // store match into dimension
       this.matches.push(match);
 
       // Initialize match with initialization configuration
@@ -110,8 +113,6 @@ export class Dimension {
         reject(error);
       }
       
-      // TODO: Add a automatic match resolve that removes match from dimension's own list of matches
-
       resolve(match);
     });
   }
@@ -125,15 +126,15 @@ export class Dimension {
    * @param configs - Configurations that are `Design` dependent. These configs are passed into `Design.initialize`
    * `Design.update` and `Design.storeResults`
    */
-  public async runMatch(files: Array<string> | Array<{file: string, name: string}>, configs: MatchConfigs = {}) {
+  public async runMatch(files: Array<string> | Array<{file: string, name: string}>, configs?: Partial<MatchConfigs>) {
     return new Promise( async (resolve, reject) => {
       
       try {
         if (!files.length) reject (new FatalError('No files provided for match'));
 
-        // override defaults with provided configs
+        // override dimension defaults with provided configs
         // TOOD: change to deep copy
-        let matchConfigs = {...this.defaultMatchConfigs};
+        let matchConfigs = {...this.configs.defaultMatchConfigs};
         Object.assign(matchConfigs, configs);
 
         let match: Match;
@@ -142,10 +143,13 @@ export class Dimension {
         } else {
           match = new Match(this.design, <Array<{file: string, name: string}>> files, matchConfigs);
         }
+
+        // store match into dimension
         this.matches.push(match);
 
         // Initialize match with initialization configuration
         await match.initialize();
+
         // Get results
         let results = await match.run();
 
