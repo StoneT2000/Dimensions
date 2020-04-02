@@ -15,7 +15,8 @@ class RockPaperScissorsDesign extends Dimension.Design{
     let state = {
       maxRounds: match.configs.bestOf, // we will store the max rounds of rock paper scissors this game will run
       results: [], // we will also store the winner of each of those rounds by each agent's ID
-      rounds: 0 // rounds passed so far
+      rounds: 0, // rounds passed so far
+      failedAgent: null // the id of the agent that failed to play correctly
     }
     match.state = state; // this stores the state defined above into the match for re-use
 
@@ -47,23 +48,53 @@ class RockPaperScissorsDesign extends Dimension.Design{
     let winningAgent;
 
     // each command in commands is an object with an agentID field and a command field, containing the string the agent sent
-    let agent0Command;
-    let agent1Command;
+    let agent0Command = null;
+    let agent1Command = null;
+
     // there isn't a gurantee in the command order, so we need to loop over the commands and assign them correctly
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < commands.length; i++) {
       if (commands[i].agentID === 0)  {
         agent0Command = commands[i].command;
+        continue;
       }
       else if (commands[i].agentID === 1) {
         agent1Command = commands[i].command;
+        continue;
+      }
+
+      // we also want to verify we received one command each from both players. If not, terminate the players at fault
+      // We throw a MatchError through the match, indicating the agent at fault. 
+      // This doesn't stop the whole process but logs the error or warning
+      if (agent0Command != null && commands[i].agentID === 0) {
+        // agent 0 already had a command sent, and tried to send another, so we store that agent0 is at fault 
+        // and end the match
+        match.throw(0, new Dimension.MatchError('attempted to send an additional command'));
+        match.state.failedAgent = 0;
+        return MatchStatus.FINISHED;
+      }
+      if (agent0Command != null && commands[i].agentID === 0) {
+        // agent 1 already had a command sent, and tried to send another, so we store that agent 1 is at fault 
+        // and end the match
+        match.throw(0, new Dimension.MatchError('attempted to send an additional command'));
+        match.state.failedAgent = 1;
+        return MatchStatus.FINISHED;
       }
     }
 
     // We have that each agent will give us a command that is one of 'R', 'P', or 'S' indicating Rock, Paper, Scissors
-    // if it isn't one of them, then we throw a MatchError, which doesn't stop the match but prints to console the error
+    // if it isn't one of them, which doesn't stop the match but prints to console the error
+    // we will end the match ourselves and set which agent failed
     let validChoices = new Set(['R', 'P', 'S']);
-    if (!validChoices.has(agent0Command)) match.throw(0, new Dimension.MatchError('agent 0\'s ' + agent0Command + ' is not a valid command!'));
-    if (!validChoices.has(agent1Command)) match.throw(1, new Dimension.MatchError('agent 1\'s ' + agent1Command + ' is not a valid command!'));
+    if (!validChoices.has(agent0Command)) {
+      match.throw(0, new Dimension.MatchError(agent0Command + ' is not a valid command!'));
+      match.state.failedAgent = 0;
+      return MatchStatus.FINISHED;
+    }
+    if (!validChoices.has(agent1Command)) {
+      match.throw(0, new Dimension.MatchError(agent1Command + ' is not a valid command!'));
+      match.state.failedAgent = 1;
+      return MatchStatus.FINISHED;
+    }
 
     // now we determine the winner, agent0 or agent1? or is it a tie?
     if (agent0Command === agent1Command) {
@@ -154,6 +185,12 @@ class RockPaperScissorsDesign extends Dimension.Design{
     else {
       results.winner = 'Tie';
     }
+
+    // if there was an agent that failed, then they lose. The winner is the other agent
+    if (match.state.failedAgent != null) {
+      let winningAgent = (match.state.failedAgent + 1) % 2;
+      results.winner = match.agents[winningAgent].name;
+    }
     
     // we have to now return the results 
     return results;
@@ -166,9 +203,11 @@ describe('Rock Paper Scissors Run', () => {
   let myDimension;
   beforeAll(() => {
     RPSDesign = new RockPaperScissorsDesign('RPS!');
-    myDimension = Dimension.create(RPSDesign, 'RPS', Dimension.Logger.LEVEL.WARN, {
+    myDimension = Dimension.create(RPSDesign, {
+      name: 'RPS',
       activateStation: false,
-      observe: false
+      observe: false,
+      loggingLevel: Dimension.Logger.LEVEL.WARN
     });
   })
   test('Test run rock vs paper 3 times', async () => {
@@ -214,6 +253,6 @@ describe('Rock Paper Scissors Run', () => {
         loggingLevel: Dimension.Logger.LEVEL.WARN
       }
     );
-    expect(logSpy).toBeCalledTimes(5);
+    expect(logSpy).toBeCalledTimes(1);
   });
 })

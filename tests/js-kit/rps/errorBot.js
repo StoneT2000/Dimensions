@@ -9,7 +9,7 @@ try {
     while(true) {
       
       // this agent always uses a fake move
-      console.log('trick');
+      console.log('h');
 
       // now we end our turn
       agent.endTurn();

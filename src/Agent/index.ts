@@ -1,29 +1,32 @@
-import { DimensionError, Logger, LoggerLEVEL, FatalError } from "..";
+import { Logger, LoggerLEVEL, FatalError } from "..";
 import { ChildProcess } from "child_process";
 
-const fs = require('fs');
+import fs from 'fs';
 
 export enum AgentStatus {
-  UNINITIALIZED,
-  READY, 
-  RUNNING,
+  UNINITIALIZED, // just created agent
+  READY, // agent that has been fully created and ready to be used by the engine for a match
+  RUNNING, // agent that has a process running with it now
   CRASHED,
-  KILLED
+  KILLED // agent that has finished and is killed
 }
 export type agentID = number;
+
 /**
  * @class Agent
  * @classdesc Reads in a file source for the code and creates an `Agent` for use in the `MatchEngine` and `Match`
+ * 
  */
 export class Agent {
   
   public id: agentID = 0;
   public name: string; // name of this agent
-  public src: string; // source to file to run or URI to use
+  public src: string; // path to file to run
   public cmd: string; // command used to run file
 
-  public process: ChildProcess = null;
+  process: ChildProcess = null;
 
+  // current status of the agent
   public status: AgentStatus = AgentStatus.UNINITIALIZED;
 
   public currentMoveCommands: Array<string> = [];
@@ -49,6 +52,8 @@ export class Agent {
       case '.js':
         this.cmd = 'node'
         break;
+      case '.java':
+        this.cmd = 'java'
       default:
         // throw new DimensionError(`${ext} is not a valid file type`);
     }
@@ -80,14 +85,8 @@ export class Agent {
 
     this.log.system(`Created agent: ${this.name}`);
 
+    // set agent as ready
     this.status = AgentStatus.READY;
-
-    // initialize promise functions
-    // this.currentMoveCommands = [];
-    // this.currentMovePromise = new Promise((resolve, reject) => {
-    //   this.currentMoveResolve = resolve;
-    //   this.currentMoveReject = reject;
-    // });
 
   }
 
@@ -105,15 +104,19 @@ export class Agent {
 
   /**
    * Generates a list of agents for use
-   * @param files List of files to use to make agents
-   * @param names List of optional names for each agent, if empty, defaults to default agent names
+   * @param files List of files to use to make agents or a list of objects with a file key for the file path to the bot 
+   *              and a name key for the name of the agent
+   * @param loggingLevel - the logging level for all these agents
    */
   static generateAgents(files: Array<String> | Array<{file: string, name: string}>, loggingLevel: LoggerLEVEL): Array<Agent> {
+    if (files.length === 0) {
+      throw new FatalError('No files provided to generate agents with!');
+    }
     let agents: Array<Agent> = [];
 
     if (typeof files[0] === 'string') {
       files.forEach((file, index) => {
-        agents.push(new Agent(file, {id: index, name: undefined, loggingLevel: loggingLevel}))
+        agents.push(new Agent(file, {id: index, name: null, loggingLevel: loggingLevel}))
       })
     }
     else {
@@ -121,8 +124,6 @@ export class Agent {
         agents.push(new Agent(info.file, {id: index, name: info.name, loggingLevel: loggingLevel}))
       })
     }
-
-  
     return agents;
   }
 }

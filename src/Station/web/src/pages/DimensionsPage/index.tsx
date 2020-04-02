@@ -100,7 +100,7 @@ function DimensionsPage(props: any) {
             <p className='meta-data'>
               id: {dimension.id} <br />
               Used Design: { dimension.design.name } <br />
-              Logging Level: {dimension.loggingLevel}
+              Logging Level: {dimension.configs.loggingLevel}
             </p>
             <h4>Ongoing Matches</h4>
             <Table className='matchTable'

@@ -4,6 +4,7 @@ import { Button, Table } from 'antd';
 import { Tree } from 'antd';
 
 import DefaultLayout from '../../components/layouts/default';
+import MatchActionButton from '../../components/MatchActionButton';
 import { useParams, useHistory, Link } from 'react-router-dom';
 
 import { getMatchFromDimension } from '../../actions/dimensions';
@@ -59,7 +60,6 @@ function MatchPage(props: any) {
     }
   }
   useEffect(() => {
-    console.log(history);
     if (params.matchID) {
       getMatchFromDimension(params.id, params.matchID).then((res) => {
         if (!(res instanceof Array))  {
@@ -95,6 +95,8 @@ function MatchPage(props: any) {
               Match Status: {match.matchStatus} <br />
               Time Step: {match.timeStep}
             </p>
+            <h4>Match Actions</h4>
+            <MatchActionButton match={match}/>
             <h4>Match Results:</h4>
             {match.results ? <a target='_blank' href={process.env.REACT_APP_API + `/api/dimensions/${params.id}/match/${params.matchID}/results`}>Results</a> : 'No results yet'}
             <h4>Agents / Players</h4>

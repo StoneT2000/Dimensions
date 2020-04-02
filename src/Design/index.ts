@@ -2,11 +2,10 @@ import { Match, agentID, MatchStatus, Logger, LoggerLEVEL } from "..";
 
 /**
  * @class Design
- * @classdesc Abstract class detailing a `Design` to be used as the platform that holds competition runtime logic for
+ * @classdesc Abstract class detailing a `Design` to be used as the platform that holds match lifecycle logic for
  * updating and manipulating ongoing `matches`
  * 
- * Refer to `Match` class for exposed fields available for user's use. User's can also extend the `Match` class and add
- * more fields if they wish for their own use and pass their own `Match` class instantiations
+ * Refer to `Match` class and the `Agent` for exposed fields available for user's use
  * 
  */
 export abstract class Design {
@@ -15,7 +14,6 @@ export abstract class Design {
   private log = new Logger();
   constructor(public name: String, designOptions?: Partial<DesignOptions>) {
 
-    // TODO: [Strange] - This design option breaks jest when placed outside, jest thinks LoggerLEVEL.info isn't real
     const DEFAULT_DESIGN_OPTIONS: DesignOptions = {
       commandStreamType: COMMAND_STREAM_TYPE.SEQUENTIAL,
       commandDelimiter: ','
@@ -30,6 +28,10 @@ export abstract class Design {
     this.log.system(`Initialized Design: ` + this.name);
   }
 
+  /**
+   * Set log level of the design
+   * @param level - level to set design logger to
+   */
   _setLogLevel(level: LoggerLEVEL) {
     this.log.level = level;
   }
@@ -59,9 +61,12 @@ export abstract class Design {
    * @see Match - This function is used by the `match` to update the `match` state and move forward a time step
    * 
    * @param match - The `Match` to update state with `Commands`
-   * @param commands - The `Commands` used to update the state in a `Match`
+   * @param commands - The `Commands` array used to update the state in a `Match`. 
+   *                   Each element has two keys, command and agentID. agentID is the id of the agent that outputted
+   *                   that string in command
    * @param config - Any user configurations that can be added as parameters
-   * @returns A promise that resolves with the current MatchStatus at the end of this time step
+   * @returns A promise that resolves with the current `MatchStatus` at the end of this time step. Can also directly 
+   *          just return `MatchStatus`
    */
   abstract async update(match: Match, commands: Array<Command>, config?: any): Promise<MatchStatus>
 
@@ -72,6 +77,8 @@ export abstract class Design {
    * 
    * @param match - The `Match` used to process results
    * @param config - Any user configurations that can be added as parameters
+   * @returns A promise that resolves with results (can be an object, number, anything). Can also directly just return 
+   *          the results
    */
   abstract async getResults(match: Match, config?: any): Promise<any>
 
@@ -86,8 +93,11 @@ export type CommandSequence = {
   commands: Array<string>
   agentID: agentID
 }
+/**
+ * A command delimited by the delimiter of the match engine from all commands sent by agent specified by agentID
+ */
 export type Command = {
-  command: string // string containing a single command
+  command: string
   agentID: agentID
 }
 export type DesignOptions = {

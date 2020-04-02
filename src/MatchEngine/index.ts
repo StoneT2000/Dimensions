@@ -2,8 +2,6 @@ import { Design, Agent, DimensionError, agentID, Logger, LoggerLEVEL, Match, COM
 import { spawn } from 'child_process';
 import { AgentStatus } from "../";
 
-const log = new Logger();
-
 // All IO commands that are used for communication between `MatchEngine` and processes associated with `Agents`
 export enum IO_COMMANDS {
   MOVE_FNISH = 'D_FINISH', // indicate an Agent is done with their move at the current time step
@@ -47,9 +45,11 @@ export class MatchEngine {
 
   /**
    * Starts up the engine by intializing processes for all the agents and setting some variables for a match
-   * @param agents 
+   * @param agents - The agents involved to be setup for the given match
+   * @param match - The match to initialize
+   * @returns a promise that resolves true if succesfully initialized
    */
-  async initialize(agents: Array<Agent>, match: Match) {
+  async initialize(agents: Array<Agent>, match: Match): Promise<boolean> {
     
     this.log.systembar();
 
@@ -62,7 +62,7 @@ export class MatchEngine {
 
       match.idToAgentsMap.set(agent.id, agent);
 
-      // set agent as running and resolve the currentMove for now
+      // set agent status as running
       agent.status = AgentStatus.RUNNING;
 
       // handler for stdout of Agent processes. Stores their output commands and resolves move promises
@@ -71,7 +71,7 @@ export class MatchEngine {
         
         // split chunks into line by line and handle each line of commands
         `${data}`.split('\n').forEach((str) => {
-          this.log.system(`${agent.name} - stdout: ${str}`);
+          this.log.systemIO(`${agent.name} - stdout: ${str}`);
 
           // TODO: Implement parallel command stream type
           // TODO: Implement timeout mechanism
@@ -98,6 +98,7 @@ export class MatchEngine {
         
       });
 
+      // log stderr from agents to this stderr
       p.stderr.on('data', (data) => {
         this.log.error(`${agent.id}: ${data.slice(0, data.length - 1)}`);
       });
@@ -112,14 +113,29 @@ export class MatchEngine {
 
     }, this);
 
-    this.log.system('INITIALIZATION PROCESSES END\n');
+    this.log.system('FINISHED INITIALIZATION OF PROCESSES\n');
     return true;
   }
-  public async stop() {
+
+  /** TODO
+   * Attempts to gracefully and synchronously stop a match
+   * @param match - the match to stop
+   */
+  public async stop(match: Match) {
 
   }
 
-  // kills all agents and processes from a match and cleans up
+  /** TODO
+   * Attempts to gracefully and synchronously resume a previously stopped match
+   * @param match - the match to resume
+   */
+  public async resume(match: Match) {
+
+  }
+
+  /**
+   * Kills all agents and processes from a match and cleans up
+   */
   public async killAndClean(match: Match) {
     match.agents.forEach((agent) => {
       agent.process.kill('SIGTERM')
@@ -127,21 +143,24 @@ export class MatchEngine {
     });
   }
   
-
-
-  /**
+  /** TODO allow for a agentResolvePolicy
    * Returns a promise that resolves with all the commands loaded from the previous time step of the provided match
    * This coordinates all the Agents and waits for each one to finish their step
+   * @param match - The match to get commands from agents for
+   * @returns a promise that resolves with an array of `Command` elements, holding the command and id of the agent that 
+   *          sent it
    */
   public async getCommands(match: Match): Promise<Array<Command>> {
     return new Promise((resolve, reject) => {
       try {
+        this.log.system(`Retrieving commands`);
         let commands: Array<Command> = [];
         let allAgentMovePromises = match.agents.map((agent: Agent) => {
           return agent.currentMovePromise;
         });
-
+        this.log.system(`Retrieved all move promises`)
         Promise.all(allAgentMovePromises).then(() => {
+          this.log.system(`All move promises resolved`);
           match.agents.forEach((agent: Agent) => {
             // TODO: Add option to store sets of commands delimited by '\n' for an Agent as different sets of commands /// for that Agent. Default right now is store every command delimited by the delimiter
 
@@ -162,8 +181,8 @@ export class MatchEngine {
             agent._setupMove();
           });
 
-          this.log.system(`Agent commands at end of time step ${match.timeStep} to be sent to match on time step ${match.timeStep + 1} `);
-          this.log.system(commands.length ? JSON.stringify(commands) : 'No commands');
+          this.log.system2(`Agent commands at end of time step ${match.timeStep} to be sent to match on time step ${match.timeStep + 1} `);
+          this.log.system2(commands.length ? JSON.stringify(commands) : 'No commands');
           resolve(commands);
         });
 
@@ -175,9 +194,16 @@ export class MatchEngine {
   }
 
   // send a message in a match to a particular process governed by an Agent, resolves true if succesfully written
-  public async send(match: Match, message: string, id: agentID) {
+  /**
+   * Sends a message to a particular process governed by an agent in a specified match specified by the agentID
+   * @param match - the match to work with
+   * @param message - the message to send to agent's stdin
+   * @param agentID - id that specifies the agent in the match to send the message to
+   */
+  public async send(match: Match, message: string, agentID: agentID): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      let agent = match.idToAgentsMap.get(id);
+      let agent = match.idToAgentsMap.get(agentID);
+      // TODO; add check to see if agent exists
       agent.process.stdin.write(`${message}\n`, (error: Error) => {
         if (error) reject(error);
         resolve(true);

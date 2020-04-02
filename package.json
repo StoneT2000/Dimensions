@@ -1,18 +1,18 @@
 {
   "name": "dimensions-ai",
-  "version": "1.0.12",
+  "version": "1.0.14",
   "description": "A generic, multi-level ai competition framework",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
-    "prepublishOnly": "npm run test",
     "prepare": "npm run build",
+    "prepublishOnly": "npm run test",
     "dev-install": "npm install && cd src/Station/web",
     "test": "jest tests --collectCoverage",
     "test-watch": "jest --watch tests --collectCoverage",
     "docs": "typedoc --exclude ./src/Station/web/ --out docs src",
-    "build": "tsc && npm run buildStation",
     "watch": "tsc -w",
+    "build": "tsc && npm run buildStation",
     "buildStation": "npm run build --prefix=src/Station/web && rm -rf lib/Station/web && mkdir lib/Station/web && cp -r src/Station/web/build lib/Station/web/"
   },
   "keywords": [

@@ -1,6 +1,7 @@
 /**
  * @class MatchError
- * @classdesc Standard Match Errors that do not stop a game, but signal to user of some kind of error with match
+ * @classdesc Standard Match Errors that do not stop a game, but signal to user of some kind of warning or error that *
+ *            occured as a result
  */
 export class MatchError extends Error {
   constructor(m: string) {
@@ -22,7 +23,7 @@ export class DimensionError extends Error {
 
 /**
  * @class FatalError
- * @classdesc A fatal error that caused the Dimension framework to break
+ * @classdesc A fatal error that caused the Dimension framework to break. Always thrown and should stop the process
  */
 export class FatalError extends Error {
   constructor(m: string) {
