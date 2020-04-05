@@ -15,17 +15,17 @@ let haliteLeague = Dimension.create(halite3Design,
   
 // });
 
-let jsSource = "./js-kit/halite3/stoneBot/MyBot.js";
+let delayedBot = "./js-kit/halite3/DelayBot.js";
 let simpleBot = "./js-kit/halite3/StillBot.js";
 let botSources = [];
 
 // sets up a deterministic game where all bots will end up expanding down
 for (let i = 0; i < 2; i++) {
-  botSources.push(jsSource);
+  botSources.push(delayedBot);
 }
 
 for (let i = 0; i < 2; i++) {
-  botSources.push(jsSource);
+  botSources.push(delayedBot);
 }
 
 haliteLeague.createMatch(
