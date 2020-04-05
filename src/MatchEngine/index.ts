@@ -57,7 +57,7 @@ export class MatchEngine {
   getEngineOptions() {
     return this.engineOptions;
   }
-  setEngineOptions(newOptions: DeepPartial<EngineOptions>) {
+  setEngineOptions(newOptions: DeepPartial<EngineOptions> = {}) {
     this.engineOptions = deepMerge(this.engineOptions, newOptions);
   }
 

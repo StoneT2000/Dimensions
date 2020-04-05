@@ -1,6 +1,7 @@
 import { Agent, Design, MatchEngine, agentID, Logger, LoggerLEVEL, Command, FatalError, COMMAND_STREAM_TYPE } from '..';
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
+import { EngineOptions } from '../MatchEngine';
 
 export enum MatchStatus {
   UNINITIALIZED, // the status when you just created a match and didn't call initialize
@@ -15,12 +16,12 @@ export enum MatchStatus {
 // Life cycle configurations for a match, dependent on the `Design`
 export type MatchConfigs = {
   name: any
-  timeout: number, // number of milliseconds to give each agent before stopping them
   initializeConfig: any, 
   updateConfig: any,
   getResultConfig: any,
   loggingLevel: LoggerLEVEL,
   dimensionID: number, // id of the dimension match resides in
+  engineOptions: DeepPartial<EngineOptions> // overriden engine options
   [key: string]: any
 }
 /**
@@ -72,7 +73,8 @@ export class Match {
     updateConfig: {},
     getResultConfig: {},
     loggingLevel: Logger.LEVEL.INFO,
-    dimensionID: null
+    dimensionID: null,
+    engineOptions: {}
   }
 
   constructor(
@@ -96,8 +98,9 @@ export class Match {
     this.log.level = this.configs.loggingLevel;
     this.log.identifier = this.name;
 
-    // store reference to the matchEngine used
+    // store reference to the matchEngine used and override any options
     this.matchEngine = new MatchEngine(this.design, this.log.level);
+    this.matchEngine.setEngineOptions(configs.engineOptions);
     this.id = Match._id;
     Match._id++;
   }
@@ -112,6 +115,7 @@ export class Match {
 
         this.log.infobar();
         this.log.info(`Design: ${this.design.name} | Initializing match: ${this.name}`);
+        this.log.info('Match Configs', this.configs);
 
         // Initialize agents with agent files
         this.agents = Agent.generateAgents(this.agentFiles, this.log.level);

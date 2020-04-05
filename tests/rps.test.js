@@ -285,7 +285,7 @@ describe('Rock Paper Scissors Run', () => {
     let match = await myDimension.createMatch(
       ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/paper.js'],
       {
-        bestOf: 10000,
+        bestOf: 1000,
         loggingLevel: Dimension.Logger.LEVEL.INFO
       }
     )
@@ -316,7 +316,7 @@ describe('Rock Paper Scissors Run', () => {
     await startStop(match);
     expect(match.matchStatus).toStrictEqual(MatchStatus.RUNNING);
     await results.then((res) => {
-      expect(res.scores).toStrictEqual({'0': 10000, '1': 0});
+      expect(res.scores).toStrictEqual({'0': 1000, '1': 0});
       console.log(res.scores);
     });
 

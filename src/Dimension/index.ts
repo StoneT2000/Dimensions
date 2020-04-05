@@ -60,7 +60,7 @@ export class Dimension {
     if ((this.configs.activateStation === true || this.configs.observe === true) && Dimension.Station == null) {
       Dimension.Station = new Station('Dimension Station', [], this.configs.loggingLevel);
     }
-    this.log.info('configs', this.configs);
+    this.log.info('Dimension Configs', this.configs);
     
     // default match log level and design log level is the same as passed into the dimension
     this.configs.defaultMatchConfigs.loggingLevel = this.configs.loggingLevel;
@@ -98,7 +98,6 @@ export class Dimension {
       // TOOD: change to deep copy
       let matchConfigs = {...this.configs.defaultMatchConfigs};
       matchConfigs = deepMerge(matchConfigs, configs);
-
       // create new match
       let match: Match;
       if (typeof files[0] === 'string') {
@@ -141,7 +140,7 @@ export class Dimension {
         // TOOD: change to deep copy
         let matchConfigs = {...this.configs.defaultMatchConfigs};
         matchConfigs = deepMerge(matchConfigs, configs);
-
+        
         let match: Match;
         if (typeof files[0] === 'string') {
           match = new Match(this.design, <Array<string>> files, matchConfigs);

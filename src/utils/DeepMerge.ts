@@ -1,5 +1,6 @@
 
 export const deepMerge = (obj1: any, obj2: any) => {
+  if (obj2 == undefined || obj2 == null) return obj1;
   let rootKeys = Object.keys(obj2);
 
   rootKeys.forEach((key: string) => {
