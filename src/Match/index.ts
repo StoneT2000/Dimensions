@@ -11,7 +11,6 @@ export enum MatchStatus {
 }
 
 // Life cycle configurations for a match, dependent on the `Design`
-// TODO: add any property with type any
 export type MatchConfigs = {
   name: any
   timeout: number, // number of milliseconds to give each agent before stopping them

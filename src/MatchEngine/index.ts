@@ -202,7 +202,7 @@ export class MatchEngine {
     });
   }
   
-  /** TODO allow for a agentResolvePolicy
+  /**
    * Returns a promise that resolves with all the commands loaded from the previous time step of the provided match
    * This coordinates all the Agents and waits for each one to finish their step
    * @param match - The match to get commands from agents for
