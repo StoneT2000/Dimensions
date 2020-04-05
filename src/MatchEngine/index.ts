@@ -27,6 +27,11 @@ export type EngineOptions = {
     max: number, // max lines commands allowed
     // min: number // min lines of commands required, TODO: not really used at the moment
   }
+  timeout: {
+    active: boolean, // on or not
+    max: number, // in ms
+    timeoutCallback: Function // the callback called when an agent times out. default is terminate the agent
+  }
 }
 /**
  * @class MatchEngine
@@ -43,6 +48,9 @@ export class MatchEngine {
   private engineOptions: EngineOptions;
 
   private log = new Logger();
+  
+  // approx extra buffer time given to agents due to engine processing for timeout mechanism
+  static timeoutBuffer: number = 25; 
   
   constructor(design: Design, loggingLevel: LoggerLEVEL) {
     this.design = design;
@@ -129,13 +137,8 @@ export class MatchEngine {
         
         case COMMAND_FINISH_POLICIES.FINISH_SYMBOL:
           // if we receive the symbol representing that the agent is done with output and now awaits for updates
-          if (`${str}` === this.engineOptions.commandFinishSymbol) {
-            // Resolve move and tell engine in `getCommands` this agent is done outputting commands and awaits input
-            agent.currentMoveResolve();
-            
-            // stop the process for now from sending more output and disallow commmands to ignore rest of output
-            agent.process.kill('SIGSTOP');
-            agent._disallowCommands();
+          if (`${str}` === this.engineOptions.commandFinishSymbol) { 
+            agent.finishMove();
           }
           else {
             agent.currentMoveCommands.push(str);
@@ -148,10 +151,8 @@ export class MatchEngine {
           }
           // else if on final command before reaching max, push final command and resolve
           else if (agent.currentMoveCommands.length == this.engineOptions.commandLines.max - 1) {
+            agent.finishMove();
             agent.currentMoveCommands.push(str);
-            agent.currentMoveResolve();
-            agent.process.kill('SIGSTOP');
-            agent._disallowCommands();
           }
           break;
         case COMMAND_FINISH_POLICIES.CUSTOM:
@@ -210,6 +211,7 @@ export class MatchEngine {
   public async kill(agent: Agent) {
     agent.process.kill('SIGKILL');
     agent._terminate();
+    agent.currentMoveResolve();
     this.log.system(`Killed off agent ${agent.id} - ${agent.name}`);
   }
   
@@ -223,7 +225,6 @@ export class MatchEngine {
   public async getCommands(match: Match): Promise<Array<Command>> {
     return new Promise((resolve, reject) => {
       try {
-        this.log.system(`Retrieving commands`);
         let commands: Array<Command> = [];
         let nonTerminatedAgents = match.agents.filter((agent: Agent) => {
           return !agent.isTerminated();
@@ -231,8 +232,8 @@ export class MatchEngine {
         let allAgentMovePromises = nonTerminatedAgents.map((agent: Agent) => {
           return agent.currentMovePromise;
         });
-        this.log.system(`Retrieved all move promises`)
         Promise.all(allAgentMovePromises).then(() => {
+          
           this.log.system(`All move promises resolved`);
           match.agents.forEach((agent: Agent) => {
             // TODO: Add option to store sets of commands delimited by '\n' for an Agent as different sets of commands /// for that Agent. Default right now is store every command delimited by the delimiter
@@ -247,11 +248,6 @@ export class MatchEngine {
                 }
               });
             });
-          });
-
-          // once we collected all the commands, we now reset each Agent for the next move
-          match.agents.forEach((agent: Agent) => {
-            agent._setupMove();
           });
 
           this.log.system2(`Agent commands at end of time step ${match.timeStep} to be sent to match on time step ${match.timeStep + 1} `);

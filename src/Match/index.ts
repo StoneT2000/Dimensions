@@ -15,8 +15,8 @@ export enum MatchStatus {
 
 // Life cycle configurations for a match, dependent on the `Design`
 export type MatchConfigs = {
-  name: any
-  initializeConfig: any, 
+  name: string
+  initializeConfig: any,
   updateConfig: any,
   getResultConfig: any,
   loggingLevel: LoggerLEVEL,
@@ -153,6 +153,9 @@ export class Match {
 
     }
     while (status != MatchStatus.FINISHED)
+    this.agents.forEach((agent: Agent) => {
+      clearTimeout(agent.timeout);
+    })
     this.results = await this.getResults();
 
     // TODO: Perhaps add a cleanup status if cleaning up processes takes a long time
@@ -166,7 +169,8 @@ export class Match {
    */
   public async next(): Promise<MatchStatus> {
     return new Promise(async (resolve, reject) => {
-      if (this.matchEngine.getEngineOptions().commandStreamType === COMMAND_STREAM_TYPE.SEQUENTIAL) {
+      const engineOptions = this.matchEngine.getEngineOptions()
+      if (engineOptions.commandStreamType === COMMAND_STREAM_TYPE.SEQUENTIAL) {
         // if this.shouldStop is set to true, await for the resume promise to resolve
         if (this.shouldStop == true) {
           // set status and stop the engine
@@ -194,6 +198,20 @@ export class Match {
         else {
           this.matchStatus = status;
         }
+        // after we run update and likely send all the messages that need to be sent, 
+        // we now reset each Agent for the next move
+        this.agents.forEach((agent: Agent) => {
+          // continue agent again
+          agent.process.kill('SIGCONT');
+          agent._setupMove();
+          if (engineOptions.timeout.active) {
+            agent.timeout = setTimeout(() => {
+              // if agent times out, call the provided callback in engine options
+              engineOptions.timeout.timeoutCallback(agent, this, engineOptions);
+            }, engineOptions.timeout.max + MatchEngine.timeoutBuffer);
+          }
+          // each of these steps can take ~2 ms
+        });
 
         // update timestep now
         this.timeStep += 1;
@@ -202,7 +220,7 @@ export class Match {
       }
 
       // TODO: implement this
-      else if (this.matchEngine.getEngineOptions().commandStreamType === COMMAND_STREAM_TYPE.PARALLEL) {
+      else if (engineOptions.commandStreamType === COMMAND_STREAM_TYPE.PARALLEL) {
         // with a parallel structure, the `Design` updates the match after each command sequence, delimited by \n
         // this means agents end up sending commands using out of sync state information, so the `Design` would need to 
         // adhere to this. Possibilities include stateless designs, or heavily localized designs where out of 

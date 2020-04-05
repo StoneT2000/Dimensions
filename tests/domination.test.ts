@@ -25,13 +25,12 @@ test('Test Run A match of Domination', async () => {
     botSources,
     {
       name: 'test-domination-match',
-      timeout: 1000,
       initializeConfig:{
         
         size: 4,
         maxRounds: 5
       },
-      loggingLevel: Dimension.Logger.LEVEL.WARN
+      loggingLevel: Dimension.Logger.LEVEL.WARN,
     }
   );
   expect(results.finalMap).toStrictEqual(expectedResultMap)
@@ -59,7 +58,6 @@ describe('Receive MatchErrors and FatalErrors from a match of Domination', () =>
       botSources,
       {
         name: 'test-domination-match-matcherrors',
-        timeout: 1000,
         initializeConfig:{
           
           size: 4,
@@ -100,7 +98,6 @@ describe('Receive MatchErrors and FatalErrors from a match of Domination', () =>
       botSources,
       {
         name: 'test-domination-match-fatalerrors',
-        timeout: 1000,
         initializeConfig:{
           size: 4,
           maxRounds: 5
@@ -113,7 +110,6 @@ describe('Receive MatchErrors and FatalErrors from a match of Domination', () =>
       [],
       {
         name: 'test-domination-match-fatalerrors',
-        timeout: 1000,
         initializeConfig:{
           size: 4,
           maxRounds: 5

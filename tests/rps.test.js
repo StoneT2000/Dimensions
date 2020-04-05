@@ -47,6 +47,30 @@ class RockPaperScissorsDesign extends Dimension.Design{
 
     let winningAgent;
 
+    // check which agents are still alive, if one timed out, the other wins. If both time out, it's a tie
+    if (match.agents[0].isTerminated() && match.agents[1].isTerminated()) {
+      match.state.terminated = {
+        0: 'terminated',
+        1: 'terminated'
+      }
+      match.state.terminatedResult = 'Tie'
+      return MatchStatus.FINISHED;
+    }
+    else if (match.agents[0].isTerminated()) {
+      match.state.terminated = {
+        0: 'terminated'
+      }
+      match.state.terminatedResult = match.agents[1].name
+      return MatchStatus.FINISHED;
+    }
+    else if (match.agents[1].isTerminated()) {
+      match.state.terminated = {
+        1: 'terminated'
+      }
+      match.state.terminatedResult = match.agents[0].name
+      return MatchStatus.FINISHED;
+    }
+
     // each command in commands is an object with an agentID field and a command field, containing the string the agent sent
     let agent0Command = null;
     let agent1Command = null;
@@ -160,8 +184,13 @@ class RockPaperScissorsDesign extends Dimension.Design{
         1: 0,
       },
       ties: 0,
-      winner: ''
+      winner: '',
+      terminated: {
+
+      }
     }
+
+    
 
     // we now go over the round results and evaluate them
     match.state.results.forEach((res) => {
@@ -174,6 +203,14 @@ class RockPaperScissorsDesign extends Dimension.Design{
         results.ties += 1;
       }
     });
+
+    // we store what agents were terminated by timeout and get results depending on termination
+    // and stop result evaluation
+    if (match.state.terminated) {
+      results.terminated = match.state.terminated;
+      results.winner = match.state.terminatedResult;
+      return results;
+    }
 
     // determine the winner and store it
     if (results.scores[0] > results.scores[1]) {
@@ -202,7 +239,13 @@ describe('Rock Paper Scissors Run', () => {
   let RPSDesign, myDimension_line_count, RPSDesign_line_count;
   let myDimension;
   beforeAll(() => {
-    RPSDesign = new RockPaperScissorsDesign('RPS!');
+    RPSDesign = new RockPaperScissorsDesign('RPS!', {
+      engineOptions: {
+        timeout: {
+          max: 500,
+        }
+      }
+    });
     myDimension = Dimension.create(RPSDesign, {
       name: 'RPS',
       activateStation: false,
@@ -218,7 +261,7 @@ describe('Rock Paper Scissors Run', () => {
       name: 'RPS_line_count',
       activateStation: false,
       observe: false,
-      loggingLevel: Dimension.Logger.LEVEL.ERROR
+      loggingLevel: Dimension.Logger.LEVEL.WARN
     });
   })
   test('Test line count based engine', async () => {
@@ -226,19 +269,21 @@ describe('Rock Paper Scissors Run', () => {
     let results = await myDimension_line_count.runMatch(
       ['./tests/js-kit/rps/line_countbot.js', './tests/js-kit/rps/line_countbotpaper.js'],
       {
-        bestOf: 10000
+        name: 'line-count (0)',
+        bestOf: 10
       }
     )
     // line count bot also sends extraneous output of 's': scissors, which should all be erased by matchengine
     // we test this by ensuring the score is correct, otherwise the extraneous output would make line count bot win
     // sometimes.
-    expect(results.scores).toStrictEqual({'0': 0, '1': 10000});
+    expect(results.scores).toStrictEqual({'0': 0, '1': 10});
   })
   test('Test run rock vs paper 3 times and test erasure of output', async () => {
     expect.assertions(1);
     let results = await myDimension.runMatch(
       ['./tests/js-kit/rps/rock.js', './tests/js-kit/rps/paper.js'],
       {
+        name: 'erasure of output (1)',
         bestOf: 100
       }
     )
@@ -249,17 +294,20 @@ describe('Rock Paper Scissors Run', () => {
     let results = await myDimension.runMatch(
       ['./tests/js-kit/rps/smarter.js', './tests/python-kit/rps/rock.py'],
       {
-        bestOf: 20
+        name: 'mult-lang (2)',
+        bestOf: 4,
+        loggingLevel: Dimension.Logger.LEVEL.ERROR
       }
     )
     // smarter agent defaults to scissors round 1 and loses to rock, then chooses paper afterward due to rock last move
-    expect(results.scores).toStrictEqual({'0': 19, '1': 1});
+    expect(results.scores).toStrictEqual({'0': 3, '1': 1});
   });
   test('Test run smarter bot against paper 5 times and test erasure of output', async () => {
     expect.assertions(1);
     let results = await myDimension.runMatch(
       ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/paper.js'],
       {
+        name: 'erasure of output (3)',
         bestOf: 30
       }
     )
@@ -273,6 +321,7 @@ describe('Rock Paper Scissors Run', () => {
     await myDimension.runMatch(
       ['./tests/js-kit/rps/errorBot.js', './tests/js-kit/rps/paper.js'],
       {
+        name: 'log match errors (4)',
         bestOf: 5,
         loggingLevel: Dimension.Logger.LEVEL.WARN
       }
@@ -285,8 +334,9 @@ describe('Rock Paper Scissors Run', () => {
     let match = await myDimension.createMatch(
       ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/paper.js'],
       {
+        name: 'stop and resume (5)',
         bestOf: 1000,
-        loggingLevel: Dimension.Logger.LEVEL.INFO
+        loggingLevel: Dimension.Logger.LEVEL.WARN
       }
     )
     let results = match.run();
@@ -319,9 +369,49 @@ describe('Rock Paper Scissors Run', () => {
       expect(res.scores).toStrictEqual({'0': 1000, '1': 0});
       console.log(res.scores);
     });
+  });
 
-    // smarter agent defaults to scissors round 1 and loses to rock, then chooses paper afterward due to rock last move
-    // expect(results.scores).toStrictEqual({'0': 5, '1': 0});
+  describe('Testing timeout mechanism', () => {
+    test('Test timeout mechanism and auto giving non terminated bot the win', async () => {
+      let res = await myDimension.runMatch(
+        ['./tests/js-kit/rps/paper.js', './tests/js-kit/rps/delaybotrock.js'],
+        {
+          bestOf: 5,
+          loggingLevel: Dimension.Logger.LEVEL.ERROR
+        }
+      );
+      expect(res.terminated[1]).toBe('terminated');
+      expect(res.winner).toBe('agent_0');
+    });
+    test('Test timeout mechanism, both timeout', async () => {
+      let res = await myDimension.runMatch(
+        ['./tests/js-kit/rps/delaybotrock.js', './tests/js-kit/rps/delaybotrock.js'],
+        {
+          bestOf: 5,
+          loggingLevel: Dimension.Logger.LEVEL.ERROR
+        }
+      );
+      expect(res.terminated[1]).toBe('terminated');
+      expect(res.terminated[0]).toBe('terminated');
+      expect(res.winner).toBe('Tie');
+    });
+    test('Test overriding timeout mechanism', async () => {
+      let res = await myDimension.runMatch(
+        ['./tests/js-kit/rps/delaybotpaper.js', './tests/js-kit/rps/delaybotrock.js'],
+        {
+          bestOf: 3,
+          loggingLevel: Dimension.Logger.LEVEL.ERROR,
+          engineOptions: {
+            timeout: {
+              active: false
+            }
+          }
+        }
+      );
+      // expect(res.terminated[1]).toBe('terminated');
+      // expect(res.terminated[0]).toBe('terminated');
+      expect(res.winner).toBe('agent_0');
+    });
   });
 })
 

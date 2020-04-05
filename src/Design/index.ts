@@ -2,6 +2,7 @@ import { Match, agentID, MatchStatus, Logger, LoggerLEVEL } from "..";
 import { EngineOptions, COMMAND_FINISH_POLICIES } from "../MatchEngine";
 import { deepMerge } from "../utils/DeepMerge";
 import { DeepPartial } from "../utils/DeepPartial";
+import { Agent } from "../Agent";
 
 /**
  * @class Design
@@ -13,7 +14,7 @@ import { DeepPartial } from "../utils/DeepPartial";
  */
 export abstract class Design {
   
-  public designOptions: DesignOptions;
+  private designOptions: DesignOptions;
   public log = new Logger();
   constructor(public name: String, designOptions: DeepPartial<DesignOptions> = {}) {
 
@@ -26,6 +27,19 @@ export abstract class Design {
         commandLines: {
           max: 1,
           // min: 1
+        },
+        timeout: {
+          max: 1000,
+          active: true,
+          timeoutCallback: (agent: Agent, match: Match, engineOptions: EngineOptions) => {
+            match.kill(agent.id);
+            match.log.error(`agent ${agent.id} - '${agent.name}' timed out after ${engineOptions.timeout.max} ms`);
+          }
+          /**
+           * (agent: Agent, match: Match) => {
+           *   agent.finish();
+           * }
+           */
         }
       }
     }
