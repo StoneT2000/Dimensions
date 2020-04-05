@@ -1,6 +1,7 @@
 import { Match, agentID, MatchStatus, Logger, LoggerLEVEL } from "..";
 import { EngineOptions, COMMAND_FINISH_POLICIES } from "../MatchEngine";
 import { deepMerge } from "../utils/DeepMerge";
+import { DeepPartial } from "../utils/DeepPartial";
 
 /**
  * @class Design
@@ -14,7 +15,7 @@ export abstract class Design {
   
   public designOptions: DesignOptions;
   public log = new Logger();
-  constructor(public name: String, designOptions: Partial<DesignOptions> = {}) {
+  constructor(public name: String, designOptions: DeepPartial<DesignOptions> = {}) {
 
     const DEFAULT_DESIGN_OPTIONS: DesignOptions = {
       engineOptions: {
