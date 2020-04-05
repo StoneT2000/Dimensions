@@ -1,6 +1,6 @@
 {
   "name": "dimensions-ai",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "A generic, multi-level ai competition framework",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
