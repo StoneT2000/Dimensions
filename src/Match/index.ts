@@ -252,6 +252,13 @@ export class Match {
   }
 
   /**
+   * Terminate an agent
+   */
+  public async kill(agent: agentID | Agent) {
+    this.matchEngine.kill(agent);
+  }
+
+  /**
    * Retrieve results through delegating the task to the design
    */
   public async getResults() {

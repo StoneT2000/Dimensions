@@ -197,9 +197,13 @@ export class MatchEngine {
    */
   public async killAndClean(match: Match) {
     match.agents.forEach((agent) => {
-      agent.process.kill('SIGTERM')
+      agent.process.kill('SIGKILL')
       agent.status = AgentStatus.KILLED;
     });
+  }
+
+  public async kill(agent: Agent) {
+    agent.process.kill('SIGKILL');
   }
   
   /**
