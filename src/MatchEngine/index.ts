@@ -1,7 +1,6 @@
 import { Design, Agent, DimensionError, agentID, Logger, LoggerLEVEL, Match, COMMAND_STREAM_TYPE, Command } from "..";
 import { spawn } from 'child_process';
 import { AgentStatus } from "../";
-import { MatchStatus } from "../Match";
 import { FatalError } from "../DimensionError";
 
 // All IO commands that are used for communication between `MatchEngine` and processes associated with `Agents`
@@ -91,7 +90,7 @@ export class MatchEngine {
           this.log.systemIO(`${agent.name} - stdout: ${data}`);
           let strs = `${data}`.split('\n');
           for (let i = 0; i < strs.length; i++) {
-            if (agent.isAllowedToSendCommands()) {
+            if (agent.getAllowedToSendCommands()) {
               this.handleCommmand(agent, strs[i]);
             }
           }
@@ -202,8 +201,14 @@ export class MatchEngine {
     });
   }
 
+  /**
+   * Kills an agent and closes the process, and no longer attempts to receive coommands from it anymore
+   * @param agent - the agent to kill off
+   */
   public async kill(agent: Agent) {
     agent.process.kill('SIGKILL');
+    agent._terminate();
+    this.log.system(`Killed off agent ${agent.id} - ${agent.name}`);
   }
   
   /**
@@ -218,7 +223,10 @@ export class MatchEngine {
       try {
         this.log.system(`Retrieving commands`);
         let commands: Array<Command> = [];
-        let allAgentMovePromises = match.agents.map((agent: Agent) => {
+        let nonTerminatedAgents = match.agents.filter((agent: Agent) => {
+          return !agent.isTerminated();
+        })
+        let allAgentMovePromises = nonTerminatedAgents.map((agent: Agent) => {
           return agent.currentMovePromise;
         });
         this.log.system(`Retrieved all move promises`)

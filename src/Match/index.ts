@@ -255,7 +255,13 @@ export class Match {
    * Terminate an agent
    */
   public async kill(agent: agentID | Agent) {
-    this.matchEngine.kill(agent);
+    
+    if (agent instanceof Agent) {
+      this.matchEngine.kill(agent);
+    }
+    else {
+      this.matchEngine.kill(this.idToAgentsMap.get(agent));
+    }
   }
 
   /**
