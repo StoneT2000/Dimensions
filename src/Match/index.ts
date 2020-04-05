@@ -1,4 +1,6 @@
 import { Agent, Design, MatchEngine, agentID, Logger, LoggerLEVEL, Command, FatalError, COMMAND_STREAM_TYPE } from '..';
+import { DeepPartial } from '../utils/DeepPartial';
+import { deepMerge } from '../utils/DeepMerge';
 
 export enum MatchStatus {
   UNINITIALIZED, // the status when you just created a match and didn't call initialize
@@ -76,15 +78,15 @@ export class Match {
   constructor(
     public design: Design, 
     public agentFiles: Array<String> | Array<{file: string, name: string}>, 
-    configs: Partial<MatchConfigs> = {}
+    configs: DeepPartial<MatchConfigs> = {}
   ) {
 
     // override configs with provided configs argument
-    Object.assign(this.configs, configs);
+    this.configs = deepMerge(this.configs, configs);
 
     this.creationDate = new Date();
     if (this.configs.name) {
-      this.name = configs.name;
+      this.name = this.configs.name;
     }
     else {
       this.name = `match_${Match._id}`;
@@ -229,6 +231,7 @@ export class Match {
    
     return true;
   }
+
   /**
    * Resume the match if it was in the stopped state
    * @returns true if succesfully resumed
@@ -247,6 +250,9 @@ export class Match {
 
   }
 
+  /**
+   * Stop all agents through the match engine
+   */
   public async stopAndCleanUp() {
     await this.matchEngine.killAndClean(this);
   }
@@ -285,9 +291,9 @@ export class Match {
    * @param config - The configuration to use for the next update. Specifically set conditions for when MatchEngine 
    * should call agent.currentMoveResolve() and thus return commands and move to next update
    */
-  public async setAgentResolvePolicy(config = {}) {
+  // public async setAgentResolvePolicy(config = {}) {
 
-  }
+  // }
 
   /**
    * Sends a message to all agent's standard input

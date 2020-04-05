@@ -2,6 +2,8 @@ import { Design, Agent, DimensionError, agentID, Logger, LoggerLEVEL, Match, COM
 import { spawn } from 'child_process';
 import { AgentStatus } from "../";
 import { FatalError } from "../DimensionError";
+import { DeepPartial } from "../utils/DeepPartial";
+import { deepMerge } from "../utils/DeepMerge";
 
 // All IO commands that are used for communication between `MatchEngine` and processes associated with `Agents`
 export enum IO_COMMANDS {
@@ -55,8 +57,8 @@ export class MatchEngine {
   getEngineOptions() {
     return this.engineOptions;
   }
-  setEngineOptions(newOptions: Partial<EngineOptions>) {
-    Object.assign(this.engineOptions, newOptions);
+  setEngineOptions(newOptions: DeepPartial<EngineOptions>) {
+    this.engineOptions = deepMerge(this.engineOptions, newOptions);
   }
 
   /**
