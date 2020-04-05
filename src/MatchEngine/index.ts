@@ -162,11 +162,11 @@ export class MatchEngine {
       }
 
     }
-    else if (this.engineOptions.commandStreamType === COMMAND_STREAM_TYPE.PARALLEL) {
-      // If PARALLEL, theres no waiting, we store commands immediately and resolve right away after each command
-      agent.currentMoveResolve();
-      // updates to match are first come first serve
-    }
+    // else if (this.engineOptions.commandStreamType === COMMAND_STREAM_TYPE.PARALLEL) {
+    //   // If PARALLEL, theres no waiting, we store commands immediately and resolve right away after each command
+    //   agent.currentMoveResolve();
+    //   // updates to match are first come first serve
+    // }
   }
 
   /**
