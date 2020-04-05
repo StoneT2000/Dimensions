@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './index.scss';
 import DefaultLayout from "../../components/layouts/default";
-import { getDimension, getMatchesFromDimension } from '../../actions/dimensions';
+import { getDimension } from '../../actions/dimensions';
 import DimensionCard from '../../components/DimensionCard';
 import { Dimension } from '../../../../../Dimension';
 function MainPage(props: any) {

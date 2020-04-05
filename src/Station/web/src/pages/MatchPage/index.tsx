@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './index.scss';
-import { Button, Table } from 'antd';
-import { Tree } from 'antd';
+import { message, Table } from 'antd';
 
 import DefaultLayout from '../../components/layouts/default';
 import MatchActionButton from '../../components/MatchActionButton';
@@ -10,17 +9,12 @@ import { useParams, useHistory, Link } from 'react-router-dom';
 import { getMatchFromDimension } from '../../actions/dimensions';
 
 // NOTE!! Can import outside src as long as we dont use instanceof dimension or actually use it, we can just it for typings
-import { Dimension } from '../../../../../Dimension';
 import { Match } from '../../../../../Match';
 import { Agent, AgentStatus } from '../../../../../Agent';
-import { ChildProcess } from 'child_process';
 
-const { TreeNode } = Tree;
-
-function MatchPage(props: any) {
+function MatchPage() {
   const params: any = useParams();
   const history: any = useHistory();
-  const [dimension, setDimension] = useState<Dimension>();
   const [match, setMatch] = useState<Match>();
   const [data, setData] = useState<Array<any>>([]);
   const columns = [
@@ -59,12 +53,11 @@ function MatchPage(props: any) {
         return 'Unknown'
     }
   }
-  useEffect(() => {
-    if (params.matchID) {
+  const startRefresh = () => {
+    let intv = setInterval(() => {
       getMatchFromDimension(params.id, params.matchID).then((res) => {
         if (!(res instanceof Array))  {
           setMatch(res);
-          console.log(res.agents);
           let newData = res.agents.map((agent) => {
             return {
               src: agent.src,
@@ -78,7 +71,15 @@ function MatchPage(props: any) {
         else {
           console.error("something wrong happened");
         }
-      })
+      }).catch((error) => {
+        message.error('Backend is not setup');
+        clearInterval(intv);
+      });
+    }, 500);
+  }
+  useEffect(() => {
+    if (params.matchID) {
+      startRefresh();
     }
   }, []);
   return (

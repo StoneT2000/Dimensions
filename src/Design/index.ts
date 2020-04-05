@@ -11,7 +11,7 @@ import { Match, agentID, MatchStatus, Logger, LoggerLEVEL } from "..";
 export abstract class Design {
   
   public designOptions: DesignOptions;
-  private log = new Logger();
+  public log = new Logger();
   constructor(public name: String, designOptions?: Partial<DesignOptions>) {
 
     const DEFAULT_DESIGN_OPTIONS: DesignOptions = {
