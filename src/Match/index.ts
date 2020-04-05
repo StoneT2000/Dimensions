@@ -1,4 +1,7 @@
 import { Agent, Design, MatchEngine, agentID, Logger, LoggerLEVEL, Command, FatalError, COMMAND_STREAM_TYPE } from '..';
+import { DeepPartial } from '../utils/DeepPartial';
+import { deepMerge } from '../utils/DeepMerge';
+import { EngineOptions } from '../MatchEngine';
 
 export enum MatchStatus {
   UNINITIALIZED, // the status when you just created a match and didn't call initialize
@@ -12,13 +15,13 @@ export enum MatchStatus {
 
 // Life cycle configurations for a match, dependent on the `Design`
 export type MatchConfigs = {
-  name: any
-  timeout: number, // number of milliseconds to give each agent before stopping them
-  initializeConfig: any, 
+  name: string
+  initializeConfig: any,
   updateConfig: any,
   getResultConfig: any,
   loggingLevel: LoggerLEVEL,
   dimensionID: number, // id of the dimension match resides in
+  engineOptions: DeepPartial<EngineOptions> // overriden engine options
   [key: string]: any
 }
 /**
@@ -70,21 +73,22 @@ export class Match {
     updateConfig: {},
     getResultConfig: {},
     loggingLevel: Logger.LEVEL.INFO,
-    dimensionID: null
+    dimensionID: null,
+    engineOptions: {}
   }
 
   constructor(
     public design: Design, 
     public agentFiles: Array<String> | Array<{file: string, name: string}>, 
-    configs: Partial<MatchConfigs> = {}
+    configs: DeepPartial<MatchConfigs> = {}
   ) {
 
     // override configs with provided configs argument
-    Object.assign(this.configs, configs);
+    this.configs = deepMerge(this.configs, configs);
 
     this.creationDate = new Date();
     if (this.configs.name) {
-      this.name = configs.name;
+      this.name = this.configs.name;
     }
     else {
       this.name = `match_${Match._id}`;
@@ -94,8 +98,9 @@ export class Match {
     this.log.level = this.configs.loggingLevel;
     this.log.identifier = this.name;
 
-    // store reference to the matchEngine used
+    // store reference to the matchEngine used and override any options
     this.matchEngine = new MatchEngine(this.design, this.log.level);
+    this.matchEngine.setEngineOptions(configs.engineOptions);
     this.id = Match._id;
     Match._id++;
   }
@@ -110,6 +115,7 @@ export class Match {
 
         this.log.infobar();
         this.log.info(`Design: ${this.design.name} | Initializing match: ${this.name}`);
+        this.log.info('Match Configs', this.configs);
 
         // Initialize agents with agent files
         this.agents = Agent.generateAgents(this.agentFiles, this.log.level);
@@ -147,6 +153,9 @@ export class Match {
 
     }
     while (status != MatchStatus.FINISHED)
+    this.agents.forEach((agent: Agent) => {
+      clearTimeout(agent.timeout);
+    })
     this.results = await this.getResults();
 
     // TODO: Perhaps add a cleanup status if cleaning up processes takes a long time
@@ -160,7 +169,8 @@ export class Match {
    */
   public async next(): Promise<MatchStatus> {
     return new Promise(async (resolve, reject) => {
-      if (this.matchEngine.getEngineOptions().commandStreamType === COMMAND_STREAM_TYPE.SEQUENTIAL) {
+      const engineOptions = this.matchEngine.getEngineOptions()
+      if (engineOptions.commandStreamType === COMMAND_STREAM_TYPE.SEQUENTIAL) {
         // if this.shouldStop is set to true, await for the resume promise to resolve
         if (this.shouldStop == true) {
           // set status and stop the engine
@@ -188,6 +198,20 @@ export class Match {
         else {
           this.matchStatus = status;
         }
+        // after we run update and likely send all the messages that need to be sent, 
+        // we now reset each Agent for the next move
+        this.agents.forEach((agent: Agent) => {
+          // continue agent again
+          agent.process.kill('SIGCONT');
+          agent._setupMove();
+          if (engineOptions.timeout.active) {
+            agent.timeout = setTimeout(() => {
+              // if agent times out, call the provided callback in engine options
+              engineOptions.timeout.timeoutCallback(agent, this, engineOptions);
+            }, engineOptions.timeout.max + MatchEngine.timeoutBuffer);
+          }
+          // each of these steps can take ~2 ms
+        });
 
         // update timestep now
         this.timeStep += 1;
@@ -196,7 +220,7 @@ export class Match {
       }
 
       // TODO: implement this
-      else if (this.matchEngine.getEngineOptions().commandStreamType === COMMAND_STREAM_TYPE.PARALLEL) {
+      else if (engineOptions.commandStreamType === COMMAND_STREAM_TYPE.PARALLEL) {
         // with a parallel structure, the `Design` updates the match after each command sequence, delimited by \n
         // this means agents end up sending commands using out of sync state information, so the `Design` would need to 
         // adhere to this. Possibilities include stateless designs, or heavily localized designs where out of 
@@ -229,6 +253,7 @@ export class Match {
    
     return true;
   }
+
   /**
    * Resume the match if it was in the stopped state
    * @returns true if succesfully resumed
@@ -247,6 +272,9 @@ export class Match {
 
   }
 
+  /**
+   * Stop all agents through the match engine
+   */
   public async stopAndCleanUp() {
     await this.matchEngine.killAndClean(this);
   }
@@ -285,9 +313,9 @@ export class Match {
    * @param config - The configuration to use for the next update. Specifically set conditions for when MatchEngine 
    * should call agent.currentMoveResolve() and thus return commands and move to next update
    */
-  public async setAgentResolvePolicy(config = {}) {
+  // public async setAgentResolvePolicy(config = {}) {
 
-  }
+  // }
 
   /**
    * Sends a message to all agent's standard input

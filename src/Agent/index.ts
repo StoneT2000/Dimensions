@@ -40,6 +40,9 @@ export class Agent {
 
   public agentTimeStep = 0;
 
+  public timeLabel: string;
+  public timeout: ReturnType<typeof setTimeout>;
+
   private log = new Logger();
 
   // whether agent is allowed to send commands. Used to help ignore extra output from agents
@@ -110,10 +113,23 @@ export class Agent {
   getAllowedToSendCommands() {
     return this.allowedToSendCommands;
   }
+
+  /**
+   * Stop this agent from more outputs and mark it as done for now and awaiting for updates
+   */
+  finishMove() {
+    clearTimeout(this.timeout);
+    // Resolve move and tell engine in `getCommands` this agent is done outputting commands and awaits input
+    this.currentMoveResolve();
+            
+    // stop the process for now from sending more output and disallow commmands to ignore rest of output
+    this.process.kill('SIGSTOP');
+    this._disallowCommands();
+  }
+
   // Start an Agent's move and setup the promise structures
   _setupMove() {
-    // continue agent again
-    this.process.kill('SIGCONT');
+    // allow agent to send commands, increment time, clear past commands, and reset the promise
     this.allowedToSendCommands = true;
     this.agentTimeStep++;
     this.currentMoveCommands = [];

@@ -1,5 +1,7 @@
 import { Design, Match, MatchConfigs, FatalError, Station } from '..';
 import { Logger, LoggerLEVEL} from '../Logger';
+import { DeepPartial } from '../utils/DeepPartial';
+import { deepMerge } from '../utils/DeepMerge';
 
 export type DimensionConfigs = {
   name: string
@@ -46,7 +48,7 @@ export class Dimension {
     }
   }
 
-  constructor(public design: Design, configs: Partial<DimensionConfigs> = {}) {
+  constructor(public design: Design, configs: DeepPartial<DimensionConfigs> = {}) {
 
     // override configs with user provided configs
     Object.assign(this.configs, configs);
@@ -58,7 +60,7 @@ export class Dimension {
     if ((this.configs.activateStation === true || this.configs.observe === true) && Dimension.Station == null) {
       Dimension.Station = new Station('Dimension Station', [], this.configs.loggingLevel);
     }
-    this.log.info('configs', this.configs);
+    this.log.info('Dimension Configs', this.configs);
     
     // default match log level and design log level is the same as passed into the dimension
     this.configs.defaultMatchConfigs.loggingLevel = this.configs.loggingLevel;
@@ -88,15 +90,14 @@ export class Dimension {
    * @param matchOptions - Options for the created match
    * @param configs - Configurations that are `Design` dependent
    */
-  public async createMatch(files: Array<string> | Array<{file: string, name: string}>, configs?: Partial<MatchConfigs>): Promise<Match> {
+  public async createMatch(files: Array<string> | Array<{file: string, name: string}>, configs?: DeepPartial<MatchConfigs>): Promise<Match> {
     return new Promise( async (resolve, reject) => {
       if (!files.length) reject(new FatalError('No files provided for match'));
 
       // override dimension defaults with provided configs
       // TOOD: change to deep copy
       let matchConfigs = {...this.configs.defaultMatchConfigs};
-      Object.assign(matchConfigs, configs);
-
+      matchConfigs = deepMerge(matchConfigs, configs);
       // create new match
       let match: Match;
       if (typeof files[0] === 'string') {
@@ -129,7 +130,7 @@ export class Dimension {
    * @param configs - Configurations that are `Design` dependent. These configs are passed into `Design.initialize`
    * `Design.update` and `Design.storeResults`
    */
-  public async runMatch(files: Array<string> | Array<{file: string, name: string}>, configs?: Partial<MatchConfigs>) {
+  public async runMatch(files: Array<string> | Array<{file: string, name: string}>, configs?: DeepPartial<MatchConfigs>) {
     return new Promise( async (resolve, reject) => {
       
       try {
@@ -138,8 +139,8 @@ export class Dimension {
         // override dimension defaults with provided configs
         // TOOD: change to deep copy
         let matchConfigs = {...this.configs.defaultMatchConfigs};
-        Object.assign(matchConfigs, configs);
-
+        matchConfigs = deepMerge(matchConfigs, configs);
+        
         let match: Match;
         if (typeof files[0] === 'string') {
           match = new Match(this.design, <Array<string>> files, matchConfigs);
@@ -173,6 +174,6 @@ export class Dimension {
  * @param design The design to use
  * @param name The optional name of the dimension
  */
-export function create(design: Design, configs?: Partial<DimensionConfigs>): Dimension {
+export function create(design: Design, configs?: DeepPartial<DimensionConfigs>): Dimension {
   return new Dimension(design, configs);
 }
