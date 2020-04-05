@@ -167,8 +167,10 @@ export class Match {
           // set status and stop the engine
           this.matchStatus = MatchStatus.STOPPED;
           this.matchEngine.stop(this);
+          this.log.info('Stopped match');
           await this.resumePromise;
           this.matchEngine.resume(this);
+          this.log.info('Resumed match');
           this.shouldStop = false;
         }
         // at the start of each time step, we send any updates based on what agents sent us on the previous timestep
@@ -220,11 +222,12 @@ export class Match {
       this.log.error('You can\'t stop a match that is not running');
       return false;
     }
+    this.log.info('Stopping match...');
     this.shouldStop = true;
     this.resumePromise = new Promise((resolve) => {
       this.resumeResolve = resolve;
     });
-    this.log.info('Stopped match');
+   
     return true;
   }
   /**
@@ -236,11 +239,11 @@ export class Match {
       this.log.error('You can\'t resume a match that is not stopped');
       return false;
     }
-   
+    this.log.info('Resuming match...');
     // set back to running and resolve
     this.matchStatus = MatchStatus.RUNNING;
     this.resumeResolve();
-    this.log.info('Resumed match');
+    
     return true;
 
   }

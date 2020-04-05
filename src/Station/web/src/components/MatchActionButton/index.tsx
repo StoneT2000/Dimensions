@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { runMatch, stopMatch, reRunMatch, removeMatch, resumeMatch } from '../../actions/match';
 import { Button } from 'antd';
 import { Match } from '../../../../../Match';

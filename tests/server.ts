@@ -16,16 +16,22 @@ let haliteLeague = Dimension.create(halite3Design,
 // });
 
 let jsSource = "./js-kit/halite3/stoneBot/MyBot.js";
+let simpleBot = "./js-kit/halite3/StillBot.js";
 let botSources = [];
 
 // sets up a deterministic game where all bots will end up expanding down
 for (let i = 0; i < 2; i++) {
   botSources.push(jsSource);
 }
+
+for (let i = 0; i < 2; i++) {
+  botSources.push(jsSource);
+}
+
 haliteLeague.createMatch(
   botSources,
   {
-    name: 'test-halite-match',
+    name: 'test-long-halite-match',
     timeout: 1000,
     initializeConfig: {
       seed: 3,
@@ -34,9 +40,26 @@ haliteLeague.createMatch(
     },
     loggingLevel: Dimension.Logger.LEVEL.DETAIL,
     replayDirectory: './replays'
-  }).then((res) => {
-    // cons/ole.log(res);
-  })
+  }
+).then((res) => {
+  // cons/ole.log(res);
+});
+haliteLeague.createMatch(
+  [simpleBot, simpleBot],
+  {
+    name: 'test-short-halite-match',
+    timeout: 1000,
+    initializeConfig: {
+      seed: 3,
+      width: 32,
+      height: 32
+    },
+    loggingLevel: Dimension.Logger.LEVEL.DETAIL,
+    replayDirectory: './replays'
+  }
+).then((res) => {
+  // cons/ole.log(res);
+})
 
 // dominationDimension.createMatch(
 //   botSources,

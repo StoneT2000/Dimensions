@@ -1,7 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
 import { Dimension } from '../../../../Dimension';
-import { Match } from '../../../../Match';
-
 
 // Returns all dimensions if no input
 export const getDimension = async (id: number = -1): Promise<Array<Dimension> | Dimension> => {
@@ -55,7 +53,7 @@ export const resumeMatch = async (dimensionID:number, matchID: number): Promise<
 
 export const reRunMatch = async (dimensionID:number, matchID: number): Promise<any> => {
   return new Promise((resolve, reject) => {
-    axios.post(process.env.REACT_APP_API + `/api/dimensions/${dimensionID}/match/${matchID}/rerun`).then((res: AxiosResponse) => {
+    axios.post(process.env.REACT_APP_API + `/api/dimensions/${dimensionID}/match/${matchID}/run`).then((res: AxiosResponse) => {
       console.log(res);
       resolve(res);
     }).catch((error) => {
