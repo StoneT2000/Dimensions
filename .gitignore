@@ -1,6 +1,8 @@
 node_modules
 build
 lib
+*.log
+replays
 *.code-workspace
 coverage
 __pycache__
