@@ -6,16 +6,15 @@
     "sourceMap": true,
     "declaration": true,
     "allowJs": true,
-    "esModuleInterop": true,
-    "baseUrl": "./"
+    "esModuleInterop": true
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
   ],
   "exclude": [
     "node_modules",
     "docs",
-    "build",
+    "lib",
     "examples",
     "templates",
     "src/Station/web/**/*"

@@ -130,7 +130,7 @@ class RockPaperScissorsDesign extends Dimension.Design{
     match.state.results.push(winningAgent);
     // log the winner at the info level
     if (winningAgent != -1) {
-      match.log.info(`Agent ${winningAgent} won`);
+      match.log.detail(`Round: ${match.state.rounds} - Agent ${winningAgent} won`);
     }
     else {
       match.log.info(`Tie`);
@@ -255,4 +255,49 @@ describe('Rock Paper Scissors Run', () => {
     );
     expect(logSpy).toBeCalledTimes(1);
   });
+
+  test('Test RPS with stopping', async () => {
+    expect.assertions(3);
+    let match = await myDimension.createMatch(
+      ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/paper.js'],
+      {
+        bestOf: 10000,
+        loggingLevel: Dimension.Logger.LEVEL.INFO
+      }
+    )
+    let results = match.run();
+    async function startStop(match) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (match.stop()) {
+            
+          } else {
+
+          }
+          
+          setTimeout(() => {
+            expect(match.matchStatus).toStrictEqual(MatchStatus.STOPPED);
+            if (match.resume()) {
+              
+              resolve();
+            } else {
+              reject();
+            }
+            
+          }, 100)
+        }, 100)
+      }, this)
+    }
+    
+    await startStop(match);
+    expect(match.matchStatus).toStrictEqual(MatchStatus.RUNNING);
+    await results.then((res) => {
+      expect(res.scores).toStrictEqual({'0': 10000, '1': 0});
+      console.log(res.scores);
+    });
+
+    // smarter agent defaults to scissors round 1 and loses to rock, then chooses paper afterward due to rock last move
+    // expect(results.scores).toStrictEqual({'0': 5, '1': 0});
+  });
 })
+

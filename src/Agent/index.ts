@@ -8,7 +8,8 @@ export enum AgentStatus {
   READY, // agent that has been fully created and ready to be used by the engine for a match
   RUNNING, // agent that has a process running with it now
   CRASHED,
-  KILLED // agent that has finished and is killed
+  KILLED, // agent that has finished and is killed
+  STOPPED // agent is currently not running
 }
 export type agentID = number;
 

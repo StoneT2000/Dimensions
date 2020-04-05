@@ -1,6 +1,7 @@
 import { Design, Agent, DimensionError, agentID, Logger, LoggerLEVEL, Match, COMMAND_STREAM_TYPE, Command } from "..";
 import { spawn } from 'child_process';
 import { AgentStatus } from "../";
+import { MatchStatus } from "../Match";
 
 // All IO commands that are used for communication between `MatchEngine` and processes associated with `Agents`
 export enum IO_COMMANDS {
@@ -75,24 +76,8 @@ export class MatchEngine {
 
           // TODO: Implement parallel command stream type
           // TODO: Implement timeout mechanism
-          
-          if (this.engineOptions.commandStreamType === COMMAND_STREAM_TYPE.SEQUENTIAL) {
-            // IF SEQUENTIAL, we wait for each unit to finish their move and output their commands
-            if (`${str}` === IO_COMMANDS.MOVE_FNISH) {
-              // Resolve move and tell engine in `getCommands` this agent is done outputting commands and awaits input
-              agent.currentMoveResolve();
-              // stop the process for now from sending more output
-              agent.process.kill('SIGSTOP');
-            }
-            else {
-              agent.currentMoveCommands.push(str);
-            }
-          }
-          else if (this.engineOptions.commandStreamType === COMMAND_STREAM_TYPE.PARALLEL) {
-            // If PARALLEL, theres no waiting, we store commands immediately and resolve right away after each command
-            agent.currentMoveResolve();
-            // updates to match are first come first serve
-          }
+
+          this.handleCommmand(agent, str);
           
         });
         
@@ -117,20 +102,48 @@ export class MatchEngine {
     return true;
   }
 
-  /** TODO
-   * Attempts to gracefully and synchronously stop a match
+  public async handleCommmand(agent: Agent, str: string) {
+    if (this.engineOptions.commandStreamType === COMMAND_STREAM_TYPE.SEQUENTIAL) {
+      // IF SEQUENTIAL, we wait for each unit to finish their move and output their commands
+      if (`${str}` === IO_COMMANDS.MOVE_FNISH) {
+        // Resolve move and tell engine in `getCommands` this agent is done outputting commands and awaits input
+        agent.currentMoveResolve();
+        // stop the process for now from sending more output
+        agent.process.kill('SIGSTOP');
+      }
+      else {
+        agent.currentMoveCommands.push(str);
+      }
+    }
+    else if (this.engineOptions.commandStreamType === COMMAND_STREAM_TYPE.PARALLEL) {
+      // If PARALLEL, theres no waiting, we store commands immediately and resolve right away after each command
+      agent.currentMoveResolve();
+      // updates to match are first come first serve
+    }
+  }
+
+  /**
+   * Attempts to gracefully and synchronously stop a match's agents
    * @param match - the match to stop
    */
   public async stop(match: Match) {
-
+    match.agents.forEach((agent) => {
+      agent.process.kill('SIGSTOP')
+      agent.status = AgentStatus.STOPPED;
+    });
+    this.log.system('Stopped all agents');
   }
 
-  /** TODO
+  /**
    * Attempts to gracefully and synchronously resume a previously stopped match
    * @param match - the match to resume
    */
   public async resume(match: Match) {
-
+    match.agents.forEach((agent) => {
+      agent.process.kill('SIGCONT')
+      agent.status = AgentStatus.RUNNING;
+    });
+    this.log.system('Resumed all agents');
   }
 
   /**

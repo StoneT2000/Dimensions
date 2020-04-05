@@ -1,27 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import './index.scss';
-import { Button, Table } from 'antd';
-import { Tree } from 'antd';
+import { Table, message} from 'antd';
 
 import DefaultLayout from '../../components/layouts/default';
 import { useParams, useHistory, Link } from 'react-router-dom';
 
-import { runMatch, stopMatch } from '../../actions/match';
 import { getDimension, getMatchesFromDimension } from '../../actions/dimensions';
 
 // NOTE!! Can import outside src as long as we dont use instanceof dimension or actually use it, we can just it for typings
 import { Dimension } from '../../../../../Dimension';
-import { Match, MatchStatus } from '../../../../../Match';
+import { Match } from '../../../../../Match';
 import DimensionCard from '../../components/DimensionCard';
 import MatchActionButton from '../../components/MatchActionButton';
 
-const { TreeNode } = Tree;
 
 function DimensionsPage(props: any) {
   const params: any = useParams();
   const history: any = useHistory();
   const [dimension, setDimension] = useState<Dimension>();
-  const [matches, setMatches] = useState<Array<Match>>([]);
+  // const [matches, setMatches] = useState<Array<Match>>([]);
   const [data, setData] = useState<Array<any>>([]);
   const columns = [
     {
@@ -64,14 +61,13 @@ function DimensionsPage(props: any) {
         return 'Unknown'
     }
   }
-  useEffect(() => {
-    console.log(history);
-    if (params.id) {
+  const startRefresh = () => {
+    let intv = setInterval(() => {
       getDimension(params.id).then((res) => {
         if (!(res instanceof Array))  {
           setDimension(res);
           getMatchesFromDimension(res.id).then((res) => {
-            setMatches(res);
+            // setMatches(res);
             let newData = res.map((match: Match, index) => {
               return {
                 key: index,
@@ -87,7 +83,15 @@ function DimensionsPage(props: any) {
         else {
           console.error("something wrong happened");
         }
-      })
+      }).catch(() => {
+        message.error('Backend is not setup');
+        clearInterval(intv);
+      });
+    }, 500);
+  }
+  useEffect(() => {
+    if (params.id) {
+      startRefresh();
     }
   }, []);
   return (

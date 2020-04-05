@@ -1,16 +1,15 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState} from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, message, Button } from 'antd';
+import { Menu } from 'antd';
 import './index.scss';
-import { useHistory } from 'react-router-dom';
+// import { useHistory } from 'react-router-dom';
 
-import UserContext from '../../UserContext'
-const { SubMenu } = Menu;
-function Header(props: any) {
-  let history = useHistory();
+// import UserContext from '../../UserContext'
+function Header() {
+  // let history = useHistory();
   const [key, setKey] = useState();
 
-  const userHooks = useContext(UserContext);
+  // const userHooks = useContext(UserContext);
 
 
   const handleClick = (e: any) => {

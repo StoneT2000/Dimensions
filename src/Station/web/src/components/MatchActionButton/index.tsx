@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { runMatch, stopMatch, reRunMatch, removeMatch } from '../../actions/match';
+import React from 'react';
+import { runMatch, stopMatch, reRunMatch, removeMatch, resumeMatch } from '../../actions/match';
 import { Button } from 'antd';
 import { Match } from '../../../../../Match';
 import './index.scss';
@@ -15,14 +15,14 @@ const MatchActionButton = (props:{match: Match}) => {
       btns = <Button onClick={() => {runMatch(props.match.configs.dimensionID, props.match.id)}}>Run</Button>
       break;
     case 2: // Running
-      btns = <Button onClick={() => {stopMatch(props.match.configs.dimensionID, props.match.id)}} disabled>Stop</Button>
+      btns = <Button onClick={() => {stopMatch(props.match.configs.dimensionID, props.match.id)}}>Stop</Button>
       break;
     case 3: // Stopped
-      btns = <Button onClick={() => {runMatch(props.match.configs.dimensionID, props.match.id)}}>Run</Button>
+      btns = <Button onClick={() => {resumeMatch(props.match.configs.dimensionID, props.match.id)}}>Resume</Button>
       break;
     case 4: // Finished
       btns = [<Button onClick={() => {removeMatch(props.match.configs.dimensionID, props.match.id)}} disabled>Remove</Button>,
-        <Button onClick={() => {reRunMatch(props.match.configs.dimensionID, props.match.id)}} disabled>Re-run</Button>
+        <Button onClick={() => {reRunMatch(props.match.configs.dimensionID, props.match.id)}}>Re-run</Button>
       ]
       break;
     case 5: // Error

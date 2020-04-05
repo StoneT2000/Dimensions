@@ -17,8 +17,8 @@ declare global {
   namespace Express {
     interface Request {
       data: {
-        dimension?: Dimension,
-        match?: Match,
+        // dimension?: Dimension,
+        // match?: Match,
         [x: string]: any
       }
     }
