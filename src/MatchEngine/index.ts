@@ -131,6 +131,7 @@ export class MatchEngine {
       agent.process.kill('SIGSTOP')
       agent.status = AgentStatus.STOPPED;
     });
+    this.log.system('Stopped all agents');
   }
 
   /**
@@ -142,6 +143,7 @@ export class MatchEngine {
       agent.process.kill('SIGCONT')
       agent.status = AgentStatus.RUNNING;
     });
+    this.log.system('Resumed all agents');
   }
 
   /**

@@ -164,11 +164,11 @@ export class Match {
       if (this.matchEngine.engineOptions.commandStreamType === COMMAND_STREAM_TYPE.SEQUENTIAL) {
         // if this.shouldStop is set to true, await for the resume promise to resolve
         if (this.shouldStop == true) {
+          // set status and stop the engine
           this.matchStatus = MatchStatus.STOPPED;
           this.matchEngine.stop(this);
-          this.log.error('Set Match Status to stopped:' , `${this.matchStatus}`);
-          // await this.resumePromise;
-          this.log.error('Resumed, setting should stop to false')
+          await this.resumePromise;
+          this.matchEngine.resume(this);
           this.shouldStop = false;
         }
         // at the start of each time step, we send any updates based on what agents sent us on the previous timestep
@@ -236,7 +236,7 @@ export class Match {
       this.log.error('You can\'t resume a match that is not stopped');
       return false;
     }
-    this.matchEngine.resume(this);
+   
     // set back to running and resolve
     this.matchStatus = MatchStatus.RUNNING;
     this.resumeResolve();
