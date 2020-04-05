@@ -161,7 +161,7 @@ export class Match {
    */
   public async next(): Promise<MatchStatus> {
     return new Promise(async (resolve, reject) => {
-      if (this.matchEngine.engineOptions.commandStreamType === COMMAND_STREAM_TYPE.SEQUENTIAL) {
+      if (this.matchEngine.getEngineOptions().commandStreamType === COMMAND_STREAM_TYPE.SEQUENTIAL) {
         // if this.shouldStop is set to true, await for the resume promise to resolve
         if (this.shouldStop == true) {
           // set status and stop the engine
@@ -197,7 +197,7 @@ export class Match {
       }
 
       // TODO: implement this
-      else if (this.matchEngine.engineOptions.commandStreamType === COMMAND_STREAM_TYPE.PARALLEL) {
+      else if (this.matchEngine.getEngineOptions().commandStreamType === COMMAND_STREAM_TYPE.PARALLEL) {
         // with a parallel structure, the `Design` updates the match after each command sequence, delimited by \n
         // this means agents end up sending commands using out of sync state information, so the `Design` would need to 
         // adhere to this. Possibilities include stateless designs, or heavily localized designs where out of 

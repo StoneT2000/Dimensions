@@ -1,4 +1,6 @@
 import { Match, agentID, MatchStatus, Logger, LoggerLEVEL } from "..";
+import { EngineOptions, COMMAND_FINISH_POLICIES } from "../MatchEngine";
+import { deepMerge } from "../utils/DeepMerge";
 
 /**
  * @class Design
@@ -12,17 +14,26 @@ export abstract class Design {
   
   public designOptions: DesignOptions;
   public log = new Logger();
-  constructor(public name: String, designOptions?: Partial<DesignOptions>) {
+  constructor(public name: String, designOptions: Partial<DesignOptions> = {}) {
 
     const DEFAULT_DESIGN_OPTIONS: DesignOptions = {
-      commandStreamType: COMMAND_STREAM_TYPE.SEQUENTIAL,
-      commandDelimiter: ','
+      engineOptions: {
+        commandStreamType: COMMAND_STREAM_TYPE.SEQUENTIAL,
+        commandDelimiter: ',',
+        commandFinishSymbol: 'D_FINISH',
+        commandFinishPolicy: COMMAND_FINISH_POLICIES.FINISH_SYMBOL,
+        commandLines: {
+          max: 1,
+          // min: 1
+        }
+      }
     }
     // Set defaults
     this.designOptions = DEFAULT_DESIGN_OPTIONS;
     // Override with user provided params
-    Object.assign(this.designOptions, designOptions);
-
+    deepMerge(this.designOptions, designOptions);
+    // Object.assign(this.designOptions, designOptions);
+    this.log.detail(`Design + MatchEngine Options`, this.designOptions);
     // Set log level to default
     this.log.level = Logger.LEVEL.INFO;
     this.log.system(`Initialized Design: ` + this.name);
@@ -100,7 +111,6 @@ export type Command = {
   command: string
   agentID: agentID
 }
-export type DesignOptions = {
-  commandStreamType: COMMAND_STREAM_TYPE
-  commandDelimiter: string
+export interface DesignOptions {
+  engineOptions: EngineOptions
 };

@@ -41,6 +41,9 @@ export class Agent {
   public agentTimeStep = 0;
 
   private log = new Logger();
+
+  // whether agent is allowed to send commands. Used to help ignore extra output from agents
+  private allowedToSendCommands = true;
   
   constructor(file: string, options: any) {
     this.creationDate = new Date();
@@ -91,10 +94,20 @@ export class Agent {
 
   }
 
+  _disallowCommands() {
+    this.allowedToSendCommands = false;
+  }
+  _allowCommands() {
+    this.allowedToSendCommands = true;
+  }
+  isAllowedToSendCommands() {
+    return this.allowedToSendCommands;
+  }
   // Start an Agent's move and setup the promise structures
   _setupMove() {
     // continue agent again
     this.process.kill('SIGCONT');
+    this.allowedToSendCommands = true;
     this.agentTimeStep++;
     this.currentMoveCommands = [];
     this.currentMovePromise = new Promise((resolve, reject) => {

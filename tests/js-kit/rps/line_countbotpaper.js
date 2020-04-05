@@ -1,4 +1,4 @@
-const Agent = require('./agent');
+const Agent = require('./agent_linecount');
 
 // create a new agent
 const agent = new Agent();
@@ -10,11 +10,8 @@ try {
       
       // this agent always uses rock, so we always log a rock command to the match engine
       console.log('P');
-
-      // now we end our turn
-      // agent.endTurn();
-      // testing extra output that should be deleted
-      console.log('D_FINISH\nExtra Output\nShould be deleted');
+      // as we use line count, the moment we send one line, it gets logged
+      
 
       // wait for update from match engine
       await agent.update();
