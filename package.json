@@ -12,6 +12,7 @@
     "test-watch": "jest --watch tests --collectCoverage",
     "docs": "typedoc --exclude ./src/Station/web/ --out docs src",
     "watch": "tsc -w",
+    "dev-frontend": "npm run start --prefix=src/Station/web",
     "build": "tsc && npm run buildStation",
     "buildStation": "npm run build --prefix=src/Station/web && rm -rf lib/Station/web && mkdir lib/Station/web && cp -r src/Station/web/build lib/Station/web/"
   },
@@ -31,6 +32,7 @@
     "@babel/plugin-transform-typescript": "^7.9.4",
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-typescript": "^7.9.0",
+    "@dimensions-ai/designs-halite3": "^1.0.2",
     "@types/express": "^4.17.3",
     "@types/jest": "^25.1.4",
     "@types/node": "^12.12.31",

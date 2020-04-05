@@ -49,4 +49,32 @@ router.post('/:matchID/run', async (req: Request, res: Response, next: NextFunct
   }
 });
 
+// Stops a match
+router.post('/:matchID/stop', async (req: Request, res: Response, next: NextFunction) => {
+  if (req.data.matchStatus === MatchStatus.STOPPED) {
+    return next(new error.BadRequest('Match is already stopped'));
+  }
+  // stop the match
+  if (req.data.match.stop()) {
+    res.json({error: null, msg:'Stopped Match'})
+  }
+  else {
+    return next(new error.InternalServerError('Couldn\'t stop the match'));
+  }
+});
+
+// Resumes a match
+router.post('/:matchID/resume', async (req: Request, res: Response, next: NextFunction) => {
+  if (req.data.matchStatus === MatchStatus.RUNNING) {
+    return next(new error.BadRequest('Match is already running'));
+  }
+  // resume the match
+  if (req.data.match.resume()) {
+    res.json({error: null, msg:'Resumed Match'})
+  }
+  else {
+    return next(new error.InternalServerError('Couldn\'t resume the match'));
+  }
+});
+
 export default router;

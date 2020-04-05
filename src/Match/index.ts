@@ -38,7 +38,9 @@ export class Match {
   public name: string;
   public id: number;
 
-  
+  private shouldStop: boolean = false;
+  private resumePromise: Promise<void>;
+  private resumeResolve: Function;
 
   private static _id: number = 0;
 
@@ -143,6 +145,7 @@ export class Match {
     // Run match
     do {
       status = await this.next();
+
     }
     while (status != MatchStatus.FINISHED)
     this.results = await this.getResults();
@@ -159,6 +162,15 @@ export class Match {
   public async next(): Promise<MatchStatus> {
     return new Promise(async (resolve, reject) => {
       if (this.matchEngine.engineOptions.commandStreamType === COMMAND_STREAM_TYPE.SEQUENTIAL) {
+        // if this.shouldStop is set to true, await for the resume promise to resolve
+        if (this.shouldStop == true) {
+          this.matchStatus = MatchStatus.STOPPED;
+          this.matchEngine.stop(this);
+          this.log.error('Set Match Status to stopped:' , `${this.matchStatus}`);
+          // await this.resumePromise;
+          this.log.error('Resumed, setting should stop to false')
+          this.shouldStop = false;
+        }
         // at the start of each time step, we send any updates based on what agents sent us on the previous timestep
         // Updates sent by agents on previous timestep can be obtained with MatchEngine.getCommands
         // This is also the COORDINATION step, where we essentially wait for all commands from all agents to be
@@ -194,15 +206,43 @@ export class Match {
   }
 
   /**
-   * Stops at the nearest timestep available
+   * Stops at the next nearest timestep possible
    * 
    * Notes:
    * - If design uses a PARALLEL match engine, stopping behavior can be a little unpredictable
    * - If design uses a SEQUENTIAL match engine, a stop will result in ensuring all agents complete all their actions up
    *   to a coordinated stopping `timeStep`
+   * @returns true if successfully stopped
    */
-  public async stop() {
-    // if (this.design.matchEngine.)
+  public stop() {
+    
+    if (this.matchStatus != MatchStatus.RUNNING) {
+      this.log.error('You can\'t stop a match that is not running');
+      return false;
+    }
+    this.shouldStop = true;
+    this.resumePromise = new Promise((resolve) => {
+      this.resumeResolve = resolve;
+    });
+    this.log.info('Stopped match');
+    return true;
+  }
+  /**
+   * Resume the match if it was in the stopped state
+   * @returns true if succesfully resumed
+   */
+  public resume() {
+    if (this.matchStatus != MatchStatus.STOPPED) {
+      this.log.error('You can\'t resume a match that is not stopped');
+      return false;
+    }
+    this.matchEngine.resume(this);
+    // set back to running and resolve
+    this.matchStatus = MatchStatus.RUNNING;
+    this.resumeResolve();
+    this.log.info('Resumed match');
+    return true;
+
   }
 
   public async stopAndCleanUp() {
