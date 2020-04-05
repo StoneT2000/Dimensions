@@ -12,6 +12,7 @@ import { getMatchFromDimension } from '../../actions/dimensions';
 import { Match } from '../../../../../Match';
 import { Agent, AgentStatus } from '../../../../../Agent';
 
+let intv: any;
 function MatchPage() {
   const params: any = useParams();
   const history: any = useHistory();
@@ -54,7 +55,7 @@ function MatchPage() {
     }
   }
   const startRefresh = () => {
-    let intv = setInterval(() => {
+    intv = setInterval(() => {
       getMatchFromDimension(params.id, params.matchID).then((res) => {
         if (!(res instanceof Array))  {
           setMatch(res);
@@ -80,6 +81,9 @@ function MatchPage() {
   useEffect(() => {
     if (params.matchID) {
       startRefresh();
+    }
+    return () => {
+      clearInterval(intv);
     }
   }, []);
   return (
