@@ -8,7 +8,7 @@ export enum AgentStatus {
   READY, // agent that has been fully created and ready to be used by the engine for a match
   RUNNING, // agent that has a process running with it now
   CRASHED,
-  KILLED, // agent that has finished and is killed
+  KILLED, // agent that has finished and is killed or was prematurely killed
   STOPPED // agent is currently not running
 }
 export type agentID = number;
@@ -41,6 +41,10 @@ export class Agent {
   public agentTimeStep = 0;
 
   private log = new Logger();
+
+  // whether agent is allowed to send commands. Used to help ignore extra output from agents
+  private allowedToSendCommands = true;
+  private terminated = false;
   
   constructor(file: string, options: any) {
     this.creationDate = new Date();
@@ -90,11 +94,27 @@ export class Agent {
     this.status = AgentStatus.READY;
 
   }
+  isTerminated() {
+    return this.status === AgentStatus.KILLED;
+  }
+  _terminate() {
+    this.status = AgentStatus.KILLED;
+  }
 
+  _disallowCommands() {
+    this.allowedToSendCommands = false;
+  }
+  _allowCommands() {
+    this.allowedToSendCommands = true;
+  }
+  getAllowedToSendCommands() {
+    return this.allowedToSendCommands;
+  }
   // Start an Agent's move and setup the promise structures
   _setupMove() {
     // continue agent again
     this.process.kill('SIGCONT');
+    this.allowedToSendCommands = true;
     this.agentTimeStep++;
     this.currentMoveCommands = [];
     this.currentMovePromise = new Promise((resolve, reject) => {

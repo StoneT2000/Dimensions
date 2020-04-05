@@ -11,7 +11,6 @@ export enum MatchStatus {
 }
 
 // Life cycle configurations for a match, dependent on the `Design`
-// TODO: add any property with type any
 export type MatchConfigs = {
   name: any
   timeout: number, // number of milliseconds to give each agent before stopping them
@@ -161,7 +160,7 @@ export class Match {
    */
   public async next(): Promise<MatchStatus> {
     return new Promise(async (resolve, reject) => {
-      if (this.matchEngine.engineOptions.commandStreamType === COMMAND_STREAM_TYPE.SEQUENTIAL) {
+      if (this.matchEngine.getEngineOptions().commandStreamType === COMMAND_STREAM_TYPE.SEQUENTIAL) {
         // if this.shouldStop is set to true, await for the resume promise to resolve
         if (this.shouldStop == true) {
           // set status and stop the engine
@@ -197,7 +196,7 @@ export class Match {
       }
 
       // TODO: implement this
-      else if (this.matchEngine.engineOptions.commandStreamType === COMMAND_STREAM_TYPE.PARALLEL) {
+      else if (this.matchEngine.getEngineOptions().commandStreamType === COMMAND_STREAM_TYPE.PARALLEL) {
         // with a parallel structure, the `Design` updates the match after each command sequence, delimited by \n
         // this means agents end up sending commands using out of sync state information, so the `Design` would need to 
         // adhere to this. Possibilities include stateless designs, or heavily localized designs where out of 
@@ -250,6 +249,19 @@ export class Match {
 
   public async stopAndCleanUp() {
     await this.matchEngine.killAndClean(this);
+  }
+
+  /**
+   * Terminate an agent
+   */
+  public async kill(agent: agentID | Agent) {
+    
+    if (agent instanceof Agent) {
+      this.matchEngine.kill(agent);
+    }
+    else {
+      this.matchEngine.kill(this.idToAgentsMap.get(agent));
+    }
   }
 
   /**

@@ -42,8 +42,6 @@ test('Test Run A match of Domination', async () => {
 
 describe('Receive MatchErrors and FatalErrors from a match of Domination', () => {
   
-
-  expect.assertions(3);
   test('Match Errors', async () => {
     let jsSource = "./tests/js-kit/domination/errorProvokingBot.js";
     let botSources = [];

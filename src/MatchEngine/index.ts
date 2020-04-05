@@ -1,7 +1,7 @@
 import { Design, Agent, DimensionError, agentID, Logger, LoggerLEVEL, Match, COMMAND_STREAM_TYPE, Command } from "..";
 import { spawn } from 'child_process';
 import { AgentStatus } from "../";
-import { MatchStatus } from "../Match";
+import { FatalError } from "../DimensionError";
 
 // All IO commands that are used for communication between `MatchEngine` and processes associated with `Agents`
 export enum IO_COMMANDS {
@@ -9,9 +9,22 @@ export enum IO_COMMANDS {
   MOVE_START = 'D_START'
 }
 
+export enum COMMAND_FINISH_POLICIES {
+  FINISH_SYMBOL = 'finish_symbol', // stops an agents command stream after they send the commandFinishSymbol
+  LINE_COUNT = 'line_count', // stops an agents command stream after they send some number lines
+  CUSTOM = 'custom' // stops agents command stream based on a custom function that returns true if agent is done or not 
+  // TODO: implement custom finish policy
+}
+
 export type EngineOptions = {
   commandStreamType: COMMAND_STREAM_TYPE,
   commandDelimiter: string, // delimiter for seperating commands e.g move 01 02,buy 32_4_2,cmd 2 a b...
+  commandFinishSymbol: string,
+  commandFinishPolicy: COMMAND_FINISH_POLICIES,
+  commandLines: {
+    max: number, // max lines commands allowed
+    // min: number // min lines of commands required, TODO: not really used at the moment
+  }
 }
 /**
  * @class MatchEngine
@@ -25,23 +38,25 @@ export class MatchEngine {
   // The design the MatchEngine runs on
   private design: Design;
 
-  public engineOptions: EngineOptions;
+  private engineOptions: EngineOptions;
 
   private log = new Logger();
   
   constructor(design: Design, loggingLevel: LoggerLEVEL) {
     this.design = design;
-    let { commandStreamType, commandDelimiter } = this.design.getDesignOptions();
-    this.engineOptions = {
-      commandStreamType: commandStreamType,
-      commandDelimiter: commandDelimiter
-    }
-    this.log.identifier = `Engine`
+    this.engineOptions = this.design.getDesignOptions().engineOptions;
+    this.log.identifier = `Engine`;
     this.setLogLevel(loggingLevel);
   }
 
   setLogLevel(loggingLevel: LoggerLEVEL) {
     this.log.level = loggingLevel;
+  }
+  getEngineOptions() {
+    return this.engineOptions;
+  }
+  setEngineOptions(newOptions: Partial<EngineOptions>) {
+    Object.assign(this.engineOptions, newOptions);
   }
 
   /**
@@ -68,19 +83,18 @@ export class MatchEngine {
 
       // handler for stdout of Agent processes. Stores their output commands and resolves move promises
       
-      p.stdout.on('data', (data) => {
-        
-        // split chunks into line by line and handle each line of commands
-        `${data}`.split('\n').forEach((str) => {
-          this.log.systemIO(`${agent.name} - stdout: ${str}`);
-
-          // TODO: Implement parallel command stream type
-          // TODO: Implement timeout mechanism
-
-          this.handleCommmand(agent, str);
-          
-        });
-        
+      p.stdout.on('readable', () => {
+        let data;
+        while (data = p.stdout.read()) {
+          // split chunks into line by line and handle each line of commands
+          this.log.systemIO(`${agent.name} - stdout: ${data}`);
+          let strs = `${data}`.split('\n');
+          for (let i = 0; i < strs.length; i++) {
+            if (agent.getAllowedToSendCommands()) {
+              this.handleCommmand(agent, strs[i]);
+            }
+          }
+        }
       });
 
       // log stderr from agents to this stderr
@@ -103,17 +117,47 @@ export class MatchEngine {
   }
 
   public async handleCommmand(agent: Agent, str: string) {
+
+    // TODO: Implement parallel command stream type
+    // TODO: Implement timeout mechanism
     if (this.engineOptions.commandStreamType === COMMAND_STREAM_TYPE.SEQUENTIAL) {
       // IF SEQUENTIAL, we wait for each unit to finish their move and output their commands
-      if (`${str}` === IO_COMMANDS.MOVE_FNISH) {
-        // Resolve move and tell engine in `getCommands` this agent is done outputting commands and awaits input
-        agent.currentMoveResolve();
-        // stop the process for now from sending more output
-        agent.process.kill('SIGSTOP');
+      
+      switch (this.engineOptions.commandFinishPolicy) {
+        
+        case COMMAND_FINISH_POLICIES.FINISH_SYMBOL:
+          // if we receive the symbol representing that the agent is done with output and now awaits for updates
+          if (`${str}` === this.engineOptions.commandFinishSymbol) {
+            // Resolve move and tell engine in `getCommands` this agent is done outputting commands and awaits input
+            agent.currentMoveResolve();
+            
+            // stop the process for now from sending more output and disallow commmands to ignore rest of output
+            agent.process.kill('SIGSTOP');
+            agent._disallowCommands();
+          }
+          else {
+            agent.currentMoveCommands.push(str);
+          }
+          break;
+        case COMMAND_FINISH_POLICIES.LINE_COUNT:
+          // only log command if max isnt reached
+          if (agent.currentMoveCommands.length < this.engineOptions.commandLines.max - 1) {
+            agent.currentMoveCommands.push(str);
+          }
+          // else if on final command before reaching max, push final command and resolve
+          else if (agent.currentMoveCommands.length == this.engineOptions.commandLines.max - 1) {
+            agent.currentMoveCommands.push(str);
+            agent.currentMoveResolve();
+            agent.process.kill('SIGSTOP');
+            agent._disallowCommands();
+          }
+          break;
+        case COMMAND_FINISH_POLICIES.CUSTOM:
+          // TODO: Not implemented yet
+          throw new FatalError('Custom command finish policies are not allowed yet');
+          break;
       }
-      else {
-        agent.currentMoveCommands.push(str);
-      }
+
     }
     else if (this.engineOptions.commandStreamType === COMMAND_STREAM_TYPE.PARALLEL) {
       // If PARALLEL, theres no waiting, we store commands immediately and resolve right away after each command
@@ -140,6 +184,7 @@ export class MatchEngine {
    */
   public async resume(match: Match) {
     match.agents.forEach((agent) => {
+      agent._allowCommands();
       agent.process.kill('SIGCONT')
       agent.status = AgentStatus.RUNNING;
     });
@@ -151,12 +196,22 @@ export class MatchEngine {
    */
   public async killAndClean(match: Match) {
     match.agents.forEach((agent) => {
-      agent.process.kill('SIGTERM')
+      agent.process.kill('SIGKILL')
       agent.status = AgentStatus.KILLED;
     });
   }
+
+  /**
+   * Kills an agent and closes the process, and no longer attempts to receive coommands from it anymore
+   * @param agent - the agent to kill off
+   */
+  public async kill(agent: Agent) {
+    agent.process.kill('SIGKILL');
+    agent._terminate();
+    this.log.system(`Killed off agent ${agent.id} - ${agent.name}`);
+  }
   
-  /** TODO allow for a agentResolvePolicy
+  /**
    * Returns a promise that resolves with all the commands loaded from the previous time step of the provided match
    * This coordinates all the Agents and waits for each one to finish their step
    * @param match - The match to get commands from agents for
@@ -168,7 +223,10 @@ export class MatchEngine {
       try {
         this.log.system(`Retrieving commands`);
         let commands: Array<Command> = [];
-        let allAgentMovePromises = match.agents.map((agent: Agent) => {
+        let nonTerminatedAgents = match.agents.filter((agent: Agent) => {
+          return !agent.isTerminated();
+        })
+        let allAgentMovePromises = nonTerminatedAgents.map((agent: Agent) => {
           return agent.currentMovePromise;
         });
         this.log.system(`Retrieved all move promises`)

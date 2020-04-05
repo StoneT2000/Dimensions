@@ -1,5 +1,5 @@
 // const Dimension = require('dimensions-ai');
-const Dimension = require('../src');
+let Dimension = require('../src');
 const MatchStatus = Dimension.MatchStatus;
 
 /**
@@ -199,7 +199,7 @@ class RockPaperScissorsDesign extends Dimension.Design{
 
 
 describe('Rock Paper Scissors Run', () => {
-  let RPSDesign;
+  let RPSDesign, myDimension_line_count, RPSDesign_line_count;
   let myDimension;
   beforeAll(() => {
     RPSDesign = new RockPaperScissorsDesign('RPS!');
@@ -209,38 +209,62 @@ describe('Rock Paper Scissors Run', () => {
       observe: false,
       loggingLevel: Dimension.Logger.LEVEL.WARN
     });
+    RPSDesign_line_count = new RockPaperScissorsDesign('RPS!', {
+      engineOptions: {
+        commandFinishPolicy: 'line_count'
+      }
+    });
+    myDimension_line_count = Dimension.create(RPSDesign_line_count, {
+      name: 'RPS_line_count',
+      activateStation: false,
+      observe: false,
+      loggingLevel: Dimension.Logger.LEVEL.ERROR
+    });
   })
-  test('Test run rock vs paper 3 times', async () => {
+  test('Test line count based engine', async () => {
+    expect.assertions(1);
+    let results = await myDimension_line_count.runMatch(
+      ['./tests/js-kit/rps/line_countbot.js', './tests/js-kit/rps/line_countbotpaper.js'],
+      {
+        bestOf: 10000
+      }
+    )
+    // line count bot also sends extraneous output of 's': scissors, which should all be erased by matchengine
+    // we test this by ensuring the score is correct, otherwise the extraneous output would make line count bot win
+    // sometimes.
+    expect(results.scores).toStrictEqual({'0': 0, '1': 10000});
+  })
+  test('Test run rock vs paper 3 times and test erasure of output', async () => {
     expect.assertions(1);
     let results = await myDimension.runMatch(
       ['./tests/js-kit/rps/rock.js', './tests/js-kit/rps/paper.js'],
       {
-        bestOf: 3
+        bestOf: 100
       }
     )
-    expect(results.scores).toStrictEqual({'0': 0, '1': 3});
+    expect(results.scores).toStrictEqual({'0': 0, '1': 100});
   });
   test('Test multi-language support, run smarter bot against rock.py 5 times', async () => {
     expect.assertions(1);
     let results = await myDimension.runMatch(
       ['./tests/js-kit/rps/smarter.js', './tests/python-kit/rps/rock.py'],
       {
-        bestOf: 5
+        bestOf: 20
       }
     )
     // smarter agent defaults to scissors round 1 and loses to rock, then chooses paper afterward due to rock last move
-    expect(results.scores).toStrictEqual({'0': 4, '1': 1});
+    expect(results.scores).toStrictEqual({'0': 19, '1': 1});
   });
-  test('Test run smarter bot against paper 5 times', async () => {
+  test('Test run smarter bot against paper 5 times and test erasure of output', async () => {
     expect.assertions(1);
     let results = await myDimension.runMatch(
       ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/paper.js'],
       {
-        bestOf: 5
+        bestOf: 30
       }
     )
     // smarter agent defaults to scissors round 1 and loses to rock, then chooses paper afterward due to rock last move
-    expect(results.scores).toStrictEqual({'0': 5, '1': 0});
+    expect(results.scores).toStrictEqual({'0': 30, '1': 0});
   });
 
   test('Test RPS to log match errors', async () => {

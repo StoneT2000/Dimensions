@@ -32,7 +32,6 @@ router.get('/:matchID/results', (req, res) => {
 });
 router.post('/:matchID/run', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    // TODO: This route should also initialize a match if its not initialized yet or is finished (and so all agents are killed )
     if (req.data.match.matchStatus === MatchStatus.FINISHED || 
       req.data.match.matchStatus === MatchStatus.UNINITIALIZED) {
       await req.data.match.initialize();

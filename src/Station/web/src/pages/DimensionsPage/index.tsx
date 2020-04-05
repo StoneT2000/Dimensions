@@ -14,6 +14,7 @@ import DimensionCard from '../../components/DimensionCard';
 import MatchActionButton from '../../components/MatchActionButton';
 
 
+let intv: any;
 function DimensionsPage(props: any) {
   const params: any = useParams();
   const history: any = useHistory();
@@ -61,8 +62,9 @@ function DimensionsPage(props: any) {
         return 'Unknown'
     }
   }
+  
   const startRefresh = () => {
-    let intv = setInterval(() => {
+     intv = setInterval(() => {
       getDimension(params.id).then((res) => {
         if (!(res instanceof Array))  {
           setDimension(res);
@@ -92,6 +94,9 @@ function DimensionsPage(props: any) {
   useEffect(() => {
     if (params.id) {
       startRefresh();
+    }
+    return () => {
+      clearInterval(intv);
     }
   }, []);
   return (
