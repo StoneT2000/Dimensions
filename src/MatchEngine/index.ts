@@ -79,54 +79,62 @@ export class MatchEngine {
     
     this.log.systembar();
 
-    match.agents.forEach((agent: Agent, index: number) => {
-      // spawn a process
-      this.log.system("Setting up and spawning " + agent.name + ` | Command: ${agent.cmd} ${agent.src}`);
+    return new Promise((resolve, reject) => {
+      let agentSetupPromises: Array<Promise<boolean>> = [];
 
-      // TODO: make this async and use promise
+      match.agents.forEach( async (agent: Agent, index: number) => {
+        agentSetupPromises.push(new Promise( async (res, rej) => {
+          // spawn a process
+          this.log.system("Setting up and spawning " + agent.name + ` | Command: ${agent.cmd} ${agent.src}`);
+        
+          await agent._compile();
+          this.log.system('Succesfully ran compile step for agent ' + agent.id);
+          let p = await agent._spawn();
 
-      let p = spawn(agent.cmd, [agent.src], {
-        cwd: agent.cwd
-      }).on('error', function( err ){ throw err })
+          match.idToAgentsMap.set(agent.id, agent);
 
-      match.idToAgentsMap.set(agent.id, agent);
+          // set agent status as running
+          agent.status = AgentStatus.RUNNING;
 
-      // set agent status as running
-      agent.status = AgentStatus.RUNNING;
-
-      // handler for stdout of Agent processes. Stores their output commands and resolves move promises
-      
-      p.stdout.on('readable', () => {
-        let data;
-        while (data = p.stdout.read()) {
-          // split chunks into line by line and handle each line of commands
-          this.log.systemIO(`${agent.name} - stdout: ${data}`);
-          let strs = `${data}`.split('\n');
-          for (let i = 0; i < strs.length; i++) {
-            if (agent.getAllowedToSendCommands()) {
-              this.handleCommmand(agent, strs[i]);
+          // handler for stdout of Agent processes. Stores their output commands and resolves move promises
+          
+          p.stdout.on('readable', () => {
+            let data: string[];
+            while (data = p.stdout.read()) {
+              // split chunks into line by line and handle each line of commands
+              this.log.systemIO(`${agent.name} - stdout: ${data}`);
+              let strs = `${data}`.split('\n');
+              for (let i = 0; i < strs.length; i++) {
+                if (agent.getAllowedToSendCommands()) {
+                  this.handleCommmand(agent, strs[i]);
+                }
+              }
             }
-          }
-        }
-      });
+          });
 
-      // log stderr from agents to this stderr
-      p.stderr.on('data', (data) => {
-        this.log.error(`${agent.id}: ${data.slice(0, data.length - 1)}`);
-      });
+          // log stderr from agents to this stderr
+          p.stderr.on('data', (data) => {
+            this.log.error(`${agent.id}: ${data.slice(0, data.length - 1)}`);
+          });
 
-      // when process closes, print message
-      p.on('close', (code) => {
-        this.log.system(`${agent.name} | id: ${agent.id} - exited with code ${code}`);
-      });
+          // when process closes, print message
+          p.on('close', (code) => {
+            this.log.system(`${agent.name} | id: ${agent.id} - exited with code ${code}`);
+          });
 
-      // store process
-      agent.process = p;
+          // store process
+          agent.process = p;
+          res();
+        }))
+      }, this);
 
-    }, this);
-
-    this.log.system('FINISHED INITIALIZATION OF PROCESSES\n');
-    return true;
+      this.log.system('FINISHED INITIALIZATION OF PROCESSES\n');
+      Promise.all(agentSetupPromises).then(() => {
+        resolve();
+      }).catch((error) => {
+        reject(error);
+      })
+    })
   }
 
   public async handleCommmand(agent: Agent, str: string) {

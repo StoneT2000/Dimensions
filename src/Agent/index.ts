@@ -1,5 +1,5 @@
 import { Logger, LoggerLEVEL, FatalError } from "..";
-import { ChildProcess } from "child_process";
+import { ChildProcess, exec, spawn } from "child_process";
 import path from 'path';
 import fs from 'fs';
 
@@ -23,6 +23,7 @@ export class Agent {
   public id: agentID = 0;
   public name: string; // name of this agent
   public src: string; // path to file to run
+  public ext: string;
   public cwd: string; // current working directory of agent
   public cmd: string; // command used to run file
 
@@ -52,8 +53,8 @@ export class Agent {
   constructor(file: string, options: any) {
     this.creationDate = new Date();
 
-    let ext = path.extname(file);
-    switch(ext) {
+    this.ext = path.extname(file);
+    switch(this.ext) {
       case '.py':
         this.cmd = 'python'
         break;
@@ -100,6 +101,65 @@ export class Agent {
     this.status = AgentStatus.READY;
 
   }
+
+
+  /**
+   * Compile whatever is needed
+   */
+  async _compile(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      switch(this.ext) {
+        case '.py':
+          resolve();
+          break;
+        case '.js':
+          resolve();
+          break;
+        case '.java':
+          exec("javac " + this.src, {
+            cwd: this.cwd
+          }, (err) => {
+            if (err) reject(err);
+            resolve();
+          })
+          break;
+        default:
+          reject('Unrecognized file');
+      }
+    });
+  }
+
+  /**
+   * Spawn the process and return the process
+   */
+  async _spawn(): Promise<ChildProcess> {
+    return new Promise((resolve, reject) => {
+      let p;
+      switch(this.ext) {
+        case '.py':
+        case '.js':
+          p = spawn(this.cmd, [this.src], {
+            cwd: this.cwd
+          }).on('error', function( err ){ reject(err) });
+          resolve(p);
+          break;
+        case '.java':
+          let src = this.src.slice(0, -5);
+          p = spawn(this.cmd, [src], {
+            cwd: this.cwd
+          }).on('error', function( err ){ reject(err) });
+          resolve(p);
+          break;
+        case '.c':
+        case '.cpp':
+          break;
+        default:
+          reject('Unrecognized file');
+      }
+    })
+  }
+
+
   isTerminated() {
     return this.status === AgentStatus.KILLED;
   }

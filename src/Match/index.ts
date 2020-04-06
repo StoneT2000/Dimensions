@@ -128,6 +128,7 @@ export class Match {
         // Initialize the matchEngine and get it ready to run and process I/O for agents
         await this.matchEngine.initialize(this.agents, this);
         
+        // by now all agents should up and running, all compiled and ready
         // Initialize match according to `design` by delegating intialization task to the enforced `design`
         await this.design.initialize(this, this.configs.initializeConfig);
 
