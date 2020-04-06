@@ -1,5 +1,5 @@
 import * as Dimension from '../src';
-const { DominationDesign } = require('./domination');
+import { DominationDesign } from './domination';
 
 
 let dominationDesign = new DominationDesign('Domination');
