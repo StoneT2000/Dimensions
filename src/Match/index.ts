@@ -59,7 +59,7 @@ export class Match {
   // The time step of the Match. All agents are coordinated against this timeStep
   public timeStep: number = 0;
 
-  private matchEngine: MatchEngine; // could potentially made MatchEngine all static, but each match engine does have configurations dependent on design and per match, so holding this as a private field 
+  public matchEngine: MatchEngine; // could potentially made MatchEngine all static, but each match engine does have configurations dependent on design and per match, so holding this as a private field 
 
   public log = new Logger();
 
