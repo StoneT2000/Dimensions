@@ -27,6 +27,8 @@ export class Agent {
   public cwd: string; // current working directory of agent
   public cmd: string; // command used to run file
 
+  public _buffer: Array<string> = []; // internal buffer to store stdout from an agent that has yet to be delimited / used
+
   process: ChildProcess = null;
 
   // current status of the agent

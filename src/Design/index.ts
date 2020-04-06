@@ -24,6 +24,7 @@ export abstract class Design {
       commandLines: {
         max: 1,
         // min: 1
+        waitForNewline: true
       },
       timeout: {
         max: 1000,

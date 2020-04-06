@@ -24,8 +24,9 @@ export type EngineOptions = {
   commandFinishSymbol: string,
   commandFinishPolicy: COMMAND_FINISH_POLICIES,
   commandLines: {
-    max: number, // max lines commands allowed
+    max: number, // max lines commands allowed. each line is delimited by new line characters
     // min: number // min lines of commands required, TODO: not really used at the moment
+    waitForNewline: boolean // whether engine should wait for a newline character before processing the line commands received. This should for most cases be true, false will lead to some unpredictable behavior.
   }
   timeout: {
     active: boolean, // on or not
@@ -102,13 +103,40 @@ export class MatchEngine {
             let data: string[];
             while (data = p.stdout.read()) {
               // split chunks into line by line and handle each line of commands
-              this.log.systemIO(`${agent.name} - stdout: ${data}`);
               let strs = `${data}`.split('\n');
-              for (let i = 0; i < strs.length; i++) {
-                if (agent.getAllowedToSendCommands()) {
-                  this.handleCommmand(agent, strs[i]);
+              // first store data into a buffer and process later if no newline character is detected
+              if (this.engineOptions.commandLines.waitForNewline && strs.length >= 1 && strs[strs.length - 1] != '') {
+                // using split with \n should make any existing final \n character to be set as '' in strs array
+                
+                // if there is an existing buffer from the previous 'readable' event, 
+                // concat it to the first strs element as it belongs with that
+                if (strs.length > 1) {
+                  // greater than 1 implies the first strs element is delimited by a \n
+                  strs[0] = agent._buffer.join('').concat(strs[0])
+                  agent._buffer = [];
+                }
+                for (let i = 0; i < strs.length - 1; i++) {
+                  if (agent.getAllowedToSendCommands()) {
+                    this.handleCommmand(agent, strs[i]);
+                  }
+                }
+                // push whatever didn't have a newline into buffer
+                agent._buffer.push(strs[strs.length - 1]);
+              }
+              else {
+                if (strs.length > 1) {
+                  // greater than 1 implies the first strs element is delimited by a \n
+                  strs[0] = agent._buffer.join('').concat(strs[0]);
+                  agent._buffer = [];
+                }
+                this.log.systemIO(`${agent.name} - stdout: ${strs}`);
+                for (let i = 0; i < strs.length; i++) {
+                  if (agent.getAllowedToSendCommands()) {
+                    this.handleCommmand(agent, strs[i]);
+                  }
                 }
               }
+              
             }
           });
 

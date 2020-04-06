@@ -150,6 +150,20 @@ describe('Rock Paper Scissors Run', () => {
     });
   });
 
+  describe('Testing _buffer store and split up readable emits from process to engine', () => {
+    test('Testing delayed newline character paper vs rock', async () => {
+      let results = await myDimension.runMatch(
+        ['./tests/js-kit/rps/delaynewlinepaper.js', './tests/js-kit/rps/delaynewlinerock.js'],
+        {
+          name: 'using _buffer match',
+          bestOf: 3,
+          loggingLevel: Dimension.Logger.LEVEL.WARN
+        }
+      );
+      expect(results.scores).toStrictEqual({'0': 3, '1': 0});
+    });
+  });
+
   describe('Testing timeout mechanism', () => {
     test('Test timeout mechanism and auto giving non terminated bot the win', async () => {
       let res = await myDimension.runMatch(
