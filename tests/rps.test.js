@@ -68,6 +68,19 @@ describe('Rock Paper Scissors Run', () => {
     // smarter agent defaults to scissors round 1 and loses to rock, then chooses paper afterward due to rock last move
     expect(results.scores).toStrictEqual({'0': 3, '1': 1});
   });
+  test('Test multi-language support java, run smarter bot against Rock.java 5 times', async () => {
+    expect.assertions(1);
+    let results = await myDimension.runMatch(
+      ['./tests/js-kit/rps/smarter.js', './tests/java-kit/rps/Rock.java'],
+      {
+        name: 'mult-lang (2)',
+        bestOf: 4,
+        loggingLevel: Dimension.Logger.LEVEL.ERROR
+      }
+    )
+    // smarter agent defaults to scissors round 1 and loses to rock, then chooses paper afterward due to rock last move
+    expect(results.scores).toStrictEqual({'0': 3, '1': 1});
+  });
   test('Test run smarter bot against paper 5 times and test erasure of output', async () => {
     expect.assertions(1);
     let results = await myDimension.runMatch(
