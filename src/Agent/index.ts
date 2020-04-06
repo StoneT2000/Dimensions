@@ -1,6 +1,6 @@
 import { Logger, LoggerLEVEL, FatalError } from "..";
 import { ChildProcess } from "child_process";
-
+import path from 'path';
 import fs from 'fs';
 
 export enum AgentStatus {
@@ -23,6 +23,7 @@ export class Agent {
   public id: agentID = 0;
   public name: string; // name of this agent
   public src: string; // path to file to run
+  public cwd: string; // current working directory of agent
   public cmd: string; // command used to run file
 
   process: ChildProcess = null;
@@ -50,8 +51,8 @@ export class Agent {
   
   constructor(file: string, options: any) {
     this.creationDate = new Date();
-    this.src = file;
-    let ext = this.src.slice(-3);
+
+    let ext = path.extname(file);
     switch(ext) {
       case '.py':
         this.cmd = 'python'
@@ -64,6 +65,9 @@ export class Agent {
       default:
         // throw new DimensionError(`${ext} is not a valid file type`);
     }
+    let pathparts = file.split('/');
+    this.cwd = pathparts.slice(0, -1).join('/');
+    this.src = pathparts.slice(-1).join('/');
 
     // check if file exists
     if(!fs.existsSync(file)) {

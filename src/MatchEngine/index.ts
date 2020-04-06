@@ -84,7 +84,10 @@ export class MatchEngine {
       this.log.system("Setting up and spawning " + agent.name + ` | Command: ${agent.cmd} ${agent.src}`);
 
       // TODO: make this async and use promise
-      let p = spawn(agent.cmd, [agent.src]).on('error', function( err ){ throw err })
+
+      let p = spawn(agent.cmd, [agent.src], {
+        cwd: agent.cwd
+      }).on('error', function( err ){ throw err })
 
       match.idToAgentsMap.set(agent.id, agent);
 
