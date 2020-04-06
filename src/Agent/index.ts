@@ -40,9 +40,7 @@ export class Agent {
 
   public agentTimeStep = 0;
 
-  public timeLabel: string;
-  public timeout: ReturnType<typeof setTimeout>;
-  public clearTimer: Function;
+  public clearTimer: Function = () => {};
 
   private log = new Logger();
 
@@ -128,7 +126,7 @@ export class Agent {
    * Stop this agent from more outputs and mark it as done for now and awaiting for updates
    */
   finishMove() {
-    clearTimeout(this.timeout);
+    this.clearTimer();
     // Resolve move and tell engine in `getCommands` this agent is done outputting commands and awaits input
     this.currentMoveResolve();
             
