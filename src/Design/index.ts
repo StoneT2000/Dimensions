@@ -3,50 +3,7 @@ import { EngineOptions, COMMAND_FINISH_POLICIES } from "../MatchEngine";
 import { deepMerge } from "../utils/DeepMerge";
 import { DeepPartial } from "../utils/DeepPartial";
 import { Agent } from "../Agent";
-// Standard ways for commands from agents to be streamed to `MatchEngine` for the `Design` to handle
-export enum COMMAND_STREAM_TYPE {
-  PARALLEL, // first come first serve for commands run, leads to all Agents sending commands based on old states
-  SEQUENTIAL // each agent's set of command sequence is run before the next agent
-};
-export type CommandSequence = {
-  commands: Array<string>
-  agentID: agentID
-}
-/**
- * A command delimited by the delimiter of the match engine from all commands sent by agent specified by agentID
- */
-export type Command = {
-  command: string
-  agentID: agentID
-}
-export interface DesignOptions {
-  engineOptions: EngineOptions
-};
-const _ABSTRACT_DEFAULT_DESIGN_OPTIONS: DesignOptions = {
-  engineOptions: {
-    commandStreamType: COMMAND_STREAM_TYPE.SEQUENTIAL,
-    commandDelimiter: ',',
-    commandFinishSymbol: 'D_FINISH',
-    commandFinishPolicy: COMMAND_FINISH_POLICIES.FINISH_SYMBOL,
-    commandLines: {
-      max: 1,
-      // min: 1
-    },
-    timeout: {
-      max: 1000,
-      active: true,
-      timeoutCallback: (agent: Agent, match: Match, engineOptions: EngineOptions) => {
-        match.kill(agent.id);
-        match.log.error(`agent ${agent.id} - '${agent.name}' timed out after ${engineOptions.timeout.max} ms`);
-      }
-      /**
-       * (agent: Agent, match: Match) => {
-       *   agent.finish();
-       * }
-       */
-    }
-  }
-}
+
 /**
  * @class Design
  * @classdesc Abstract class detailing a `Design` to be used as the platform that holds match lifecycle logic for
@@ -58,14 +15,38 @@ const _ABSTRACT_DEFAULT_DESIGN_OPTIONS: DesignOptions = {
 export abstract class Design {
   
   // The standard defaults
-  
+  private _ABSTRACT_DEFAULT_DESIGN_OPTIONS: DesignOptions = {
+    engineOptions: {
+      commandStreamType: COMMAND_STREAM_TYPE.SEQUENTIAL,
+      commandDelimiter: ',',
+      commandFinishSymbol: 'D_FINISH',
+      commandFinishPolicy: COMMAND_FINISH_POLICIES.FINISH_SYMBOL,
+      commandLines: {
+        max: 1,
+        // min: 1
+      },
+      timeout: {
+        max: 1000,
+        active: true,
+        timeoutCallback: (agent: Agent, match: Match, engineOptions: EngineOptions) => {
+          match.kill(agent.id);
+          match.log.error(`agent ${agent.id} - '${agent.name}' timed out after ${engineOptions.timeout.max} ms`);
+        }
+        /**
+         * (agent: Agent, match: Match) => {
+         *   agent.finish();
+         * }
+         */
+      }
+    }
+  }
 
   protected designOptions: DesignOptions;
   public log = new Logger();
   constructor(public name: String, designOptions: DeepPartial<DesignOptions> = {}) {
 
     // Set defaults from the abstract class
-    this.designOptions = {..._ABSTRACT_DEFAULT_DESIGN_OPTIONS};
+    this.designOptions = {... this._ABSTRACT_DEFAULT_DESIGN_OPTIONS};
 
     // Override with user provided params
     deepMerge(this.designOptions, designOptions);
@@ -131,3 +112,23 @@ export abstract class Design {
   abstract async getResults(match: Match, config?: any): Promise<any>
 
 }
+
+// Standard ways for commands from agents to be streamed to `MatchEngine` for the `Design` to handle
+export enum COMMAND_STREAM_TYPE {
+  PARALLEL, // first come first serve for commands run, leads to all Agents sending commands based on old states
+  SEQUENTIAL // each agent's set of command sequence is run before the next agent
+};
+export type CommandSequence = {
+  commands: Array<string>
+  agentID: agentID
+}
+/**
+ * A command delimited by the delimiter of the match engine from all commands sent by agent specified by agentID
+ */
+export type Command = {
+  command: string
+  agentID: agentID
+}
+export interface DesignOptions {
+  engineOptions: EngineOptions
+};

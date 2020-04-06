@@ -113,7 +113,7 @@ class Game {
  */
 function sendCommands(commands) {
     return new Promise((resolve) => {
-        process.stdout.write(commands.join(' ') + '\n', function() {
+        process.stdout.write(commands.join(' ') + '\nD_FINISH\n', function() {
             resolve();
         });
     });
