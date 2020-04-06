@@ -116,7 +116,9 @@ export class Match {
         this.log.infobar();
         this.log.info(`Design: ${this.design.name} | Initializing match: ${this.name}`);
         this.log.info('Match Configs', this.configs);
-
+        
+        this.timeStep = 0;
+        
         // Initialize agents with agent files
         this.agents = Agent.generateAgents(this.agentFiles, this.log.level);
         this.agents.forEach((agent) => {
