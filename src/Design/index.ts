@@ -41,17 +41,13 @@ export abstract class Design {
     }
   }
 
-  // The default options field that can be overriden by sub classes to set defaults for all instances of a design
-  public DEFAULT_OPTIONS: DeepPartial<DesignOptions> = {}
-
   private designOptions: DesignOptions;
   public log = new Logger();
   constructor(public name: String, designOptions: DeepPartial<DesignOptions> = {}) {
 
     // Set defaults from the abstract class
     this.designOptions = {... this._ABSTRACT_DEFAULT_DESIGN_OPTIONS};
-    // set defaults from this class
-    deepMerge(this.designOptions, this.DEFAULT_OPTIONS);
+
     // Override with user provided params
     deepMerge(this.designOptions, designOptions);
     // Object.assign(this.designOptions, designOptions);

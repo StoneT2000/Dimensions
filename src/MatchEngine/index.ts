@@ -273,10 +273,15 @@ export class MatchEngine {
     return new Promise((resolve, reject) => {
       let agent = match.idToAgentsMap.get(agentID);
       // TODO; add check to see if agent exists
-      agent.process.stdin.write(`${message}\n`, (error: Error) => {
-        if (error) reject(error);
-        resolve(true);
-      });
+      if (!agent.process.stdin.destroyed) {
+        agent.process.stdin.write(`${message}\n`, (error: Error) => {
+          if (error) reject(error);
+          resolve(true);
+        });
+      }
+      else {
+        this.log.error(`Agent ${agentID} - ${agent.name} - has been killed off already, can't send messages now`);
+      }
     });
   }
 
