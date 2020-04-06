@@ -46,6 +46,30 @@ class RockPaperScissorsDesign extends Dimension.Design{
 
     let winningAgent;
 
+    // check which agents are still alive, if one timed out, the other wins. If both time out, it's a tie
+    if (match.agents[0].isTerminated() && match.agents[1].isTerminated()) {
+      match.state.terminated = {
+        0: 'terminated',
+        1: 'terminated'
+      }
+      match.state.terminatedResult = 'Tie'
+      return MatchStatus.FINISHED;
+    }
+    else if (match.agents[0].isTerminated()) {
+      match.state.terminated = {
+        0: 'terminated'
+      }
+      match.state.terminatedResult = match.agents[1].name
+      return MatchStatus.FINISHED;
+    }
+    else if (match.agents[1].isTerminated()) {
+      match.state.terminated = {
+        1: 'terminated'
+      }
+      match.state.terminatedResult = match.agents[0].name
+      return MatchStatus.FINISHED;
+    }
+
     // each command in commands is an object with an agentID field and a command field, containing the string the agent sent
     let agent0Command = null;
     let agent1Command = null;
@@ -129,7 +153,7 @@ class RockPaperScissorsDesign extends Dimension.Design{
     match.state.results.push(winningAgent);
     // log the winner at the info level
     if (winningAgent != -1) {
-      match.log.info(`Agent ${winningAgent} won`);
+      match.log.detail(`Round: ${match.state.rounds} - Agent ${winningAgent} won`);
     }
     else {
       match.log.info(`Tie`);
@@ -159,8 +183,13 @@ class RockPaperScissorsDesign extends Dimension.Design{
         1: 0,
       },
       ties: 0,
-      winner: ''
+      winner: '',
+      terminated: {
+
+      }
     }
+
+    
 
     // we now go over the round results and evaluate them
     match.state.results.forEach((res) => {
@@ -173,6 +202,14 @@ class RockPaperScissorsDesign extends Dimension.Design{
         results.ties += 1;
       }
     });
+
+    // we store what agents were terminated by timeout and get results depending on termination
+    // and stop result evaluation
+    if (match.state.terminated) {
+      results.terminated = match.state.terminated;
+      results.winner = match.state.terminatedResult;
+      return results;
+    }
 
     // determine the winner and store it
     if (results.scores[0] > results.scores[1]) {
