@@ -156,7 +156,7 @@ export class Match {
     }
     while (status != MatchStatus.FINISHED)
     this.agents.forEach((agent: Agent) => {
-      clearTimeout(agent.timeout);
+      agent.clearTimer();
     })
     this.results = await this.getResults();
 
@@ -207,7 +207,7 @@ export class Match {
           agent.process.kill('SIGCONT');
           agent._setupMove();
           if (engineOptions.timeout.active) {
-            agent.timeout = setTimeout(() => {
+            agent.setTimeout(() => {
               // if agent times out, call the provided callback in engine options
               engineOptions.timeout.timeoutCallback(agent, this, engineOptions);
             }, engineOptions.timeout.max + MatchEngine.timeoutBuffer);

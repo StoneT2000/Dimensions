@@ -85,7 +85,7 @@ export class NotImplemented extends HttpError {
 export const errorHandler = (err, req, res, next) => {
   if (!err) err = new InternalServerError('An unknown error occurred');
   if (!err.status) err = new InternalServerError(err.message);
-  
+  console.error(err);
   res.status(err.status).json({
     error: {
       status: err.status,

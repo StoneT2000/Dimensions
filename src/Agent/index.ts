@@ -42,6 +42,7 @@ export class Agent {
 
   public timeLabel: string;
   public timeout: ReturnType<typeof setTimeout>;
+  public clearTimer: Function;
 
   private log = new Logger();
 
@@ -112,6 +113,15 @@ export class Agent {
   }
   getAllowedToSendCommands() {
     return this.allowedToSendCommands;
+  }
+
+  setTimeout(fn, delay, ...args) {
+    let timer = setTimeout(() => {
+      fn(...args);
+    }, delay);
+    this.clearTimer = () => {
+      clearTimeout(timer);
+    }
   }
 
   /**
