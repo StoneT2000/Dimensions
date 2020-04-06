@@ -32,7 +32,6 @@
     "@babel/plugin-transform-typescript": "^7.9.4",
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-typescript": "^7.9.0",
-    "@dimensions-ai/designs-halite3": "^1.0.2",
     "@types/express": "^4.17.3",
     "@types/jest": "^25.1.4",
     "@types/node": "^12.12.31",
