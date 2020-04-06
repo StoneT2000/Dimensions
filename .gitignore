@@ -6,3 +6,4 @@ replays
 *.code-workspace
 coverage
 __pycache__
+tests/run.ts
