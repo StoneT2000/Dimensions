@@ -41,7 +41,7 @@ export abstract class Design {
     }
   }
 
-  private designOptions: DesignOptions;
+  protected designOptions: DesignOptions;
   public log = new Logger();
   constructor(public name: String, designOptions: DeepPartial<DesignOptions> = {}) {
 
