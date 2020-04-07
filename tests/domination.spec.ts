@@ -2,9 +2,13 @@ import * as Dimension from '../src';
 import { DominationDesign } from './domination';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
+import sinon from "sinon";
+import sinonChai from "sinon-chai";
 import 'mocha';
-chai.use(chaiAsPromised);
 const expect = chai.expect;
+chai.use(sinonChai);
+chai.use(chaiAsPromised);
+
 
 let dominationDesign = new DominationDesign('Domination');
 //@ts-ignore
@@ -157,21 +161,5 @@ describe('Testing with Domination Game', () => {
         expect(agent.process.killed).to.equal(false); // ensure processes are alive after initiation
       }
     });
-});
-
-// // TODO: fix, how to we capture if it actually logged or not?
-// describe('Test Logger', () => {
-//   let log = new Dimension.Logger();
-//   beforeEach(() => {
-//     log = new Dimension.Logger();
-//   });
-//   test('Default INFO level logging', () => {
-//     expect(log.level).toBe(Dimension.Logger.LEVEL.INFO);
-//   })
-//   test('Detail', () => {
-//     const spy = jest.spyOn(log, 'detail');
-//     log.detail('hello');
-//     expect(spy).lastCalledWith('hello');
-//   })
-// })
+  });
 });
