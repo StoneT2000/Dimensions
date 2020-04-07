@@ -5,6 +5,7 @@ import { Agent, agentID } from '../Agent';
 import { Logger, LoggerLEVEL } from '../Logger';
 import { Design, COMMAND_STREAM_TYPE, Command } from '../Design';
 import { FatalError } from '../DimensionError';
+import { Tournament } from '../Tournament';
 
 export enum MatchStatus {
   UNINITIALIZED, // the status when you just created a match and didn't call initialize
@@ -69,7 +70,7 @@ export class Match {
   public results: any;
   public matchStatus = MatchStatus.UNINITIALIZED
 
-  public mapAgentIDtoTournamentID = new Map();
+  public mapAgentIDtoTournamentID: Map<agentID, Tournament.ID> = new Map();
 
   public configs: MatchConfigs = {
     name: '',
@@ -84,7 +85,7 @@ export class Match {
 
   constructor(
     public design: Design, 
-    public agentFiles: Array<String> | Array<{file: string, name: string}> | Array<{file: string, name: string, tournamentID: string}>, 
+    public agentFiles: Array<String> | Array<{file: string, name: string}> | Array<{file: string, tournamentID: Tournament.ID}>, 
     configs: DeepPartial<MatchConfigs> = {}
   ) {
 
@@ -120,7 +121,7 @@ export class Match {
 
         this.log.infobar();
         this.log.info(`Design: ${this.design.name} | Initializing match: ${this.name}`);
-        this.log.info('Match Configs', this.configs);
+        this.log.detail('Match Configs', this.configs);
         
         this.timeStep = 0;
         
@@ -128,7 +129,7 @@ export class Match {
         this.agents = Agent.generateAgents(this.agentFiles, this.log.level);
         this.agents.forEach((agent) => {
           this.idToAgentsMap.set(agent.id, agent);
-          if (agent.tournamentID !== -1) {
+          if (agent.tournamentID !== null) {
             this.mapAgentIDtoTournamentID.set(agent.id, agent.tournamentID);
           }
         })

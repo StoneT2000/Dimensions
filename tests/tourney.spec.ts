@@ -30,7 +30,21 @@ describe('Tournament Testing with RPS', () => {
 
   it('Initializing tournament', async () => {
     myDimension.createTournament(bots, {
-      type: Dimension.Tournament.TOURNAMENT_TYPE.ROUND_ROBIN
+      type: Dimension.Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
+      rankSystem: Dimension.Tournament.RANK_SYSTEM.WINS,
+      resultHandler: (results: any) => {
+        let winners = [];
+        let losers =[];
+        let ties = [];
+        if (results.winner === 'Tie') {
+          ties = [0, 1];
+        }
+        else {
+          winners.push(results.winningID);
+          losers.push((results.winningID + 1) % 2);
+        }
+        return {winners: winners, losers: losers, ties: ties};
+      }
     });
     expect(myDimension.design).to.eql(RPSDesign);
   });

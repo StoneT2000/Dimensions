@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import { Logger, LoggerLEVEL } from "../Logger";
 import { FatalError } from "../DimensionError";
+import { Tournament } from "../Tournament";
 
 export enum AgentStatus {
   UNINITIALIZED, // just created agent
@@ -22,7 +23,7 @@ export type agentID = number;
 export class Agent {
   
   public id: agentID = 0; // id used within a match
-  public tournamentID: number = -1; // a tournmanet ID if used within a tournament
+  public tournamentID: Tournament.ID = null; // a tournmanet ID if used within a tournament
   public name: string; // name of this agent
   public src: string; // path to file to run
   public ext: string;
@@ -94,6 +95,9 @@ export class Agent {
     }
     else {
       this.name = `agent_${this.id}`;
+    }
+    if (options.tournamentID) {
+      this.tournamentID = options.tournamentID;
     }
     
 
@@ -221,7 +225,7 @@ export class Agent {
    *              and a name key for the name of the agent
    * @param loggingLevel - the logging level for all these agents
    */
-  static generateAgents(files: Array<String> | Array<{file: string, name: string}> | Array<{file: string, name: string, tournamentID: string}>, loggingLevel: LoggerLEVEL): Array<Agent> {
+  static generateAgents(files: Array<String> | Array<{file: string, name: string}> | Array<{file: string, tournamentID: Tournament.ID}>, loggingLevel: LoggerLEVEL): Array<Agent> {
     if (files.length === 0) {
       throw new FatalError('No files provided to generate agents with!');
     }
@@ -233,14 +237,14 @@ export class Agent {
       })
     }
     //@ts-ignore
-    else if (files[0].id !== undefined) {
+    else if (files[0].name !== undefined) {
       files.forEach((info, index) => {
-        agents.push(new Agent(info.file, {id: index, tournamentID: info.id, name: info.name, loggingLevel: loggingLevel}))
+        agents.push(new Agent(info.file, {id: index, name: info.name, loggingLevel: loggingLevel}))
       })
     }
     else {
       files.forEach((info, index) => {
-        agents.push(new Agent(info.file, {id: index, name: info.name, loggingLevel: loggingLevel}))
+        agents.push(new Agent(info.file, {id: index, tournamentID: info.tournamentID, loggingLevel: loggingLevel}))
       })
     }
     return agents;

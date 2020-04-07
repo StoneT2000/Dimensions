@@ -10,7 +10,7 @@ export interface Configs extends Tournament.TournamentTypeConfig {
 export interface State extends Tournament.TournamentTypeState {
 
 }
-export class EliminationTournament extends Tournament {
+export class LeaderboardTournament extends Tournament {
   configs: Tournament.TournamentConfigs<Configs> = {
     defaultMatchConfigs: {},
     type: Tournament.TOURNAMENT_TYPE.ELIMINATION,

@@ -54,6 +54,7 @@ export class RockPaperScissorsDesign extends Dimension.Design{
         1: 'terminated'
       }
       match.state.terminatedResult = 'Tie'
+      console.log("TERMINATED");
       return MatchStatus.FINISHED;
     }
     else if (match.agents[0].isTerminated()) {
@@ -185,12 +186,11 @@ export class RockPaperScissorsDesign extends Dimension.Design{
       },
       ties: 0,
       winner: '',
+      winnerID: -1,
       terminated: {
 
       }
     }
-
-    
 
     // we now go over the round results and evaluate them
     match.state.results.forEach((res) => {
@@ -209,15 +209,25 @@ export class RockPaperScissorsDesign extends Dimension.Design{
     if (match.state.terminated) {
       results.terminated = match.state.terminated;
       results.winner = match.state.terminatedResult;
+      if (results.winner != 'Tie')  {
+        if (match.state.terminated[0]) {
+          results.winnerID = 1;
+        }
+        else {
+          results.winnerID = 0;
+        }
+      }
       return results;
     }
 
     // determine the winner and store it
     if (results.scores[0] > results.scores[1]) {
       results.winner = match.agents[0].name;
+      results.winnerID = 0;
     }
     else if (results.scores[0] < results.scores[1]) {
       results.winner = match.agents[1].name;
+      results.winnerID = 1;
     }
     else {
       results.winner = 'Tie';
@@ -226,6 +236,7 @@ export class RockPaperScissorsDesign extends Dimension.Design{
     // if there was an agent that failed, then they lose. The winner is the other agent
     if (match.state.failedAgent != null) {
       let winningAgent = (match.state.failedAgent + 1) % 2;
+      results.winnerID = winningAgent;
       results.winner = match.agents[winningAgent].name;
     }
     

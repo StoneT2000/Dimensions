@@ -188,8 +188,7 @@ export class Dimension {
   /**
    * 
    */
-  public async createTournament(files: Array<string> | Array<{file: string, name:string}>, configs?: DeepPartial<Tournament.TournamentConfigsBase>): Promise<RoundRobinTournament | EliminationTournament> {
-    return new Promise( async (resolve, reject) => {
+  public createTournament(files: Array<string> | Array<{file: string, name:string}>, configs?: Tournament.TournamentConfigsBase): RoundRobinTournament | EliminationTournament {
       let id = this.statistics.tournamentsCreated;
       let newTourney;
       switch(configs.type) {
@@ -202,8 +201,7 @@ export class Dimension {
       }
       this.statistics.tournamentsCreated++;
       this.tournaments.push(newTourney);
-      resolve(newTourney);
-    });
+      return newTourney;
   }
 
 }

@@ -5,12 +5,14 @@ import { RoundRobinTournament } from './TournamentTypes/RoundRobin';
 import { EliminationTournament } from './TournamentTypes/Elimination';
 import { DeepPartial } from '../utils/DeepPartial';
 import { Logger } from '../Logger';
+import { LeaderboardTournament } from './TournamentTypes/Ladder';
+import { agentID } from '../Agent';
 
 /**
  * Bot class that persists data for the same ephemereal agent across multiple matches
  */
 export class Bot {
-  constructor(public tournamentID: string, public file: string, public name: string) {
+  constructor(public tournamentID: Tournament.ID, public file: string) {
 
   }
 }
@@ -22,7 +24,7 @@ export class Bot {
  * Station
  */
 export abstract class Tournament {
-  abstract configs: Tournament.TournamentConfigs<unknown, unknown>;
+  abstract configs: Tournament.TournamentConfigs<unknown>;
 
   // mapping match ids to active ongoing matches
   public matches: Map<number, Match> = new Map();
@@ -34,7 +36,7 @@ export abstract class Tournament {
   public status: Tournament.TournamentStatus = Tournament.TournamentStatus.UNINITIALIZED;
 
   // Ongoing tournament state
-  abstract state;
+  abstract state: unknown;
 
   // Data to be displayed on to the station
   // public displayState: any;
@@ -74,15 +76,15 @@ export abstract class Tournament {
     let id = `t${this.id}_${this.botID++}`;
     if (typeof file === 'string') {
       let name = `bot-${id}`;
-      this.competitors.push(new Bot(id, file, name));
+      this.competitors.push(new Bot({id: id, name: name}, file));
     }
     else {
-      this.competitors.push(new Bot(id, file.file, file.name));
+      this.competitors.push(new Bot({id: id, name: file.name}, file.file));
     }
   }
 
   // Start the tournament
-  abstract run(configs: Tournament.TournamentConfigs<unknown, unknown>);
+  abstract run(configs: Tournament.TournamentConfigs<unknown>);
 
   /**
    * Stops the tournament while running
@@ -106,16 +108,15 @@ export abstract class Tournament {
   protected async runMatch(bots: Array<Bot>): Promise<{results: any, match: Match}> {
     return new Promise( async (resolve, reject) => {
       try {
-        console.log(bots);
         if (!bots.length) reject (new FatalError('No bots provided for match'));
 
         let matchConfigs = {...this.configs.defaultMatchConfigs};
         
         let match: Match;
         let filesAndNamesAndIDs = bots.map((bot) => {
-          return {file: bot.file, name: bot.name, tournamentID: bot.tournamentID}
+          return {file: bot.file, tournamentID: bot.tournamentID}
         });
-        match = new Match(this.design, <Array<{file: string, name: string, tournamentID: string}>>(filesAndNamesAndIDs), matchConfigs);
+        match = new Match(this.design, <Array<{file: string, tournamentID: Tournament.ID}>>(filesAndNamesAndIDs), matchConfigs);
 
         // store match into the tournament
         this.matches.set(match.id, match);
@@ -125,13 +126,12 @@ export abstract class Tournament {
 
         // Get results
         let results = await match.run();
-
         // remove the match from the active matches list
         this.matches.delete(match.id);
         // TODO: Add option to just archive matches instead
         
         // Resolve the results
-        resolve(results);
+        resolve({results: results, match: match});
       }
       catch(error) {
         reject(error);
@@ -141,7 +141,7 @@ export abstract class Tournament {
 }
 
 export module Tournament {
-  export type TournamentClasses = RoundRobinTournament | EliminationTournament;
+  export type TournamentClasses = RoundRobinTournament | EliminationTournament | LeaderboardTournament;
   export enum TOURNAMENT_TYPE {
     ROUND_ROBIN = 'round_robin', // can be n-tuple round robin. E.g double roundrobin like most Association Football Leagues
     ELIMINATION = 'elimination', // standard elimination tournament. can be single, double, triple, n-tuple knockout
@@ -152,15 +152,19 @@ export module Tournament {
     RUNNING = 'running',
     CRASHED = 'crashed',
   }
+  // Required info that will not be deep partialed in the Dimension class
   export interface TournamentConfigsBase {
-    defaultMatchConfigs: DeepPartial<MatchConfigs>
+    defaultMatchConfigs?: DeepPartial<MatchConfigs>
     type: TOURNAMENT_TYPE,
-  }
-  export interface TournamentConfigs<ConfigType, StateType> extends TournamentConfigsBase {
-    typeConfigs: ConfigType
+    rankSystem: RANK_SYSTEM,
     // the handler for returning the appropriate numbers given the results returned by getResults
     // is explicitly tied to the rank system chosen if necessary
-    resultHandler: Function 
+    resultHandler: (results: any) => any
+    rankSystemConfigs?: any
+  }
+  export interface TournamentConfigs<ConfigType> extends TournamentConfigsBase {
+    typeConfigs: ConfigType    
+    rankSystemConfigs: any
   }
   export interface TournamentTypeConfig  {
 
@@ -168,10 +172,31 @@ export module Tournament {
   export interface TournamentTypeState  {
     
   }
-
+  export interface ID {
+    id: string
+    name: string
+  }
   export enum RANK_SYSTEM {
     WINS = 'wins', // ranking by most wins
     ELO = 'elo', // ranking by elo
+    TRUESKILL = 'trueskill' // ranking by trueskill
+  }
+  export namespace RANK_SYSTEM {
+    export interface WinConfigs {
+      winValue: number
+      tieValue: number
+      lossValue: number
+    }
+    export interface WinResults {
+      winners: Array<agentID>
+      ties: Array<agentID>
+      losers: Array<agentID>
+    }
+    export interface ELOConfigs {
 
+    }
+    export interface TrueSkillConfigs {
+
+    }
   }
 }
