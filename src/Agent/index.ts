@@ -6,12 +6,12 @@ import { FatalError } from "../DimensionError";
 import { Tournament } from "../Tournament";
 
 export enum AgentStatus {
-  UNINITIALIZED, // just created agent
-  READY, // agent that has been fully created and ready to be used by the engine for a match
-  RUNNING, // agent that has a process running with it now
-  CRASHED,
-  KILLED, // agent that has finished and is killed or was prematurely killed
-  STOPPED // agent is currently not running
+  UNINITIALIZED = 'uninitialized', // just created agent
+  READY = 'ready', // agent that has been fully created and ready to be used by the engine for a match
+  RUNNING = 'running', // agent that has a process running with it now
+  CRASHED = 'crashed',
+  KILLED = 'killed', // agent that has finished and is killed or was prematurely killed
+  STOPPED = 'stpped' // agent is currently not running
 }
 export type agentID = number;
 

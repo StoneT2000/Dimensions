@@ -8,7 +8,7 @@ class RockPaperScissorsDesign extends Dimension.Design{
   async initialize(match) {
     // This is the initialization step of the design, where you decide what to tell all the agents before they start
     // competing
-    // You are given the match itself, and the configuration you passed in when running a match
+    // You are given the match itself as an argument. Any passed in configs are stored in match.configs
 
     // let's create a state that persists through the entire match and can be updated in the update function
     let state = {
@@ -38,12 +38,8 @@ class RockPaperScissorsDesign extends Dimension.Design{
   }
   async update(match, commands) {
     // This is the update step of the design, where all the run-time game logic goes
-    // You are given the match itself, all the commands retrieved from the last round / time step from all agents, and
-    // the original configuration you passed in when running a match.
+    // You are given the match itself and all the commands retrieved from the last round / time step from all agents, 
     
-    // if no commands, just return and skip update
-    if (!commands.length) return;
-
     let winningAgent;
 
     // check which agents are still alive, if one timed out, the other wins. If both time out, it's a tie
@@ -69,6 +65,9 @@ class RockPaperScissorsDesign extends Dimension.Design{
       match.state.terminatedResult = match.agents[0].name
       return MatchStatus.FINISHED;
     }
+
+    // if no commands, just return and skip update
+    if (!commands.length) return;
 
     // each command in commands is an object with an agentID field and a command field, containing the string the agent sent
     let agent0Command = null;

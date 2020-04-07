@@ -42,9 +42,6 @@ export class RockPaperScissorsDesign extends Dimension.Design{
     // You are given the match itself, all the commands retrieved from the last round / time step from all agents, and
     // the original configuration you passed in when running a match.
     
-    // if no commands, just return and skip update
-    if (!commands.length) return;
-
     let winningAgent;
 
     // check which agents are still alive, if one timed out, the other wins. If both time out, it's a tie
@@ -54,7 +51,6 @@ export class RockPaperScissorsDesign extends Dimension.Design{
         1: 'terminated'
       }
       match.state.terminatedResult = 'Tie'
-      console.log("TERMINATED");
       return MatchStatus.FINISHED;
     }
     else if (match.agents[0].isTerminated()) {
@@ -71,6 +67,9 @@ export class RockPaperScissorsDesign extends Dimension.Design{
       match.state.terminatedResult = match.agents[0].name
       return MatchStatus.FINISHED;
     }
+
+    // if no commands, just return and skip update
+    if (!commands.length) return;
 
     // each command in commands is an object with an agentID field and a command field, containing the string the agent sent
     let agent0Command = null;
