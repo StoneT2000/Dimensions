@@ -1,32 +1,37 @@
-import { Match } from '../Match';
+import { Match, MatchConfigs } from '../Match';
 import { Design } from '../Design';
 import { FatalError } from '../DimensionError';
+import { RoundRobinTournament } from './TournamentTypes/RoundRobin';
+import { EliminationTournament } from './TournamentTypes/Elimination';
+import { DeepPartial } from '../utils/DeepPartial';
+import { Logger } from '../Logger';
 
 /**
  * Bot class that persists data for the same ephemereal agent across multiple matches
  */
-class Bot {
+export class Bot {
   constructor(public tournamentID: string, public file: string, public name: string) {
 
   }
 }
+
 
 /**
  * @class Tournament
  * @classdesc The tournament class used to initialize tournaments as well as configure what is publically shown on the 
  * Station
  */
-export abstract class TournamentBase {
+export abstract class Tournament {
   abstract configs: Tournament.TournamentConfigs<unknown, unknown>;
 
   // mapping match ids to active ongoing matches
-  public matches: Map<number, Match>;
+  public matches: Map<number, Match> = new Map();
 
   // a queue whose elements are each arrays of bot that are to compete against each other under the `design`
-  public matchQueue: Array<Array<Bot>>;
+  public matchQueue: Array<Array<Bot>> = [];
   
   // The current status of the tournament
-  public status: Tournament.TournamentStatus
+  public status: Tournament.TournamentStatus = Tournament.TournamentStatus.UNINITIALIZED;
 
   // Ongoing tournament state
   abstract state;
@@ -34,7 +39,9 @@ export abstract class TournamentBase {
   // Data to be displayed on to the station
   // public displayState: any;
 
-  public competitors: Array<Bot>
+  public log = new Logger();
+
+  public competitors: Array<Bot> = [];
 
   private botID = 0;
 
@@ -75,7 +82,7 @@ export abstract class TournamentBase {
   }
 
   // Start the tournament
-  abstract start(configs: Tournament.TournamentConfigs<unknown, undefined>);
+  abstract run(configs: Tournament.TournamentConfigs<unknown, unknown>);
 
   /**
    * Stops the tournament while running
@@ -99,6 +106,7 @@ export abstract class TournamentBase {
   protected async runMatch(bots: Array<Bot>): Promise<{results: any, match: Match}> {
     return new Promise( async (resolve, reject) => {
       try {
+        console.log(bots);
         if (!bots.length) reject (new FatalError('No bots provided for match'));
 
         let matchConfigs = {...this.configs.defaultMatchConfigs};
@@ -129,5 +137,41 @@ export abstract class TournamentBase {
         reject(error);
       }
     });
+  }
+}
+
+export module Tournament {
+  export type TournamentClasses = RoundRobinTournament | EliminationTournament;
+  export enum TOURNAMENT_TYPE {
+    ROUND_ROBIN = 'round_robin', // can be n-tuple round robin. E.g double roundrobin like most Association Football Leagues
+    ELIMINATION = 'elimination', // standard elimination tournament. can be single, double, triple, n-tuple knockout
+  }
+  export enum TournamentStatus {
+    UNINITIALIZED = 'uninitialized',
+    STOPPED = 'stopped',
+    RUNNING = 'running',
+    CRASHED = 'crashed',
+  }
+  export interface TournamentConfigsBase {
+    defaultMatchConfigs: DeepPartial<MatchConfigs>
+    type: TOURNAMENT_TYPE,
+  }
+  export interface TournamentConfigs<ConfigType, StateType> extends TournamentConfigsBase {
+    typeConfigs: ConfigType
+    // the handler for returning the appropriate numbers given the results returned by getResults
+    // is explicitly tied to the rank system chosen if necessary
+    resultHandler: Function 
+  }
+  export interface TournamentTypeConfig  {
+
+  }
+  export interface TournamentTypeState  {
+    
+  }
+
+  export enum RANK_SYSTEM {
+    WINS = 'wins', // ranking by most wins
+    ELO = 'elo', // ranking by elo
+
   }
 }

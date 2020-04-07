@@ -8,7 +8,7 @@ import { FatalError } from '../DimensionError';
 import { Design } from '../Design';
 import { RoundRobinTournament } from '../Tournament/TournamentTypes/RoundRobin';
 import { EliminationTournament } from '../Tournament/TournamentTypes/Elimination';
-import { TournamentBase } from '../Tournament';
+import { Tournament } from '../Tournament';
 
 export type DimensionConfigs = {
   name: string
@@ -36,7 +36,7 @@ export class Dimension {
   
   public matches: Array<Match> = [];
 
-  public tournaments: Array<TournamentBase> = [];
+  public tournaments: Array<Tournament> = [];
 
   static id: number = 0;
   public name: string;

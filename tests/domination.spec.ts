@@ -1,15 +1,20 @@
 import * as Dimension from '../src';
 import { DominationDesign } from './domination';
-
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import 'mocha';
+chai.use(chaiAsPromised);
+const expect = chai.expect;
 
 let dominationDesign = new DominationDesign('Domination');
+//@ts-ignore
 let myDimension = Dimension.create(dominationDesign, {
   name: 'Domination',
   loggingLevel: Dimension.Logger.LEVEL.NONE
 });
-
-test('Test Run A match of Domination', async () => {
-  expect.assertions(2);
+describe('Testing with Domination Game', () => {
+it('Test Run A match of Domination', async () => {
+  // expect.assertions(2);
 
   let jsSource = "./tests/js-kit/domination/random.js";
   let botSources = [];
@@ -33,15 +38,13 @@ test('Test Run A match of Domination', async () => {
       loggingLevel: Dimension.Logger.LEVEL.WARN,
     }
   );
-  expect(results.finalMap).toStrictEqual(expectedResultMap)
-  expect(results.winningScore).toStrictEqual(expectedScore);
-  // console.table(results.finalMap)
-  // console.log(results);
+  expect(results.finalMap).to.be.eql(expectedResultMap)
+  expect(results.winningScore).to.equal(expectedScore);
 });
 
 describe('Receive MatchErrors and FatalErrors from a match of Domination', () => {
   
-  test('Match Errors', async () => {
+  it('Match Errors', async () => {
     let jsSource = "./tests/js-kit/domination/errorProvokingBot.js";
     let botSources = [];
 
@@ -67,8 +70,6 @@ describe('Receive MatchErrors and FatalErrors from a match of Domination', () =>
       }
     );
 
-    const matchEngineLogSpy = jest.spyOn(console, 'log')
-
     let status: Dimension.MatchStatus;
     
     // Run match, equiv to match.run();
@@ -80,13 +81,12 @@ describe('Receive MatchErrors and FatalErrors from a match of Domination', () =>
     // Store results
     let results = await match.getResults();
 
-    expect(results.finalMap).toStrictEqual(expectedResultMap)
-    expect(results.winningScore).toStrictEqual(expectedScore);
-    expect(matchEngineLogSpy).toBeCalledTimes(3);
+    expect(results.finalMap).to.eql(expectedResultMap)
+    expect(results.winningScore).to.eql(expectedScore);
+    // expect(matchEngineLogSpy).to.equal(3);
   });
 
-  test('Fatal Errors', async () => {
-    expect.assertions(2);
+  it('Fatal Errors', async () => {
     let botSources = [];
     for (let i = 0; i < 3; i++) {
       botSources.push('./tests/js-kit/domination/deterministic.js');
@@ -103,7 +103,7 @@ describe('Receive MatchErrors and FatalErrors from a match of Domination', () =>
           maxRounds: 5
         }
       }
-    )).rejects.toThrow(Dimension.FatalError);
+    )).to.be.rejectedWith(Dimension.FatalError);
 
     // Throw missing file error
     expect(myDimension.createMatch(
@@ -115,14 +115,14 @@ describe('Receive MatchErrors and FatalErrors from a match of Domination', () =>
           maxRounds: 5
         }
       }
-    )).rejects.toThrow(Dimension.FatalError);
+    )).to.be.rejectedWith(Dimension.FatalError);
   });
 });
 
 describe('Test Create Match and Validate its contents', () => {
   const agentCount = 4;
   let match: Dimension.Match;
-  beforeAll( async () => {
+  before( async () => {
     let jsSource = "./tests/js-kit/domination/deterministic.js";
     let botSources = [];
 
@@ -142,32 +142,33 @@ describe('Test Create Match and Validate its contents', () => {
       }
     );
   });
-  test('Validate Agents', () => {
+  it('Validate Agents', () => {
     
-    expect(match.agents.length).toBe(agentCount);
-    expect(match.agentFiles.length).toBe(agentCount);
+    expect(match.agents.length).to.equal(agentCount);
+    expect(match.agentFiles.length).to.equal(agentCount);
     for (let i = 0; i < match.agentFiles.length; i++) {
       let agent = match.agents[i];
-      expect(agent.cmd).toBe('node'); // ensure right command was passed
-      expect(agent.name).toBe('bob ' + i); // ensure naming worked
-      expect(agent.process).not.toBe(null); // ensure processes were made
-      expect(agent.process.killed).toBe(false); // ensure processes are alive after initiation
+      expect(agent.cmd).to.equal('node'); // ensure right command was passed
+      expect(agent.name).to.equal('bob ' + i); // ensure naming worked
+      expect(agent.process).not.to.equal(null); // ensure processes were made
+      expect(agent.process.killed).to.equal(false); // ensure processes are alive after initiation
     }
   });
 });
 
-// TODO: fix, how to we capture if it actually logged or not?
-describe('Test Logger', () => {
-  let log = new Dimension.Logger();
-  beforeEach(() => {
-    log = new Dimension.Logger();
-  });
-  test('Default INFO level logging', () => {
-    expect(log.level).toBe(Dimension.Logger.LEVEL.INFO);
-  })
-  test('Detail', () => {
-    const spy = jest.spyOn(log, 'detail');
-    log.detail('hello');
-    expect(spy).lastCalledWith('hello');
-  })
-})
+// // TODO: fix, how to we capture if it actually logged or not?
+// describe('Test Logger', () => {
+//   let log = new Dimension.Logger();
+//   beforeEach(() => {
+//     log = new Dimension.Logger();
+//   });
+//   test('Default INFO level logging', () => {
+//     expect(log.level).toBe(Dimension.Logger.LEVEL.INFO);
+//   })
+//   test('Detail', () => {
+//     const spy = jest.spyOn(log, 'detail');
+//     log.detail('hello');
+//     expect(spy).lastCalledWith('hello');
+//   })
+// })
+});

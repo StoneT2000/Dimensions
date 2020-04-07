@@ -1,5 +1,5 @@
 export * from './Station';
-export { create } from './Dimension';
+export { create, Dimension as DimensionType } from './Dimension';
 export * from './Logger';
 export * from './Design';
 export * from './Agent';

@@ -1,5 +1,4 @@
 import * as Dimension from '../src';
-import { Match } from '../lib';
 
 // Test design for Domination Game
 // Basic overview
@@ -25,7 +24,7 @@ export class DominationDesign extends Dimension.Design {
   constructor(name) {
     super(name);
   }
-  async initialize(match: Match, config?: any) {
+  async initialize(match: Dimension.Match, config?: any) {
     
     let state = {
       size: config.size,
@@ -76,7 +75,7 @@ export class DominationDesign extends Dimension.Design {
     
   }
 
-  async update(match: Match, commands: Array<Dimension.Command>) {
+  async update(match: Dimension.Match, commands: Array<Dimension.Command>) {
     match.log.infobar();
     match.log.info("Round - " + (match.state.round));
     match.log.info("Updating state");
@@ -161,7 +160,7 @@ export class DominationDesign extends Dimension.Design {
           break;
       }
     }
-    match.sendAll(updates.length);
+    match.sendAll(`${updates.length}`);
     updates.forEach((update) => {
       // send the updated ownership of cell at x=update[0], y=update[1]
       match.sendAll(`${update[0]},${update[1]},${update[2]}`);

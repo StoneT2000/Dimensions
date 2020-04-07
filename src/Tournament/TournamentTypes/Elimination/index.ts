@@ -1,4 +1,4 @@
-import { TournamentBase } from "../../";
+import { Tournament } from "../../";
 import { DeepPartial } from "../../../utils/DeepPartial";
 import { Design } from "../../../Design";
 import { deepMerge } from "../../../utils/DeepMerge";
@@ -10,7 +10,7 @@ export interface Configs extends Tournament.TournamentTypeConfig {
 export interface State extends Tournament.TournamentTypeState {
 
 }
-export class EliminationTournament extends TournamentBase {
+export class EliminationTournament extends Tournament {
   configs: Tournament.TournamentConfigs<Configs, State> = {
     defaultMatchConfigs: {},
     type: Tournament.TOURNAMENT_TYPE.ELIMINATION,
@@ -27,7 +27,7 @@ export class EliminationTournament extends TournamentBase {
     super(design, files, id);
     this.configs = deepMerge(this.configs, tournamentConfigs);
   }
-  public async start(configs?: DeepPartial<Tournament.TournamentConfigs<Configs, State>>) {
+  public async run(configs?: DeepPartial<Tournament.TournamentConfigs<Configs, State>>) {
     this.configs = deepMerge(this.configs, configs);
   }
 }
