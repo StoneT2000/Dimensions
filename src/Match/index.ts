@@ -1,7 +1,10 @@
-import { Agent, Design, MatchEngine, agentID, Logger, LoggerLEVEL, Command, FatalError, COMMAND_STREAM_TYPE } from '..';
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
-import { EngineOptions } from '../MatchEngine';
+import { EngineOptions, MatchEngine } from '../MatchEngine';
+import { Agent, agentID } from '../Agent';
+import { Logger, LoggerLEVEL } from '../Logger';
+import { Design, COMMAND_STREAM_TYPE, Command } from '../Design';
+import { FatalError } from '../DimensionError';
 
 export enum MatchStatus {
   UNINITIALIZED, // the status when you just created a match and didn't call initialize

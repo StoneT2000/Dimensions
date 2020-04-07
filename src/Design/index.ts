@@ -1,8 +1,9 @@
-import { Match, agentID, MatchStatus, Logger, LoggerLEVEL } from "..";
 import { EngineOptions, COMMAND_FINISH_POLICIES } from "../MatchEngine";
 import { deepMerge } from "../utils/DeepMerge";
 import { DeepPartial } from "../utils/DeepPartial";
-import { Agent } from "../Agent";
+import { Agent, agentID } from "../Agent";
+import { Match, MatchStatus } from "../Match";
+import { Logger, LoggerLEVEL } from "../Logger";
 
 /**
  * @class Design

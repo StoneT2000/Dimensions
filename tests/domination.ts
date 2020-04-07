@@ -1,4 +1,5 @@
 import * as Dimension from '../src';
+import { Match } from '../lib';
 
 // Test design for Domination Game
 // Basic overview
@@ -24,7 +25,7 @@ export class DominationDesign extends Dimension.Design {
   constructor(name) {
     super(name);
   }
-  async initialize(match: Dimension.Match, config) {
+  async initialize(match: Match, config?: any) {
     
     let state = {
       size: config.size,
@@ -75,7 +76,7 @@ export class DominationDesign extends Dimension.Design {
     
   }
 
-  async update(match, commands: Array<Dimension.Command>) {
+  async update(match: Match, commands: Array<Dimension.Command>) {
     match.log.infobar();
     match.log.info("Round - " + (match.state.round));
     match.log.info("Updating state");

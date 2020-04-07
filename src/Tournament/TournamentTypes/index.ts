@@ -16,12 +16,20 @@ export interface TournamentConfigsBase {
   type: TOURNAMENT_TYPE,
 }
 export interface TournamentConfigs<ConfigType, StateType> extends TournamentConfigsBase {
-  typeConfigs: DeepPartial<ConfigType>,
-  resultHandler: Function // the handler for returning the appropriate numbers given the results returned by getResults
+  typeConfigs: ConfigType
+  // the handler for returning the appropriate numbers given the results returned by getResults
+  // is explicitly tied to the rank system chosen if necessary
+  resultHandler: Function 
 }
 export interface TournamentTypeConfig  {
 
 }
 export interface TournamentTypeState  {
   
+}
+
+export enum RANK_SYSTEM {
+  WINS = 'wins', // ranking by most wins
+  ELO = 'elo', // ranking by elo
+
 }

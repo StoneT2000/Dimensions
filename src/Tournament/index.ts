@@ -14,7 +14,7 @@ type TournamentConfigs<T,V> = TournamentTypes.TournamentConfigs<T,V>;
 /**
  * Bot class that persists data for the same ephemereal agent across multiple matches
  */
-export class Bot {
+class Bot {
   constructor(public tournamentID: string, public file: string, public name: string) {
 
   }
@@ -42,7 +42,7 @@ export class Tournament {
  * @classdesc The tournament class used to initialize tournaments as well as configure what is publically shown on the 
  * Station
  */
-export class TournamentBase<ConfigType, StateType> {
+abstract class TournamentBase<ConfigType, StateType> {
   public configs: TournamentConfigs<ConfigType, StateType> = {
     defaultMatchConfigs: {},
     type: TOURNAMENT_TYPE.ROUND_ROBIN,
@@ -65,7 +65,7 @@ export class TournamentBase<ConfigType, StateType> {
   // Data to be displayed on to the station
   // public displayState: any;
 
-  public competitorSources: Array<Bot>
+  public competitors: Array<Bot>
 
   private botID = 0;
 
@@ -86,10 +86,10 @@ export class TournamentBase<ConfigType, StateType> {
     let id = `t${this.id}_${this.botID++}`;
     if (typeof file === 'string') {
       let name = `bot-${id}`;
-      this.competitorSources.push(new Bot(id, file, name));
+      this.competitors.push(new Bot(id, file, name));
     }
     else {
-      this.competitorSources.push(new Bot(id, file.file, file.name));
+      this.competitors.push(new Bot(id, file.file, file.name));
     }
   }
 
@@ -172,6 +172,10 @@ class EliminationTournament extends TournamentBase<EliminationTypes.Configs, Eli
   }
 }
 
+/**
+ * Round robin tournament
+ * General expectations is it is always two agents only.
+ */
 class RoundRobinTournament extends TournamentBase<RoundRobinTypes.Configs, RoundRobinTypes.State> {
   constructor(
     design: Design,
@@ -181,5 +185,23 @@ class RoundRobinTournament extends TournamentBase<RoundRobinTypes.Configs, Round
   ) {
     super(design, files, tournamentConfigs, id);
     
+  }
+
+  /**
+   * Queue up all matches necessary
+   */
+  private schedule() {
+    let matchSets = [];
+    for (let i = 0; i < this.configs.typeConfigs.times; i++) {
+      matchSets.push(new Set());
+    };
+    for (let i = 0; i < this.configs.typeConfigs.times; i++) {
+      this.competitors.forEach((bot1) => {
+        this.competitors.forEach((bot2) => {
+          matchSets[i].add([bot1, bot2]);
+        });
+      });
+    }
+    this.matchQueue
   }
 }

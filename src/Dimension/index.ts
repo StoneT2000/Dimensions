@@ -1,8 +1,12 @@
-import { Design, Match, MatchConfigs, FatalError, Station } from '..';
 import { Logger, LoggerLEVEL} from '../Logger';
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
-import { Tournament, TournamentTypes } from '../Tournament';
+import { Tournament } from '../Tournament';
+import * as TournamentTypes from '../Tournament/TournamentTypes';
+import { MatchConfigs, Match } from '../Match';
+import { Station } from '../Station';
+import { FatalError } from '../DimensionError';
+import { Design } from '../Design';
 
 export type DimensionConfigs = {
   name: string

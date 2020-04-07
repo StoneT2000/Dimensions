@@ -1,7 +1,8 @@
-import { Logger, LoggerLEVEL, FatalError } from "..";
 import { ChildProcess, exec, spawn } from "child_process";
 import path from 'path';
 import fs from 'fs';
+import { Logger, LoggerLEVEL } from "../Logger";
+import { FatalError } from "../DimensionError";
 
 export enum AgentStatus {
   UNINITIALIZED, // just created agent

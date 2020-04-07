@@ -2,7 +2,6 @@
  * API for dimension's matches
  */
 import express, { Request, Response, NextFunction } from 'express';
-import { Match } from '../../../../../';
 import * as error from '../../../../error';
 import { MatchStatus } from '../../../../../Match';
 const router = express.Router();

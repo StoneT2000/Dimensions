@@ -1,9 +1,11 @@
-import { Design, Agent, DimensionError, agentID, Logger, LoggerLEVEL, Match, COMMAND_STREAM_TYPE, Command } from "..";
 import { spawn } from 'child_process';
-import { AgentStatus } from "../";
 import { FatalError } from "../DimensionError";
 import { DeepPartial } from "../utils/DeepPartial";
 import { deepMerge } from "../utils/DeepMerge";
+import { COMMAND_STREAM_TYPE, Design, Command } from '../Design';
+import { LoggerLEVEL, Logger } from '../Logger';
+import { Agent, agentID, AgentStatus } from '../Agent';
+import { Match } from '../Match';
 
 // All IO commands that are used for communication between `MatchEngine` and processes associated with `Agents`
 export enum IO_COMMANDS {
