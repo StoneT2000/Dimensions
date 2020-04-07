@@ -1,6 +1,7 @@
 export * from './Station';
 export { create } from './Dimension';
 export * from './Design';
+export * from './Tournament';
 export * from './Logger';
 export * from './Agent';
 export * from './Match';

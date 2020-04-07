@@ -2,6 +2,7 @@ import { Design, Match, MatchConfigs, FatalError, Station } from '..';
 import { Logger, LoggerLEVEL} from '../Logger';
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
+import { Tournament, TournamentTypes } from '../Tournament';
 
 export type DimensionConfigs = {
   name: string
@@ -28,6 +29,9 @@ export type DimensionConfigs = {
 export class Dimension {
   
   public matches: Array<Match> = [];
+
+  public tournaments: Array<Tournament> = [];
+
   static id: number = 0;
   public name: string;
   public id: number = 0;
@@ -36,6 +40,11 @@ export class Dimension {
 
   // Default station for current node instance
   public static Station: Station = null;
+
+  public statistics = {
+    tournamentsCreated: 0,
+    matchesCreated: 0,
+  }
 
   // default configs
   public configs: DimensionConfigs = {
@@ -80,6 +89,7 @@ export class Dimension {
     // make the station observe this dimension when this dimension is created
     if (this.configs.observe === true) Dimension.Station.observe(this);
 
+    // by default link all matches created by this dimension to this dimension
     this.configs.defaultMatchConfigs.dimensionID = this.id;
   }
   /**
@@ -105,6 +115,7 @@ export class Dimension {
       } else {
         match = new Match(this.design, <Array<{file: string, name: string}>> files, matchConfigs);
       }
+      this.statistics.matchesCreated++;
 
       // store match into dimension
       this.matches.push(match);
@@ -147,6 +158,7 @@ export class Dimension {
         } else {
           match = new Match(this.design, <Array<{file: string, name: string}>> files, matchConfigs);
         }
+        this.statistics.matchesCreated++;
 
         // store match into dimension
         this.matches.push(match);
@@ -164,6 +176,18 @@ export class Dimension {
         reject(error);
       }
       
+    });
+  }
+
+  /**
+   * 
+   */
+  public async createTournament(files: Array<string> | Array<{file: string, name:string}>, configs?: DeepPartial<TournamentTypes.TournamentConfigsBase>): Promise<Tournament> {
+    return new Promise( async (resolve, reject) => {
+      let newTourney = Tournament.create(this.design, files, configs, this.statistics.tournamentsCreated);
+      this.statistics.tournamentsCreated++;
+      this.tournaments.push(newTourney);
+      resolve(newTourney);
     });
   }
 

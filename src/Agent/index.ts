@@ -20,7 +20,8 @@ export type agentID = number;
  */
 export class Agent {
   
-  public id: agentID = 0;
+  public id: agentID = 0; // id used within a match
+  public tournamentID: number = -1; // a tournmanet ID if used within a tournament
   public name: string; // name of this agent
   public src: string; // path to file to run
   public ext: string;
@@ -219,7 +220,7 @@ export class Agent {
    *              and a name key for the name of the agent
    * @param loggingLevel - the logging level for all these agents
    */
-  static generateAgents(files: Array<String> | Array<{file: string, name: string}>, loggingLevel: LoggerLEVEL): Array<Agent> {
+  static generateAgents(files: Array<String> | Array<{file: string, name: string}> | Array<{file: string, name: string, tournamentID: string}>, loggingLevel: LoggerLEVEL): Array<Agent> {
     if (files.length === 0) {
       throw new FatalError('No files provided to generate agents with!');
     }
@@ -228,6 +229,12 @@ export class Agent {
     if (typeof files[0] === 'string') {
       files.forEach((file, index) => {
         agents.push(new Agent(file, {id: index, name: null, loggingLevel: loggingLevel}))
+      })
+    }
+    //@ts-ignore
+    else if (files[0].id !== undefined) {
+      files.forEach((info, index) => {
+        agents.push(new Agent(info.file, {id: index, tournamentID: info.id, name: info.name, loggingLevel: loggingLevel}))
       })
     }
     else {

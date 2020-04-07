@@ -66,6 +66,8 @@ export class Match {
   public results: any;
   public matchStatus = MatchStatus.UNINITIALIZED
 
+  public mapAgentIDtoTournamentID = new Map();
+
   public configs: MatchConfigs = {
     name: '',
     timeout: 1000,
@@ -79,7 +81,7 @@ export class Match {
 
   constructor(
     public design: Design, 
-    public agentFiles: Array<String> | Array<{file: string, name: string}>, 
+    public agentFiles: Array<String> | Array<{file: string, name: string}> | Array<{file: string, name: string, tournamentID: string}>, 
     configs: DeepPartial<MatchConfigs> = {}
   ) {
 
@@ -123,6 +125,9 @@ export class Match {
         this.agents = Agent.generateAgents(this.agentFiles, this.log.level);
         this.agents.forEach((agent) => {
           this.idToAgentsMap.set(agent.id, agent);
+          if (agent.tournamentID !== -1) {
+            this.mapAgentIDtoTournamentID.set(agent.id, agent.tournamentID);
+          }
         })
 
         // Initialize the matchEngine and get it ready to run and process I/O for agents
