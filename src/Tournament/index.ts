@@ -1,15 +1,6 @@
-import { MatchConfigs, Match } from "../Match";
-import { DeepPartial } from "../utils/DeepPartial";
-import { deepMerge } from "../utils/DeepMerge";
-import { FatalError } from "../DimensionError";
-import { Design } from "../Design";
-
-import * as TournamentTypes from './TournamentTypes';
-import * as EliminationTypes from './TournamentTypes/Elimination';
-import * as RoundRobinTypes from './TournamentTypes/RoundRobin';
-
-let TOURNAMENT_TYPE = TournamentTypes.TOURNAMENT_TYPE;
-type TournamentConfigs<T,V> = TournamentTypes.TournamentConfigs<T,V>;
+import { Match } from '../Match';
+import { Design } from '../Design';
+import { FatalError } from '../DimensionError';
 
 /**
  * Bot class that persists data for the same ephemereal agent across multiple matches
@@ -20,35 +11,13 @@ class Bot {
   }
 }
 
-export class Tournament {
-
-  static create(
-    design: Design,
-    files: Array<string> | Array<{file: string, name:string}>, 
-    // i know this any, any is bad...
-    tournamentConfigs: DeepPartial<TournamentTypes.TournamentConfigsBase> = {},
-    id: number
-  ): RoundRobinTournament | EliminationTournament {
-    switch(tournamentConfigs.type) {
-      case TOURNAMENT_TYPE.ROUND_ROBIN:
-        return new RoundRobinTournament(design, files, tournamentConfigs, id);
-      case TOURNAMENT_TYPE.ELIMINATION:
-        return new EliminationTournament(design, files, tournamentConfigs, id);
-    }
-  }
-}
 /**
  * @class Tournament
  * @classdesc The tournament class used to initialize tournaments as well as configure what is publically shown on the 
  * Station
  */
-abstract class TournamentBase<ConfigType, StateType> {
-  public configs: TournamentConfigs<ConfigType, StateType> = {
-    defaultMatchConfigs: {},
-    type: TOURNAMENT_TYPE.ROUND_ROBIN,
-    typeConfigs: null,
-    resultHandler: () => {}
-  }
+export abstract class TournamentBase {
+  abstract configs: Tournament.TournamentConfigs<unknown, unknown>;
 
   // mapping match ids to active ongoing matches
   public matches: Map<number, Match>;
@@ -57,10 +26,10 @@ abstract class TournamentBase<ConfigType, StateType> {
   public matchQueue: Array<Array<Bot>>;
   
   // The current status of the tournament
-  public status: TournamentTypes.TournamentStatus
+  public status: Tournament.TournamentStatus
 
   // Ongoing tournament state
-  public state: StateType;
+  abstract state;
 
   // Data to be displayed on to the station
   // public displayState: any;
@@ -72,15 +41,27 @@ abstract class TournamentBase<ConfigType, StateType> {
   constructor(
     protected design: Design,
     files: Array<string> | Array<{file: string, name:string}>, 
-    tournamentConfigs: DeepPartial<TournamentConfigs<ConfigType, StateType>> = {},
     public id: number
   ) {
-    this.configs = deepMerge(this.configs, tournamentConfigs);
-
     files.forEach((file) => {
       this.addBot(file);
     });
   }
+
+  // static create(
+  //   design: Design,
+  //   files: Array<string> | Array<{file: string, name:string}>, 
+  //   // i know this any, any is bad...
+  //   tournamentConfigs: DeepPartial<Tournament.TournamentConfigsBase> = {},
+  //   id: number
+  // ): TournamentBase<unknown, unknown> {
+  //   switch(tournamentConfigs.type) {
+  //     case TOURNAMENT_TYPE.ROUND_ROBIN:
+  //       return new RoundRobinTournament(design, files, tournamentConfigs, id);
+  //     case TOURNAMENT_TYPE.ELIMINATION:
+  //       return new EliminationTournament(design, files, tournamentConfigs, id);
+  //   }
+  // }
 
   public addBot(file: string | {file: string, name: string}) {
     let id = `t${this.id}_${this.botID++}`;
@@ -93,18 +74,8 @@ abstract class TournamentBase<ConfigType, StateType> {
     }
   }
 
-  /**
-   * Start the tournament
-   */
-  public async start(configs?: DeepPartial<TournamentConfigs<ConfigType, StateType>>) {
-    this.configs = deepMerge(this.configs, configs);
-    switch (this.configs.type) {
-      case TOURNAMENT_TYPE.ELIMINATION:
-        break;
-      case TOURNAMENT_TYPE.ROUND_ROBIN:
-        break;
-    }
-  }
+  // Start the tournament
+  abstract start(configs: Tournament.TournamentConfigs<unknown, undefined>);
 
   /**
    * Stops the tournament while running
@@ -158,50 +129,5 @@ abstract class TournamentBase<ConfigType, StateType> {
         reject(error);
       }
     });
-  }
-}
-
-class EliminationTournament extends TournamentBase<EliminationTypes.Configs, EliminationTypes.State> {
-  constructor(
-    design: Design,
-    files: Array<string> | Array<{file: string, name:string}>, 
-    tournamentConfigs: DeepPartial<TournamentConfigs<EliminationTypes.Configs, EliminationTypes.State>> = {},
-    id: number
-  ) {
-    super(design, files, tournamentConfigs, id);
-  }
-}
-
-/**
- * Round robin tournament
- * General expectations is it is always two agents only.
- */
-class RoundRobinTournament extends TournamentBase<RoundRobinTypes.Configs, RoundRobinTypes.State> {
-  constructor(
-    design: Design,
-    files: Array<string> | Array<{file: string, name:string}>, 
-    tournamentConfigs: DeepPartial<TournamentConfigs<RoundRobinTypes.Configs, RoundRobinTypes.State>> = {},
-    id: number
-  ) {
-    super(design, files, tournamentConfigs, id);
-    
-  }
-
-  /**
-   * Queue up all matches necessary
-   */
-  private schedule() {
-    let matchSets = [];
-    for (let i = 0; i < this.configs.typeConfigs.times; i++) {
-      matchSets.push(new Set());
-    };
-    for (let i = 0; i < this.configs.typeConfigs.times; i++) {
-      this.competitors.forEach((bot1) => {
-        this.competitors.forEach((bot2) => {
-          matchSets[i].add([bot1, bot2]);
-        });
-      });
-    }
-    this.matchQueue
   }
 }

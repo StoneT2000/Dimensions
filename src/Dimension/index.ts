@@ -1,12 +1,14 @@
 import { Logger, LoggerLEVEL} from '../Logger';
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
-import { Tournament } from '../Tournament';
-import * as TournamentTypes from '../Tournament/TournamentTypes';
+// import { Tournament } from '../Tournament';
 import { MatchConfigs, Match } from '../Match';
 import { Station } from '../Station';
 import { FatalError } from '../DimensionError';
 import { Design } from '../Design';
+import { RoundRobinTournament } from '../Tournament/TournamentTypes/RoundRobin';
+import { EliminationTournament } from '../Tournament/TournamentTypes/Elimination';
+import { TournamentBase } from '../Tournament';
 
 export type DimensionConfigs = {
   name: string
@@ -34,7 +36,7 @@ export class Dimension {
   
   public matches: Array<Match> = [];
 
-  public tournaments: Array<Tournament> = [];
+  public tournaments: Array<TournamentBase> = [];
 
   static id: number = 0;
   public name: string;
@@ -186,9 +188,18 @@ export class Dimension {
   /**
    * 
    */
-  public async createTournament(files: Array<string> | Array<{file: string, name:string}>, configs?: DeepPartial<TournamentTypes.TournamentConfigsBase>): Promise<Tournament> {
+  public async createTournament(files: Array<string> | Array<{file: string, name:string}>, configs?: DeepPartial<Tournament.TournamentConfigsBase>): Promise<RoundRobinTournament | EliminationTournament> {
     return new Promise( async (resolve, reject) => {
-      let newTourney = Tournament.create(this.design, files, configs, this.statistics.tournamentsCreated);
+      let id = this.statistics.tournamentsCreated;
+      let newTourney;
+      switch(configs.type) {
+        case Tournament.TOURNAMENT_TYPE.ROUND_ROBIN:
+          newTourney = new RoundRobinTournament(this.design, files, configs, id);
+          break;
+        case Tournament.TOURNAMENT_TYPE.ELIMINATION:
+          newTourney = new EliminationTournament(this.design, files, configs, id);
+          break;
+      }
       this.statistics.tournamentsCreated++;
       this.tournaments.push(newTourney);
       resolve(newTourney);
