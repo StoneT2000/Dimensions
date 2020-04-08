@@ -117,9 +117,6 @@ export class LadderTournament extends Tournament {
         return;
       }
     }
-    if (this.configs.consoleDisplay) {
-      this.printTournamentStatus();
-    }
     let matchPromises = [];
 
     // if too little matches, schedule another set
@@ -158,6 +155,9 @@ export class LadderTournament extends Tournament {
         break;
       case RANK_SYSTEM.ELO:
         break;
+    }
+    if (this.configs.consoleDisplay) {
+      this.printTournamentStatus();
     }
   }
   /**
@@ -278,6 +278,9 @@ export class LadderTournament extends Tournament {
       (<RANK_SYSTEM.TrueSkillRankState>(currentBotStats.rankState)).sigma = botInfo.skill[1];
       this.state.botStats.set(botInfo.tournamentID.id, currentBotStats);
     });
+    if (this.configs.consoleDisplay) {
+      this.printTournamentStatus();
+    }
   }
 
   private handleMatchWithELO() {

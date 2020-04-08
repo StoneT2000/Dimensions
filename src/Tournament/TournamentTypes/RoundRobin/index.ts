@@ -4,7 +4,9 @@ import { Design } from "../../../Design";
 import { deepMerge } from "../../../utils/DeepMerge";
 import { FatalError } from "../../../DimensionError";
 import { agentID } from "../../../Agent";
-
+import { LoggerLEVEL } from "../../../Logger";
+import RANK_SYSTEM = Tournament.RANK_SYSTEM;
+import { sprintf } from 'sprintf-js';
 /**
  * Round robin tournament
  * General expectations is it is always two agents only.
@@ -126,6 +128,9 @@ export class RoundRobinTournament extends Tournament {
       oldBotStat.losses++;
       this.state.botStats.set(tournamentID.id, oldBotStat);
     });
+    if (this.configs.consoleDisplay) {
+      this.printTournamentStatus();
+    }
   }
 
   public async stop() {
@@ -143,7 +148,16 @@ export class RoundRobinTournament extends Tournament {
       botStat.ties * this.configs.rankSystemConfigs.tieValue +
       botStat.losses * this.configs.rankSystemConfigs.lossValue;
       ranks.push(
-        {bot: botStat.bot, name: botStat.bot.tournamentID.name, id: botStat.bot.tournamentID.id, score: score});
+        {
+          bot: botStat.bot, 
+          name: botStat.bot.tournamentID.name, 
+          id: botStat.bot.tournamentID.id, 
+          score: score,
+          wins: botStat.wins,
+          losses: botStat.losses,
+          ties: botStat.ties,
+          matchesPlayed: botStat.matchesPlayed
+        });
     });
     if (this.configs.rankSystemConfigs.ascending) {
       ranks.sort((a, b) => {
@@ -175,7 +189,10 @@ export class RoundRobinTournament extends Tournament {
         losses: 0,
         matchesPlayed: 0
       });
-    })
+    });
+    if (this.configs.consoleDisplay) {
+      this.printTournamentStatus();
+    }
   }
   /**
    * Queue up all matches necessary
@@ -198,5 +215,33 @@ export class RoundRobinTournament extends Tournament {
       }
     }
     return roundQueue;
+  }
+  private printTournamentStatus() {
+    if (this.log.level > LoggerLEVEL.NONE) {
+      console.clear();
+      console.log(this.log.bar())
+      console.log(`Tournament: ${this.name} | Status: ${this.status} | Competitors: ${this.competitors.length} | Rank System: ${this.configs.rankSystem}\n`);
+      console.log('Total Matches: ' + this.state.statistics.totalMatches);
+      let ranks = this.getRankings();
+      switch(this.configs.rankSystem) {
+        case RANK_SYSTEM.WINS:
+          console.log(sprintf(
+            `%-10s | %-8s | %-15s | %-6s | %-6s | %-8s | %-8s`.underline, 'Name', 'ID', 'Score', 'Wins', 'Ties', 'Losses', 'Matches'));
+          ranks.forEach((info) => {
+            console.log(sprintf(
+              `%-10s`.blue+ ` | %-8s | ` + `%-15s`.green + ` | %-6s | %-6s | %-8s | %-8s`, info.bot.tournamentID.name, info.bot.tournamentID.id, info.score.toFixed(3), info.wins, info.ties, info.losses, info.matchesPlayed));
+          });
+          break;
+      }
+      console.log();
+      console.log('Current Matches: ' + this.matches.size);
+      this.matches.forEach((match) => {
+        let names = [];
+        match.agents.forEach((agent) => {
+          names.push(agent.name);
+        });
+        console.log(names);
+      });
+    }
   }
 }
