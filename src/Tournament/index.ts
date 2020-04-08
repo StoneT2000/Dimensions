@@ -58,7 +58,7 @@ export abstract class Tournament {
     files.forEach((file) => {
       this.addBot(file);
     });
-    this.log.level = tournamentConfigs.loggingLevel ? tournamentConfigs.loggingLevel : LoggerLEVEL.INFO;
+    this.log.level = (tournamentConfigs.loggingLevel !== undefined) ? tournamentConfigs.loggingLevel : LoggerLEVEL.INFO;
     this.name = tournamentConfigs.name ? tournamentConfigs.name : `tournament_${this.id}`;
     this.log.identifier = this.name;
   }
