@@ -78,13 +78,6 @@ export class RoundRobinTournament extends Tournament {
         let matchInfo = this.matchQueue.shift();
         await this.handleMatch(matchInfo);        
 
-        switch(this.configs.rankSystem) {
-          case Tournament.RANK_SYSTEM.WINS:
-
-            break;
-          case Tournament.RANK_SYSTEM.ELO:
-            break;
-        }
       }
       resolve(this.state);
     })
