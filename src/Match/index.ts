@@ -460,7 +460,7 @@ export module Match {
   }
   export enum Status {
     /** Match was created with new but initialize was not called */
-    UNINITIALIZED = 'unintialized',
+    UNINITIALIZED = 'uninitialized',
     /**
      * If the match has been initialized and checks have been passed, the match is ready to run using {@link Match.run}
      */

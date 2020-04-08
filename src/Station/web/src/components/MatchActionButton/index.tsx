@@ -8,24 +8,24 @@ const MatchActionButton = (props:{match: Match}) => {
   let btns;
 
   switch (props.match.matchStatus) {
-    case 0: // Uninitialized
+    case 'uninitialized': // Uninitialized
       btns = <Button loading={true}>Run</Button>
       break;
-    case 1: // Ready
+    case 'ready': // Ready
       btns = <Button onClick={() => {runMatch(props.match.configs.dimensionID, props.match.id)}}>Run</Button>
       break;
-    case 2: // Running
+    case 'running': // Running
       btns = <Button onClick={() => {stopMatch(props.match.configs.dimensionID, props.match.id)}}>Stop</Button>
       break;
-    case 3: // Stopped
+    case 'stopped': // Stopped
       btns = <Button onClick={() => {resumeMatch(props.match.configs.dimensionID, props.match.id)}}>Resume</Button>
       break;
-    case 4: // Finished
+    case 'finished': // Finished
       btns = [<Button onClick={() => {removeMatch(props.match.configs.dimensionID, props.match.id)}} disabled>Remove</Button>,
         <Button onClick={() => {reRunMatch(props.match.configs.dimensionID, props.match.id)}}>Re-run</Button>
       ]
       break;
-    case 5: // Error
+    case 'error': // Error
       btns = [<Button onClick={() => {removeMatch(props.match.configs.dimensionID, props.match.id)}} disabled>Remove</Button>,
         <Button onClick={() => {reRunMatch(props.match.configs.dimensionID, props.match.id)}} disabled>Re-run</Button>
       ]
