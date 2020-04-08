@@ -230,6 +230,20 @@ class RockPaperScissorsDesign extends Dimension.Design{
     // we have to now return the results 
     return results;
   }
+  static resultHandler(results) {
+    // console.log(results);
+    let winners = [];
+    let losers =[];
+    let ties = [];
+    if (results.winner === 'Tie') {
+      ties = [0, 1];
+    }
+    else {
+      winners.push(results.winnerID);
+      losers.push((results.winnerID + 1) % 2);
+    }
+    return {winners: winners, losers: losers, ties: ties};
+  }
 }
 
 let RPSDesign = new RockPaperScissorsDesign('RPS!');
@@ -244,4 +258,4 @@ myDimension.runMatch(
   }
 ).then((results) => {
   console.log(results);
-})
+});
