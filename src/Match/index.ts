@@ -167,7 +167,7 @@ export class Match {
         
         // by now all agents should up and running, all compiled and ready
         // Initialize match according to `design` by delegating intialization task to the enforced `design`
-        await this.design.initialize(this, this.configs.initializeConfig);
+        await this.design.initialize(this);
 
         // remove initialized status and set as READY
         // TODO: add more security checks etc. before marking match as ready to run
@@ -229,7 +229,7 @@ export class Match {
         const commands: Array<Command> = await this.matchEngine.getCommands(this);
         this.log.system(`Retrieved ${commands.length} commands`);
         // Updates the match state and sends appropriate signals to all Agents based on the stored `Design`
-        const status: Match.Status = await this.design.update(this, commands, this.configs.updateConfig);
+        const status: Match.Status = await this.design.update(this, commands);
 
         // default status is running if no status returned
         if (!status) {
@@ -340,7 +340,7 @@ export class Match {
     return new Promise( async (resolve, reject) => {
       try {
         // Retrieve match results according to `design` by delegating storeResult task to the enforced `design`
-        let res = await this.design.getResults(this, this.configs.getResultConfig);
+        let res = await this.design.getResults(this);
         resolve(res);
       }
       catch(error) {

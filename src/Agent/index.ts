@@ -7,10 +7,10 @@ import { Tournament } from "../Tournament";
 
 /**
  * @class Agent
- * The agent is what participates in a match and contains details on the files powering the agent, the process 
- * associated and if it is terminated or not.
+ * @classdesc The agent is what participates in a match and contains details on the files powering the agent, the
+ * process associated and if it is terminated or not.
  * 
- * Reads in a file source for the code and creates an `Agent` for use in the `MatchEngine` and `Match`
+ * Reads in a file source for the code and creates an `Agent` for use in the {@link MatchEngine} and {@link Match}
  */
 export class Agent {
   
