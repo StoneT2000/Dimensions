@@ -72,6 +72,13 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Engine Options that specify how the MatchEngine should operate on a <a href="../classes/_match_index_.match.html">Match</a></p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -106,9 +113,21 @@
 					<div class="tsd-signature tsd-kind-icon">command<wbr>Delimiter<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e35ef0a/src/MatchEngine/index.ts#L328">https://github.com/StoneT2000/Dimensions/blob/e35ef0a/src/MatchEngine/index.ts#L328</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0ec56a6/src/MatchEngine/index.ts#L352">https://github.com/StoneT2000/Dimensions/blob/0ec56a6/src/MatchEngine/index.ts#L352</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Delimiter for seperating commands from agents in their stdout and then sending these delimited commands to
+								<a href="../classes/_design_index_.design.html#update">Design.update</a>. If an agent sent <code>move a b 3,run 24 d,t 3</code> and the delimiter is <code>&#39;,&#39;</code> then the
+							<a href="../classes/_design_index_.design.html#update">Design.update</a> function will receive commands <code>&#39;move a b 3&#39;</code> and <code>&#39;run 24 d&#39;</code> and <code>&#39;t 3&#39;</code></p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p>&#39;,&#39;</p>
+							</dd>
+						</dl>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="commandfinishpolicy" class="tsd-anchor"></a>
@@ -116,9 +135,19 @@
 					<div class="tsd-signature tsd-kind-icon">command<wbr>Finish<wbr>Policy<span class="tsd-signature-symbol">:</span> <a href="../enums/_matchengine_index_.matchengine.command_finish_policies.html" class="tsd-signature-type">COMMAND_FINISH_POLICIES</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e35ef0a/src/MatchEngine/index.ts#L330">https://github.com/StoneT2000/Dimensions/blob/e35ef0a/src/MatchEngine/index.ts#L330</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0ec56a6/src/MatchEngine/index.ts#L362">https://github.com/StoneT2000/Dimensions/blob/0ec56a6/src/MatchEngine/index.ts#L362</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Which kind of command finishing policy to use</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p>&#39;finish_symbol&#39;</p>
+							</dd>
+						</dl>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="commandfinishsymbol" class="tsd-anchor"></a>
@@ -126,9 +155,19 @@
 					<div class="tsd-signature tsd-kind-icon">command<wbr>Finish<wbr>Symbol<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e35ef0a/src/MatchEngine/index.ts#L329">https://github.com/StoneT2000/Dimensions/blob/e35ef0a/src/MatchEngine/index.ts#L329</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0ec56a6/src/MatchEngine/index.ts#L357">https://github.com/StoneT2000/Dimensions/blob/0ec56a6/src/MatchEngine/index.ts#L357</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The finish symbol to use</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p>&#39;D_FINISH&#39;</p>
+							</dd>
+						</dl>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="commandlines" class="tsd-anchor"></a>
@@ -136,17 +175,43 @@
 					<div class="tsd-signature tsd-kind-icon">command<wbr>Lines<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>waitForNewline<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e35ef0a/src/MatchEngine/index.ts#L331">https://github.com/StoneT2000/Dimensions/blob/e35ef0a/src/MatchEngine/index.ts#L331</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0ec56a6/src/MatchEngine/index.ts#L366">https://github.com/StoneT2000/Dimensions/blob/0ec56a6/src/MatchEngine/index.ts#L366</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Options for the <a href="../enums/_matchengine_index_.matchengine.command_finish_policies.html#line_count">COMMAND_FINISH_POLICIES.LINE_COUNT</a> finishing policy. Used only if this policy is active</p>
+						</div>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
 							<li class="tsd-parameter">
 								<h5>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Maximum lines of commands delimited by new line characters &#39;\n&#39; allowed before engine cuts off an Agent</p>
+									</div>
+									<dl class="tsd-comment-tags">
+										<dt>default</dt>
+										<dd><p>1</p>
+										</dd>
+									</dl>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5>wait<wbr>For<wbr>Newline<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Whether the engine should wait for a newline character before processing the line of commands received
+										This should for most cases be set to <code>true</code>; false will lead to some unpredictable behavior.</p>
+									</div>
+									<dl class="tsd-comment-tags">
+										<dt>default</dt>
+										<dd><p>true</p>
+										</dd>
+									</dl>
+								</div>
 							</li>
 						</ul>
 					</div>
@@ -157,30 +222,108 @@
 					<div class="tsd-signature tsd-kind-icon">command<wbr>Stream<wbr>Type<span class="tsd-signature-symbol">:</span> <a href="../enums/_matchengine_index_.matchengine.command_stream_type.html" class="tsd-signature-type">COMMAND_STREAM_TYPE</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e35ef0a/src/MatchEngine/index.ts#L327">https://github.com/StoneT2000/Dimensions/blob/e35ef0a/src/MatchEngine/index.ts#L327</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0ec56a6/src/MatchEngine/index.ts#L345">https://github.com/StoneT2000/Dimensions/blob/0ec56a6/src/MatchEngine/index.ts#L345</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The command streaming type</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="timeout" class="tsd-anchor"></a>
 					<h3>timeout</h3>
-					<div class="tsd-signature tsd-kind-icon">timeout<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>active<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>timeoutCallback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol"> }</span></div>
+					<div class="tsd-signature tsd-kind-icon">timeout<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>active<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">; </span>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>timeoutCallback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>agent<span class="tsd-signature-symbol">: </span><a href="../classes/_agent_index_.agent.html" class="tsd-signature-type">Agent</a>, match<span class="tsd-signature-symbol">: </span><a href="../classes/_match_index_.match.html" class="tsd-signature-type">Match</a>, engineOptions<span class="tsd-signature-symbol">: </span><a href="_matchengine_index_.matchengine.engineoptions.html" class="tsd-signature-type">EngineOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e35ef0a/src/MatchEngine/index.ts#L336">https://github.com/StoneT2000/Dimensions/blob/e35ef0a/src/MatchEngine/index.ts#L336</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0ec56a6/src/MatchEngine/index.ts#L383">https://github.com/StoneT2000/Dimensions/blob/0ec56a6/src/MatchEngine/index.ts#L383</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Options for timeouts of agents</p>
+						</div>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
 							<li class="tsd-parameter">
 								<h5>active<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>On or not</p>
+									</div>
+									<dl class="tsd-comment-tags">
+										<dt>default</dt>
+										<dd><p>true</p>
+										</dd>
+									</dl>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5>max<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>How long in milliseconds each agent is given before they are timed out and the timeoutCallback
+										function is called</p>
+									</div>
+									<dl class="tsd-comment-tags">
+										<dt>default</dt>
+										<dd><p>1000</p>
+										</dd>
+									</dl>
+								</div>
 							</li>
 							<li class="tsd-parameter">
-								<h5>timeout<wbr>Callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span></h5>
+								<h5>timeout<wbr>Callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>agent<span class="tsd-signature-symbol">: </span><a href="../classes/_agent_index_.agent.html" class="tsd-signature-type">Agent</a>, match<span class="tsd-signature-symbol">: </span><a href="../classes/_match_index_.match.html" class="tsd-signature-type">Match</a>, engineOptions<span class="tsd-signature-symbol">: </span><a href="_matchengine_index_.matchengine.engineoptions.html" class="tsd-signature-type">EngineOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>the callback called when an agent times out.
+										Default is kill the agent with <a href="../classes/_match_index_.match.html#kill">Match.kill</a>.</p>
+									</div>
+								</div>
+								<ul class="tsd-parameters">
+									<li class="tsd-parameter-signature">
+										<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-variable">
+											<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>agent<span class="tsd-signature-symbol">: </span><a href="../classes/_agent_index_.agent.html" class="tsd-signature-type">Agent</a>, match<span class="tsd-signature-symbol">: </span><a href="../classes/_match_index_.match.html" class="tsd-signature-type">Match</a>, engineOptions<span class="tsd-signature-symbol">: </span><a href="_matchengine_index_.matchengine.engineoptions.html" class="tsd-signature-type">EngineOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+										</ul>
+										<ul class="tsd-descriptions">
+											<li class="tsd-description">
+												<div class="tsd-comment tsd-typography">
+												</div>
+												<h4 class="tsd-parameters-title">Parameters</h4>
+												<ul class="tsd-parameters">
+													<li>
+														<h5>agent: <a href="../classes/_agent_index_.agent.html" class="tsd-signature-type">Agent</a></h5>
+														<div class="tsd-comment tsd-typography">
+															<div class="lead">
+																<p>the agent that timed out</p>
+															</div>
+														</div>
+													</li>
+													<li>
+														<h5>match: <a href="../classes/_match_index_.match.html" class="tsd-signature-type">Match</a></h5>
+														<div class="tsd-comment tsd-typography">
+															<div class="lead">
+																<p>the match the agent timed out in</p>
+															</div>
+														</div>
+													</li>
+													<li>
+														<h5>engineOptions: <a href="_matchengine_index_.matchengine.engineoptions.html" class="tsd-signature-type">EngineOptions</a></h5>
+														<div class="tsd-comment tsd-typography">
+															<div class="lead">
+																<p>a copy of the engineOptions used that timed out the agent</p>
+															</div>
+														</div>
+													</li>
+												</ul>
+												<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+											</li>
+										</ul>
+									</li>
+								</ul>
 							</li>
 						</ul>
 					</div>
@@ -277,9 +420,6 @@
 							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
 								<a href="../enums/_matchengine_index_.matchengine.command_stream_type.html" class="tsd-kind-icon">COMMAND_<wbr>STREAM_<wbr>TYPE</a>
 							</li>
-							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
-								<a href="../enums/_matchengine_index_.matchengine.io_commands.html" class="tsd-kind-icon">IO_<wbr>COMMANDS</a>
-							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="_matchengine_index_.matchengine.command.html" class="tsd-kind-icon">Command</a>
 							</li>
@@ -327,7 +467,7 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="../classes/_matchengine_index_.matchengine.html#getengineoptions" class="tsd-kind-icon">get<wbr>Engine<wbr>Options</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="../classes/_matchengine_index_.matchengine.html#handlecommmand" class="tsd-kind-icon">handle<wbr>Commmand</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">

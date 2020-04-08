@@ -9,8 +9,9 @@ import { deepCopy } from '../utils/DeepCopy';
 import EngineOptions = MatchEngine.EngineOptions;
 /**
  * @class MatchEngine
- * @classdesc The Match Engine that takes a `Design` and starts matches by spawning new processes for each `Agent`
- * It returns results while a game is running and returns final results as well. Can start and stop the engine
+ * @classdesc The Match Engine that takes a {@link Design} and starts matches by spawning new processes for each 
+ * {@link Agent}.
+ * 
  * Functionally runs matches as storing the match causes circular problems 
  * (previously Match has Engine, Engine has Match)
  */
@@ -19,13 +20,20 @@ export class MatchEngine {
   // The design the MatchEngine runs on
   private design: Design;
 
+  /** Engine options */
   private engineOptions: EngineOptions;
 
+  /** Logger */
   private log = new Logger();
   
   // approx extra buffer time given to agents due to engine processing for timeout mechanism
   static timeoutBuffer: number = 25; 
   
+  /**
+   * Match engine constructor
+   * @param design - the design to use
+   * @param loggingLevel - the logging level for this engine
+   */
   constructor(design: Design, loggingLevel: Logger.LEVEL) {
     this.design = design;
     this.engineOptions = deepCopy(this.design.getDesignOptions().engineOptions);
@@ -33,12 +41,15 @@ export class MatchEngine {
     this.setLogLevel(loggingLevel);
   }
 
+  /** Set log level */
   setLogLevel(loggingLevel: Logger.LEVEL) {
     this.log.level = loggingLevel;
   }
+  /** Get the engine options */
   getEngineOptions() {
     return this.engineOptions;
   }
+  /** Set the engine options */
   setEngineOptions(newOptions: DeepPartial<EngineOptions> = {}) {
     this.engineOptions = deepMerge(this.engineOptions, newOptions);
   }
@@ -138,7 +149,12 @@ export class MatchEngine {
     })
   }
 
-  public async handleCommmand(agent: Agent, str: string) {
+  /**
+   * Handles partial stdout from an agent
+   * @param agent - the agent to process the command for
+   * @param str - the string the agent sent
+   */
+  private async handleCommmand(agent: Agent, str: string) {
 
     // TODO: Implement parallel command stream type
     // TODO: Implement timeout mechanism
@@ -208,6 +224,7 @@ export class MatchEngine {
 
   /**
    * Kills all agents and processes from a match and cleans up
+   * @param match - the match to kill all agents in and clean up
    */
   public async killAndClean(match: Match) {
     match.agents.forEach((agent) => {
@@ -231,8 +248,8 @@ export class MatchEngine {
    * Returns a promise that resolves with all the commands loaded from the previous time step of the provided match
    * This coordinates all the Agents and waits for each one to finish their step
    * @param match - The match to get commands from agents for
-   * @returns a promise that resolves with an array of `Command` elements, holding the command and id of the agent that 
-   *          sent it
+   * @returns a promise that resolves with an array of {@link MatchEngine.Command} elements, holding the command and id 
+   * of the agent that sent it
    */
   public async getCommands(match: Match): Promise<Array<MatchEngine.Command>> {
     return new Promise((resolve, reject) => {
@@ -274,7 +291,6 @@ export class MatchEngine {
     });
   }
 
-  // send a message in a match to a particular process governed by an Agent, resolves true if succesfully written
   /**
    * Sends a message to a particular process governed by an agent in a specified match specified by the agentID
    * @param match - the match to work with
@@ -284,7 +300,6 @@ export class MatchEngine {
   public async send(match: Match, message: string, agentID: Agent.ID): Promise<boolean> {
     return new Promise((resolve, reject) => {
       let agent = match.idToAgentsMap.get(agentID);
-      // TODO; add check to see if agent exists
       if (!agent.process.stdin.destroyed) {
         agent.process.stdin.write(`${message}\n`, (error: Error) => {
           if (error) reject(error);
@@ -298,16 +313,8 @@ export class MatchEngine {
   }
 
 }
+
 export module MatchEngine {
-  /**
-   * All IO commands that are used for communication between {@link MatchEngine} and processes associated with 
-   * instances of {@link Agent}
-   */
-  export enum IO_COMMANDS {
-    /** Indicate an Agent is done with their move at the current time step */
-    MOVE_FINISH = 'D_FINISH', 
-    MOVE_START = 'D_START'
-  }
 
   /**
    * Various policies available that describe the requirements before an agent is marked as done with sending commands 
@@ -315,35 +322,96 @@ export module MatchEngine {
    */
   export enum COMMAND_FINISH_POLICIES {
     /**
-     * Agent's finish their commands by sending a finish symbol, namely {@link IO_COMMANDS.MOVE_FINISH}
+     * Agent's finish their commands by sending a finish symbol, namely {@link EngineOptions.commandFinishSymbol}
      */
-    FINISH_SYMBOL = 'finish_symbol', // stops an agents command stream after they send the commandFinishSymbol
-    LINE_COUNT = 'line_count', // stops an agents command stream after they send some number lines
-    CUSTOM = 'custom' // stops agents command stream based on a custom function that returns true if agent is done or not 
+    FINISH_SYMBOL = 'finish_symbol',
+    
+    /**
+     * Agent's finish their commands after they send {@link EngineOptions.commandLines.max} lines
+     */
+    LINE_COUNT = 'line_count',
+    /**
+     * Custom finishing policy provided by user. Not allowed at the moment
+     */
+    CUSTOM = 'custom'
     // TODO: implement custom finish policy
   }
 
+  /**
+   * Engine Options that specify how the MatchEngine should operate on a {@link Match}
+   */
   export interface EngineOptions {
+    /** The command streaming type */
     commandStreamType: COMMAND_STREAM_TYPE,
-    commandDelimiter: string, // delimiter for seperating commands e.g move 01 02,buy 32_4_2,cmd 2 a b...
+    /** 
+     * Delimiter for seperating commands from agents in their stdout and then sending these delimited commands to
+     * {@link Design.update}. If an agent sent `move a b 3,run 24 d,t 3` and the delimiter is `','` then the 
+     * {@link Design.update} function will receive commands `'move a b 3'` and `'run 24 d'` and `'t 3'`
+     * @default ','
+     */
+    commandDelimiter: string, 
+    /** 
+     * The finish symbol to use 
+     * @default 'D_FINISH'
+     */
     commandFinishSymbol: string,
+    /** 
+     * Which kind of command finishing policy to use 
+     * @default 'finish_symbol'
+     */
     commandFinishPolicy: COMMAND_FINISH_POLICIES,
+    /** 
+     * Options for the {@link COMMAND_FINISH_POLICIES.LINE_COUNT} finishing policy. Used only if this policy is active
+     */
     commandLines: {
-      max: number, // max lines commands allowed. each line is delimited by new line characters
-      // min: number // min lines of commands required, TODO: not really used at the moment
-      waitForNewline: boolean // whether engine should wait for a newline character before processing the line commands received. This should for most cases be true, false will lead to some unpredictable behavior.
+      /** 
+       * Maximum lines of commands delimited by new line characters '\n' allowed before engine cuts off an Agent 
+       * @default 1
+       */
+      max: number,
+      /** 
+       * Whether the engine should wait for a newline character before processing the line of commands received 
+       * This should for most cases be set to `true`; false will lead to some unpredictable behavior.
+       * @default true
+       */
+      waitForNewline: boolean
     }
+
+    /** 
+     * Options for timeouts of agents 
+     */
     timeout: {
-      active: boolean, // on or not
-      max: number, // in ms
-      timeoutCallback: Function // the callback called when an agent times out. default is terminate the agent
+      /** 
+       * On or not 
+       * @default true 
+       */
+      active: boolean,
+      /** 
+       * How long in milliseconds each agent is given before they are timed out and the timeoutCallback 
+       * function is called
+       * @default 1000
+       */
+      max: number,
+      /** 
+       * the callback called when an agent times out. 
+       * Default is kill the agent with {@link Match.kill}.
+       */
+      timeoutCallback: 
+      /** 
+       * @param agent the agent that timed out
+       * @param match - the match the agent timed out in
+       * @param engineOptions - a copy of the engineOptions used that timed out the agent
+       */
+        (agent: Agent, match: Match, engineOptions: EngineOptions) => void
     }
   }
 
-  // Standard ways for commands from agents to be streamed to `MatchEngine` for the `Design` to handle
+  /** Standard ways for commands from agents to be streamed to the MatchEngine for the {@link Design} to handle */
   export enum COMMAND_STREAM_TYPE {
-    PARALLEL = 'parallel', // first come first serve for commands run, leads to all Agents sending commands based on old states
-    SEQUENTIAL = 'sequential' // each agent's set of command sequence is run before the next agent
+    /** First come first serve for commands run. Not implemented */
+    PARALLEL = 'parallel',
+    /** Each agent's set of commands is run before the next agent */
+    SEQUENTIAL = 'sequential'
   };
   /**
    * A command delimited by the delimiter of the match engine from all commands sent by agent specified by agentID
