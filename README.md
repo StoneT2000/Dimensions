@@ -83,12 +83,12 @@ There are some requirements for these lifecycle functions:
 
 For `initialize`, nothing needs to be returned
 
-For `update`, if you don't return anything, the engine assumes the match is still running. If you return `Dimension.MatchStatus.FINISHED`, the engine will conclude the match and stop it.
+For `update`, if you don't return anything, the engine assumes the match is still running. If you return `Dimension.Match.Status.FINISHED`, the engine will conclude the match and stop it.
 
 For `getResults`, it must return or resolve a value, could be a number, an object, etc. 
 
 ```js
-const MatchStatus = Dimension.MatchStatus;
+const Match = Dimension.Match;
 class RockPaperScissorsDesign extend Dimension.Design {
   async initialize(match) {
     ... // often communicate to agents via match.send about configurations and state
@@ -99,7 +99,7 @@ class RockPaperScissorsDesign extend Dimension.Design {
     // suppose we reached the max rounds of rock paper scissors
     if (match.state.rounds === match.state.maxRounds) {
       // we return this to end the match
-      return MatchStatus.FINISHED;
+      return Match.Status.FINISHED;
     }
   async getResults(match) {
     let results = {}

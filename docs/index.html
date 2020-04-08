@@ -134,9 +134,9 @@
 				<p>Each command holds a command string, which is essentially something that was logged to output from one of the agents. For example, if an agent with ID <code>0</code> did <code>print(&#39;P&#39;)</code> in python or <code>console.log(&#39;P&#39;)</code>, the match engine will pick this up and populate commands with an array item <code>{command: &#39;P&#39;, agentID: 0}</code></p>
 				<p>There are some requirements for these lifecycle functions:</p>
 				<p>For <code>initialize</code>, nothing needs to be returned</p>
-				<p>For <code>update</code>, if you don&#39;t return anything, the engine assumes the match is still running. If you return <code>Dimension.MatchStatus.FINISHED</code>, the engine will conclude the match and stop it.</p>
+				<p>For <code>update</code>, if you don&#39;t return anything, the engine assumes the match is still running. If you return <code>Dimension.Match.Status.FINISHED</code>, the engine will conclude the match and stop it.</p>
 				<p>For <code>getResults</code>, it must return or resolve a value, could be a number, an object, etc. </p>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> MatchStatus = Dimension.MatchStatus;
+				<pre><code class="language-js"><span class="hljs-keyword">const</span> Match = Dimension.Match;
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">RockPaperScissorsDesign</span> <span class="hljs-title">extend</span> <span class="hljs-title">Dimension</span>.<span class="hljs-title">Design</span> </span>{
   <span class="hljs-keyword">async</span> initialize(match) {
     ... <span class="hljs-comment">// often communicate to agents via match.send about configurations and state</span>
@@ -147,7 +147,7 @@
     <span class="hljs-comment">// suppose we reached the max rounds of rock paper scissors</span>
     <span class="hljs-keyword">if</span> (match.state.rounds === match.state.maxRounds) {
       <span class="hljs-comment">// we return this to end the match</span>
-      <span class="hljs-keyword">return</span> MatchStatus.FINISHED;
+      <span class="hljs-keyword">return</span> Match.Status.FINISHED;
     }
   <span class="hljs-keyword">async</span> getResults(match) {
     <span class="hljs-keyword">let</span> results = {}
