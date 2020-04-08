@@ -35,6 +35,15 @@ export class EliminationTournament extends Tournament {
   public setConfigs(configs: DeepPartial<Tournament.TournamentConfigs<EliminationConfigs>> = {}) {
     this.configs = deepMerge(this.configs, configs);
   }
+  public getRankings() {
+    
+  }
+  public async stop() {
+
+  }
+  public async resume() {
+    
+  }
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<EliminationConfigs>>) {
     this.configs = deepMerge(this.configs, configs);
   }

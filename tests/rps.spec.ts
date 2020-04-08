@@ -1,4 +1,4 @@
-const Dimension = require('../src');
+import Dimension = require('../src');
 let MatchStatus = Dimension.MatchStatus;
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -10,7 +10,7 @@ const RockPaperScissorsDesign = require('./rps').RockPaperScissorsDesign;
 
 describe('Rock Paper Scissors Run', () => {
   let RPSDesign, myDimension_line_count, RPSDesign_line_count;
-  let myDimension;
+  let myDimension: Dimension.DimensionType;
   before(() => {
     RPSDesign = new RockPaperScissorsDesign('RPS!', {
       engineOptions: {
@@ -23,7 +23,7 @@ describe('Rock Paper Scissors Run', () => {
       name: 'RPS',
       activateStation: false,
       observe: false,
-      loggingLevel: Dimension.Logger.LEVEL.WARN
+      loggingLevel: Dimension.Logger.LEVEL.NONE
     });
     RPSDesign_line_count = new RockPaperScissorsDesign('RPS!', {
       engineOptions: {
@@ -34,11 +34,10 @@ describe('Rock Paper Scissors Run', () => {
       name: 'RPS_line_count',
       activateStation: false,
       observe: false,
-      loggingLevel: Dimension.Logger.LEVEL.WARN
+      loggingLevel: Dimension.Logger.LEVEL.NONE
     });
   })
-  it('Test line count based engine', async () => {
-    // expect.assertions(1);
+  it('should be able to use line count based engine', async () => {
     let results = await myDimension_line_count.runMatch(
       ['./tests/js-kit/rps/line_countbot.js', './tests/js-kit/rps/line_countbotpaper.js'],
       {
@@ -51,59 +50,52 @@ describe('Rock Paper Scissors Run', () => {
     // sometimes.
     expect(results.scores).to.eql({'0': 0, '1': 10});
   })
-  it('Test run rock vs paper 3 times and test erasure of output', async () => {
-    // expect.assertions(1);
-    let results = await myDimension.runMatch(
-      ['./tests/js-kit/rps/rock.js', './tests/js-kit/rps/paper.js'],
-      {
-        name: 'erasure of output (1)',
-        bestOf: 100
-      }
-    )
-    expect(results.scores).to.eql({'0': 0, '1': 100});
-  });
-  it('Test multi-language support, run smarter bot against rock.py 5 times', async () => {
-    // expect.assertions(1);
-    let results = await myDimension.runMatch(
-      ['./tests/js-kit/rps/smarter.js', './tests/python-kit/rps/rock.py'],
-      {
-        name: 'mult-lang (2)',
-        bestOf: 4,
-        loggingLevel: Dimension.Logger.LEVEL.ERROR
-      }
-    )
-    // smarter agent defaults to scissors round 1 and loses to rock, then chooses paper afterward due to rock last move
-    expect(results.scores).to.eql({'0': 3, '1': 1});
-  });
-  it('Test multi-language support java, run smarter bot against Rock.java 5 times', async () => {
-    // expect.assertions(1);
-    let results = await myDimension.runMatch(
-      ['./tests/js-kit/rps/smarter.js', './tests/java-kit/rps/Rock.java'],
-      {
-        name: 'mult-lang (2)',
-        bestOf: 4,
-        loggingLevel: Dimension.Logger.LEVEL.ERROR
-      }
-    )
-    // smarter agent defaults to scissors round 1 and loses to rock, then chooses paper afterward due to rock last move
-    expect(results.scores).to.eql({'0': 3, '1': 1});
-  });
-  it('Test run smarter bot against paper 5 times and test erasure of output', async () => {
-    // expect.assertions(1);
-    let results = await myDimension.runMatch(
-      ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/paper.js'],
-      {
-        name: 'erasure of output (3)',
-        bestOf: 30
-      }
-    )
-    // smarter agent defaults to scissors round 1 and loses to rock, then chooses paper afterward due to rock last move
-    expect(results.scores).to.eql({'0': 30, '1': 0});
+  describe('Testing erasing extraneous output', () => {
+    it('shoulde erase extraneous output', async () => {
+      let results = await myDimension.runMatch(
+        ['./tests/js-kit/rps/rock.js', './tests/js-kit/rps/paper.js'],
+        {
+          name: 'erasure of output (1)',
+          bestOf: 100
+        }
+      )
+      expect(results.scores).to.eql({'0': 0, '1': 100});
+    });
+    it('should erase extraneous output part 2', async () => {
+      let results = await myDimension.runMatch(
+        ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/paper.js'],
+        {
+          name: 'erasure of output (3)',
+          bestOf: 30
+        }
+      )
+      expect(results.scores).to.eql({'0': 30, '1': 0});
+    });
+  })
+  describe('Testing Multi-language support', () => {
+    it('should support python', async () => {
+      let results = await myDimension.runMatch(
+        ['./tests/js-kit/rps/smarter.js', './tests/python-kit/rps/rock.py'],
+        {
+          name: 'mult-lang (py)',
+          bestOf: 4,
+        }
+      )
+      expect(results.scores).to.eql({'0': 3, '1': 1});
+    });
+    it('should support java', async () => {
+      let results = await myDimension.runMatch(
+        ['./tests/js-kit/rps/smarter.js', './tests/java-kit/rps/Rock.java'],
+        {
+          name: 'mult-lang (java)',
+          bestOf: 4
+        }
+      )
+      expect(results.scores).to.eql({'0': 3, '1': 1});
+    });
   });
 
-  it('Test RPS to log match errors', async () => {
-    // const logSpy = jest.spyOn(console, 'log');
-    // expect.assertions(1);
+  it('should log match errors', async () => {
     await myDimension.runMatch(
       ['./tests/js-kit/rps/errorBot.js', './tests/js-kit/rps/paper.js'],
       {
@@ -112,53 +104,54 @@ describe('Rock Paper Scissors Run', () => {
         loggingLevel: Dimension.Logger.LEVEL.WARN
       }
     );
-    // expect(logSpy).toBeCalledTimes(1);
   });
 
-  it('Test RPS with stopping', async () => {
-    // expect.assertions(3);
+  it('should stop and resume smoothly multiple times without bots breaking - ' + 1, async () => {
     let match = await myDimension.createMatch(
       ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/paper.js'],
       {
         name: 'stop and resume (5)',
         bestOf: 1000,
-        loggingLevel: Dimension.Logger.LEVEL.WARN
+        loggingLevel: Dimension.Logger.LEVEL.WARN,
+        engineOptions: {
+          timeout: {
+            max: 550
+          }
+        }
       }
     )
     let results = match.run();
-    async function startStop(match) {
+    async function startStop(match, count = 0, originalResolve = undefined) {
       return new Promise((resolve, reject) => {
-        setTimeout(() => {
+        setTimeout(async () => {
           if (match.stop()) {
             
           } else {
 
           }
           
-          setTimeout(() => {
+          setTimeout(async () => {
             expect(match.matchStatus).to.equal(MatchStatus.STOPPED);
             if (match.resume()) {
-              
               resolve();
-            } else {
+            }
+            else {
               reject();
             }
-            
-          }, 100)
+          }, 1000)
         }, 100)
-      }, this)
+      });
     }
     
     await startStop(match);
     expect(match.matchStatus).to.equal(MatchStatus.RUNNING);
     await results.then((res) => {
       expect(res.scores).to.eql({'0': 1000, '1': 0});
-      console.log(res.scores);
     });
   });
 
   describe('Testing _buffer store and split up readable emits from process to engine', () => {
-    it('Testing delayed newline character paper vs rock', async () => {
+    it('should allow for delayed newline characters and split up stdout', async () => {
       let results = await myDimension.runMatch(
         ['./tests/js-kit/rps/delaynewlinepaper.js', './tests/js-kit/rps/delaynewlinerock.js'],
         {
@@ -172,7 +165,7 @@ describe('Rock Paper Scissors Run', () => {
   });
 
   describe('Testing timeout mechanism', () => {
-    it('Test timeout mechanism and auto giving non terminated bot the win', async () => {
+    it('should timeout a bot, stop the match and give the win to the the bot', async () => {
       let res = await myDimension.runMatch(
         ['./tests/js-kit/rps/paper.js', './tests/js-kit/rps/delaybotrock.js'],
         {
@@ -183,7 +176,7 @@ describe('Rock Paper Scissors Run', () => {
       expect(res.terminated[1]).to.equal('terminated');
       expect(res.winner).to.equal('agent_0');
     });
-    it('Test timeout mechanism, both timeout', async () => {
+    it('should handle all timeouts, give a tie', async () => {
       let res = await myDimension.runMatch(
         ['./tests/js-kit/rps/delaybotrock.js', './tests/js-kit/rps/delaybotrock.js'],
         {
@@ -195,11 +188,29 @@ describe('Rock Paper Scissors Run', () => {
       expect(res.terminated[0]).to.equal('terminated');
       expect(res.winner).to.equal('Tie');
     });
-    it('Test overriding timeout mechanism', async () => {
+    it('should provide timeout handlers with the `agent`, the match through `this` and a copy of `engineOptions and timeout options should still be the defaults', async () => {
+      let match = await myDimension.createMatch(
+        ['./tests/js-kit/rps/delaybotrock.js', './tests/js-kit/rps/delaybotrock.js'],
+        {
+          name: 'check-timeout-handler',
+          bestOf: 5,
+          loggingLevel: Dimension.Logger.LEVEL.ERROR,
+          timeout: {
+            timeoutCallback: (agent, match, engineOptions) => {
+              match.kill(agent.id);
+              match.log.error(`custom message! - agent ${agent.id} - '${agent.name}' timed out after ${engineOptions.timeout.max} ms`);
+            }
+          }
+        }
+      );
+      expect(match.matchEngine.getEngineOptions().timeout.max).to.equal(500)
+      let res = await match.run();
+    });
+    it('should be allowed to override the timeout and turn it off', async () => {
       let res = await myDimension.runMatch(
         ['./tests/js-kit/rps/delaybotpaper.js', './tests/js-kit/rps/delaybotrock.js'],
         {
-          bestOf: 3,
+          bestOf: 2,
           loggingLevel: Dimension.Logger.LEVEL.ERROR,
           engineOptions: {
             timeout: {
@@ -208,8 +219,6 @@ describe('Rock Paper Scissors Run', () => {
           }
         }
       );
-      // expect(res.terminated[1]).toBe('terminated');
-      // expect(res.terminated[0]).toBe('terminated');
       expect(res.winner).to.equal('agent_0');
     });
   });

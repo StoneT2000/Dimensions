@@ -6,6 +6,7 @@ import { COMMAND_STREAM_TYPE, Design, Command } from '../Design';
 import { LoggerLEVEL, Logger } from '../Logger';
 import { Agent, agentID, AgentStatus } from '../Agent';
 import { Match } from '../Match';
+import { deepCopy } from '../utils/DeepCopy';
 
 // All IO commands that are used for communication between `MatchEngine` and processes associated with `Agents`
 export enum IO_COMMANDS {
@@ -57,7 +58,7 @@ export class MatchEngine {
   
   constructor(design: Design, loggingLevel: LoggerLEVEL) {
     this.design = design;
-    this.engineOptions = this.design.getDesignOptions().engineOptions;
+    this.engineOptions = deepCopy(this.design.getDesignOptions().engineOptions);
     this.log.identifier = `Engine`;
     this.setLogLevel(loggingLevel);
   }

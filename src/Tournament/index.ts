@@ -7,6 +7,7 @@ import { DeepPartial } from '../utils/DeepPartial';
 import { Logger, LoggerLEVEL } from '../Logger';
 import { LeaderboardTournament } from './TournamentTypes/Ladder';
 import { agentID } from '../Agent';
+import { deepCopy } from '../utils/DeepCopy';
 
 /**
  * Bot class that persists data for the same ephemereal agent across multiple matches
@@ -77,16 +78,17 @@ export abstract class Tournament {
   /**
    * Stops the tournament while running
    */
-  public async stop() {
-
-  }
+  public abstract async stop();
 
   /**
    * Resumes the tournament
    */
-  public async resume() {
+  public abstract async resume();
 
-  }
+  /**
+   * Retrieve some form of rankings from the tournament's current state
+   */
+  public abstract getRankings()
 
   /**
    * Set configs for this tournament
@@ -110,7 +112,7 @@ export abstract class Tournament {
       try {
         if (!bots.length) reject (new FatalError('No bots provided for match'));
 
-        let matchConfigs = {...this.getConfigs().defaultMatchConfigs};
+        let matchConfigs = deepCopy(this.getConfigs().defaultMatchConfigs);
         
         let match: Match;
         let filesAndNamesAndIDs = bots.map((bot) => {

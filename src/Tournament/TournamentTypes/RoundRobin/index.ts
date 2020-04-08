@@ -122,6 +122,13 @@ export class RoundRobinTournament extends Tournament {
     });
   }
 
+  public async stop() {
+
+  }
+  public async resume() {
+    
+  }
+
   // TODO: move sorting to run function. It's ok too sort like this for small leagues, but larger will become slow.
   public getRankings() {
     let ranks = [];

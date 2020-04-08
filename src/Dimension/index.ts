@@ -9,6 +9,7 @@ import { Design } from '../Design';
 import { RoundRobinTournament } from '../Tournament/TournamentTypes/RoundRobin';
 import { EliminationTournament } from '../Tournament/TournamentTypes/Elimination';
 import { Tournament } from '../Tournament';
+import { deepCopy } from '../utils/DeepCopy';
 
 export type DimensionConfigs = {
   name: string
@@ -66,7 +67,7 @@ export class Dimension {
   constructor(public design: Design, configs: DeepPartial<DimensionConfigs> = {}) {
 
     // override configs with user provided configs
-    Object.assign(this.configs, configs);
+    this.configs = deepMerge(this.configs, configs);
 
     this.log.level = this.configs.loggingLevel;
 
@@ -112,8 +113,9 @@ export class Dimension {
 
       // override dimension defaults with provided configs
       // TOOD: change to deep copy
-      let matchConfigs = {...this.configs.defaultMatchConfigs};
+      let matchConfigs = deepCopy(this.configs.defaultMatchConfigs);
       matchConfigs = deepMerge(matchConfigs, configs);
+
       // create new match
       let match: Match;
       if (typeof files[0] === 'string') {
@@ -147,15 +149,16 @@ export class Dimension {
    * @param configs - Configurations that are `Design` dependent. These configs are passed into `Design.initialize`
    * `Design.update` and `Design.storeResults`
    */
-  public async runMatch(files: Array<string> | Array<{file: string, name: string}>, configs?: DeepPartial<MatchConfigs>) {
+  public async runMatch(
+    files: Array<string> | Array<{file: string, name: string}>, 
+    configs?: DeepPartial<MatchConfigs>): Promise<any> {
     return new Promise( async (resolve, reject) => {
       
       try {
         if (!files.length) reject (new FatalError('No files provided for match'));
 
         // override dimension defaults with provided configs
-        // TOOD: change to deep copy
-        let matchConfigs = {...this.configs.defaultMatchConfigs};
+        let matchConfigs = deepCopy(this.configs.defaultMatchConfigs);
         matchConfigs = deepMerge(matchConfigs, configs);
         
         let match: Match;

@@ -89,6 +89,7 @@ export class Match {
     configs: DeepPartial<MatchConfigs> = {}
   ) {
 
+    
     // override configs with provided configs argument
     this.configs = deepMerge(this.configs, configs);
 
