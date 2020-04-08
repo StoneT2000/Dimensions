@@ -227,10 +227,10 @@ export class RoundRobinTournament extends Tournament {
       switch(this.configs.rankSystem) {
         case RANK_SYSTEM.WINS:
           console.log(sprintf(
-            `%-10s | %-8s | %-15s | %-6s | %-6s | %-8s | %-8s`.underline, 'Name', 'ID', 'Score', 'Wins', 'Ties', 'Losses', 'Matches'));
+            `%-20s | %-8s | %-15s | %-6s | %-6s | %-8s | %-8s`.underline, 'Name', 'ID', 'Score', 'Wins', 'Ties', 'Losses', 'Matches'));
           ranks.forEach((info) => {
             console.log(sprintf(
-              `%-10s`.blue+ ` | %-8s | ` + `%-15s`.green + ` | %-6s | %-6s | %-8s | %-8s`, info.player.tournamentID.name, info.player.tournamentID.id, info.score.toFixed(3), info.wins, info.ties, info.losses, info.matchesPlayed));
+              `%-20s`.blue+ ` | %-8s | ` + `%-15s`.green + ` | %-6s | %-6s | %-8s | %-8s`, info.player.tournamentID.name, info.player.tournamentID.id, info.score.toFixed(3), info.wins, info.ties, info.losses, info.matchesPlayed));
           });
           break;
       }

@@ -216,10 +216,10 @@ export class LadderTournament extends Tournament {
       switch(this.configs.rankSystem) {
         case RANK_SYSTEM.TRUESKILL:
           console.log(sprintf(
-            `%-10s | %-8s | %-15s | %-18s | %-8s`.underline, 'Name', 'ID', 'Score=(μ - 3σ)', 'Mu: μ, Sigma: σ', 'Matches'));
+            `%-20s | %-8s | %-15s | %-18s | %-8s`.underline, 'Name', 'ID', 'Score=(μ - 3σ)', 'Mu: μ, Sigma: σ', 'Matches'));
           ranks.forEach((info) => {
             console.log(sprintf(
-              `%-10s`.blue+ ` | %-8s | ` + `%-15s`.green + ` | ` + `μ=%-6s, σ=%-6s`.yellow +` | %-8s`, info.player.tournamentID.name, info.player.tournamentID.id, info.rankState.score.toFixed(7), info.rankState.mu.toFixed(3), info.rankState.sigma.toFixed(3), info.matchesPlayed));
+              `%-20s`.blue+ ` | %-8s | ` + `%-15s`.green + ` | ` + `μ=%-6s, σ=%-6s`.yellow +` | %-8s`, info.player.tournamentID.name, info.player.tournamentID.id, info.rankState.score.toFixed(7), info.rankState.mu.toFixed(3), info.rankState.sigma.toFixed(3), info.matchesPlayed));
           });
           break;
         case RANK_SYSTEM.ELO:
@@ -242,7 +242,10 @@ export class LadderTournament extends Tournament {
    * @param matchInfo 
    */
   private async handleMatch(matchInfo: Array<Player>) {
-    this.log.info('Running match - Competitors: ', matchInfo.map((player) => {return {name: player.tournamentID.name, rankState: this.state.playerStats.get(player.tournamentID.id).rankState}}));
+    this.log.info('Running match - Competitors: ', matchInfo.map((player) => {return player.tournamentID.name}));
+    if (this.configs.consoleDisplay) {
+      this.printTournamentStatus();
+    }
     let matchRes = await this.runMatch(matchInfo);
     // update total matches
     this.state.statistics.totalMatches++;
