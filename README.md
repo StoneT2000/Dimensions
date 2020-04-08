@@ -4,11 +4,11 @@ This is an **open sourced** **generic** **Artificial Intelligence competition fr
 
 All you need to do?
 
-Code a competition design and code an Artificial Intelligence Agent
+Code a competition design and code a bot
 
-Dimensions handles the rest
+Dimensions handles the rest, including match running, tournament running, TrueSkill/ELO ranking, and a local website through which you can watch this all happen at once.
 
-Dimensions utilizes an I/O based model to run competitions and pit AI agents against each other, allowing it to be generic and fairly language agnostic.
+Dimensions utilizes an I/O based model to run competitions and pit AI agents against each other, allowing it to be generic and language agnostic.
 
 This was inspired by [Battlecode](battlecode.org/) and [Halite](https://halite.io/)
 
@@ -33,11 +33,13 @@ In order to start writing AI to compete against each other in a competition, you
 1. Design the competition
 2. Design an AI starter kit
 
-Let's first design a simple RockPaperScissors competition. To design a competition, you will need to code. In the future, there will be options to create a competition design without any code at all.
+You need to design a competition to allow people to compete and facilitate the matches. More info on that soon. And it is highly suggest to design an AI starter kit so people can get straight into competing.
 
-### Design The Competition
+Let's first design a simple RockPaperScissors competition. To design a competition, you will need to code. On the roadmap there are plans to potentially make a no-code competition designer.
 
-To design the competition we need to create a `class` that extends `Dimension.Design`. Let's call this design `RockPaperScissorsDesign`. All `design` classes requires the implementation of 3 `async` lifecycle functions, namely
+### Designing The Competition
+
+To design the competition we need to create a `class` that extends `Dimension.Design`. Let's call this design `RockPaperScissorsDesign`. All `design` classes requires the implementation of 3 `async` lifecycle functions that facilitate a match, namely
 
 | Design Lifecycle Functions | Purpose                                        |
 | -------------------------- | ---------------------------------------------- |
@@ -48,6 +50,8 @@ To design the competition we need to create a `class` that extends `Dimension.De
 So now we would have something like
 
 ```js
+import * as Dimension from 'dimensions-ai';
+// or const Dimension = require('dimensions-ai');
 class RockPaperScissorsDesign extend Dimension.Design {
   async initialize(match) {
     ...
@@ -107,22 +111,21 @@ class RockPaperScissorsDesign extend Dimension.Design {
 
 An example of a rock paper scissors competition design can be found [here](https://github.com/StoneT2000/Dimensions/blob/master/examples/rock-paper-scissors/rps.js#L8)
 
-Some existing `designs` are provided as examples at [/examples](https://github.com/StoneT2000/Dimensions/blob/master/examples/), which include
-Rock Paper Scissors, Domination, TODO (Add halite and xConnect later)
+Some existing `designs` are provided as examples at [/examples](https://github.com/StoneT2000/Dimensions/blob/master/examples/), which currently includes Rock Paper Scissors (RPS). A Halite 3 design using this framework has also been made and can be found [here](https://www.npmjs.com/package/@dimensions-ai/designs-halite3)
 
 If you want to kick start development on your own `design`, check out [/templates/designs](https://github.com/StoneT2000/Dimensions/tree/master/templates/designs)
 
 Full documentation on `Match, Agent` and other data that can be used, along with configuration can be found here: TODO add link
 
-### Design an AI Starter Kit
+### Designing an AI Starter Kit
 
 An AI Starter kit is just basic code implemented to help you create an AI to compete in the `design` you made really quickly. This will lead you through how the JavaScript starter kit works, a template of which can be found in [/templates/starter-kits/js](https://github.com/StoneT2000/Dimensions/tree/master/templates/starter-kits/js)
 
-This part is not language bound, so you can program an AI in any language you want for your design! (Just because your friend only codes in Rust and you are a die hard JavaScript fan doesn't mean you two can't compete)
+This part is not language bound, so you can program an AI in any language you want for your design! (Just because your friend only codes in Rust and you are a die hard JavaScript fan doesn't mean you two can't compete!)
 
 Other starter kit templates in other languages can be found in [/templates/starter-kits](https://github.com/StoneT2000/Dimensions/tree/master/templates/starter-kits/) and you can use them to help kickstart development for your own starter kit for your own `design`
 
-AI Starter kits consist at least two files, `agent.js` (or whichever extension matches your language) and [`myBot.js`](https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/myBot.js). It can be merged into one but for organization, splitting it up is better.
+AI Starter kits are suggested to contain at least two files, `agent.js` (or whichever extension matches your language) and [`myBot.js`](https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/myBot.js). It can be merged into one but for organization, splitting it up is better.
 
 [`agent.js`](https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/agent.js) should have a `AgentControl` class with some kind of asynchronous  `initialize, update` functions and a `endTurn` function.
 
@@ -170,6 +173,7 @@ try {
   });
 }
 catch(error) {
+  // log any errors if they come up
   console.error(error);
 }
 ```
@@ -180,11 +184,11 @@ Note that the `await agent.update()` can be moved after `agent.endTurn()` if nee
 
 Now with a design done and a starter kit created, all you have to do is write a quick AI that does something and then run a match as follows:
 
-First initialize your design and pass it a name. Then create a new `dimension` with `Dimension.create` that uses this design and give it a name. You can also pass in an optional logging level.`LEVEL.INFO` is the default, but there are others as documented here: TODO: LINK
+First initialize your design and pass it a name. Then create a new `dimension` with `Dimension.create`.
 
 ```js
 let RPSDesign = new RockPaperScissorsDesign('RPS!');
-let myDimension = Dimension.create(RPSDesign, 'Domination', Dimension.Logger.LEVEL.INFO);
+let myDimension = Dimension.create(RPSDesign);
 ```
 
 We can now run our first match by passing in an array of paths to the bot codes, each of which will generate into a new agent that participates in the match. You can then also pass in any configurations you want accessible through `match.configs` in the life cycle functions of your `design`.
@@ -194,7 +198,7 @@ let results = await myDimension.runMatch(
   ['./examples/rock-paper-scissors/bots/smarter.js', 
    './examples/rock-paper-scissors/bots/smarter.js'],
   {
-    bestOf: 5
+    bestOf: 5 // a configuration accessible in mathc through match.configs.bestOf
   }
 )
 ```
@@ -202,8 +206,16 @@ let results = await myDimension.runMatch(
 You can now log the results, of which are the same results returned by your `design's` `getResult` function.
 
 ```js
-console.log(resultS)
+console.log(results)
 ```
+
+Notice that your console will also print something about a station. It'll give you a link to the `Station`, a local server that lets you see what's going on with your Dimension, Matches, Tournaments and more
+
+### Run a Tournament
+
+This framework also provides tournament running features, including Round Robin, Ladder, and Elimination type tournaments. Additionally, there are various ranking systems used, such as Win/Tie/Loss, TrueSkill, and ELO.
+
+Here is how you run a tournament. First, you will need a `resultHandler` function. This function must given to the tournament to indicate how the results of a `match` should be interpreted. Recall that these results are returned by the `getResult` command in your design.
 
 ## Contributing
 
@@ -227,40 +239,41 @@ Start development by running
 npm run watch
 ```
 
-to watch for code changes and reload the build folder
+to watch for code changes in the `src` folder and reload the build folder. Note this does not build any frontend code.
 
-Start testing by running 
+Tests are built with [Mocha](https://mochajs.org/) and [Chai](https://www.chaijs.com/). Run them with
 
 ```
-npm run test-watch
+npm run test
 ```
 
-to constantly test as you develop. Tests are written using [Jest](jestjs.io/)
+Run
 
-## Road Map / Plans
+```
+npm run build
+```
+
+to build the entire library, including any frontend code.
+
+## Road Map / Plans / Possible Features
 
 - Add tournament running
   - Single and Double elimination, seeded and random options
-  - Trueskill / ELO rankings based, giving option of number of matches to run and other configs
-  - Simple round robins
-- Run a server upon creation of a dimension to view ongoing matches, tournaments, agents per match etc. in a `Station` (a station in a dimension that observes and reports)
+  - Trueskill / ELO rankings based, giving option of number of matches to run and other configs (Like Halite)
+  - Simple round robins (Like associating football)
 - Make the `Design` language agnostic through developing an I/O based API for other languages in order to implement the 3 Lifecycle functions `initialize, update, getResults`  
+- Make it easier to create a `Design` (design a competition)
+  - Make README easier to READ, and reduce the initial "getting-used-to-framework" curve.
 - Make it easier for users to dive deeper into the `MatchEngine`, `Matches`, `Dimensions` to give them greater flexibility over the backend infrastructure
   - At the moment, there are plans for a parallel command stream option, where all agents send commands whenever they want and the engine just sends them to the update function
   - Allow users to tinker the MatchEngine to their needs somehow. (Extend it as a class and pass it to Dimensions)
-- Provide more out of the box design agnostic starter kits for other languages
-  - These starter kits will provide the classes needed and make it easier with something like a parser to make it easier to process commands sent by `MatchEngine`. These classes methods will mostly be empty and to be filled in by user
-- Starting, resuming, and stopping tournaments and matches
 - Security Designs to help ensure that users won't create `Designs` susceptible to cheating and match breaking behavior from bots participating in a `Match` 
   - Give some guidelines
   - Add some options and default values for certain configurations, e.g.
     - Max command limit per `timeStep` (for a game of rock paper scissors, this would be 1, it wouldn't make sense to flood the `MatchEngine` with several commands, which could break the `Match`)
+- Distribute through `cluster` module and run tournaments in a distributed framework.
 - Add visualizers for rock paper scissors example and domination example (and others if possible)
 - Generalize a match visualizer
-- Add more example `Designs` and starter kits for other games
+- Add more example `Designs` and starter kits for other popular ai games
   - Recreate Kaggle Simulation's xConnect
-  - Recreate Halite 3
-- Make it easier to create a `Design` (design a competition)
-  - Online site to generate a `Design`
-  - Online site to generate starter kit as well (in as many languages possible)
 
