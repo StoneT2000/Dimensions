@@ -1,7 +1,7 @@
 import { ChildProcess, exec, spawn } from "child_process";
 import path from 'path';
 import fs from 'fs';
-import { Logger, LoggerLEVEL } from "../Logger";
+import { Logger } from "../Logger";
 import { FatalError } from "../DimensionError";
 import { Tournament } from "../Tournament";
 
@@ -226,7 +226,7 @@ export class Agent {
    *              and a name key for the name of the agent
    * @param loggingLevel - the logging level for all these agents
    */
-  static generateAgents(files: Array<String> | Array<{file: string, name: string}> | Array<{file: string, tournamentID: Tournament.ID}>, loggingLevel: LoggerLEVEL): Array<Agent> {
+  static generateAgents(files: Array<String> | Array<{file: string, name: string}> | Array<{file: string, tournamentID: Tournament.ID}>, loggingLevel: Logger.LEVEL): Array<Agent> {
     if (files.length === 0) {
       throw new FatalError('No files provided to generate agents with!');
     }

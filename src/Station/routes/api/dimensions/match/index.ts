@@ -3,7 +3,7 @@
  */
 import express, { Request, Response, NextFunction } from 'express';
 import * as error from '../../../../error';
-import { MatchStatus } from '../../../../../Match';
+import { Match } from '../../../../../Match';
 const router = express.Router();
 
 // find match by name or ID middleware
@@ -31,11 +31,11 @@ router.get('/:matchID/results', (req, res) => {
 });
 router.post('/:matchID/run', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (req.data.match.matchStatus === MatchStatus.FINISHED || 
-      req.data.match.matchStatus === MatchStatus.UNINITIALIZED) {
+    if (req.data.match.matchStatus === Match.Status.FINISHED || 
+      req.data.match.matchStatus === Match.Status.UNINITIALIZED) {
       await req.data.match.initialize();
     }
-    else if (req.data.matchStatus === MatchStatus.RUNNING) {
+    else if (req.data.matchStatus === Match.Status.RUNNING) {
       return next(new error.BadRequest('Match is already riunning'));
     }
     // run the match
@@ -49,7 +49,7 @@ router.post('/:matchID/run', async (req: Request, res: Response, next: NextFunct
 
 // Stops a match
 router.post('/:matchID/stop', async (req: Request, res: Response, next: NextFunction) => {
-  if (req.data.matchStatus === MatchStatus.STOPPED) {
+  if (req.data.matchStatus === Match.Status.STOPPED) {
     return next(new error.BadRequest('Match is already stopped'));
   }
   // stop the match
@@ -63,7 +63,7 @@ router.post('/:matchID/stop', async (req: Request, res: Response, next: NextFunc
 
 // Resumes a match
 router.post('/:matchID/resume', async (req: Request, res: Response, next: NextFunction) => {
-  if (req.data.matchStatus === MatchStatus.RUNNING) {
+  if (req.data.matchStatus === Match.Status.RUNNING) {
     return next(new error.BadRequest('Match is already running'));
   }
   // resume the match

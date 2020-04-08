@@ -1,4 +1,4 @@
-import * as Dimension from '../src';
+import { Design, MatchEngine, Match, Agent, MatchError, MatchWarn } from '../src';
 
 // Test design for Domination Game
 // Basic overview
@@ -20,11 +20,11 @@ import * as Dimension from '../src';
 // Regardless, recommended to send each agent the number of lines of input they are about to receive if this is a
 // dynamic amount of lines
 
-export class DominationDesign extends Dimension.Design {
+export class DominationDesign extends Design {
   constructor(name) {
     super(name);
   }
-  async initialize(match: Dimension.Match, config?: any) {
+  async initialize(match: Match, config?: any) {
     
     let state = {
       size: config.size,
@@ -75,7 +75,7 @@ export class DominationDesign extends Dimension.Design {
     
   }
 
-  async update(match: Dimension.Match, commands: Array<Dimension.Command>) {
+  async update(match: Match, commands: Array<MatchEngine.Command>) {
     match.log.infobar();
     match.log.info("Round - " + (match.state.round));
     match.log.info("Updating state");
@@ -88,11 +88,11 @@ export class DominationDesign extends Dimension.Design {
     })
     const expand = (agentID: number, x: number, y: number) => {
       if (!inMap(x,y)) {
-        match.throw(agentID, new Dimension.MatchError(`(${x}, ${y}) is out of bounds`))
+        match.throw(agentID, new MatchError(`(${x}, ${y}) is out of bounds`))
         return;
       }
       if (match.state.map[y][x] !== -1 && match.state.map[y][x] != agentID) {
-        match.throw(agentID, new Dimension.MatchError(`(${x}, ${y}) is not empty nor owned by agent`))
+        match.throw(agentID, new MatchError(`(${x}, ${y}) is not empty nor owned by agent`))
         return;
       }
       let neighbors = getNeighbors(x,y);
@@ -105,7 +105,7 @@ export class DominationDesign extends Dimension.Design {
         }
       }
       if (!adjacent) {
-        match.throw(agentID, new Dimension.MatchError(`(${x}, ${y}) is not adjacent to an owned tile`));
+        match.throw(agentID, new MatchError(`(${x}, ${y}) is not adjacent to an owned tile`));
         return;
       }
 
@@ -149,7 +149,7 @@ export class DominationDesign extends Dimension.Design {
       switch (cmd[0]) {
         case "e":
           if (commandsRanThisround[id] >= 1) {
-            match.throw(id, new Dimension.MatchError('Past command limit!'));
+            match.throw(id, new MatchError('Past command limit!'));
             break;
           }
           let x = parseInt(cmd.slice(1,3));
@@ -170,13 +170,13 @@ export class DominationDesign extends Dimension.Design {
     match.log.info('End of Round ' + (match.state.round));
     
     if (match.state.round === match.state.MAX_ROUNDS) {
-      return Dimension.MatchStatus.FINISHED;
+      return Match.Status.FINISHED;
     }
     match.state.round++;
     
   }
 
-  async getResults(match: Dimension.Match) {
+  async getResults(match: Match) {
     let results = {
       scores: {},
       winner: '',

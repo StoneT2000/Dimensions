@@ -81,7 +81,7 @@ describe('Testing with Domination Game', () => {
         }
       );
 
-      let status: Dimension.MatchStatus;
+      let status: Dimension.Match.Status;
       
       
       // Store results
@@ -110,7 +110,7 @@ describe('Testing with Domination Game', () => {
             maxRounds: 5
           }
         }
-      )).to.be.rejectedWith(Dimension.FatalError);
+      )).to.be.rejectedWith('Dimension.FatalError: No files provided for match');
 
       // Throw missing file error
       expect(myDimension.createMatch(
@@ -122,7 +122,7 @@ describe('Testing with Domination Game', () => {
             maxRounds: 5
           }
         }
-      )).to.be.rejectedWith(Dimension.FatalError);
+      )).to.be.rejectedWith('Dimension.FatalError: ./tests/js-kit/domination/fakefile.js does not exist, check if file path provided is correct');
     });
   });
 

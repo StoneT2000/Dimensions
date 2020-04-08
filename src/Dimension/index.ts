@@ -1,8 +1,7 @@
-import { Logger, LoggerLEVEL} from '../Logger';
+import { Logger} from '../Logger';
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
-// import { Tournament } from '../Tournament';
-import { MatchConfigs, Match } from '../Match';
+import { Match } from '../Match';
 import { Station } from '../Station';
 import { FatalError } from '../DimensionError';
 import { Design } from '../Design';
@@ -10,13 +9,14 @@ import { RoundRobinTournament } from '../Tournament/TournamentTypes/RoundRobin';
 import { EliminationTournament } from '../Tournament/TournamentTypes/Elimination';
 import { Tournament } from '../Tournament';
 import { deepCopy } from '../utils/DeepCopy';
+import { LadderTournament } from '../Tournament/TournamentTypes/Ladder';
 
 export type DimensionConfigs = {
   name: string
   activateStation: boolean
   observe: boolean,
-  loggingLevel: LoggerLEVEL,
-  defaultMatchConfigs: Partial<MatchConfigs>
+  loggingLevel: Logger.LEVEL,
+  defaultMatchConfigs: DeepPartial<Match.Configs>
 }
 /**
  * @class Dimension
@@ -107,7 +107,8 @@ export class Dimension {
    * @param matchOptions - Options for the created match
    * @param configs - Configurations that are `Design` dependent
    */
-  public async createMatch(files: Array<string> | Array<{file: string, name: string}>, configs?: DeepPartial<MatchConfigs>): Promise<Match> {
+  public async createMatch(files: Array<string> | Array<{file: string, name: string}>, 
+    configs?: DeepPartial<Match.Configs>): Promise<Match> {
     return new Promise( async (resolve, reject) => {
       if (!files.length) reject(new FatalError('No files provided for match'));
 
@@ -151,7 +152,7 @@ export class Dimension {
    */
   public async runMatch(
     files: Array<string> | Array<{file: string, name: string}>, 
-    configs?: DeepPartial<MatchConfigs>): Promise<any> {
+    configs?: DeepPartial<Match.Configs>): Promise<any> {
     return new Promise( async (resolve, reject) => {
       
       try {
@@ -198,6 +199,9 @@ export class Dimension {
         case Tournament.TOURNAMENT_TYPE.ROUND_ROBIN:
           newTourney = new RoundRobinTournament(this.design, files, configs, id);
           break;
+        case Tournament.TOURNAMENT_TYPE.LADDER:
+          newTourney = new LadderTournament(this.design, files, configs, id);
+          break;
         case Tournament.TOURNAMENT_TYPE.ELIMINATION:
           newTourney = new EliminationTournament(this.design, files, configs, id);
           break;
@@ -206,6 +210,7 @@ export class Dimension {
       this.tournaments.push(newTourney);
       return newTourney;
   }
+  // TODO give option to directly create a Ladder/RoundRobin ... tourney with createLadderTournament etc.
 
   /**
    * Get the station

@@ -1,10 +1,13 @@
-import { EngineOptions, COMMAND_FINISH_POLICIES } from "../MatchEngine";
+import { MatchEngine } from "../MatchEngine";
 import { deepMerge } from "../utils/DeepMerge";
 import { DeepPartial } from "../utils/DeepPartial";
 import { Agent, agentID } from "../Agent";
-import { Match, MatchStatus } from "../Match";
-import { Logger, LoggerLEVEL } from "../Logger";
-
+import { Match } from "../Match";
+import { Logger } from "../Logger";
+import EngineOptions = MatchEngine.EngineOptions;
+import COMMAND_FINISH_POLICIES = MatchEngine.COMMAND_FINISH_POLICIES;
+import COMMAND_STREAM_TYPE = MatchEngine.COMMAND_STREAM_TYPE;
+import Command = MatchEngine.Command;
 /**
  * @class Design
  * @classdesc Abstract class detailing a `Design` to be used as the platform that holds match lifecycle logic for
@@ -63,7 +66,7 @@ export abstract class Design {
    * Set log level of the design
    * @param level - level to set design logger to
    */
-  _setLogLevel(level: LoggerLEVEL) {
+  _setLogLevel(level: Logger.LEVEL) {
     this.log.level = level;
   }
   
@@ -87,7 +90,7 @@ export abstract class Design {
 
   /**
    * Abstract function required to update `match` state with commands from Agents and send commands to Agents
-   * along with returning the current match status, one of which can be MatchStatus.FINISHED
+   * along with returning the current match status, one of which can be {@link Match.Status.FINISHED}
    * 
    * @see Match - This function is used by the `match` to update the `match` state and move forward a time step
    * 
@@ -96,10 +99,10 @@ export abstract class Design {
    *                   Each element has two keys, command and agentID. agentID is the id of the agent that outputted
    *                   that string in command
    * @param config - Any user configurations that can be added as parameters
-   * @returns A promise that resolves with the current `MatchStatus` at the end of this time step. Can also directly 
-   *          just return `MatchStatus`
+   * @returns A promise that resolves with the current `Match.Status` at the end of this time step. Can also directly 
+   *          just return `Match.Status`
    */
-  abstract async update(match: Match, commands: Array<Command>, config?: any): Promise<MatchStatus>
+  abstract async update(match: Match, commands: Array<Command>, config?: any): Promise<Match.Status>
 
   /**
    * Abstract function required to get the result of a `match`
@@ -115,22 +118,6 @@ export abstract class Design {
 
 }
 
-// Standard ways for commands from agents to be streamed to `MatchEngine` for the `Design` to handle
-export enum COMMAND_STREAM_TYPE {
-  PARALLEL = 'parallel', // first come first serve for commands run, leads to all Agents sending commands based on old states
-  SEQUENTIAL = 'sequential' // each agent's set of command sequence is run before the next agent
-};
-export type CommandSequence = {
-  commands: Array<string>
-  agentID: agentID
-}
-/**
- * A command delimited by the delimiter of the match engine from all commands sent by agent specified by agentID
- */
-export type Command = {
-  command: string
-  agentID: agentID
-}
 export interface DesignOptions {
   engineOptions: EngineOptions
 };

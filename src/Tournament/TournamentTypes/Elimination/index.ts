@@ -17,16 +17,18 @@ export class EliminationTournament extends Tournament {
     rankSystem: null,
     rankSystemConfigs: null,
     tournamentConfigs: null,
-    resultHandler: null
+    resultHandler: null,
+    agentsPerMatch: [2],
+    consoleDisplay: true
   }
   state: State;
   constructor(
     design: Design,
     files: Array<string> | Array<{file: string, name:string}>, 
-    tournamentConfigs: DeepPartial<Tournament.TournamentConfigs<EliminationConfigs>> = {},
+    tournamentConfigs: Tournament.TournamentConfigsBase,
     id: number
   ) {
-    super(design, files, id);
+    super(design, files, id, tournamentConfigs);
     this.configs = deepMerge(this.configs, tournamentConfigs);
   }
   public getConfigs(): Tournament.TournamentConfigs<EliminationConfigs> {

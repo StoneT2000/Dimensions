@@ -1,5 +1,5 @@
 import Dimension = require('../src');
-let MatchStatus = Dimension.MatchStatus;
+let MatchStatus = Dimension.Match.Status;
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import 'mocha';
@@ -51,7 +51,7 @@ describe('Rock Paper Scissors Run', () => {
     expect(results.scores).to.eql({'0': 0, '1': 10});
   })
   describe('Testing erasing extraneous output', () => {
-    it('shoulde erase extraneous output', async () => {
+    it('should erase extraneous output', async () => {
       let results = await myDimension.runMatch(
         ['./tests/js-kit/rps/rock.js', './tests/js-kit/rps/paper.js'],
         {
@@ -60,7 +60,7 @@ describe('Rock Paper Scissors Run', () => {
         }
       )
       expect(results.scores).to.eql({'0': 0, '1': 100});
-    });
+    }).timeout(5000);
     it('should erase extraneous output part 2', async () => {
       let results = await myDimension.runMatch(
         ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/paper.js'],
@@ -93,7 +93,7 @@ describe('Rock Paper Scissors Run', () => {
       )
       expect(results.scores).to.eql({'0': 3, '1': 1});
     });
-  });
+  }).timeout(5000);
 
   it('should log match errors', async () => {
     await myDimension.runMatch(
@@ -148,7 +148,7 @@ describe('Rock Paper Scissors Run', () => {
     await results.then((res) => {
       expect(res.scores).to.eql({'0': 1000, '1': 0});
     });
-  });
+  }).timeout(5000);
 
   describe('Testing _buffer store and split up readable emits from process to engine', () => {
     it('should allow for delayed newline characters and split up stdout', async () => {

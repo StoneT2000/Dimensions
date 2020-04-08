@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Match | dimensions-ai</title>
-	<meta name="description" content="">
+	<meta name="description" content="Documentation for dimensions-ai">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
 </head>
@@ -13,7 +13,7 @@
 	<div class="tsd-page-toolbar">
 		<div class="container">
 			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.js" data-base="..">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
 					<div class="field">
 						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
 						<input id="tsd-search-field" type="text" />
@@ -72,19 +72,21 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<dl class="tsd-comment-tags">
-						<dt>classdesc</dt>
-						<dd><p>An match created using a <code>Design</code> and a list of <code>Agents</code>. The match can be started and stopped, and
-							statistics can be retrieved at any point in time. This can be extended if needed</p>
-						</dd>
 						<dt>param</dt>
-						<dd><p>The <code>Design</code> used</p>
+						<dd><p>The <a href="_design_index_.design.html">Design</a> used</p>
 						</dd>
 						<dt>param</dt>
 						<dd><p>List of agents used to create Match.</p>
 						</dd>
 						<dt>param</dt>
 						<dd><p>Configurations that are passed to every run through initialize, update, and storeResults in the
-							given <code>Design</code></p>
+							given <a href="_design_index_.design.html">Design</a></p>
+						</dd>
+						<dt>see</dt>
+						<dd><p><a href="_design_index_.design.html">Design</a></p>
+						</dd>
+						<dt>see</dt>
+						<dd><p><a href="_agent_index_.agent.html">Agent</a></p>
 						</dd>
 					</dl>
 				</div>
@@ -102,6 +104,18 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
+							<h3>Enumerations</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-enum tsd-parent-kind-class tsd-is-static"><a href="../enums/_match_index_.match.status.html" class="tsd-kind-icon">Status</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Interfaces</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/_match_index_.match.configs.html" class="tsd-kind-icon">Configs</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_match_index_.match.html#constructor" class="tsd-kind-icon">constructor</a></li>
@@ -112,17 +126,19 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_match_index_.match.html#agentfiles" class="tsd-kind-icon">agent<wbr>Files</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_match_index_.match.html#agents" class="tsd-kind-icon">agents</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_match_index_.match.html#configs" class="tsd-kind-icon">configs</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_match_index_.match.html#creationdate" class="tsd-kind-icon">creation<wbr>Date</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_match_index_.match.html#design" class="tsd-kind-icon">design</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_match_index_.match.html#dimensionid" class="tsd-kind-icon">dimensionID</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_match_index_.match.html#id" class="tsd-kind-icon">id</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_match_index_.match.html#idtoagentsmap" class="tsd-kind-icon">id<wbr>ToAgents<wbr>Map</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_match_index_.match.html#log" class="tsd-kind-icon">log</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_match_index_.match.html#matchengine" class="tsd-kind-icon">match<wbr>Engine</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_match_index_.match.html#log" class="tsd-kind-icon">log</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_match_index_.match.html#mapagentidtotournamentid" class="tsd-kind-icon">map<wbr>AgentIDto<wbr>TournamentID</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_match_index_.match.html#matchengine" class="tsd-kind-icon">match<wbr>Engine</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_match_index_.match.html#matchstatus" class="tsd-kind-icon">match<wbr>Status</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_match_index_.match.html#name" class="tsd-kind-icon">name</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_match_index_.match.html#results" class="tsd-kind-icon">results</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_match_index_.match.html#resumepromise" class="tsd-kind-icon">resume<wbr>Promise</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_match_index_.match.html#resumeresolve" class="tsd-kind-icon">resume<wbr>Resolve</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_match_index_.match.html#shouldstop" class="tsd-kind-icon">should<wbr>Stop</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_match_index_.match.html#state" class="tsd-kind-icon">state</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_match_index_.match.html#timestep" class="tsd-kind-icon">time<wbr>Step</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-static"><a href="_match_index_.match.html#_id" class="tsd-kind-icon">_id</a></li>
@@ -133,13 +149,21 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_match_index_.match.html#getresults" class="tsd-kind-icon">get<wbr>Results</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_match_index_.match.html#initialize" class="tsd-kind-icon">initialize</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_match_index_.match.html#kill" class="tsd-kind-icon">kill</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_match_index_.match.html#next" class="tsd-kind-icon">next</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_match_index_.match.html#resume" class="tsd-kind-icon">resume</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_match_index_.match.html#run" class="tsd-kind-icon">run</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_match_index_.match.html#send" class="tsd-kind-icon">send</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_match_index_.match.html#sendall" class="tsd-kind-icon">send<wbr>All</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_match_index_.match.html#stop" class="tsd-kind-icon">stop</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_match_index_.match.html#stopandcleanup" class="tsd-kind-icon">stop<wbr>And<wbr>Clean<wbr>Up</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_match_index_.match.html#throw" class="tsd-kind-icon">throw</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Object literals</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-object-literal tsd-parent-kind-class"><a href="_match_index_.match.html#configs-1" class="tsd-kind-icon">configs</a></li>
 							</ul>
 						</section>
 					</div>
@@ -151,13 +175,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Match<span class="tsd-signature-symbol">(</span>design<span class="tsd-signature-symbol">: </span><a href="_design_index_.design.html" class="tsd-signature-type">Design</a>, agentFiles<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span>, configs<span class="tsd-signature-symbol">?: </span><a href="../modules/_match_index_.html#matchconfigs" class="tsd-signature-type">MatchConfigs</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_match_index_.match.html" class="tsd-signature-type">Match</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Match<span class="tsd-signature-symbol">(</span>design<span class="tsd-signature-symbol">: </span><a href="_design_index_.design.html" class="tsd-signature-type">Design</a>, agentFiles<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>tournamentID<span class="tsd-signature-symbol">: </span><a href="../interfaces/_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.id.html" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span>, configs<span class="tsd-signature-symbol">?: </span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_match_index_.match.configs.html" class="tsd-signature-type">Configs</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_match_index_.match.html" class="tsd-signature-type">Match</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L64">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:64</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L111">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L111</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -166,10 +190,10 @@
 									<h5>design: <a href="_design_index_.design.html" class="tsd-signature-type">Design</a></h5>
 								</li>
 								<li>
-									<h5>agentFiles: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>agentFiles: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>tournamentID<span class="tsd-signature-symbol">: </span><a href="../interfaces/_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.id.html" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> configs: <a href="../modules/_match_index_.html#matchconfigs" class="tsd-signature-type">MatchConfigs</a><span class="tsd-signature-symbol"> = {}</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> configs: <a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_match_index_.match.configs.html" class="tsd-signature-type">Configs</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = {}</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_match_index_.match.html" class="tsd-signature-type">Match</a></h4>
@@ -182,10 +206,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="agentfiles" class="tsd-anchor"></a>
 					<h3>agent<wbr>Files</h3>
-					<div class="tsd-signature tsd-kind-icon">agent<wbr>Files<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<div class="tsd-signature tsd-kind-icon">agent<wbr>Files<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>tournamentID<span class="tsd-signature-symbol">: </span><a href="../interfaces/_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.id.html" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L68">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:68</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L115">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L115</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -195,19 +219,19 @@
 					<div class="tsd-signature tsd-kind-icon">agents<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L53">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:53</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L59">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L59</a></li>
 						</ul>
 					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="configs" class="tsd-anchor"></a>
-					<h3>configs</h3>
-					<div class="tsd-signature tsd-kind-icon">configs<span class="tsd-signature-symbol">:</span> <a href="../modules/_match_index_.html#matchconfigs" class="tsd-signature-type">MatchConfigs</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L69">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:69</a></li>
-						</ul>
-					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>List of the agents currently involved in the match.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>see</dt>
+							<dd><p><a href="_agent_index_.agent.html">Agent</a> for details on the agents.</p>
+							</dd>
+						</dl>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="creationdate" class="tsd-anchor"></a>
@@ -215,9 +239,14 @@
 					<div class="tsd-signature tsd-kind-icon">creation<wbr>Date<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Date</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L36">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:36</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L32">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L32</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>When the match was created (called with new)</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="design" class="tsd-anchor"></a>
@@ -225,17 +254,7 @@
 					<div class="tsd-signature tsd-kind-icon">design<span class="tsd-signature-symbol">:</span> <a href="_design_index_.design.html" class="tsd-signature-type">Design</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L67">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:67</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="dimensionid" class="tsd-anchor"></a>
-					<h3>dimensionID</h3>
-					<div class="tsd-signature tsd-kind-icon">dimensionID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L42">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:42</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L114">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L114</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -245,9 +264,14 @@
 					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L39">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:39</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L42">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L42</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A unique ID for the match, unique to the current node process</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="idtoagentsmap" class="tsd-anchor"></a>
@@ -255,39 +279,75 @@
 					<div class="tsd-signature tsd-kind-icon">id<wbr>ToAgents<wbr>Map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="" class="tsd-signature-type">agentID</a><span class="tsd-signature-symbol">, </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L54">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:54</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="log" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> log</h3>
-					<div class="tsd-signature tsd-kind-icon">log<span class="tsd-signature-symbol">:</span> <a href="_logger_index_.logger.html" class="tsd-signature-type">Logger</a><span class="tsd-signature-symbol"> = new Logger()</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L61">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:61</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="matchengine" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> match<wbr>Engine</h3>
-					<div class="tsd-signature tsd-kind-icon">match<wbr>Engine<span class="tsd-signature-symbol">:</span> <a href="_matchengine_index_.matchengine.html" class="tsd-signature-type">MatchEngine</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L59">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:59</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L64">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L64</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="matchstatus" class="tsd-anchor"></a>
-					<h3>match<wbr>Status</h3>
-					<div class="tsd-signature tsd-kind-icon">match<wbr>Status<span class="tsd-signature-symbol">:</span> <a href="../enums/_match_index_.matchstatus.html" class="tsd-signature-type">MatchStatus</a><span class="tsd-signature-symbol"> = MatchStatus.UNINITIALIZED</span></div>
+					<a name="log" class="tsd-anchor"></a>
+					<h3>log</h3>
+					<div class="tsd-signature tsd-kind-icon">log<span class="tsd-signature-symbol">:</span> <a href="_logger_index_.logger.html" class="tsd-signature-type">Logger</a><span class="tsd-signature-symbol"> = new Logger()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L64">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:64</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L81">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L81</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The match logger.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>see</dt>
+							<dd><p><a href="_logger_index_.logger.html">Logger</a> for details on how to use this</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="mapagentidtotournamentid" class="tsd-anchor"></a>
+					<h3>map<wbr>AgentIDto<wbr>TournamentID</h3>
+					<div class="tsd-signature tsd-kind-icon">map<wbr>AgentIDto<wbr>TournamentID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="" class="tsd-signature-type">agentID</a><span class="tsd-signature-symbol">, </span><a href="../interfaces/_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.id.html" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L97">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L97</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A mapping from <a href="_agent_index_.agent.html">Agent</a> IDs to the tournament id of the <a href="_tournament_index_.player.html">Player</a> in a tournament that generated the
+							<a href="_agent_index_.agent.html">Agent</a></p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="matchengine" class="tsd-anchor"></a>
+					<h3>match<wbr>Engine</h3>
+					<div class="tsd-signature tsd-kind-icon">match<wbr>Engine<span class="tsd-signature-symbol">:</span> <a href="_matchengine_index_.matchengine.html" class="tsd-signature-type">MatchEngine</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L75">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L75</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The associated <a href="_matchengine_index_.matchengine.html">MatchEngine</a> that is running this match and serves as the backend for this match.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="matchstatus" class="tsd-anchor"></a>
+					<h3>match<wbr>Status</h3>
+					<div class="tsd-signature tsd-kind-icon">match<wbr>Status<span class="tsd-signature-symbol">:</span> <a href="../enums/_match_index_.match.status.html" class="tsd-signature-type">Status</a><span class="tsd-signature-symbol"> = Match.Status.UNINITIALIZED</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L91">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L91</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The current match status</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="name" class="tsd-anchor"></a>
@@ -295,9 +355,14 @@
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L38">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:38</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L37">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L37</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Name of the match</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="results" class="tsd-anchor"></a>
@@ -305,7 +370,42 @@
 					<div class="tsd-signature tsd-kind-icon">results<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L63">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:63</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L86">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L86</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The results field meant to store any results retrieved with <a href="_design_index_.design.html#getresults">Design.getResults</a></p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="resumepromise" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> resume<wbr>Promise</h3>
+					<div class="tsd-signature tsd-kind-icon">resume<wbr>Promise<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L45">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L45</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="resumeresolve" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> resume<wbr>Resolve</h3>
+					<div class="tsd-signature tsd-kind-icon">resume<wbr>Resolve<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Function</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L46">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L46</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="shouldstop" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> should<wbr>Stop</h3>
+					<div class="tsd-signature tsd-kind-icon">should<wbr>Stop<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L44">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L44</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -315,9 +415,14 @@
 					<div class="tsd-signature tsd-kind-icon">state<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L49">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:49</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L53">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L53</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The state field. This can be used to store anything by the user when this <code>match</code> is passed to the <a href="_design_index_.design.html">Design</a> life cycle functions <a href="_design_index_.design.html#initialize">Design.initialize</a>, <a href="_design_index_.design.html#update">Design.update</a>, and <a href="_design_index_.design.html#getresults">Design.getResults</a></p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="timestep" class="tsd-anchor"></a>
@@ -325,9 +430,15 @@
 					<div class="tsd-signature tsd-kind-icon">time<wbr>Step<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L57">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:57</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L70">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L70</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The current time step of the Match. This time step is independent of any <a href="_design_index_.design.html">Design</a> and agents are coordianted
+							against this timeStep</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-static">
 					<a name="_id" class="tsd-anchor"></a>
@@ -335,7 +446,7 @@
 					<div class="tsd-signature tsd-kind-icon">_id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L44">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:44</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L48">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L48</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -352,9 +463,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L204">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:204</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L339">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L339</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Retrieve results through delegating the task to <a href="_design_index_.design.html#getresults">Design.getResults</a></p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
@@ -369,12 +485,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L98">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:98</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L146">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L146</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Initializes using this config dependeing on how <code>Design&#39;s</code> <code>initialize</code> is implemented</p>
+									<p>Initializes this match using its configurations and using the <a href="_design_index_.design.html#initialize">Design.initialize</a> function</p>
 								</div>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -383,16 +499,45 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="next" class="tsd-anchor"></a>
-					<h3>next</h3>
+					<a name="kill" class="tsd-anchor"></a>
+					<h3>kill</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">next<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../enums/_match_index_.matchstatus.html" class="tsd-signature-type">MatchStatus</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">kill<span class="tsd-signature-symbol">(</span>agent<span class="tsd-signature-symbol">: </span><a href="" class="tsd-signature-type">agentID</a><span class="tsd-signature-symbol"> | </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L151">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:151</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L326">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L326</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Terminate an <a href="_agent_index_.agent.html">Agent</a>, kill the process. Note, the agent is still stored in the Match, but you can&#39;t send or
+									receive messages from it anymore</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>agent: <a href="" class="tsd-signature-type">agentID</a><span class="tsd-signature-symbol"> | </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="next" class="tsd-anchor"></a>
+					<h3>next</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">next<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../enums/_match_index_.match.status.html" class="tsd-signature-type">Status</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L210">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L210</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -400,7 +545,30 @@
 									<p>Next function. Moves match forward by one timestep. Resolves with the match status</p>
 								</div>
 							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../enums/_match_index_.matchstatus.html" class="tsd-signature-type">MatchStatus</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../enums/_match_index_.match.status.html" class="tsd-signature-type">Status</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="resume" class="tsd-anchor"></a>
+					<h3>resume</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">resume<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L301">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L301</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Resume the match if it was in the stopped state</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+							<p>true if succesfully resumed</p>
 						</li>
 					</ul>
 				</section>
@@ -414,7 +582,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L133">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:133</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L188">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L188</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -430,25 +598,28 @@
 					<a name="send" class="tsd-anchor"></a>
 					<h3>send</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">send<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, receiver<span class="tsd-signature-symbol">: </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol"> | </span><a href="" class="tsd-signature-type">agentID</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">send<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, receiver<span class="tsd-signature-symbol">: </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol"> | </span><a href="" class="tsd-signature-type">agentID</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L241">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:241</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L388">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L388</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Functional method for sending a message string to a particular agent. Returns a promise that resolves true if
-									succesfully sent</p>
+									<p>Functional method for sending a message string to a particular <a href="_agent_index_.agent.html">Agent</a>. Returns a promise that resolves true
+									if succesfully sent</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>message: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the string message to send</p>
+									</div>
 								</li>
 								<li>
 									<h5>receiver: <a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol"> | </span><a href="" class="tsd-signature-type">agentID</a></h5>
@@ -457,7 +628,7 @@
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -465,22 +636,31 @@
 					<a name="sendall" class="tsd-anchor"></a>
 					<h3>send<wbr>All</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">send<wbr>All<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">send<wbr>All<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L219">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:219</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L366">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L366</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Sends a message to all the standard input of all agents in this match</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>message: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the message to send to all agents available</p>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>a promise resolving true/false if it was succesfully sent</p>
 						</li>
 					</ul>
 				</section>
@@ -488,18 +668,18 @@
 					<a name="stop" class="tsd-anchor"></a>
 					<h3>stop</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">stop<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">stop<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L196">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:196</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L282">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L282</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Stops at the nearest timestep available</p>
+									<p>Stops at the next nearest timestep possible</p>
 								</div>
 								<p>Notes:</p>
 								<ul>
@@ -508,7 +688,8 @@
 									to a coordinated stopping <code>timeStep</code></li>
 								</ul>
 							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+							<p>true if successfully stopped</p>
 						</li>
 					</ul>
 				</section>
@@ -522,9 +703,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L200">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:200</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L318">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L318</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Stop all agents through the match engine</p>
+								</div>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
@@ -533,20 +719,20 @@
 					<a name="throw" class="tsd-anchor"></a>
 					<h3>throw</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">throw<span class="tsd-signature-symbol">(</span>agentID<span class="tsd-signature-symbol">: </span><a href="" class="tsd-signature-type">agentID</a>, error<span class="tsd-signature-symbol">: </span><a href="_station_error_index_.httperror.html#error" class="tsd-signature-type">Error</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">throw<span class="tsd-signature-symbol">(</span>agentID<span class="tsd-signature-symbol">: </span><a href="" class="tsd-signature-type">agentID</a>, error<span class="tsd-signature-symbol">: </span><a href="_dimensionerror_index_.matcherror.html#error" class="tsd-signature-type">Error</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/1bf112b/src/Match/index.ts#L257">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Match/index.ts:257</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L404">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L404</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Throw an error within the <code>Match</code>, indicating an Agent tried a command that was forbidden in the match according
-										to a <code>Design</code>
-									Examples are misuse of an existing command or using incorrect commands</p>
+									<p>Throw an error within the Match, indicating an <a href="_agent_index_.agent.html">Agent</a> tried a command that was forbidden in the match
+										according to a the utilized <a href="_design_index_.design.html">Design</a>
+									Examples are misuse of an existing command or using incorrect commands or sending too many commands</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -558,7 +744,7 @@
 									</div>
 								</li>
 								<li>
-									<h5>error: <a href="_station_error_index_.httperror.html#error" class="tsd-signature-type">Error</a></h5>
+									<h5>error: <a href="_dimensionerror_index_.matcherror.html#error" class="tsd-signature-type">Error</a></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The error</p>
 									</div>
@@ -567,6 +753,124 @@
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Object literals</h2>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-class">
+					<a name="configs-1" class="tsd-anchor"></a>
+					<h3>configs</h3>
+					<div class="tsd-signature tsd-kind-icon">configs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L102">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L102</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Match Configurations</p>
+						</div>
+					</div>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="configs-1.dimensionid" class="tsd-anchor"></a>
+						<h3>dimensionID</h3>
+						<div class="tsd-signature tsd-kind-icon">dimensionID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> = null</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L109">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L109</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="configs-1.engineoptions" class="tsd-anchor"></a>
+						<h3>engine<wbr>Options</h3>
+						<div class="tsd-signature tsd-kind-icon">engine<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L110">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L110</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-type-declaration">
+							<h4>Type declaration</h4>
+							<ul class="tsd-parameters">
+							</ul>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="configs-1.getresultconfig" class="tsd-anchor"></a>
+						<h3>get<wbr>Result<wbr>Config</h3>
+						<div class="tsd-signature tsd-kind-icon">get<wbr>Result<wbr>Config<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L107">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L107</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-type-declaration">
+							<h4>Type declaration</h4>
+							<ul class="tsd-parameters">
+							</ul>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="configs-1.initializeconfig" class="tsd-anchor"></a>
+						<h3>initialize<wbr>Config</h3>
+						<div class="tsd-signature tsd-kind-icon">initialize<wbr>Config<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L105">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L105</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-type-declaration">
+							<h4>Type declaration</h4>
+							<ul class="tsd-parameters">
+							</ul>
+						</div>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="configs-1.logginglevel" class="tsd-anchor"></a>
+						<h3>logging<wbr>Level</h3>
+						<div class="tsd-signature tsd-kind-icon">logging<wbr>Level<span class="tsd-signature-symbol">:</span> <a href="../enums/_logger_index_.logger.level.html#info" class="tsd-signature-type">INFO</a><span class="tsd-signature-symbol"> = Logger.LEVEL.INFO</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L108">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L108</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="configs-1.name-1" class="tsd-anchor"></a>
+						<h3>name</h3>
+						<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L103">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L103</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="configs-1.timeout" class="tsd-anchor"></a>
+						<h3>timeout</h3>
+						<div class="tsd-signature tsd-kind-icon">timeout<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 1000</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L104">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L104</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="configs-1.updateconfig" class="tsd-anchor"></a>
+						<h3>update<wbr>Config</h3>
+						<div class="tsd-signature tsd-kind-icon">update<wbr>Config<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L106">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L106</a></li>
+							</ul>
+						</aside>
+						<div class="tsd-type-declaration">
+							<h4>Type declaration</h4>
+							<ul class="tsd-parameters">
+							</ul>
+						</div>
+					</section>
 				</section>
 			</section>
 		</div>
@@ -598,41 +902,47 @@
 						<a href="../modules/_matchengine_index_.html">&quot;<wbr>Match<wbr>Engine/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="../modules/_matchmaker_index_.html">&quot;<wbr>Match<wbr>Maker/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
 						<a href="../modules/_parser_index_.html">&quot;<wbr>Parser/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="../modules/_station_error_index_.html">&quot;<wbr>Station/error/index&quot;</a>
+						<a href="../modules/_tournament_tournamenttypes_elimination_index_.html">&quot;<wbr>Tournament/<wbr>Tournament<wbr>Types/<wbr>Elimination/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="../modules/_station_index_.html">&quot;<wbr>Station/index&quot;</a>
+						<a href="../modules/_tournament_tournamenttypes_ladder_index_.html">&quot;<wbr>Tournament/<wbr>Tournament<wbr>Types/<wbr>Ladder/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="../modules/_station_routes_api_dimensions_index_.html">&quot;<wbr>Station/routes/api/dimensions/index&quot;</a>
+						<a href="../modules/_tournament_tournamenttypes_roundrobin_index_.html">&quot;<wbr>Tournament/<wbr>Tournament<wbr>Types/<wbr>Round<wbr>Robin/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="../modules/_station_routes_api_dimensions_match_index_.html">&quot;<wbr>Station/routes/api/dimensions/match/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_station_routes_api_status_.html">&quot;<wbr>Station/routes/api/status&quot;</a>
+						<a href="../modules/_tournament_index_.html">&quot;<wbr>Tournament/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="../modules/_index_.html">&quot;index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_utils_deepcopy_.html">&quot;utils/<wbr>Deep<wbr>Copy&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_utils_deepmerge_.html">&quot;utils/<wbr>Deep<wbr>Merge&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/_utils_deeppartial_.html">&quot;utils/<wbr>Deep<wbr>Partial&quot;</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-enum tsd-parent-kind-module">
-						<a href="../enums/_match_index_.matchstatus.html" class="tsd-kind-icon">Match<wbr>Status</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-module">
 						<a href="_match_index_.match.html" class="tsd-kind-icon">Match</a>
 						<ul>
+							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
+								<a href="../enums/_match_index_.match.status.html" class="tsd-kind-icon">Status</a>
+							</li>
+							<li class=" tsd-kind-interface tsd-parent-kind-class">
+								<a href="../interfaces/_match_index_.match.configs.html" class="tsd-kind-icon">Configs</a>
+							</li>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="_match_index_.match.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
@@ -643,16 +953,10 @@
 								<a href="_match_index_.match.html#agents" class="tsd-kind-icon">agents</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_match_index_.match.html#configs" class="tsd-kind-icon">configs</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_match_index_.match.html#creationdate" class="tsd-kind-icon">creation<wbr>Date</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_match_index_.match.html#design" class="tsd-kind-icon">design</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_match_index_.match.html#dimensionid" class="tsd-kind-icon">dimensionID</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_match_index_.match.html#id" class="tsd-kind-icon">id</a>
@@ -660,10 +964,13 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_match_index_.match.html#idtoagentsmap" class="tsd-kind-icon">id<wbr>ToAgents<wbr>Map</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_match_index_.match.html#log" class="tsd-kind-icon">log</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_match_index_.match.html#mapagentidtotournamentid" class="tsd-kind-icon">map<wbr>AgentIDto<wbr>TournamentID</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_match_index_.match.html#matchengine" class="tsd-kind-icon">match<wbr>Engine</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
@@ -674,6 +981,15 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_match_index_.match.html#results" class="tsd-kind-icon">results</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_match_index_.match.html#resumepromise" class="tsd-kind-icon">resume<wbr>Promise</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_match_index_.match.html#resumeresolve" class="tsd-kind-icon">resume<wbr>Resolve</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_match_index_.match.html#shouldstop" class="tsd-kind-icon">should<wbr>Stop</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_match_index_.match.html#state" class="tsd-kind-icon">state</a>
@@ -691,7 +1007,13 @@
 								<a href="_match_index_.match.html#initialize" class="tsd-kind-icon">initialize</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_match_index_.match.html#kill" class="tsd-kind-icon">kill</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_match_index_.match.html#next" class="tsd-kind-icon">next</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_match_index_.match.html#resume" class="tsd-kind-icon">resume</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_match_index_.match.html#run" class="tsd-kind-icon">run</a>
@@ -711,12 +1033,21 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_match_index_.match.html#throw" class="tsd-kind-icon">throw</a>
 							</li>
+							<li class=" tsd-kind-object-literal tsd-parent-kind-class">
+								<a href="_match_index_.match.html#configs-1" class="tsd-kind-icon">configs</a>
+							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/_match_index_.html#matchconfigs" class="tsd-kind-icon">Match<wbr>Configs</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_match_index_.html#command_stream_type" class="tsd-kind-icon">COMMAND_<wbr>STREAM_<wbr>TYPE</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_match_index_.html#command" class="tsd-kind-icon">Command</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_match_index_.html#engineoptions" class="tsd-kind-icon">Engine<wbr>Options</a>
 					</li>
 				</ul>
 			</nav>
@@ -728,10 +1059,10 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
@@ -741,6 +1072,9 @@
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>

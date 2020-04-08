@@ -1,6 +1,6 @@
 {
   "name": "dimensions-ai",
-  "version": "1.0.30",
+  "version": "1.0.31",
   "description": "A generic, multi-level ai competition framework",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -9,7 +9,7 @@
     "prepublishOnly": "npm run test",
     "test": "mocha -r ts-node/register tests/**/*.spec.ts",
     "test-watch": "jest --watch tests --collectCoverage",
-    "docs": "typedoc --exclude ./src/Station/web/ --out docs src",
+    "docs": "typedoc --theme ./theme/dimensions/ --mode modules --exclude ./src/Station/ --out docs ./src",
     "watch": "tsc -w",
     "dev-frontend": "npm run start --prefix=src/Station/web",
     "build": "tsc && npm run buildStation",
@@ -27,7 +27,10 @@
     "@types/sinon-chai": "^3.2.4",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "sprintf-js": "^1.1.2",
+    "trueskill": "0.0.2",
+    "typedoc": "^0.17.4"
   },
   "devDependencies": {
     "@types/chai-as-promised": "^7.1.2",
