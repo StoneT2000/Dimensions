@@ -5,41 +5,62 @@ import { Logger } from "../Logger";
 import { FatalError } from "../DimensionError";
 import { Tournament } from "../Tournament";
 
-export enum AgentStatus {
-  UNINITIALIZED = 'uninitialized', // just created agent
-  READY = 'ready', // agent that has been fully created and ready to be used by the engine for a match
-  RUNNING = 'running', // agent that has a process running with it now
-  CRASHED = 'crashed',
-  KILLED = 'killed', // agent that has finished and is killed or was prematurely killed
-  STOPPED = 'stpped' // agent is currently not running
-}
-export type agentID = number;
-
 /**
  * @class Agent
- * @classdesc Reads in a file source for the code and creates an `Agent` for use in the `MatchEngine` and `Match`
+ * @classdesc The agent is what participates in a match and contains details on the files powering the agent, the
+ * process associated and if it is terminated or not.
  * 
+ * Reads in a file source for the code and creates an `Agent` for use in the {@link MatchEngine} and {@link Match}
  */
 export class Agent {
   
-  public id: agentID = 0; // id used within a match
-  public tournamentID: Tournament.ID = null; // a tournmanet ID if used within a tournament
-  public name: string; // name of this agent
-  public src: string; // path to file to run
+  /**
+   * This agent's ID in a match. Is a number
+   */
+  public id: Agent.ID = 0;
+  /**
+   * A tournmanet ID if Agent is generated from within a {@link Tournament}
+   */
+  public tournamentID: Tournament.ID = null;
+
+  /**
+   * Name of the agent
+   * @default agent_[id]
+   */
+  public name: string;
+
+  /** The source path to the file that runs the agent */
+  public src: string;
+  /** The extension of the file */
   public ext: string;
-  public cwd: string; // current working directory of agent
-  public cmd: string; // command used to run file
 
-  public _buffer: Array<string> = []; // internal buffer to store stdout from an agent that has yet to be delimited / used
+  /** The current working directory of the source file */
+  public cwd: string;
+  /** The command used to run the file */
+  public cmd: string;
 
+  /**
+   * Creation date of the agent
+   */
+  public creationDate: Date;
+
+  /** internal buffer to store stdout from an agent that has yet to be delimited / used */
+  public _buffer: Array<string> = []; 
+
+  /**
+   * The associatted process running the Agent
+   */
   process: ChildProcess = null;
 
-  // current status of the agent
-  public status: AgentStatus = AgentStatus.UNINITIALIZED;
+  /**
+   * Current status of the agent
+   */
+  public status: Agent.Status = Agent.Status.UNINITIALIZED;
 
+  /** The commands collected so far for the current move */
   public currentMoveCommands: Array<string> = [];
 
-  public creationDate: Date;
+  
   // a promise that resolves when the Agent's current move in the `Match` is finished
   public currentMovePromise: Promise<void>;
   public currentMoveResolve: Function = () => {}; // set as a dummy function
@@ -51,9 +72,8 @@ export class Agent {
 
   private log = new Logger();
 
-  // whether agent is allowed to send commands. Used to help ignore extra output from agents
+  /** whether agent is allowed to send commands. Used to help ignore extra output from agents */
   private allowedToSendCommands = true;
-  private terminated = false;
   
   constructor(file: string, options: any) {
     this.creationDate = new Date();
@@ -107,7 +127,7 @@ export class Agent {
     this.log.system(`Created agent: ${this.name}`);
 
     // set agent as ready
-    this.status = AgentStatus.READY;
+    this.status = Agent.Status.READY;
 
   }
 
@@ -169,11 +189,15 @@ export class Agent {
   }
 
 
+  /**
+   * Returns true if this agent was terminated and no longer send or receive emssages
+   */
   isTerminated() {
-    return this.status === AgentStatus.KILLED;
+    return this.status === Agent.Status.KILLED;
   }
+
   _terminate() {
-    this.status = AgentStatus.KILLED;
+    this.status = Agent.Status.KILLED;
   }
 
   _disallowCommands() {
@@ -250,4 +274,27 @@ export class Agent {
     }
     return agents;
   }
+}
+export module Agent {
+  /**
+   * Status enums for an Agent
+   */
+  export enum Status {
+    /** When agent is just created */
+    UNINITIALIZED = 'uninitialized', // just created agent
+    /** Agent is ready too be used by the {@link MatchEngine} in a {@link Match} */
+    READY = 'ready', 
+    /** Agent is currently running */
+    RUNNING = 'running',
+    /** Agent crashed somehow */
+    CRASHED = 'crashed',
+    /** Agent is finished and no longer in use after {@link Match} ended or was prematurely killed */
+    KILLED = 'killed',
+    /** Agent is currently not running */
+    STOPPED = 'stpped'
+  }
+  /**
+   * Agent ID
+   */
+  export type ID = number;
 }

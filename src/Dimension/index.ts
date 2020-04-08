@@ -11,49 +11,70 @@ import { Tournament } from '../Tournament';
 import { deepCopy } from '../utils/DeepCopy';
 import { LadderTournament } from '../Tournament/TournamentTypes/Ladder';
 
+/**
+ * Dimension configurations
+ */
 export type DimensionConfigs = {
+  /** Name of the dimension */
   name: string
+  /** Whether or not to activate the Station */
   activateStation: boolean
+  /** Whether the station should observe this Dimension */
   observe: boolean,
+  /** The logging level for this Dimension */
   loggingLevel: Logger.LEVEL,
+  /** The default match configurations to use when creating matches using this Dimension */
   defaultMatchConfigs: DeepPartial<Match.Configs>
 }
 /**
  * @class Dimension
- * @classdesc The Dimension framework for intiating a `Design` to then run `Matches` on. Interacts with `Match` class
- * only
- * 
- * @param design - The design to use for this dimension
- * @param configs - Dimension configurations
- * @param configs.name - The optional name for the dimension
- * @param configs.loggingLevel - The logging level to be set as the default for all components in the Dimension, 
- *                               including matches, the design, and the match engine
- * @param configs.observe - Whether or not this dimension should be observed. If set to true, a station will initialized
- *                          to observe thihs dimension automatically
- * @param configs.activateStation - Whether or not a station should be activated and intialized. If configs.observe or 
- *                                  configs.activateStation are true, a station will be initialized .
+ * @classdesc The Dimension framework for intiating a {@link Design} to then run instances of {@link Match} on.
  */
 export class Dimension {
   
+  /**
+   * The matches running in this Dimension
+   */
   public matches: Array<Match> = [];
 
+  /**
+   * Tounraments in this Dimension.
+   */
   public tournaments: Array<Tournament> = [];
 
   static id: number = 0;
+
+  /**
+   * This Dimension's name
+   */
   public name: string;
+
+  /**
+   * This dimension's ID
+   */
   public id: number = 0;
 
+  /**
+   * Logger
+   */
   public log = new Logger();
 
-  // Default station for current node instance
+  /**
+   * The Station associated with this Dimension and current node instance
+   */
   public static Station: Station = null;
 
+  /**
+   * Stats
+   */
   public statistics = {
     tournamentsCreated: 0,
     matchesCreated: 0,
   }
 
-  // default configs
+  /**
+   * Dimension configs
+   */
   public configs: DimensionConfigs = {
     name: '',
     activateStation: true,
@@ -190,9 +211,14 @@ export class Dimension {
   }
 
   /**
+   * Create a tournament
+   * @param files - The initial files to make competitors in this tournament
+   * @param configs - Configuration for the tournament
    * 
+   * @see {@link Tournament} for the different tournament types
+   * @returns a Tournament of the specified type
    */
-  public createTournament(files: Array<string> | Array<{file: string, name:string}>, configs?: Tournament.TournamentConfigsBase): Tournament {
+  public createTournament(files: Array<string> | Array<{file: string, name:string}>, configs: Tournament.TournamentConfigsBase): Tournament {
       let id = this.statistics.tournamentsCreated;
       let newTourney;
       switch(configs.type) {
@@ -223,8 +249,8 @@ export class Dimension {
 
 /**
  * Creates a dimension for use to start matches, run tournaments, etc.
- * @param design The design to use
- * @param name The optional name of the dimension
+ * @param design - the design to use
+ * @param configs - optional configurations for the dimension
  */
 export function create(design: Design, configs?: DeepPartial<DimensionConfigs>): Dimension {
   return new Dimension(design, configs);

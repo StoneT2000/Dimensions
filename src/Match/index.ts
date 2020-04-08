@@ -1,7 +1,7 @@
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
 import { MatchEngine } from '../MatchEngine';
-import { Agent, agentID } from '../Agent';
+import { Agent } from '../Agent';
 import { Logger } from '../Logger';
 import { Design } from '../Design';
 import { FatalError } from '../DimensionError';
@@ -12,16 +12,12 @@ import Command = MatchEngine.Command;
 
 /**
  * @class Match
- * An match created using a {@link Design} and a list of Agents. The match can be started and stopped, and 
- * state can be retrieved at any point in time.
+ * @classdesc An match created using a {@link Design} and a list of Agents. The match can be stopped and resumed with 
+ * {@link stop}, {@link resume}, and state and configurations can be retrieved at any point in time with the 
+ * {@link state} and {@link configs} fields
  * 
- * @param design - The {@link Design} used
- * @param agents - List of agents used to create Match.
- * @param configs - Configurations that are passed to every run through initialize, update, and storeResults in the 
- * given {@link Design}
- * 
- * @see {@link Design}
- * @see {@link Agent}
+ * @see {@link Design} for Design information
+ * @see {@link Agent} for Agent information
  */
 
 export class Match {
@@ -59,9 +55,9 @@ export class Match {
   public agents: Array<Agent>;
 
   /**
-   * 
+   * Map from an {@link Agent.ID} ID to the {@link Agent}
    */
-  public idToAgentsMap: Map<agentID, Agent> = new Map();
+  public idToAgentsMap: Map<Agent.ID, Agent> = new Map();
 
   /**
    * The current time step of the Match. This time step is independent of any {@link Design} and agents are coordianted 
@@ -94,29 +90,31 @@ export class Match {
    * A mapping from {@link Agent} IDs to the tournament id of the {@link Player} in a tournament that generated the
    * {@link Agent}
    */
-  public mapAgentIDtoTournamentID: Map<agentID, Tournament.ID> = new Map();
+  public mapAgentIDtoTournamentID: Map<Agent.ID, Tournament.ID> = new Map();
 
   /**
-   * Match Configurations
+   * Match Configurations. See {@link Match.Configs} for configuration options
    */
   public configs: Match.Configs = {
     name: '',
-    timeout: 1000,
-    initializeConfig: {},
-    updateConfig: {},
-    getResultConfig: {},
     loggingLevel: Logger.LEVEL.INFO,
     dimensionID: null,
     engineOptions: {}
-  }
+  };
 
+  /**
+   * Match Constructor
+   * @param design - The {@link Design} used
+   * @param agents - List of agents used to create Match.
+   * @param configs - Configurations that are passed to every run through {@link Design.initialize}, {@link Design.update}, and {@link Design.getResults} functioon in the 
+   * given {@link Design}
+   */
   constructor(
     public design: Design, 
     public agentFiles: Array<String> | Array<{file: string, name: string}> | Array<{file: string, tournamentID: Tournament.ID}>, 
     configs: DeepPartial<Match.Configs> = {}
   ) {
 
-    
     // override configs with provided configs argument
     this.configs = deepMerge(this.configs, configs);
 
@@ -167,7 +165,7 @@ export class Match {
         
         // by now all agents should up and running, all compiled and ready
         // Initialize match according to `design` by delegating intialization task to the enforced `design`
-        await this.design.initialize(this, this.configs.initializeConfig);
+        await this.design.initialize(this);
 
         // remove initialized status and set as READY
         // TODO: add more security checks etc. before marking match as ready to run
@@ -229,7 +227,7 @@ export class Match {
         const commands: Array<Command> = await this.matchEngine.getCommands(this);
         this.log.system(`Retrieved ${commands.length} commands`);
         // Updates the match state and sends appropriate signals to all Agents based on the stored `Design`
-        const status: Match.Status = await this.design.update(this, commands, this.configs.updateConfig);
+        const status: Match.Status = await this.design.update(this, commands);
 
         // default status is running if no status returned
         if (!status) {
@@ -315,7 +313,7 @@ export class Match {
   /**
    * Stop all agents through the match engine
    */
-  public async stopAndCleanUp() {
+  private async stopAndCleanUp() {
     await this.matchEngine.killAndClean(this);
   }
 
@@ -323,7 +321,7 @@ export class Match {
    * Terminate an {@link Agent}, kill the process. Note, the agent is still stored in the Match, but you can't send or 
    * receive messages from it anymore
    */
-  public async kill(agent: agentID | Agent) {
+  public async kill(agent: Agent.ID | Agent) {
     
     if (agent instanceof Agent) {
       this.matchEngine.kill(agent);
@@ -340,7 +338,7 @@ export class Match {
     return new Promise( async (resolve, reject) => {
       try {
         // Retrieve match results according to `design` by delegating storeResult task to the enforced `design`
-        let res = await this.design.getResults(this, this.configs.getResultConfig);
+        let res = await this.design.getResults(this);
         resolve(res);
       }
       catch(error) {
@@ -359,7 +357,7 @@ export class Match {
   // }
 
   /**
-   * Sends a message to all the standard input of all agents in this match
+   * Sends a message to the standard input of all agents in this match
    * @param message - the message to send to all agents available 
    * @returns a promise resolving true/false if it was succesfully sent
    */
@@ -383,9 +381,9 @@ export class Match {
    * Functional method for sending a message string to a particular {@link Agent}. Returns a promise that resolves true 
    * if succesfully sent
    * @param message - the string message to send
-   * @param receiver - receiver of message can be specified by the `Agent` or it's agentID (a number)
+   * @param receiver - receiver of message can be specified by the {@link Agent} or it's {@link Agent.ID} (a number)
    */
-  public async send(message: string, receiver: Agent | agentID): Promise<boolean> {
+  public async send(message: string, receiver: Agent | Agent.ID): Promise<boolean> {
     if (receiver instanceof Agent) {
       return this.matchEngine.send(this, message, receiver.id);
     }
@@ -401,7 +399,7 @@ export class Match {
    * @param agentID - the misbehaving agent's ID
    * @param error - The error
    */
-  public async throw(agentID: agentID, error: Error) {
+  public async throw(agentID: Agent.ID, error: Error) {
 
     // Fatal errors are logged and end the whole match
     // TODO: Try to use `instanceof`
@@ -423,26 +421,13 @@ export class Match {
 
 export module Match {
   /**
-   * Match Configurations
+   * Match Configurations. Has 4 specified fields. All other fields are up to user discretion
    */
   export interface Configs {
     /**
      * Name of the match
      */
     name: string
-    /**
-     * Initialization configs
-     */
-    initializeConfig: any,
-    /**
-     * Update configs
-     */
-    updateConfig: any,
-    /**
-     * get Result configs
-     */
-    getResultConfig: any,
-
     /**
      * Logging level for this match.
      * @see {@link Logger}
@@ -453,9 +438,9 @@ export module Match {
      */
     dimensionID: number,
     /**
-     * The to use in this match.
+     * The engine options to use in this match.
      */
-    engineOptions: DeepPartial<EngineOptions> // overriden engine options
+    engineOptions: DeepPartial<EngineOptions>
     [key: string]: any
   }
   export enum Status {

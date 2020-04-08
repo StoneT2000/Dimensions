@@ -72,21 +72,16 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<dl class="tsd-comment-tags">
-						<dt>param</dt>
-						<dd><p>The <a href="_design_index_.design.html">Design</a> used</p>
-						</dd>
-						<dt>param</dt>
-						<dd><p>List of agents used to create Match.</p>
-						</dd>
-						<dt>param</dt>
-						<dd><p>Configurations that are passed to every run through initialize, update, and storeResults in the
-							given <a href="_design_index_.design.html">Design</a></p>
+						<dt>classdesc</dt>
+						<dd><p>An match created using a <a href="_design_index_.design.html">Design</a> and a list of Agents. The match can be stopped and resumed with
+								<a href="_match_index_.match.html#stop">stop</a>, <a href="_match_index_.match.html#resume">resume</a>, and state and configurations can be retrieved at any point in time with the
+							<a href="_match_index_.match.html#state">state</a> and <a href="_match_index_.match.html#configs-1">configs</a> fields</p>
 						</dd>
 						<dt>see</dt>
-						<dd><p><a href="_design_index_.design.html">Design</a></p>
+						<dd><p><a href="_design_index_.design.html">Design</a> for Design information</p>
 						</dd>
 						<dt>see</dt>
-						<dd><p><a href="_agent_index_.agent.html">Agent</a></p>
+						<dd><p><a href="_agent_index_.agent.html">Agent</a> for Agent information</p>
 						</dd>
 					</dl>
 				</div>
@@ -156,7 +151,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_match_index_.match.html#send" class="tsd-kind-icon">send</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_match_index_.match.html#sendall" class="tsd-kind-icon">send<wbr>All</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_match_index_.match.html#stop" class="tsd-kind-icon">stop</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_match_index_.match.html#stopandcleanup" class="tsd-kind-icon">stop<wbr>And<wbr>Clean<wbr>Up</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_match_index_.match.html#stopandcleanup" class="tsd-kind-icon">stop<wbr>And<wbr>Clean<wbr>Up</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_match_index_.match.html#throw" class="tsd-kind-icon">throw</a></li>
 							</ul>
 						</section>
@@ -181,19 +176,35 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L111">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L111</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L103">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L103</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Match Constructor</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>design: <a href="_design_index_.design.html" class="tsd-signature-type">Design</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>The <a href="_design_index_.design.html">Design</a> used</p>
+										</div>
+									</div>
 								</li>
 								<li>
 									<h5>agentFiles: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>tournamentID<span class="tsd-signature-symbol">: </span><a href="../interfaces/_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.id.html" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> configs: <a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_match_index_.match.configs.html" class="tsd-signature-type">Configs</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = {}</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>Configurations that are passed to every run through <a href="_design_index_.design.html#initialize">Design.initialize</a>, <a href="_design_index_.design.html#update">Design.update</a>, and <a href="_design_index_.design.html#getresults">Design.getResults</a> functioon in the
+											given <a href="_design_index_.design.html">Design</a></p>
+										</div>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_match_index_.match.html" class="tsd-signature-type">Match</a></h4>
@@ -209,7 +220,7 @@
 					<div class="tsd-signature tsd-kind-icon">agent<wbr>Files<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">String</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>tournamentID<span class="tsd-signature-symbol">: </span><a href="../interfaces/_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.id.html" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L115">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L115</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L114">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L114</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -219,7 +230,7 @@
 					<div class="tsd-signature tsd-kind-icon">agents<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L59">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L59</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L55">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L55</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -239,7 +250,7 @@
 					<div class="tsd-signature tsd-kind-icon">creation<wbr>Date<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Date</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L32">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L32</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L28">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L28</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -254,9 +265,14 @@
 					<div class="tsd-signature tsd-kind-icon">design<span class="tsd-signature-symbol">:</span> <a href="_design_index_.design.html" class="tsd-signature-type">Design</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L114">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L114</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L113">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L113</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The <a href="_design_index_.design.html">Design</a> used</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="id" class="tsd-anchor"></a>
@@ -264,7 +280,7 @@
 					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L42">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L42</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L38">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L38</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -276,12 +292,17 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="idtoagentsmap" class="tsd-anchor"></a>
 					<h3>id<wbr>ToAgents<wbr>Map</h3>
-					<div class="tsd-signature tsd-kind-icon">id<wbr>ToAgents<wbr>Map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="" class="tsd-signature-type">agentID</a><span class="tsd-signature-symbol">, </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map()</span></div>
+					<div class="tsd-signature tsd-kind-icon">id<wbr>ToAgents<wbr>Map<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="_agent_index_.agent.html#id" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol">, </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L64">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L64</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L60">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L60</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Map from an <a href="_agent_index_.agent.html#id">Agent.ID</a> ID to the <a href="_agent_index_.agent.html">Agent</a></p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="log" class="tsd-anchor"></a>
@@ -289,7 +310,7 @@
 					<div class="tsd-signature tsd-kind-icon">log<span class="tsd-signature-symbol">:</span> <a href="_logger_index_.logger.html" class="tsd-signature-type">Logger</a><span class="tsd-signature-symbol"> = new Logger()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L81">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L81</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L77">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L77</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -306,10 +327,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="mapagentidtotournamentid" class="tsd-anchor"></a>
 					<h3>map<wbr>AgentIDto<wbr>TournamentID</h3>
-					<div class="tsd-signature tsd-kind-icon">map<wbr>AgentIDto<wbr>TournamentID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="" class="tsd-signature-type">agentID</a><span class="tsd-signature-symbol">, </span><a href="../interfaces/_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.id.html" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map()</span></div>
+					<div class="tsd-signature tsd-kind-icon">map<wbr>AgentIDto<wbr>TournamentID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="_agent_index_.agent.html#id" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol">, </span><a href="../interfaces/_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.id.html" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L97">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L97</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L93">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L93</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -325,7 +346,7 @@
 					<div class="tsd-signature tsd-kind-icon">match<wbr>Engine<span class="tsd-signature-symbol">:</span> <a href="_matchengine_index_.matchengine.html" class="tsd-signature-type">MatchEngine</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L75">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L75</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L71">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L71</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -340,7 +361,7 @@
 					<div class="tsd-signature tsd-kind-icon">match<wbr>Status<span class="tsd-signature-symbol">:</span> <a href="../enums/_match_index_.match.status.html" class="tsd-signature-type">Status</a><span class="tsd-signature-symbol"> = Match.Status.UNINITIALIZED</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L91">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L91</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L87">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L87</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -355,7 +376,7 @@
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L37">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L37</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L33">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L33</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -370,7 +391,7 @@
 					<div class="tsd-signature tsd-kind-icon">results<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L86">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L86</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L82">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L82</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -385,7 +406,7 @@
 					<div class="tsd-signature tsd-kind-icon">resume<wbr>Promise<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L45">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L45</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L41">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L41</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -395,7 +416,7 @@
 					<div class="tsd-signature tsd-kind-icon">resume<wbr>Resolve<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L46">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L46</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L42">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L42</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -405,7 +426,7 @@
 					<div class="tsd-signature tsd-kind-icon">should<wbr>Stop<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L44">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L44</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L40">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L40</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -415,7 +436,7 @@
 					<div class="tsd-signature tsd-kind-icon">state<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L53">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L53</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L49">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L49</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -430,7 +451,7 @@
 					<div class="tsd-signature tsd-kind-icon">time<wbr>Step<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L70">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L70</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L66">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L66</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -446,7 +467,7 @@
 					<div class="tsd-signature tsd-kind-icon">_id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L48">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L48</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L44">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L44</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -463,7 +484,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L339">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L339</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L337">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L337</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -485,7 +506,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L146">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L146</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L144">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L144</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -502,13 +523,13 @@
 					<a name="kill" class="tsd-anchor"></a>
 					<h3>kill</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">kill<span class="tsd-signature-symbol">(</span>agent<span class="tsd-signature-symbol">: </span><a href="" class="tsd-signature-type">agentID</a><span class="tsd-signature-symbol"> | </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">kill<span class="tsd-signature-symbol">(</span>agent<span class="tsd-signature-symbol">: </span><a href="_agent_index_.agent.html#id" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol"> | </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L326">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L326</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L324">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L324</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -520,7 +541,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>agent: <a href="" class="tsd-signature-type">agentID</a><span class="tsd-signature-symbol"> | </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a></h5>
+									<h5>agent: <a href="_agent_index_.agent.html#id" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol"> | </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -537,7 +558,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L210">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L210</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L208">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L208</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -559,7 +580,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L301">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L301</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L299">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L299</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -582,7 +603,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L188">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L188</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L186">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L186</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -598,13 +619,13 @@
 					<a name="send" class="tsd-anchor"></a>
 					<h3>send</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">send<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, receiver<span class="tsd-signature-symbol">: </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol"> | </span><a href="" class="tsd-signature-type">agentID</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">send<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, receiver<span class="tsd-signature-symbol">: </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol"> | </span><a href="_agent_index_.agent.html#id" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L388">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L388</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L386">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L386</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -622,9 +643,9 @@
 									</div>
 								</li>
 								<li>
-									<h5>receiver: <a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol"> | </span><a href="" class="tsd-signature-type">agentID</a></h5>
+									<h5>receiver: <a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol"> | </span><a href="_agent_index_.agent.html#id" class="tsd-signature-type">ID</a></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>receiver of message can be specified by the <code>Agent</code> or it&#39;s agentID (a number)</p>
+										<p>receiver of message can be specified by the <a href="_agent_index_.agent.html">Agent</a> or it&#39;s <a href="_agent_index_.agent.html#id">Agent.ID</a> (a number)</p>
 									</div>
 								</li>
 							</ul>
@@ -642,12 +663,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L366">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L366</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L364">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L364</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Sends a message to all the standard input of all agents in this match</p>
+									<p>Sends a message to the standard input of all agents in this match</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -674,7 +695,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L282">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L282</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L280">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L280</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -693,17 +714,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
 					<a name="stopandcleanup" class="tsd-anchor"></a>
-					<h3>stop<wbr>And<wbr>Clean<wbr>Up</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> stop<wbr>And<wbr>Clean<wbr>Up</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
 						<li class="tsd-signature tsd-kind-icon">stop<wbr>And<wbr>Clean<wbr>Up<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L318">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L318</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L316">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L316</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -719,13 +740,13 @@
 					<a name="throw" class="tsd-anchor"></a>
 					<h3>throw</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">throw<span class="tsd-signature-symbol">(</span>agentID<span class="tsd-signature-symbol">: </span><a href="" class="tsd-signature-type">agentID</a>, error<span class="tsd-signature-symbol">: </span><a href="_dimensionerror_index_.matcherror.html#error" class="tsd-signature-type">Error</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">throw<span class="tsd-signature-symbol">(</span>agentID<span class="tsd-signature-symbol">: </span><a href="_agent_index_.agent.html#id" class="tsd-signature-type">ID</a>, error<span class="tsd-signature-symbol">: </span><a href="_dimensionerror_index_.matcherror.html#error" class="tsd-signature-type">Error</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L404">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L404</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L402">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L402</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -738,7 +759,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>agentID: <a href="" class="tsd-signature-type">agentID</a></h5>
+									<h5>agentID: <a href="_agent_index_.agent.html#id" class="tsd-signature-type">ID</a></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>the misbehaving agent&#39;s ID</p>
 									</div>
@@ -763,12 +784,12 @@
 					<div class="tsd-signature tsd-kind-icon">configs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L102">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L102</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L98">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L98</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Match Configurations</p>
+							<p>Match Configurations. See <a href="../interfaces/_match_index_.match.configs.html">Match.Configs</a> for configuration options</p>
 						</div>
 					</div>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
@@ -777,7 +798,7 @@
 						<div class="tsd-signature tsd-kind-icon">dimensionID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> = null</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L109">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L109</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L101">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L101</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -787,37 +808,7 @@
 						<div class="tsd-signature tsd-kind-icon">engine<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L110">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L110</a></li>
-							</ul>
-						</aside>
-						<div class="tsd-type-declaration">
-							<h4>Type declaration</h4>
-							<ul class="tsd-parameters">
-							</ul>
-						</div>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="configs-1.getresultconfig" class="tsd-anchor"></a>
-						<h3>get<wbr>Result<wbr>Config</h3>
-						<div class="tsd-signature tsd-kind-icon">get<wbr>Result<wbr>Config<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L107">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L107</a></li>
-							</ul>
-						</aside>
-						<div class="tsd-type-declaration">
-							<h4>Type declaration</h4>
-							<ul class="tsd-parameters">
-							</ul>
-						</div>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="configs-1.initializeconfig" class="tsd-anchor"></a>
-						<h3>initialize<wbr>Config</h3>
-						<div class="tsd-signature tsd-kind-icon">initialize<wbr>Config<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L105">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L105</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L102">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L102</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -832,7 +823,7 @@
 						<div class="tsd-signature tsd-kind-icon">logging<wbr>Level<span class="tsd-signature-symbol">:</span> <a href="../enums/_logger_index_.logger.level.html#info" class="tsd-signature-type">INFO</a><span class="tsd-signature-symbol"> = Logger.LEVEL.INFO</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L108">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L108</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L100">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L100</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -842,34 +833,9 @@
 						<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L103">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L103</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L99">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/Match/index.ts#L99</a></li>
 							</ul>
 						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="configs-1.timeout" class="tsd-anchor"></a>
-						<h3>timeout</h3>
-						<div class="tsd-signature tsd-kind-icon">timeout<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 1000</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L104">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L104</a></li>
-							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="configs-1.updateconfig" class="tsd-anchor"></a>
-						<h3>update<wbr>Config</h3>
-						<div class="tsd-signature tsd-kind-icon">update<wbr>Config<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L106">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/Match/index.ts#L106</a></li>
-							</ul>
-						</aside>
-						<div class="tsd-type-declaration">
-							<h4>Type declaration</h4>
-							<ul class="tsd-parameters">
-							</ul>
-						</div>
 					</section>
 				</section>
 			</section>
@@ -879,6 +845,9 @@
 				<ul>
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class="label tsd-is-external">
+						<span>Internals</span>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="../modules/_agent_index_.html">&quot;<wbr>Agent/index&quot;</a>
@@ -927,6 +896,24 @@
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="../modules/_utils_deeppartial_.html">&quot;utils/<wbr>Deep<wbr>Partial&quot;</a>
+					</li>
+					<li class="label tsd-is-external">
+						<span>Externals</span>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="../modules/_station_error_index_.html">&quot;<wbr>Station/error/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="../modules/_station_index_.html">&quot;<wbr>Station/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="../modules/_station_routes_api_dimensions_index_.html">&quot;<wbr>Station/routes/api/dimensions/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="../modules/_station_routes_api_dimensions_match_index_.html">&quot;<wbr>Station/routes/api/dimensions/match/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="../modules/_station_routes_api_status_.html">&quot;<wbr>Station/routes/api/status&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -1027,7 +1014,7 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_match_index_.match.html#stop" class="tsd-kind-icon">stop</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="_match_index_.match.html#stopandcleanup" class="tsd-kind-icon">stop<wbr>And<wbr>Clean<wbr>Up</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -1071,13 +1058,11 @@
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
 			</ul>
 		</div>
 	</div>

@@ -24,8 +24,8 @@ export class DominationDesign extends Design {
   constructor(name) {
     super(name);
   }
-  async initialize(match: Match, config?: any) {
-    
+  async initialize(match: Match) {
+    let config = match.configs.initializeConfig;
     let state = {
       size: config.size,
       map: [],

@@ -1,6 +1,10 @@
 
+/**
+ * Deep copies an object and returns it
+ * @param obj 
+ */
 export function deepCopy(obj) {
-  let  copy;
+  let copy;
   // Handle the 3 simple types, and null or undefined
   if (null == obj || "object" != typeof obj) return obj;
 

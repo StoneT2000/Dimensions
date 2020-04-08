@@ -1,13 +1,23 @@
 import colors from 'colors';
 /**
  * Dimensions Logging Class
- * @param level - The logging level to use
- * @param identifier - an identifier to identify which logger is being called
  */
 export class Logger {
-  public identifier: string; // an identifier for who is logging this
-  //@ts-ignore
+  /**
+   * Identifier of who is logging this
+   * @default 'Log'
+   */
+  public identifier: string;
+  /**
+   * Color of the identifier string
+   * @default Bold Green 
+   */
   public identifierColor = colors.bold.green;
+  /**
+   * Logger Constructor
+   * @param level - The logging level to use
+   * @param identifier - an identifier to identify which logger is being called
+   */
   constructor(public level: Logger.LEVEL = Logger.LEVEL.INFO, identifier = 'Log') {
     this.identifier = identifier;
   }
@@ -61,15 +71,27 @@ export class Logger {
   }
 }
 export module Logger {
+  /**
+   * Logging Levels where the order of levels are NONE, ERROR, ..., SYSTEM_IO, ALL
+   */
   export enum LEVEL {
-    NONE, // no logs
-    ERROR, // error logs
-    WARN, // TODO come up with a name that goes between warn and info
-    INFO, // for informational things user should know about
-    DETAIL, // for finer details
-    SYSTEM, // for high level system logs
-    SYSTEM2, // unused
-    SYSTEM_IO, // all lower level I/O related details (including the actual input and output of engine and agents)
+    /** No logs */
+    NONE,
+    /** Error logs */
+    ERROR,
+    /** Warning logs */
+    WARN,
+    /** Info logs */
+    INFO,
+    /** Detail logs. For finer details above INFO and below SYSTEM */
+    DETAIL,
+    /** System level logs */
+    SYSTEM,
+    /** System level 2 logs */
+    SYSTEM2,
+    /** System IO logs. All I/O related details */
+    SYSTEM_IO,
+    /** All logs */
     ALL
   }
 }
