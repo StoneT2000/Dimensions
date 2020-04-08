@@ -20,7 +20,8 @@ export class LadderTournament extends Tournament {
     rankSystemConfigs: null,
     tournamentConfigs: {
       maxConcurrentMatches: 1,
-      endDate: null
+      endDate: null,
+      maxTotalMatches: null
     },
     resultHandler: null,
     agentsPerMatch: [2],
@@ -117,17 +118,23 @@ export class LadderTournament extends Tournament {
         return;
       }
     }
+    if (this.configs.tournamentConfigs.maxTotalMatches) {
+      if (this.state.statistics.totalMatches >= this.configs.tournamentConfigs.maxTotalMatches) {
+        this.stop();
+        return;
+      }
+    }
     let matchPromises = [];
 
     // if too little matches, schedule another set
-    if (this.matchQueue.length < 3) {
+    if (this.matchQueue.length < this.configs.tournamentConfigs.maxConcurrentMatches * 2) {
       this.schedule();
     }
-    for (let i = 0; i < Math.min(this.matchQueue.length, this.configs.tournamentConfigs.maxConcurrentMatches); i++) {
+    for (let i = 0; i < Math.min(this.matchQueue.length, this.configs.tournamentConfigs.maxConcurrentMatches - this.matches.size); i++) {
       let matchInfo = this.matchQueue.shift();
       matchPromises.push(this.handleMatch(matchInfo));
     }
-    Promise.all(matchPromises).then(() => {
+    Promise.race(matchPromises).then(() => {
       this.tourneyRunner();
     }).catch((error) => {
       this.log.error(error);

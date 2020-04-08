@@ -239,6 +239,7 @@ export module Tournament {
   export interface LadderConfigs extends Tournament.TournamentTypeConfig {
     maxConcurrentMatches: number // max matches that can run concurrently on one node instance
     endDate: Date // the date to stop running this tournament once it is started. If null, no end date
+    maxTotalMatches: number // the max matches to run before stopping the tournament
   }
   export interface LadderState extends Tournament.TournamentTypeState {
     // maps tournamentID.id to object with bot info, wins/ties/losses and matches played along with rank state dependent 
