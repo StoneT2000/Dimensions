@@ -215,7 +215,40 @@ Notice that your console will also print something about a station. It'll give y
 
 This framework also provides tournament running features, including Round Robin, Ladder, and Elimination type tournaments. Additionally, there are various ranking systems used, such as Win/Tie/Loss, TrueSkill, and ELO.
 
-Here is how you run a tournament. First, you will need a `resultHandler` function. This function must given to the tournament to indicate how the results of a `match` should be interpreted. Recall that these results are returned by the `getResult` command in your design.
+Here is how you run a tournament. First, you will need a `resultHandler` function. This function must given to the tournament to indicate how the results of a `match` should be interpreted. Recall that these results are returned by the `getResult` command in your design. It is suggested to provide these result handlers in your `Design` such as the Halite3Design here
+
+```js
+const Dimension = require('dimensions-ai');
+const Halite3Design = require('@dimensions-ai/designs-halite3').default;
+let Tournament = Dimension.Tournament;
+let Logger = Dimension.Logger;
+
+let halite3Design = new Halite3Design('Halite 3 Design');
+let halite3Dimension = Dimension.create(halite3Design, { name: 'Halite 3'});
+
+let simpleBot = "./bots/halite3/js/Still/StillBot.js";
+let botSources = [simpleBot, simpleBot, simpleBot, simpleBot, simpleBot];
+
+let halite3League = halite3Dimension.createTournament(fileAndNames, {
+    type: Tournament.TOURNAMENT_TYPE.LADDER, // Create a Ladder Tournament
+    rankSystem: Tournament.RANK_SYSTEM.TRUESKILL, // Use Trueskill to rank bots
+    loggingLevel: LoggerLEVEL.DETAIL,
+  	consoleDisplay: true, // this is by default true and prints to console the ongoing status of all bots in the tournament and their scores
+    defaultMatchConfigs: {
+      replayDirectory: './replays',
+      loggingLevel: Logger.LEVEL.ERROR,
+      engineOptions: {
+        timeout: {
+          max: 5000
+        }
+      }
+    },
+    agentsPerMatch: [2, 4],
+    resultHandler: Halite3Design.trueskillResultHandler
+  });
+```
+
+Full documentation on how to run a tournament can be found here: TODO add link
 
 ## Contributing
 

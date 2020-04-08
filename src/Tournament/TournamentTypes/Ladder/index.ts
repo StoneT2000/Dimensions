@@ -225,15 +225,8 @@ export class LadderTournament extends Tournament {
         case RANK_SYSTEM.ELO:
           break;
       }
-      console.log();
-      console.log('Current Matches: ' + this.matches.size);
-      this.matches.forEach((match) => {
-        let names = [];
-        match.agents.forEach((agent) => {
-          names.push(agent.name);
-        });
-        console.log(names);
-      });
+      
+      
     }
   }
 
@@ -242,7 +235,26 @@ export class LadderTournament extends Tournament {
    * @param matchInfo 
    */
   private async handleMatch(matchInfo: Array<Player>) {
-    this.log.info('Running match - Competitors: ', matchInfo.map((player) => {return {name: player.tournamentID.name, rankState: this.state.playerStats.get(player.tournamentID.id).rankState}}));
+    if (this.configs.consoleDisplay) {
+      this.printTournamentStatus();
+      console.log();
+      console.log('Current Matches: ' + (this.matches.size + 1));
+      this.matches.forEach((match) => {
+        let names = [];
+        match.agents.forEach((agent) => {
+          names.push(agent.name);
+        });
+        console.log(names);
+      });
+      let names = [];
+      matchInfo.forEach((player) => {
+        names.push(player.tournamentID.name);
+      });
+      console.log(names);
+    }
+
+    this.log.detail('Running match - Competitors: ', matchInfo.map((player) => {return player.tournamentID.name}));
+    
     let matchRes = await this.runMatch(matchInfo);
     // update total matches
     this.state.statistics.totalMatches++;
@@ -291,6 +303,15 @@ export class LadderTournament extends Tournament {
     });
     if (this.configs.consoleDisplay) {
       this.printTournamentStatus();
+      console.log();
+      console.log('Current Matches: ' + (this.matches.size));
+      this.matches.forEach((match) => {
+        let names = [];
+        match.agents.forEach((agent) => {
+          names.push(agent.name);
+        });
+        console.log(names);
+      });
     }
   }
 
