@@ -1,18 +1,18 @@
 import { Match, MatchConfigs } from '../Match';
 import { Design } from '../Design';
 import { FatalError } from '../DimensionError';
-import { RoundRobinTournament as _RoundRobinTournament } from './TournamentTypes/RoundRobin';
-import { EliminationTournament as _EliminationTournament } from './TournamentTypes/Elimination';
+import { RoundRobinTournament } from './TournamentTypes/RoundRobin';
+import { EliminationTournament } from './TournamentTypes/Elimination';
 import { DeepPartial } from '../utils/DeepPartial';
 import { Logger, LoggerLEVEL } from '../Logger';
-import { LadderTournament as _LadderTournament } from './TournamentTypes/Ladder';
+import { LadderTournament } from './TournamentTypes/Ladder';
 import { agentID } from '../Agent';
 import { deepCopy } from '../utils/DeepCopy';
 
 /**
- * Bot class that persists data for the same ephemereal agent across multiple matches
+ * Player class that persists data for the same ephemereal agent across multiple matches
  */
-export class Bot {
+export class Player {
   constructor(public tournamentID: Tournament.ID, public file: string) {
 
   }
@@ -20,8 +20,8 @@ export class Bot {
 
 
 /**
- * @class Tournament
- * @classdesc The tournament class used to initialize tournaments as well as configure what is publically shown on the 
+ * Abstract Tournament
+ * The tournament class used to initialize tournaments as well as configure what is publically shown on the 
  * Station
  */
 export abstract class Tournament {
@@ -29,8 +29,8 @@ export abstract class Tournament {
   // mapping match ids to active ongoing matches
   public matches: Map<number, Match> = new Map();
 
-  // a queue whose elements are each arrays of bot that are to compete against each other under the `design`
-  public matchQueue: Array<Array<Bot>> = [];
+  // a queue whose elements are each arrays of player that are to compete against each other under the `design`
+  public matchQueue: Array<Array<Player>> = [];
   
   // The current status of the tournament
   public status: Tournament.TournamentStatus = Tournament.TournamentStatus.UNINITIALIZED;
@@ -43,9 +43,9 @@ export abstract class Tournament {
 
   public log = new Logger();
 
-  public competitors: Array<Bot> = [];
+  public competitors: Array<Player> = [];
 
-  private botID = 0;
+  private playerID = 0;
 
   public name = '';
 
@@ -56,21 +56,21 @@ export abstract class Tournament {
     tournamentConfigs: Tournament.TournamentConfigsBase
   ) {
     files.forEach((file) => {
-      this.addBot(file);
+      this.addplayer(file);
     });
     this.log.level = (tournamentConfigs.loggingLevel !== undefined) ? tournamentConfigs.loggingLevel : LoggerLEVEL.INFO;
     this.name = tournamentConfigs.name ? tournamentConfigs.name : `tournament_${this.id}`;
     this.log.identifier = this.name;
   }
 
-  public addBot(file: string | {file: string, name: string}) {
-    let id = `t${this.id}_${this.botID++}`;
+  public addplayer(file: string | {file: string, name: string}) {
+    let id = `t${this.id}_${this.playerID++}`;
     if (typeof file === 'string') {
-      let name = `bot-${id}`;
-      this.competitors.push(new Bot({id: id, name: name}, file));
+      let name = `player-${id}`;
+      this.competitors.push(new Player({id: id, name: name}, file));
     }
     else {
-      this.competitors.push(new Bot({id: id, name: file.name}, file.file));
+      this.competitors.push(new Player({id: id, name: file.name}, file.file));
     }
   }
 
@@ -106,19 +106,19 @@ export abstract class Tournament {
 
   /**
    * 
-   * @param bots - the bots to run
+   * @param players - the players to compete together
    * @returns a promise that resolves with the results and the associated match
    */
-  protected async runMatch(bots: Array<Bot>): Promise<{results: any, match: Match}> {
+  protected async runMatch(players: Array<Player>): Promise<{results: any, match: Match}> {
     return new Promise( async (resolve, reject) => {
       try {
-        if (!bots.length) reject (new FatalError('No bots provided for match'));
+        if (!players.length) reject (new FatalError('No players provided for match'));
 
         let matchConfigs = deepCopy(this.getConfigs().defaultMatchConfigs);
         
         let match: Match;
-        let filesAndNamesAndIDs = bots.map((bot) => {
-          return {file: bot.file, tournamentID: bot.tournamentID}
+        let filesAndNamesAndIDs = players.map((player) => {
+          return {file: player.file, tournamentID: player.tournamentID}
         });
         match = new Match(this.design, <Array<{file: string, tournamentID: Tournament.ID}>>(filesAndNamesAndIDs), matchConfigs);
 
@@ -144,14 +144,17 @@ export abstract class Tournament {
   }
 }
 
+/**
+ * The Tournament module with all tournament related classes, enums, and interfaces
+ */
 export module Tournament {
-  export type RoundRobinTournament = _RoundRobinTournament;
-  export type EliminationTournament = _EliminationTournament;
-  export type LadderTournament = _LadderTournament;
 
   export enum TOURNAMENT_TYPE {
+    /** {@link RoundRobinTournament} enum */
     ROUND_ROBIN = 'round_robin', // can be n-tuple round robin. E.g double roundrobin like most Association Football Leagues
-    ELIMINATION = 'elimination', // standard elimination tournament. can be single, double, triple, n-tuple knockout
+    /** {@link EliminationTournament} type */
+    ELIMINATION = 'elimination',
+    /** {@link LadderTournament} type */
     LADDER = 'ladder', // like halite
   }
   export enum TournamentStatus {
@@ -186,69 +189,148 @@ export module Tournament {
   export interface TournamentTypeState  {
     
   }
-  // Bot ID
+
+  /**
+   * Tournament.ID. Represents an identifier for players competing in a {@link Tournament}
+   */
   export interface ID {
+    /** A string id */
     id: string
+    /** A display name */
     name: string
   }
+  /**
+   * Rank System
+   * 
+   * An enum for the kind of ranking systems you can choose for a {@link Tournament}
+   */
   export enum RANK_SYSTEM {
-    WINS = 'wins', // ranking by most wins
-    ELO = 'elo', // ranking by elo
-    TRUESKILL = 'trueskill' // ranking by trueskill
+    /** Ranking by wins, ties and losses */
+    WINS = 'wins', 
+    /** Ranking by the ELO ranking system */
+    ELO = 'elo',
+    /** Ranking by Microsoft's Trueskill */
+    TRUESKILL = 'trueskill'
   }
-  export module RANK_SYSTEM {
-    export interface WinConfigs {
-      winValue: number
-      tieValue: number
-      lossValue: number,
-      ascending: boolean
+  /**
+   * @namespace RANK_SYSTEM namespace that contains relevant interfaces for various ranking systems
+   */
+  export namespace RANK_SYSTEM {
+    
+    export namespace WINS {
+      /**
+       * The interface for configuring the {@link RANK_SYSTEM.WINS} format
+       */
+      export interface Configs {
+        /** Points given per win in a {@link Match} */
+        winValue: number
+        /** Points given per tie in a {@link Match} */
+        tieValue: number
+        /** Points given per loss in a {@link Match} */
+        lossValue: number,
+        /** True if first place is the one with the most points. */
+        descending: boolean
+      }
+      /** The results interface that must be returned by a result handler for a {@link Tournament} */
+      export interface Results {
+        /** Array of agent IDs of {@link agent}s that won in the {@link Match}*/
+        winners: Array<agentID>
+        /** Array of agent IDs of {@link agent}s that tied in the {@link Match}*/
+        ties: Array<agentID>
+        /** Array of agent IDs of {@link agent}s that lost in the {@link Match}*/
+        losers: Array<agentID>
+      }
     }
-    export interface WinResults {
-      winners: Array<agentID>
-      ties: Array<agentID>
-      losers: Array<agentID>
-    }
-    export interface ELOConfigs {
+    export namespace ELO {
+      export interface Configs {
 
+      }
+      /** The results interface that must be returned by a result handler for a {@link Tournament} */
+      export interface Results {
+        /** Array of agentIDs and their ranks in a {@link Match}, where rank 1 is highest */
+        ranks: Array<{rank: number, agentID: agentID}>
+      }
     }
-    export interface ELOResults {
-      ranks: Array<{rank: number, agentID: agentID}> // ranks of agents, where rank 1 is highest
-    }
-    export interface TrueSkillConfigs {
 
-    }
-    export interface TrueSkillResults {
-      ranks: Array<{rank: number, agentID: agentID}> // ranks of agents, where rank 1 is highest
-    }
-    export interface TrueSkillRankState {
-      mu: number,
-      sigma: number
+    export namespace TRUESKILL {
+      /** The Configuration interface used for configuring the Trueskill ranking system */
+      export interface Configs {
+        /** The initial Mu value players start with */
+        initialMu: number,
+        /** The initial sigma value players start with */
+        initialSigma: number
+      }
+      /** The results interface that must be returned by a result handler for a {@link Tournament} */
+      export interface Results {
+        /** Array of agentIDs and their ranks in a {@link Match}, where rank 1 is highest */
+        ranks: Array<{rank: number, agentID: agentID}> 
+      }
+      export interface RankState {
+        /** The current Mu value of a player */
+        mu: number,
+        /** The current sigma value of a player */
+        sigma: number
+      }
     }
   }
-  export interface RoundRobinConfigs extends Tournament.TournamentTypeConfig {
-    times: number
-  }
-  export interface RoundRobinState extends Tournament.TournamentTypeState {
-    botStats: Map<string, {bot: Bot, wins: number, ties: number, losses: number, matchesPlayed: number}>
-    statistics: {
-      totalMatches: number
+  /**
+   * The RoundRobin Tournament namespace
+   */
+  export namespace RoundRobin {
+    export type Tournament = RoundRobinTournament
+    /**
+     * Configuration interface for {@link RoundRobinTournament}
+     */
+    export interface Configs extends Tournament.TournamentTypeConfig {
+      times: number
     }
-    results: Array<any>
-  }
-  // Configs specific to ladder like tournaments, e.g. halite, chess
-  export interface LadderConfigs extends Tournament.TournamentTypeConfig {
-    maxConcurrentMatches: number // max matches that can run concurrently on one node instance
-    endDate: Date // the date to stop running this tournament once it is started. If null, no end date
-    maxTotalMatches: number // the max matches to run before stopping the tournament
-  }
-  export interface LadderState extends Tournament.TournamentTypeState {
-    // maps tournamentID.id to object with bot info, wins/ties/losses and matches played along with rank state dependent 
-    // ranking system used
-    botStats: Map<string, {bot: Bot, wins: number, ties: number, losses: number, matchesPlayed: number, rankState: any}>
-    statistics: {
-      totalMatches: number
+    /**
+     * The {@link RoundRobinTournament} state, consisting of the current player statistics and past results
+     */
+    export interface State extends Tournament.TournamentTypeState {
+      playerStats: Map<string, {player: Player, wins: number, ties: number, losses: number, matchesPlayed: number}>
+      statistics: {
+        totalMatches: number
+      }
+      results: Array<any>
     }
-    currentRanks: Array<{bot: Bot, rankState: any}>
-    results: Array<any>
   }
+  export namespace Ladder {
+    /** Alias for {@link LadderTournament} */
+    export type Tournament = LadderTournament
+    
+    /**
+     * Configuration interface for {@link LadderTournament}.
+     */
+    export interface Configs extends Tournament.TournamentTypeConfig {
+      /** Max matches that can run concurrently on one node instance 
+       * @default 1
+       */
+      maxConcurrentMatches: number 
+      /** The date to stop running this tournament once it is started. If null, no end date 
+       * @default null
+       */
+      endDate: Date
+      /** The max matches to run before stopping the tournament. If null, then no maximum
+       * @default null
+       */
+      maxTotalMatches: number 
+    }
+    /**
+     * The {@link LadderTournament} state, consisting of the current player statistics and past results
+     */
+    export interface State extends Tournament.TournamentTypeState {
+      /**
+       * A map from player TournamnetID
+       */
+      playerStats: Map<string, {player: Player, wins: number, ties: number, losses: number, matchesPlayed: number, rankState: any}>
+      statistics: {
+        totalMatches: number
+      }
+      currentRanks: Array<{player: Player, rankState: any}>
+      results: Array<any>
+    }
+  }
+  
+  
 }

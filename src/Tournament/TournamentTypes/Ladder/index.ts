@@ -1,12 +1,12 @@
-import { Tournament, Bot } from "../../";
+import { Tournament, Player } from "../../";
 import { DeepPartial } from "../../../utils/DeepPartial";
 import { Design } from "../../../Design";
 import { deepMerge } from "../../../utils/DeepMerge";
 import { FatalError } from "../../../DimensionError";
 import { agentID } from "../../../Agent";
 import trueskill from "trueskill";
-import LadderState = Tournament.LadderState;
-import LadderConfigs = Tournament.LadderConfigs;
+import LadderState = Tournament.Ladder.State;
+import LadderConfigs = Tournament.Ladder.Configs;
 
 import RANK_SYSTEM = Tournament.RANK_SYSTEM;
 import { sprintf } from 'sprintf-js';
@@ -28,7 +28,7 @@ export class LadderTournament extends Tournament {
     consoleDisplay: true
   }
   state: LadderState = {
-    botStats: new Map(),
+    playerStats: new Map(),
     currentRanks: [],
     results: [],
     statistics: {
@@ -36,7 +36,7 @@ export class LadderTournament extends Tournament {
     }
   };;
 
-  // queue of the results to process. Use of queue avoids asynchronous editing of bot stats such as 
+  // queue of the results to process. Use of queue avoids asynchronous editing of player stats such as 
   // sigma and mu for trueskill
   resultProcessingQueue: Array<{result: any, mapAgentIDtoTournamentID: Map<agentID, Tournament.ID>}> = [];
 
@@ -70,16 +70,16 @@ export class LadderTournament extends Tournament {
   public setConfigs(configs: DeepPartial<Tournament.TournamentConfigs<LadderConfigs>> = {}) {
     this.configs = deepMerge(this.configs, configs);
   }
-  public getRankings(): Array<{bot: Bot, name: string, id: number, matchesPlayed: number, rankState: any}> {
+  public getRankings(): Array<{player: Player, name: string, id: number, matchesPlayed: number, rankState: any}> {
     let rankings = [];
     switch(this.configs.rankSystem) {
       case RANK_SYSTEM.TRUESKILL:
-        this.state.botStats.forEach((stat) => {
-          let rankState = <RANK_SYSTEM.TrueSkillRankState>stat.rankState;
+        this.state.playerStats.forEach((stat) => {
+          let rankState = <RANK_SYSTEM.TRUESKILL.RankState>stat.rankState;
           rankings.push({
-            bot: stat.bot,
-            name: stat.bot.tournamentID.name,
-            id: stat.bot.tournamentID.id,
+            player: stat.player,
+            name: stat.player.tournamentID.name,
+            id: stat.player.tournamentID.id,
             matchesPlayed: stat.matchesPlayed,
             rankState: {...rankState, score: rankState.mu - 3 * rankState.sigma}
           })
@@ -100,7 +100,7 @@ export class LadderTournament extends Tournament {
     
   }
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<LadderConfigs>>) {
-    this.log.info('Running Tournament with competitors: ', this.competitors.map((bot) => bot.tournamentID.name));
+    this.log.info('Running Tournament with competitors: ', this.competitors.map((player) => player.tournamentID.name));
     this.configs = deepMerge(this.configs, configs);
     this.initialize();
     this.schedule();
@@ -146,13 +146,13 @@ export class LadderTournament extends Tournament {
   }
 
   private initialize() {
-    this.state.botStats = new Map();
+    this.state.playerStats = new Map();
     this.state.results = [];
     switch(this.configs.rankSystem) {
       case RANK_SYSTEM.TRUESKILL:
-        this.competitors.forEach((bot) => {
-          this.state.botStats.set(bot.tournamentID.id, {
-            bot: bot,
+        this.competitors.forEach((player) => {
+          this.state.playerStats.set(player.tournamentID.id, {
+            player: player,
             wins: 0,
             ties: 0,
             losses: 0,
@@ -173,24 +173,24 @@ export class LadderTournament extends Tournament {
   }
   /**
    * Intended Matchmaking Algorithm Heuristics:
-   * 1. Pair bots with similar scores (sigma - K * mu)
-   * 2. Pair similar varianced bots (similar mu)
+   * 1. Pair players with similar scores (sigma - K * mu)
+   * 2. Pair similar varianced players (similar mu)
    * For now, we do random pairing
    */
   private schedule() {
     const matchCount = this.configs.tournamentConfigs.maxConcurrentMatches;
     // runs a round of scheduling
-    // for every bot, we schedule some m matches (TODO: configurable)
+    // for every player, we schedule some m matches (TODO: configurable)
     let rankings = this.getRankings();
     for (let i = 0; i < matchCount; i++) {
       rankings.forEach((info) => {
         let competitorCount = this.selectRandomAgentAmountForMatch();
-        let random = this.selectRandomBotsFromArray(rankings, competitorCount - 1).map((info) => info.bot);
-        this.matchQueue.push([info.bot, ...random]);
+        let random = this.selectRandomplayersFromArray(rankings, competitorCount - 1).map((info) => info.player);
+        this.matchQueue.push([info.player, ...random]);
       })
     }
-    this.competitors.forEach((bot) => {
-      // let rankState = <RANK_SYSTEM.TrueSkillRankState>this.state.botStats.get(bot.tournamentID.id).rankState;
+    this.competitors.forEach((player) => {
+      // let rankState = <RANK_SYSTEM.TrueSkillRankState>this.state.playerStats.get(player.tournamentID.id).rankState;
 
     });
   }
@@ -198,7 +198,7 @@ export class LadderTournament extends Tournament {
   private selectRandomAgentAmountForMatch(): number {
     return this.configs.agentsPerMatch[Math.floor(Math.random() * this.configs.agentsPerMatch.length)];
   }
-  private selectRandomBotsFromArray(arr, num: number) {
+  private selectRandomplayersFromArray(arr, num: number) {
     let r = [];
     for (let i = 0; i < num; i++) {
       r.push(arr[Math.floor(Math.random() * arr.length)]);
@@ -219,7 +219,7 @@ export class LadderTournament extends Tournament {
             `%-10s | %-8s | %-15s | %-18s | %-8s`.underline, 'Name', 'ID', 'Score=(μ - 3σ)', 'Mu: μ, Sigma: σ', 'Matches'));
           ranks.forEach((info) => {
             console.log(sprintf(
-              `%-10s`.blue+ ` | %-8s | ` + `%-15s`.green + ` | ` + `μ=%-6s, σ=%-6s`.yellow +` | %-8s`, info.bot.tournamentID.name, info.bot.tournamentID.id, info.rankState.score.toFixed(7), info.rankState.mu.toFixed(3), info.rankState.sigma.toFixed(3), info.matchesPlayed));
+              `%-10s`.blue+ ` | %-8s | ` + `%-15s`.green + ` | ` + `μ=%-6s, σ=%-6s`.yellow +` | %-8s`, info.player.tournamentID.name, info.player.tournamentID.id, info.rankState.score.toFixed(7), info.rankState.mu.toFixed(3), info.rankState.sigma.toFixed(3), info.matchesPlayed));
           });
           break;
         case RANK_SYSTEM.ELO:
@@ -241,16 +241,16 @@ export class LadderTournament extends Tournament {
    * Handles the start and end of a match, and updates state accrding to match results and the given result handler
    * @param matchInfo 
    */
-  private async handleMatch(matchInfo: Array<Bot>) {
-    this.log.info('Running match - Competitors: ', matchInfo.map((bot) => {return {name: bot.tournamentID.name, rankState: this.state.botStats.get(bot.tournamentID.id).rankState}}));
+  private async handleMatch(matchInfo: Array<Player>) {
+    this.log.info('Running match - Competitors: ', matchInfo.map((player) => {return {name: player.tournamentID.name, rankState: this.state.playerStats.get(player.tournamentID.id).rankState}}));
     let matchRes = await this.runMatch(matchInfo);
     // update total matches
     this.state.statistics.totalMatches++;
-    // update matches played per bot
-    matchInfo.map((bot) => {
-      let oldBotStat = this.state.botStats.get(bot.tournamentID.id);
-      oldBotStat.matchesPlayed++;
-      this.state.botStats.set(bot.tournamentID.id, oldBotStat);
+    // update matches played per player
+    matchInfo.map((player) => {
+      let oldplayerStat = this.state.playerStats.get(player.tournamentID.id);
+      oldplayerStat.matchesPlayed++;
+      this.state.playerStats.set(player.tournamentID.id, oldplayerStat);
     })
 
     let resInfo = this.configs.resultHandler(matchRes.results);
@@ -272,22 +272,22 @@ export class LadderTournament extends Tournament {
   private handleMatchWithTrueSkill() {
     let toProcess = this.resultProcessingQueue.shift();
     let mapAgentIDtoTournamentID = toProcess.mapAgentIDtoTournamentID;
-    let result = <RANK_SYSTEM.TrueSkillResults>toProcess.result;
-    let ranksAndSkillsOfBots: Array<{skill: Array<number>, rank: number, tournamentID: Tournament.ID}> = [];
+    let result = <RANK_SYSTEM.TRUESKILL.Results>toProcess.result;
+    let ranksAndSkillsOfplayers: Array<{skill: Array<number>, rank: number, tournamentID: Tournament.ID}> = [];
     result.ranks.forEach((rank) => {
       let tournamentID = mapAgentIDtoTournamentID.get(rank.agentID);
-      let currentBotStats = this.state.botStats.get(tournamentID.id);
-      let currRankState = <RANK_SYSTEM.TrueSkillRankState>currentBotStats.rankState;
-      ranksAndSkillsOfBots.push({
+      let currentplayerStats = this.state.playerStats.get(tournamentID.id);
+      let currRankState = <RANK_SYSTEM.TRUESKILL.RankState>currentplayerStats.rankState;
+      ranksAndSkillsOfplayers.push({
         skill: [currRankState.mu, currRankState.sigma], rank: rank.rank, tournamentID: tournamentID
       });
     });
-    trueskill.AdjustPlayers(ranksAndSkillsOfBots);
-    ranksAndSkillsOfBots.forEach((botInfo) => {
-      let currentBotStats = this.state.botStats.get(botInfo.tournamentID.id);
-      (<RANK_SYSTEM.TrueSkillRankState>(currentBotStats.rankState)).mu = botInfo.skill[0];
-      (<RANK_SYSTEM.TrueSkillRankState>(currentBotStats.rankState)).sigma = botInfo.skill[1];
-      this.state.botStats.set(botInfo.tournamentID.id, currentBotStats);
+    trueskill.AdjustPlayers(ranksAndSkillsOfplayers);
+    ranksAndSkillsOfplayers.forEach((playerInfo) => {
+      let currentplayerStats = this.state.playerStats.get(playerInfo.tournamentID.id);
+      (<RANK_SYSTEM.TRUESKILL.RankState>(currentplayerStats.rankState)).mu = playerInfo.skill[0];
+      (<RANK_SYSTEM.TRUESKILL.RankState>(currentplayerStats.rankState)).sigma = playerInfo.skill[1];
+      this.state.playerStats.set(playerInfo.tournamentID.id, currentplayerStats);
     });
     if (this.configs.consoleDisplay) {
       this.printTournamentStatus();
