@@ -1,7 +1,15 @@
-import { Design, Match, MatchConfigs, FatalError, Station } from '..';
 import { Logger, LoggerLEVEL} from '../Logger';
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
+// import { Tournament } from '../Tournament';
+import { MatchConfigs, Match } from '../Match';
+import { Station } from '../Station';
+import { FatalError } from '../DimensionError';
+import { Design } from '../Design';
+import { RoundRobinTournament } from '../Tournament/TournamentTypes/RoundRobin';
+import { EliminationTournament } from '../Tournament/TournamentTypes/Elimination';
+import { Tournament } from '../Tournament';
+import { deepCopy } from '../utils/DeepCopy';
 
 export type DimensionConfigs = {
   name: string
@@ -28,6 +36,9 @@ export type DimensionConfigs = {
 export class Dimension {
   
   public matches: Array<Match> = [];
+
+  public tournaments: Array<Tournament> = [];
+
   static id: number = 0;
   public name: string;
   public id: number = 0;
@@ -36,6 +47,11 @@ export class Dimension {
 
   // Default station for current node instance
   public static Station: Station = null;
+
+  public statistics = {
+    tournamentsCreated: 0,
+    matchesCreated: 0,
+  }
 
   // default configs
   public configs: DimensionConfigs = {
@@ -51,7 +67,7 @@ export class Dimension {
   constructor(public design: Design, configs: DeepPartial<DimensionConfigs> = {}) {
 
     // override configs with user provided configs
-    Object.assign(this.configs, configs);
+    this.configs = deepMerge(this.configs, configs);
 
     this.log.level = this.configs.loggingLevel;
 
@@ -80,6 +96,7 @@ export class Dimension {
     // make the station observe this dimension when this dimension is created
     if (this.configs.observe === true) Dimension.Station.observe(this);
 
+    // by default link all matches created by this dimension to this dimension
     this.configs.defaultMatchConfigs.dimensionID = this.id;
   }
   /**
@@ -96,8 +113,9 @@ export class Dimension {
 
       // override dimension defaults with provided configs
       // TOOD: change to deep copy
-      let matchConfigs = {...this.configs.defaultMatchConfigs};
+      let matchConfigs = deepCopy(this.configs.defaultMatchConfigs);
       matchConfigs = deepMerge(matchConfigs, configs);
+
       // create new match
       let match: Match;
       if (typeof files[0] === 'string') {
@@ -105,6 +123,7 @@ export class Dimension {
       } else {
         match = new Match(this.design, <Array<{file: string, name: string}>> files, matchConfigs);
       }
+      this.statistics.matchesCreated++;
 
       // store match into dimension
       this.matches.push(match);
@@ -130,15 +149,16 @@ export class Dimension {
    * @param configs - Configurations that are `Design` dependent. These configs are passed into `Design.initialize`
    * `Design.update` and `Design.storeResults`
    */
-  public async runMatch(files: Array<string> | Array<{file: string, name: string}>, configs?: DeepPartial<MatchConfigs>) {
+  public async runMatch(
+    files: Array<string> | Array<{file: string, name: string}>, 
+    configs?: DeepPartial<MatchConfigs>): Promise<any> {
     return new Promise( async (resolve, reject) => {
       
       try {
         if (!files.length) reject (new FatalError('No files provided for match'));
 
         // override dimension defaults with provided configs
-        // TOOD: change to deep copy
-        let matchConfigs = {...this.configs.defaultMatchConfigs};
+        let matchConfigs = deepCopy(this.configs.defaultMatchConfigs);
         matchConfigs = deepMerge(matchConfigs, configs);
         
         let match: Match;
@@ -147,6 +167,7 @@ export class Dimension {
         } else {
           match = new Match(this.design, <Array<{file: string, name: string}>> files, matchConfigs);
         }
+        this.statistics.matchesCreated++;
 
         // store match into dimension
         this.matches.push(match);
@@ -165,6 +186,32 @@ export class Dimension {
       }
       
     });
+  }
+
+  /**
+   * 
+   */
+  public createTournament(files: Array<string> | Array<{file: string, name:string}>, configs?: Tournament.TournamentConfigsBase): Tournament {
+      let id = this.statistics.tournamentsCreated;
+      let newTourney;
+      switch(configs.type) {
+        case Tournament.TOURNAMENT_TYPE.ROUND_ROBIN:
+          newTourney = new RoundRobinTournament(this.design, files, configs, id);
+          break;
+        case Tournament.TOURNAMENT_TYPE.ELIMINATION:
+          newTourney = new EliminationTournament(this.design, files, configs, id);
+          break;
+      }
+      this.statistics.tournamentsCreated++;
+      this.tournaments.push(newTourney);
+      return newTourney;
+  }
+
+  /**
+   * Get the station
+   */
+  getStation() {
+    return Dimension.Station;
   }
 
 }

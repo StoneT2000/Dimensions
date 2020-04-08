@@ -1,7 +1,11 @@
-import { Agent, Design, MatchEngine, agentID, Logger, LoggerLEVEL, Command, FatalError, COMMAND_STREAM_TYPE } from '..';
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
-import { EngineOptions } from '../MatchEngine';
+import { EngineOptions, MatchEngine } from '../MatchEngine';
+import { Agent, agentID } from '../Agent';
+import { Logger, LoggerLEVEL } from '../Logger';
+import { Design, COMMAND_STREAM_TYPE, Command } from '../Design';
+import { FatalError } from '../DimensionError';
+import { Tournament } from '../Tournament';
 
 export enum MatchStatus {
   UNINITIALIZED, // the status when you just created a match and didn't call initialize
@@ -66,6 +70,8 @@ export class Match {
   public results: any;
   public matchStatus = MatchStatus.UNINITIALIZED
 
+  public mapAgentIDtoTournamentID: Map<agentID, Tournament.ID> = new Map();
+
   public configs: MatchConfigs = {
     name: '',
     timeout: 1000,
@@ -79,10 +85,11 @@ export class Match {
 
   constructor(
     public design: Design, 
-    public agentFiles: Array<String> | Array<{file: string, name: string}>, 
+    public agentFiles: Array<String> | Array<{file: string, name: string}> | Array<{file: string, tournamentID: Tournament.ID}>, 
     configs: DeepPartial<MatchConfigs> = {}
   ) {
 
+    
     // override configs with provided configs argument
     this.configs = deepMerge(this.configs, configs);
 
@@ -115,7 +122,7 @@ export class Match {
 
         this.log.infobar();
         this.log.info(`Design: ${this.design.name} | Initializing match: ${this.name}`);
-        this.log.info('Match Configs', this.configs);
+        this.log.detail('Match Configs', this.configs);
         
         this.timeStep = 0;
         
@@ -123,6 +130,9 @@ export class Match {
         this.agents = Agent.generateAgents(this.agentFiles, this.log.level);
         this.agents.forEach((agent) => {
           this.idToAgentsMap.set(agent.id, agent);
+          if (agent.tournamentID !== null) {
+            this.mapAgentIDtoTournamentID.set(agent.id, agent.tournamentID);
+          }
         })
 
         // Initialize the matchEngine and get it ready to run and process I/O for agents
@@ -373,8 +383,11 @@ export class Match {
         throw new FatalError(`${this.idToAgentsMap.get(agentID).name} | ${error.message}`); 
       })
     }
+    if (error.name === 'Dimension.MatchWarning') {
+      this.log.warn(`ID: ${agentID}, ${this.idToAgentsMap.get(agentID).name} | ${error}`);
+    }
     if (error.name === 'Dimension.MatchError') {
-      this.log.warn(`${this.idToAgentsMap.get(agentID).name} | ${error}`);
+      this.log.error(`ID: ${agentID}, ${this.idToAgentsMap.get(agentID).name} | ${error}`);
       // TODO, if match is set to store an error log, this should be logged!
     }
   }
