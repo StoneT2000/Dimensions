@@ -5,22 +5,12 @@ import { deepMerge } from "../../../utils/DeepMerge";
 import { FatalError } from "../../../DimensionError";
 import { agentID } from "../../../Agent";
 
-// Configs specific to round robin tournaments, e.g association football
-export interface RoundRobinConfigs extends Tournament.TournamentTypeConfig {
-  times: number
-}
-export interface State extends Tournament.TournamentTypeState {
-  botStats: Map<string, {bot: Bot, wins: number, ties: number, losses: number}>
-  statistics: {
-
-  }
-}
 /**
  * Round robin tournament
  * General expectations is it is always two agents only.
  */
 export class RoundRobinTournament extends Tournament {
-  private configs: Tournament.TournamentConfigs<RoundRobinConfigs> = {
+  private configs: Tournament.TournamentConfigs<Tournament.RoundRobinConfigs> = {
     defaultMatchConfigs: {},
     type: Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
     rankSystem: null,
@@ -30,8 +20,9 @@ export class RoundRobinTournament extends Tournament {
     },
     resultHandler: null
   }
-  state: State = {
+  state: Tournament.RoundRobinState = {
     botStats: new Map(),
+    results: [],
     statistics: {}
   };
   constructor(
@@ -52,7 +43,8 @@ export class RoundRobinTournament extends Tournament {
       this.configs.rankSystemConfigs = {
         winValue: 3,
         tieValue: 1,
-        lossValue: 0
+        lossValue: 0,
+        ascending: true
       };
     }
 
@@ -63,7 +55,7 @@ export class RoundRobinTournament extends Tournament {
     this.log.info('Initialized Round Robin Tournament');
   }
 
-  public async run(configs?: DeepPartial<Tournament.TournamentConfigs<RoundRobinConfigs>>) {
+  public async run(configs?: DeepPartial<Tournament.TournamentConfigs<Tournament.RoundRobinConfigs>>) {
     this.configs = deepMerge(this.configs, configs);
     this.initialize();
     this.schedule();
@@ -75,6 +67,7 @@ export class RoundRobinTournament extends Tournament {
         this.log.info('Running match - Competitors: ', matchInfo.map((bot) => bot.tournamentID.name));
         let matchRes = await this.runMatch(matchInfo);
         let resInfo: Tournament.RANK_SYSTEM.WinResults = this.configs.resultHandler(matchRes.results);
+        this.state.results.push(matchRes.results);
         // resInfo contains agentIDs, which need to be remapped to tournament IDs
         resInfo.winners.forEach((winnerID: agentID) => {
           let tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(winnerID);
@@ -108,10 +101,32 @@ export class RoundRobinTournament extends Tournament {
     })
   }
 
-  public getConfigs(): Tournament.TournamentConfigs<RoundRobinConfigs> {
+  // TODO: move sorting to run function. It's ok too sort like this for small leagues, but larger will become slow.
+  public getRankings() {
+    let ranks = [];
+    this.state.botStats.forEach((botStat) => {
+      let score = botStat.wins * this.configs.rankSystemConfigs.winValue +
+      botStat.ties * this.configs.rankSystemConfigs.tieValue +
+      botStat.losses * this.configs.rankSystemConfigs.lossValue;
+      ranks.push(
+        {bot: botStat.bot, name: botStat.bot.tournamentID.name, id: botStat.bot.tournamentID.id, score: score});
+    });
+    if (this.configs.rankSystemConfigs.ascending) {
+      ranks.sort((a, b) => {
+        return b.score - a.score
+      });
+    }
+    else {
+      ranks.sort((a, b) => {
+        return a.score - b.score
+      });
+    }
+    return ranks;
+  }
+  public getConfigs(): Tournament.TournamentConfigs<Tournament.RoundRobinConfigs> {
     return this.configs;
   }
-  public setConfigs(configs: DeepPartial<Tournament.TournamentConfigs<RoundRobinConfigs>> = {}) {
+  public setConfigs(configs: DeepPartial<Tournament.TournamentConfigs<Tournament.RoundRobinConfigs>> = {}) {
     this.configs = deepMerge(this.configs, configs);
   }
 

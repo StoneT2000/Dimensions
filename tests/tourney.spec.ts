@@ -5,13 +5,19 @@ const RockPaperScissorsDesign = require('./rps').RockPaperScissorsDesign;
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import 'mocha';
+import { Tournament } from '../src';
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 describe('Tournament Testing with RPS', () => {
-  let RPSDesign, RPSTournament: Dimension.Tournament.TournamentClasses;
+  let RPSDesign, RPSTournament: Dimension.Tournament.RoundRobinTournament;
   let myDimension: Dimension.DimensionType;
-  let bots = ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/paper.js', './tests/js-kit/rps/errorBot.js']
+  let bots = ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/paper.js', './tests/js-kit/rps/errorBot.js', './tests/js-kit/rps/rock.js'];
+  let names = ['smarter', 'paper', 'errorbot', 'rock'];
+  let filesAndNames = [];
+  for (let i = 0; i < bots.length; i++) {
+    filesAndNames.push({file: bots[i], name: names[i]});
+  }
   before(() => {
     RPSDesign = new RockPaperScissorsDesign('RPS!', {
       engineOptions: {
@@ -26,10 +32,11 @@ describe('Tournament Testing with RPS', () => {
       observe: false,
       loggingLevel: Dimension.Logger.LEVEL.WARN
     }); 
-    RPSTournament = myDimension.createTournament(bots, {
+    RPSTournament = <Dimension.Tournament.RoundRobinTournament>myDimension.createTournament(filesAndNames, {
       type: Dimension.Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
       rankSystem: Dimension.Tournament.RANK_SYSTEM.WINS,
       loggingLevel: Dimension.Logger.LEVEL.INFO,
+      name: 'Rock Paper Scissors',
       defaultMatchConfigs: {
         bestOf: 3,
         loggingLevel: Dimension.Logger.LEVEL.WARN
@@ -49,14 +56,31 @@ describe('Tournament Testing with RPS', () => {
         return {winners: winners, losers: losers, ties: ties};
       }
     });
+    RPSTournament.setConfigs({
+      rankSystemConfigs: {
+        winValue: 2,
+        ascending: false
+      }
+    })
   })
 
   it('Initializing tournament', async () => {
-    expect(RPSTournament.competitors.length).to.equal(3);
+    expect(RPSTournament.name).to.equal('Rock Paper Scissors');
+    expect(RPSTournament.competitors.length).to.equal(4);
+    expect(RPSTournament.competitors[0].tournamentID.name).to.equal('smarter');
   });
   it('Run Tourney', async () => {
-    let res = await RPSTournament.run();
-    console.log(res);
+    let res: Tournament.RoundRobinState = <Tournament.RoundRobinState>(await RPSTournament.run());
+    expect(res.botStats.get('t0_0')).to.contain({wins: 3, ties: 0, losses: 0});
+    expect(res.botStats.get('t0_1')).to.contain({wins: 2, ties: 0, losses: 1});
+    expect(res.botStats.get('t0_2')).to.contain({wins: 0, ties: 0, losses: 3});
+    expect(res.botStats.get('t0_3')).to.contain({wins: 1, ties: 0, losses: 2});
+    let ranks = RPSTournament.getRankings();
+    expect(ranks[0]).to.contain({name:'errorbot', id:'t0_2', score: 0});
+    expect(ranks[1]).to.contain({name:'rock', id:'t0_3', score: 2});
+    expect(ranks[2]).to.contain({name:'paper', id:'t0_1', score: 4});
+    expect(ranks[3]).to.contain({name:'smarter', id:'t0_0', score: 6});
+    console.log(res.results);
   })
 
 });

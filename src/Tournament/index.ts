@@ -1,7 +1,7 @@
 import { Match, MatchConfigs } from '../Match';
 import { Design } from '../Design';
 import { FatalError } from '../DimensionError';
-import { RoundRobinTournament } from './TournamentTypes/RoundRobin';
+import { RoundRobinTournament as _RoundRobinTournament } from './TournamentTypes/RoundRobin';
 import { EliminationTournament } from './TournamentTypes/Elimination';
 import { DeepPartial } from '../utils/DeepPartial';
 import { Logger, LoggerLEVEL } from '../Logger';
@@ -60,21 +60,6 @@ export abstract class Tournament {
     this.log.level = level;
   }
 
-  // static create(
-  //   design: Design,
-  //   files: Array<string> | Array<{file: string, name:string}>, 
-  //   // i know this any, any is bad...
-  //   tournamentConfigs: DeepPartial<Tournament.TournamentConfigsBase> = {},
-  //   id: number
-  // ): TournamentBase<unknown, unknown> {
-  //   switch(tournamentConfigs.type) {
-  //     case TOURNAMENT_TYPE.ROUND_ROBIN:
-  //       return new RoundRobinTournament(design, files, tournamentConfigs, id);
-  //     case TOURNAMENT_TYPE.ELIMINATION:
-  //       return new EliminationTournament(design, files, tournamentConfigs, id);
-  //   }
-  // }
-
   public addBot(file: string | {file: string, name: string}) {
     let id = `t${this.id}_${this.botID++}`;
     if (typeof file === 'string') {
@@ -87,7 +72,7 @@ export abstract class Tournament {
   }
 
   // Start the tournament
-  abstract run(configs: Tournament.TournamentConfigs<unknown>);
+  abstract run(configs: Tournament.TournamentConfigsBase): unknown;
 
   /**
    * Stops the tournament while running
@@ -156,7 +141,8 @@ export abstract class Tournament {
 }
 
 export module Tournament {
-  export type TournamentClasses = RoundRobinTournament | EliminationTournament | LeaderboardTournament;
+  export type RoundRobinTournament = _RoundRobinTournament;
+
   export enum TOURNAMENT_TYPE {
     ROUND_ROBIN = 'round_robin', // can be n-tuple round robin. E.g double roundrobin like most Association Football Leagues
     ELIMINATION = 'elimination', // standard elimination tournament. can be single, double, triple, n-tuple knockout
@@ -203,7 +189,8 @@ export module Tournament {
     export interface WinConfigs {
       winValue: number
       tieValue: number
-      lossValue: number
+      lossValue: number,
+      ascending: boolean
     }
     export interface WinResults {
       winners: Array<agentID>
@@ -216,5 +203,15 @@ export module Tournament {
     export interface TrueSkillConfigs {
 
     }
+  }
+  export interface RoundRobinConfigs extends Tournament.TournamentTypeConfig {
+    times: number
+  }
+  export interface RoundRobinState extends Tournament.TournamentTypeState {
+    botStats: Map<string, {bot: Bot, wins: number, ties: number, losses: number}>
+    statistics: {
+
+    }
+    results: Array<any>
   }
 }

@@ -188,7 +188,7 @@ export class Dimension {
   /**
    * 
    */
-  public createTournament(files: Array<string> | Array<{file: string, name:string}>, configs?: Tournament.TournamentConfigsBase): RoundRobinTournament | EliminationTournament {
+  public createTournament(files: Array<string> | Array<{file: string, name:string}>, configs?: Tournament.TournamentConfigsBase): Tournament {
       let id = this.statistics.tournamentsCreated;
       let newTourney;
       switch(configs.type) {
