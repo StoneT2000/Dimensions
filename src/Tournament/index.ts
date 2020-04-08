@@ -6,7 +6,7 @@ import { EliminationTournament } from './TournamentTypes/Elimination';
 import { DeepPartial } from '../utils/DeepPartial';
 import { Logger } from '../Logger';
 import { LadderTournament } from './TournamentTypes/Ladder';
-import { agentID } from '../Agent';
+import { Agent } from '../Agent';
 import { deepCopy } from '../utils/DeepCopy';
 
 /**
@@ -20,33 +20,35 @@ export class Player {
 
 
 /**
- * Abstract Tournament
- * The tournament class used to initialize tournaments as well as configure what is publically shown on the 
- * Station
+ * @class Tournament
+ * @classdesc The tournament class extended by all concrete Tournament Classes. Tournament Types available now are
+ * {@link RoundRobin.Tournament} and {@link Ladder.Tournament}
  */
 export abstract class Tournament {
 
-  // mapping match ids to active ongoing matches
+  /** Mapping match ids to active ongoing matches */
   public matches: Map<number, Match> = new Map();
 
-  // a queue whose elements are each arrays of player that are to compete against each other under the `design`
+  /** A queue whose elements are each arrays of player that are to compete against each other */
   public matchQueue: Array<Array<Player>> = [];
   
-  // The current status of the tournament
+  /** The current status of the tournament */
   public status: Tournament.TournamentStatus = Tournament.TournamentStatus.UNINITIALIZED;
 
-  // Ongoing tournament state
+  /** Ongoing tournament state. Type dependent on Tournament Type chosen */
   abstract state: unknown;
 
-  // Data to be displayed on to the station
-  // public displayState: any;
-
+  /** Logger */
   public log = new Logger();
 
+  /** Registered competitors in this tournament */
   public competitors: Array<Player> = [];
 
   private playerID = 0;
 
+  /**
+   * This Tournament's name
+   */
   public name = '';
 
   constructor(
@@ -63,6 +65,10 @@ export abstract class Tournament {
     this.log.identifier = this.name;
   }
 
+  /**
+   * Add a player to the tournament. Currently only supports adding during the match.
+   * @param file - The file to the bot or an object with the file and a name for the player specified
+   */
   public addplayer(file: string | {file: string, name: string}) {
     let id = `t${this.id}_${this.playerID++}`;
     if (typeof file === 'string') {
@@ -74,8 +80,11 @@ export abstract class Tournament {
     }
   }
 
-  // Start the tournament
-  abstract async run(configs?: DeepPartial<Tournament.TournamentConfigsBase>): Promise<any>;
+  /**
+   * Start the tournament
+   * @param configs - the configs to use for the tournament
+   */
+  public abstract async run(configs?: DeepPartial<Tournament.TournamentConfigsBase>): Promise<any>;
 
   /**
    * Stops the tournament while running
@@ -105,7 +114,7 @@ export abstract class Tournament {
   abstract getConfigs(): Tournament.TournamentConfigsBase
 
   /**
-   * 
+   * Runs a match
    * @param players - the players to compete together
    * @returns a promise that resolves with the results and the associated match
    */
@@ -150,7 +159,7 @@ export abstract class Tournament {
 export module Tournament {
 
   export enum TOURNAMENT_TYPE {
-    /** {@link RoundRobinTournament} enum */
+    /** {@link RoundRobinTournament} type */
     ROUND_ROBIN = 'round_robin', // can be n-tuple round robin. E.g double roundrobin like most Association Football Leagues
     /** {@link EliminationTournament} type */
     ELIMINATION = 'elimination',
@@ -158,13 +167,21 @@ export module Tournament {
     LADDER = 'ladder', // like halite
   }
   export enum TournamentStatus {
+    /** Status when tournament was just called with new */
     UNINITIALIZED = 'uninitialized',
+    /** Tournmanet is ready to run with {@link Tournament.run} */
     INITIALIZED = 'initialized',
+    /** Tournmanet is currently stopped */
     STOPPED = 'stopped',
+    /** Tournmanet is running */
     RUNNING = 'running',
+    /** Tournmanet crashed some how */
     CRASHED = 'crashed',
   }
-  // Required info that will not be deep partialed in the Dimension class
+
+  /**
+   * Required and Optional Tournament configurations
+   */
   export interface TournamentConfigsBase {
     /**
      * The default match configurations to be applied throughout all tournament matches
@@ -181,16 +198,20 @@ export module Tournament {
 
     /**
      * The result handler for returning the appropriate results to the tournament for processing.
-     * @params results - the results received from calling the {@link Design.getResults} function
      * 
-     * To find what kind of result should be returned, find the Results interface for a tournament. 
+     * To find what kind of result should be returned, find the Results interface for the rank system you are using. 
      * 
-     * Example: For RoundRobin, go to Tournament.RoundRobin.Results
+     * Example: For {@link RANK_SYSTEM.TRUESKILL}, go to {@link RANK_SYSTEM.TRUESKILL.Results}
      */
-    resultHandler: (results: any) => any
+    resultHandler: 
+    /**
+     * @param results - the results received from calling the {@link Design.getResults} function
+     */
+    (results: any) => any
 
     /**
-     * The configurations for a specified rank system. For example, see {@link RANK_SYSTEM.WINS.Configs}, {@link RANK_SYSTEM.TRUESKILL.Configs}
+     * The configurations for a specified rank system. For example, see {@link RANK_SYSTEM.WINS.Configs}, 
+     * {@link RANK_SYSTEM.TRUESKILL.Configs}
      */
     rankSystemConfigs?: any,
 
@@ -206,13 +227,14 @@ export module Tournament {
 
     /**
      * Tournament configurations. Dependent on the type of tournament chosen
+     * Example: For {@link RoundRobin.Tournament}, go to {@link RoundRobin.Configs}
      */
     tournamentConfigs?: any
 
     /**
      * An array of valid number of players that can compete in a match. For Rock Paper Scissors for example this would 
      * be [2]
-     * @default [2]
+     * @default `[2]`
      */
     agentsPerMatch: Array<number> // an array of valid players per match
 
@@ -222,6 +244,7 @@ export module Tournament {
      */
     consoleDisplay?: boolean
   }
+
   export interface TournamentConfigs<ConfigType> extends TournamentConfigsBase {
     tournamentConfigs: ConfigType    
     rankSystemConfigs: any
@@ -244,9 +267,7 @@ export module Tournament {
     name: string
   }
   /**
-   * Rank System
-   * 
-   * An enum for the kind of ranking systems you can choose for a {@link Tournament}
+   * Rank System enums for the kind of ranking systems you can choose for a {@link Tournament}
    */
   export enum RANK_SYSTEM {
     /** Ranking by wins, ties and losses */
@@ -256,14 +277,18 @@ export module Tournament {
     /** Ranking by Microsoft's Trueskill */
     TRUESKILL = 'trueskill'
   }
+
   /**
    * @namespace RANK_SYSTEM namespace that contains relevant interfaces for various ranking systems
    */
   export namespace RANK_SYSTEM {
     
+    /**
+     * Wins rank system. Ranks based on Wins, Ties, and Losses.
+     */
     export namespace WINS {
       /**
-       * The interface for configuring the {@link RANK_SYSTEM.WINS} format
+       * The configuration interface for configuring the {@link WINS} ranking system
        */
       export interface Configs {
         /** Points given per win in a {@link Match} */
@@ -275,29 +300,37 @@ export module Tournament {
         /** True if first place is the one with the most points. */
         descending: boolean
       }
+
       /** The results interface that must be returned by a result handler for a {@link Tournament} */
       export interface Results {
         /** Array of agent IDs of {@link agent}s that won in the {@link Match}*/
-        winners: Array<agentID>
+        winners: Array<Agent.ID>
         /** Array of agent IDs of {@link agent}s that tied in the {@link Match}*/
-        ties: Array<agentID>
+        ties: Array<Agent.ID>
         /** Array of agent IDs of {@link agent}s that lost in the {@link Match}*/
-        losers: Array<agentID>
+        losers: Array<Agent.ID>
       }
     }
+    /**
+     * ELO Rank system
+     */
     export namespace ELO {
+
+      /**
+       * The configuration interface for configuring the {@link ELO} ranking system
+       */
       export interface Configs {
 
       }
       /** The results interface that must be returned by a result handler for a {@link Tournament} */
       export interface Results {
-        /** Array of agentIDs and their ranks in a {@link Match}, where rank 1 is highest */
-        ranks: Array<{rank: number, agentID: agentID}>
+        /** Array of {@link Agent.ID}s and their ranks in a {@link Match}, where rank 1 is highest */
+        ranks: Array<{rank: number, agentID: Agent.ID}>
       }
     }
 
     export namespace TRUESKILL {
-      /** The Configuration interface used for configuring the Trueskill ranking system */
+      /** The Configuration interface used for configuring the {@link TRUESKILL} ranking system */
       export interface Configs {
         /** The initial Mu value players start with */
         initialMu: number,
@@ -307,7 +340,7 @@ export module Tournament {
       /** The results interface that must be returned by a result handler for a {@link Tournament} */
       export interface Results {
         /** Array of agentIDs and their ranks in a {@link Match}, where rank 1 is highest */
-        ranks: Array<{rank: number, agentID: agentID}> 
+        ranks: Array<{rank: number, agentID: Agent.ID}> 
       }
       export interface RankState {
         /** The current Mu value of a player */
@@ -328,7 +361,7 @@ export module Tournament {
     export interface Configs extends Tournament.TournamentTypeConfig {
       /**
        * Number of times each player competes against another player
-       * @default 2
+       * @default `2`
        */
       times: number
     }
@@ -340,14 +373,22 @@ export module Tournament {
        * A map from a {@link Player} Tournament ID string to statistics
        */
       playerStats: Map<string, {player: Player, wins: number, ties: number, losses: number, matchesPlayed: number}>
+      /**
+       * Stats for this Tournament
+       */
       statistics: {
         totalMatches: number
       }
+      /**
+       * Past results stored. Each element is what is returned by {@link Design.getResults}
+       */
       results: Array<any>
     }
   }
+  /**
+   * The Ladder Tournament namespace
+   */
   export namespace Ladder {
-    /** Alias for {@link LadderTournament} */
     export type Tournament = LadderTournament
     
     /**
@@ -375,10 +416,16 @@ export module Tournament {
        * A map from a {@link Player} Tournament ID string to statistics
        */
       playerStats: Map<string, {player: Player, wins: number, ties: number, losses: number, matchesPlayed: number, rankState: any}>
+      /**
+       * Stats for this Tournament
+       */
       statistics: {
         totalMatches: number
       }
       currentRanks: Array<{player: Player, rankState: any}>
+      /**
+       * Past results stored. Each element is what is returned by {@link Design.getResults}
+       */
       results: Array<any>
     }
   }

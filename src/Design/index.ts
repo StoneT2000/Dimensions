@@ -1,19 +1,23 @@
 import { MatchEngine } from "../MatchEngine";
 import { deepMerge } from "../utils/DeepMerge";
 import { DeepPartial } from "../utils/DeepPartial";
-import { Agent, agentID } from "../Agent";
+import { Agent } from "../Agent";
 import { Match } from "../Match";
 import { Logger } from "../Logger";
 import EngineOptions = MatchEngine.EngineOptions;
 import COMMAND_FINISH_POLICIES = MatchEngine.COMMAND_FINISH_POLICIES;
 import COMMAND_STREAM_TYPE = MatchEngine.COMMAND_STREAM_TYPE;
 import Command = MatchEngine.Command;
+
 /**
  * @class Design
- * @classdesc Abstract class detailing a `Design` to be used as the platform that holds match lifecycle logic for
- * updating and manipulating ongoing `matches`
+ * @classdesc Abstract class detailing a Design to be used as the platform that holds match lifecycle logic for
+ * updating and manipulating ongoing matches
  * 
- * Refer to `Match` class and the `Agent` for exposed fields available for user's use
+ * Refer to {@link Match} class and the {@link Agent} for exposed fields available for user's use when making your own 
+ * Design
+ * 
+ * The important functions to implement are {@link initialize}, {@link update}, and {@link getResults}
  * 
  */
 export abstract class Design {
@@ -46,8 +50,17 @@ export abstract class Design {
     }
   }
 
+  /** The current design options */
   protected designOptions: DesignOptions;
+
+  /** Logger */
   public log = new Logger();
+
+  /**
+   * Design constructor
+   * @param name - The name of the design
+   * @param designOptions - The options for this design
+   */
   constructor(public name: String, designOptions: DeepPartial<DesignOptions> = {}) {
 
     // Set defaults from the abstract class
@@ -78,46 +91,53 @@ export abstract class Design {
   }
 
   /**
-   * Abstract function required to initialize `match` state and the `agents` participating in the `match`
-   * @see Agents for what properties and methods related to `agents` are exposed to the user for use.
-   * @see Match for what properties and methods are exposed to the user for use e.g match.send() and match.state
+   * Abstract function required to initialize match state and send relevant information to 
+   * agents participating in the match
+   * @see {@link Agent} for what properties and methods related to agents are exposed to the user for use.
+   * @see {@link Match} for what properties and methods are exposed to the user for use e.g match.send() and match.state
    * 
-   * @param match - The `Match` to initialize state with
-   * @param config - Any user configurations that can be added as parameters @see MatchConfigs
+   * @param match - The {@link Match} to initialize state with
    * @returns Nothing needed, return result is not used by `match`
    */
-  abstract async initialize(match: Match, config?: any): Promise<void>
+  abstract async initialize(match: Match): Promise<void>
 
   /**
-   * Abstract function required to update `match` state with commands from Agents and send commands to Agents
-   * along with returning the current match status, one of which can be {@link Match.Status.FINISHED}
+   * Abstract function required to update match state with commands from Agents and send commands to Agents
+   * along with returning the current match status. Returning Match.Status.RUNNING indicates the match is not done yet. 
+   * Returning MatchStatus.FINISHED indicates the match is over.
    * 
-   * @see Match - This function is used by the `match` to update the `match` state and move forward a time step
+   * @see {@link Match} - This function is used by the match to update the match state and move forward a time step
+   * @see {@link Agent} for what properties and methods related to agents are exposed to the user for use.
+   * @see {@link Match.Status} for different statuses you can return.
    * 
-   * @param match - The `Match` to update state with `Commands`
-   * @param commands - The `Commands` array used to update the state in a `Match`. 
+   * @param match - The Match to update state with the given Commands
+   * @param commands - The {@link MatchEngine.Command} array used to update the state in a Match. 
    *                   Each element has two keys, command and agentID. agentID is the id of the agent that outputted
    *                   that string in command
-   * @param config - Any user configurations that can be added as parameters
-   * @returns A promise that resolves with the current `Match.Status` at the end of this time step. Can also directly 
-   *          just return `Match.Status`
+   * @returns A promise that resolves with the current {@link Match.Status} at the end of this time step. Can also 
+   * directly just return the match status
    */
-  abstract async update(match: Match, commands: Array<Command>, config?: any): Promise<Match.Status>
+  abstract async update(match: Match, commands: Array<Command>): Promise<Match.Status>
 
   /**
-   * Abstract function required to get the result of a `match`
+   * Abstract function required to get the result of a {@link Match}.
    * 
-   * @see Match - This function is used by the `match` to update the results stored in the `match` and return results
+   * @see {@link Match} - This function is used by the match to update the results stored in the match and return
+   * results
    * 
    * @param match - The `Match` used to process results
    * @param config - Any user configurations that can be added as parameters
    * @returns A promise that resolves with results (can be an object, number, anything). Can also directly just return 
    *          the results
    */
-  abstract async getResults(match: Match, config?: any): Promise<any>
+  abstract async getResults(match: Match): Promise<any>
 
 }
 
+/**
+ * Design options
+ */
 export interface DesignOptions {
+  /** The default engine options to use for all matches created using this design */
   engineOptions: EngineOptions
 };

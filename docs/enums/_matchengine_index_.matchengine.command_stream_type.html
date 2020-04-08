@@ -72,6 +72,13 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Standard ways for commands from agents to be streamed to the MatchEngine for the <a href="../classes/_design_index_.design.html">Design</a> to handle</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
@@ -94,9 +101,14 @@
 					<div class="tsd-signature tsd-kind-icon">PARALLEL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;parallel&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/MatchEngine/index.ts#L345">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/MatchEngine/index.ts#L345</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/MatchEngine/index.ts#L412">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/MatchEngine/index.ts#L412</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>First come first serve for commands run. Not implemented</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
 					<a name="sequential" class="tsd-anchor"></a>
@@ -104,9 +116,14 @@
 					<div class="tsd-signature tsd-kind-icon">SEQUENTIAL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;sequential&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/MatchEngine/index.ts#L346">https://github.com/StoneT2000/Dimensions/blob/8a2a657/src/MatchEngine/index.ts#L346</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/MatchEngine/index.ts#L414">https://github.com/StoneT2000/Dimensions/blob/67bdd00/src/MatchEngine/index.ts#L414</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Each agent&#39;s set of commands is run before the next agent</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -115,6 +132,9 @@
 				<ul>
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class="label tsd-is-external">
+						<span>Internals</span>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="../modules/_agent_index_.html">&quot;<wbr>Agent/index&quot;</a>
@@ -164,6 +184,24 @@
 					<li class=" tsd-kind-module">
 						<a href="../modules/_utils_deeppartial_.html">&quot;utils/<wbr>Deep<wbr>Partial&quot;</a>
 					</li>
+					<li class="label tsd-is-external">
+						<span>Externals</span>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="../modules/_station_error_index_.html">&quot;<wbr>Station/error/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="../modules/_station_index_.html">&quot;<wbr>Station/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="../modules/_station_routes_api_dimensions_index_.html">&quot;<wbr>Station/routes/api/dimensions/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="../modules/_station_routes_api_dimensions_match_index_.html">&quot;<wbr>Station/routes/api/dimensions/match/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="../modules/_station_routes_api_status_.html">&quot;<wbr>Station/routes/api/status&quot;</a>
+					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
@@ -186,9 +224,6 @@
 										<a href="_matchengine_index_.matchengine.command_stream_type.html#sequential" class="tsd-kind-icon">SEQUENTIAL</a>
 									</li>
 								</ul>
-							</li>
-							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
-								<a href="_matchengine_index_.matchengine.io_commands.html" class="tsd-kind-icon">IO_<wbr>COMMANDS</a>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="../interfaces/_matchengine_index_.matchengine.command.html" class="tsd-kind-icon">Command</a>
@@ -217,7 +252,7 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="../classes/_matchengine_index_.matchengine.html#getengineoptions" class="tsd-kind-icon">get<wbr>Engine<wbr>Options</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="../classes/_matchengine_index_.matchengine.html#handlecommmand" class="tsd-kind-icon">handle<wbr>Commmand</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -265,9 +300,6 @@
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
 				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
