@@ -18,7 +18,8 @@ export class EliminationTournament extends Tournament {
     rankSystemConfigs: null,
     tournamentConfigs: null,
     resultHandler: null,
-    agentsPerMatch: [2]
+    agentsPerMatch: [2],
+    consoleDisplay: true
   }
   state: State;
   constructor(

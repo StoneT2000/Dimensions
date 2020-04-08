@@ -19,7 +19,8 @@ export class RoundRobinTournament extends Tournament {
       times: 1,
     },
     agentsPerMatch: [2],
-    resultHandler: null
+    resultHandler: null,
+    consoleDisplay: true
   }
   state: Tournament.RoundRobinState = {
     botStats: new Map(),

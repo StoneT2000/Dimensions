@@ -9,6 +9,8 @@ import LadderState = Tournament.LadderState;
 import LadderConfigs = Tournament.LadderConfigs;
 
 import RANK_SYSTEM = Tournament.RANK_SYSTEM;
+import { sprintf } from 'sprintf-js';
+import { LoggerLEVEL } from "../../../Logger";
 
 export class LadderTournament extends Tournament {
   configs: Tournament.TournamentConfigs<LadderConfigs> = {
@@ -22,6 +24,7 @@ export class LadderTournament extends Tournament {
     },
     resultHandler: null,
     agentsPerMatch: [2],
+    consoleDisplay: true
   }
   state: LadderState = {
     botStats: new Map(),
@@ -43,6 +46,9 @@ export class LadderTournament extends Tournament {
     id: number
   ) {
     super(design, files, id, tournamentConfigs);
+    if (tournamentConfigs.consoleDisplay) {
+      this.configs.consoleDisplay = tournamentConfigs.consoleDisplay;
+    }
     switch(tournamentConfigs.rankSystem) {
       case RANK_SYSTEM.TRUESKILL:
         break;
@@ -63,22 +69,27 @@ export class LadderTournament extends Tournament {
   public setConfigs(configs: DeepPartial<Tournament.TournamentConfigs<LadderConfigs>> = {}) {
     this.configs = deepMerge(this.configs, configs);
   }
-  public getRankings(): Array<{bot: Bot, name: string, id: number, sigma: number, mu: number, score: number}> {
+  public getRankings(): Array<{bot: Bot, name: string, id: number, matchesPlayed: number, rankState: any}> {
     let rankings = [];
-    this.state.botStats.forEach((stat) => {
-      let rankState = <RANK_SYSTEM.TrueSkillRankState>stat.rankState;
-      rankings.push({
-        bot: stat.bot,
-        name: stat.bot.tournamentID.name,
-        id: stat.bot.tournamentID.id,
-        sigma: rankState.sigma,
-        mu: rankState.mu,
-        score: rankState.mu - 3 * rankState.sigma
-      })
-    });
-    rankings.sort((a, b) => {
-      return a.score - b.score
-    });
+    switch(this.configs.rankSystem) {
+      case RANK_SYSTEM.TRUESKILL:
+        this.state.botStats.forEach((stat) => {
+          let rankState = <RANK_SYSTEM.TrueSkillRankState>stat.rankState;
+          rankings.push({
+            bot: stat.bot,
+            name: stat.bot.tournamentID.name,
+            id: stat.bot.tournamentID.id,
+            matchesPlayed: stat.matchesPlayed,
+            rankState: {...rankState, score: rankState.mu - 3 * rankState.sigma}
+          })
+        });
+        rankings.sort((a, b) => {
+          return a.rankState.score - b.rankState.score
+        });
+        break;
+      case RANK_SYSTEM.ELO:
+        break;
+    }
     return rankings;
   }
   public async stop() {
@@ -105,6 +116,9 @@ export class LadderTournament extends Tournament {
         this.stop();
         return;
       }
+    }
+    if (this.configs.consoleDisplay) {
+      this.printTournamentStatus();
     }
     let matchPromises = [];
 
@@ -136,7 +150,7 @@ export class LadderTournament extends Tournament {
             losses: 0,
             matchesPlayed: 0,
             rankState: {
-              mu: 25, // TODO, make this configurable
+              mu: 75, // TODO, make this configurable
               sigma: 25/3,
             }
           });
@@ -167,7 +181,7 @@ export class LadderTournament extends Tournament {
     this.competitors.forEach((bot) => {
       // let rankState = <RANK_SYSTEM.TrueSkillRankState>this.state.botStats.get(bot.tournamentID.id).rankState;
 
-    })
+    });
   }
 
   private selectRandomAgentAmountForMatch(): number {
@@ -180,12 +194,43 @@ export class LadderTournament extends Tournament {
     }
     return r;
   }
+
+  private printTournamentStatus() {
+    if (this.log.level > LoggerLEVEL.NONE) {
+      console.clear();
+      console.log(this.log.bar())
+      console.log(`Tournament: ${this.name} | Status: ${this.status} | Competitors: ${this.competitors.length} | Rank System: ${this.configs.rankSystem}\n`);
+      console.log('Total Matches: ' + this.state.statistics.totalMatches);
+      let ranks = this.getRankings();
+      switch(this.configs.rankSystem) {
+        case RANK_SYSTEM.TRUESKILL:
+          console.log(sprintf(
+            `%-10s | %-8s | %-15s | %-18s | %-8s`.underline, 'Name', 'ID', 'Score=(μ - 3σ)', 'Mu: μ, Sigma: σ', 'Matches'));
+          ranks.forEach((info) => {
+            console.log(sprintf(
+              `%-10s`.blue+ ` | %-8s | ` + `%-15s`.green + ` | ` + `μ=%-6s, σ=%-6s`.yellow +` | %-8s`, info.bot.tournamentID.name, info.bot.tournamentID.id, info.rankState.score.toFixed(7), info.rankState.mu.toFixed(3), info.rankState.sigma.toFixed(3), info.matchesPlayed));
+          });
+          break;
+        case RANK_SYSTEM.ELO:
+          break;
+      }
+      console.log();
+      console.log('Current Matches: ' + this.matches.size);
+      this.matches.forEach((match) => {
+        let names = [];
+        match.agents.forEach((agent) => {
+          names.push(agent.name);
+        });
+        console.log(names);
+      });
+    }
+  }
+
   /**
    * Handles the start and end of a match, and updates state accrding to match results and the given result handler
    * @param matchInfo 
    */
   private async handleMatch(matchInfo: Array<Bot>) {
-    // this.getRankings());
     this.log.info('Running match - Competitors: ', matchInfo.map((bot) => {return {name: bot.tournamentID.name, rankState: this.state.botStats.get(bot.tournamentID.id).rankState}}));
     let matchRes = await this.runMatch(matchInfo);
     // update total matches

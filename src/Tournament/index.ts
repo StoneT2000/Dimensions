@@ -174,6 +174,7 @@ export module Tournament {
     name?: string
     tournamentConfigs?: any
     agentsPerMatch: Array<number> // an array of valid players per match
+    consoleDisplay?: boolean
   }
   export interface TournamentConfigs<ConfigType> extends TournamentConfigsBase {
     tournamentConfigs: ConfigType    
