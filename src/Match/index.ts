@@ -1,11 +1,14 @@
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
-import { EngineOptions, MatchEngine } from '../MatchEngine';
+import { MatchEngine } from '../MatchEngine';
 import { Agent, agentID } from '../Agent';
 import { Logger } from '../Logger';
-import { Design, COMMAND_STREAM_TYPE, Command } from '../Design';
+import { Design } from '../Design';
 import { FatalError } from '../DimensionError';
 import { Tournament } from '../Tournament';
+import EngineOptions = MatchEngine.EngineOptions;
+import COMMAND_STREAM_TYPE = MatchEngine.COMMAND_STREAM_TYPE;
+import Command = MatchEngine.Command;
 
 export enum MatchStatus {
   UNINITIALIZED, // the status when you just created a match and didn't call initialize

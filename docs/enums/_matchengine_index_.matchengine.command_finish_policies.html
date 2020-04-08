@@ -59,7 +59,10 @@
 					<a href="../modules/_matchengine_index_.html">&quot;MatchEngine/index&quot;</a>
 				</li>
 				<li>
-					<a href="_matchengine_index_.command_finish_policies.html">COMMAND_FINISH_POLICIES</a>
+					<a href="../classes/_matchengine_index_.matchengine.html">MatchEngine</a>
+				</li>
+				<li>
+					<a href="_matchengine_index_.matchengine.command_finish_policies.html">COMMAND_FINISH_POLICIES</a>
 				</li>
 			</ul>
 			<h1>Enumeration COMMAND_FINISH_POLICIES</h1>
@@ -69,6 +72,14 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Various policies available that describe the requirements before an agent is marked as done with sending commands
+						at some time step</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
@@ -76,9 +87,9 @@
 						<section class="tsd-index-section ">
 							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_matchengine_index_.command_finish_policies.html#custom" class="tsd-kind-icon">CUSTOM</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_matchengine_index_.command_finish_policies.html#finish_symbol" class="tsd-kind-icon">FINISH_<wbr>SYMBOL</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_matchengine_index_.command_finish_policies.html#line_count" class="tsd-kind-icon">LINE_<wbr>COUNT</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_matchengine_index_.matchengine.command_finish_policies.html#custom" class="tsd-kind-icon">CUSTOM</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_matchengine_index_.matchengine.command_finish_policies.html#finish_symbol" class="tsd-kind-icon">FINISH_<wbr>SYMBOL</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_matchengine_index_.matchengine.command_finish_policies.html#line_count" class="tsd-kind-icon">LINE_<wbr>COUNT</a></li>
 							</ul>
 						</section>
 					</div>
@@ -92,7 +103,7 @@
 					<div class="tsd-signature tsd-kind-icon">CUSTOM<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;custom&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb8b705/src/MatchEngine/index.ts#L20">https://github.com/StoneT2000/Dimensions/blob/fb8b705/src/MatchEngine/index.ts#L20</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/1493b47/src/MatchEngine/index.ts#L323">https://github.com/StoneT2000/Dimensions/blob/1493b47/src/MatchEngine/index.ts#L323</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -102,9 +113,14 @@
 					<div class="tsd-signature tsd-kind-icon">FINISH_<wbr>SYMBOL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;finish_symbol&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb8b705/src/MatchEngine/index.ts#L18">https://github.com/StoneT2000/Dimensions/blob/fb8b705/src/MatchEngine/index.ts#L18</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/1493b47/src/MatchEngine/index.ts#L321">https://github.com/StoneT2000/Dimensions/blob/1493b47/src/MatchEngine/index.ts#L321</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Agent&#39;s finish their commands by sending a finish symbol, namely <a href="_matchengine_index_.matchengine.io_commands.html#move_finish">IO_COMMANDS.MOVE_FINISH</a></p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
 					<a name="line_count" class="tsd-anchor"></a>
@@ -112,7 +128,7 @@
 					<div class="tsd-signature tsd-kind-icon">LINE_<wbr>COUNT<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;line_count&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb8b705/src/MatchEngine/index.ts#L19">https://github.com/StoneT2000/Dimensions/blob/fb8b705/src/MatchEngine/index.ts#L19</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/1493b47/src/MatchEngine/index.ts#L322">https://github.com/StoneT2000/Dimensions/blob/1493b47/src/MatchEngine/index.ts#L322</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -178,30 +194,89 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-enum tsd-parent-kind-module">
-						<a href="_matchengine_index_.command_finish_policies.html" class="tsd-kind-icon">COMMAND_<wbr>FINISH_<wbr>POLICIES</a>
+					<li class="current tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_matchengine_index_.matchengine.html" class="tsd-kind-icon">Match<wbr>Engine</a>
 						<ul>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_matchengine_index_.command_finish_policies.html#custom" class="tsd-kind-icon">CUSTOM</a>
+							<li class="current tsd-kind-enum tsd-parent-kind-class tsd-is-static">
+								<a href="_matchengine_index_.matchengine.command_finish_policies.html" class="tsd-kind-icon">COMMAND_<wbr>FINISH_<wbr>POLICIES</a>
+								<ul>
+									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+										<a href="_matchengine_index_.matchengine.command_finish_policies.html#custom" class="tsd-kind-icon">CUSTOM</a>
+									</li>
+									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+										<a href="_matchengine_index_.matchengine.command_finish_policies.html#finish_symbol" class="tsd-kind-icon">FINISH_<wbr>SYMBOL</a>
+									</li>
+									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+										<a href="_matchengine_index_.matchengine.command_finish_policies.html#line_count" class="tsd-kind-icon">LINE_<wbr>COUNT</a>
+									</li>
+								</ul>
 							</li>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_matchengine_index_.command_finish_policies.html#finish_symbol" class="tsd-kind-icon">FINISH_<wbr>SYMBOL</a>
+							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
+								<a href="_matchengine_index_.matchengine.command_stream_type.html" class="tsd-kind-icon">COMMAND_<wbr>STREAM_<wbr>TYPE</a>
 							</li>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_matchengine_index_.command_finish_policies.html#line_count" class="tsd-kind-icon">LINE_<wbr>COUNT</a>
+							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
+								<a href="_matchengine_index_.matchengine.io_commands.html" class="tsd-kind-icon">IO_<wbr>COMMANDS</a>
+							</li>
+							<li class=" tsd-kind-interface tsd-parent-kind-class">
+								<a href="../interfaces/_matchengine_index_.matchengine.command.html" class="tsd-kind-icon">Command</a>
+							</li>
+							<li class=" tsd-kind-interface tsd-parent-kind-class">
+								<a href="../interfaces/_matchengine_index_.matchengine.engineoptions.html" class="tsd-kind-icon">Engine<wbr>Options</a>
+							</li>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="../classes/_matchengine_index_.matchengine.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="../classes/_matchengine_index_.matchengine.html#design" class="tsd-kind-icon">design</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="../classes/_matchengine_index_.matchengine.html#engineoptions-1" class="tsd-kind-icon">engine<wbr>Options</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="../classes/_matchengine_index_.matchengine.html#log" class="tsd-kind-icon">log</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="../classes/_matchengine_index_.matchengine.html#timeoutbuffer" class="tsd-kind-icon">timeout<wbr>Buffer</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="../classes/_matchengine_index_.matchengine.html#getcommands" class="tsd-kind-icon">get<wbr>Commands</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="../classes/_matchengine_index_.matchengine.html#getengineoptions" class="tsd-kind-icon">get<wbr>Engine<wbr>Options</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="../classes/_matchengine_index_.matchengine.html#handlecommmand" class="tsd-kind-icon">handle<wbr>Commmand</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="../classes/_matchengine_index_.matchengine.html#initialize" class="tsd-kind-icon">initialize</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="../classes/_matchengine_index_.matchengine.html#kill" class="tsd-kind-icon">kill</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="../classes/_matchengine_index_.matchengine.html#killandclean" class="tsd-kind-icon">kill<wbr>And<wbr>Clean</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="../classes/_matchengine_index_.matchengine.html#resume" class="tsd-kind-icon">resume</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="../classes/_matchengine_index_.matchengine.html#send" class="tsd-kind-icon">send</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="../classes/_matchengine_index_.matchengine.html#setengineoptions" class="tsd-kind-icon">set<wbr>Engine<wbr>Options</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="../classes/_matchengine_index_.matchengine.html#setloglevel" class="tsd-kind-icon">set<wbr>Log<wbr>Level</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="../classes/_matchengine_index_.matchengine.html#stop" class="tsd-kind-icon">stop</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-enum tsd-parent-kind-module">
-						<a href="_matchengine_index_.io_commands.html" class="tsd-kind-icon">IO_<wbr>COMMANDS</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_matchengine_index_.matchengine.html" class="tsd-kind-icon">Match<wbr>Engine</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/_matchengine_index_.engineoptions.html" class="tsd-kind-icon">Engine<wbr>Options</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_matchengine_index_.html#engineoptions" class="tsd-kind-icon">Engine<wbr>Options</a>
 					</li>
 				</ul>
 			</nav>

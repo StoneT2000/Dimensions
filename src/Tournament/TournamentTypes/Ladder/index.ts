@@ -1,6 +1,6 @@
 import { Tournament, Player } from "../../";
 import { DeepPartial } from "../../../utils/DeepPartial";
-import { Design } from "../../../Design";
+import { Design } from '../../../Design';
 import { deepMerge } from "../../../utils/DeepMerge";
 import { FatalError } from "../../../DimensionError";
 import { agentID } from "../../../Agent";

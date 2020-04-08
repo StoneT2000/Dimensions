@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>TOURNAMENT_TYPE | dimensions-ai</title>
+	<title>IO_COMMANDS | dimensions-ai</title>
 	<meta name="description" content="Documentation for dimensions-ai">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,22 +56,30 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_tournament_index_.html">&quot;Tournament/index&quot;</a>
+					<a href="../modules/_matchengine_index_.html">&quot;MatchEngine/index&quot;</a>
 				</li>
 				<li>
-					<a href="../classes/_tournament_index_.tournament.html">Tournament</a>
+					<a href="../classes/_matchengine_index_.matchengine.html">MatchEngine</a>
 				</li>
 				<li>
-					<a href="_tournament_index_.tournament.tournament_type.html">TOURNAMENT_TYPE</a>
+					<a href="_matchengine_index_.matchengine.io_commands.html">IO_COMMANDS</a>
 				</li>
 			</ul>
-			<h1>Enumeration TOURNAMENT_TYPE</h1>
+			<h1>Enumeration IO_COMMANDS</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>All IO commands that are used for communication between <a href="../classes/_matchengine_index_.matchengine.html">MatchEngine</a> and processes associated with
+						instances of <a href="../classes/_agent_index_.agent.html">Agent</a></p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
@@ -79,9 +87,8 @@
 						<section class="tsd-index-section ">
 							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_tournament_index_.tournament.tournament_type.html#elimination" class="tsd-kind-icon">ELIMINATION</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_tournament_index_.tournament.tournament_type.html#ladder" class="tsd-kind-icon">LADDER</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_tournament_index_.tournament.tournament_type.html#round_robin" class="tsd-kind-icon">ROUND_<wbr>ROBIN</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_matchengine_index_.matchengine.io_commands.html#move_finish" class="tsd-kind-icon">MOVE_<wbr>FINISH</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_matchengine_index_.matchengine.io_commands.html#move_start" class="tsd-kind-icon">MOVE_<wbr>START</a></li>
 							</ul>
 						</section>
 					</div>
@@ -90,49 +97,29 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Enumeration members</h2>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="elimination" class="tsd-anchor"></a>
-					<h3>ELIMINATION</h3>
-					<div class="tsd-signature tsd-kind-icon">ELIMINATION<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;elimination&quot;</span></div>
+					<a name="move_finish" class="tsd-anchor"></a>
+					<h3>MOVE_<wbr>FINISH</h3>
+					<div class="tsd-signature tsd-kind-icon">MOVE_<wbr>FINISH<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;D_FINISH&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/1493b47/src/Tournament/index.ts#L156">https://github.com/StoneT2000/Dimensions/blob/1493b47/src/Tournament/index.ts#L156</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/1493b47/src/MatchEngine/index.ts#L309">https://github.com/StoneT2000/Dimensions/blob/1493b47/src/MatchEngine/index.ts#L309</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p><a href="../classes/_tournament_tournamenttypes_elimination_index_.eliminationtournament.html">EliminationTournament</a> type</p>
+							<p>Indicate an Agent is done with their move at the current time step</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="ladder" class="tsd-anchor"></a>
-					<h3>LADDER</h3>
-					<div class="tsd-signature tsd-kind-icon">LADDER<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;ladder&quot;</span></div>
+					<a name="move_start" class="tsd-anchor"></a>
+					<h3>MOVE_<wbr>START</h3>
+					<div class="tsd-signature tsd-kind-icon">MOVE_<wbr>START<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;D_START&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/1493b47/src/Tournament/index.ts#L158">https://github.com/StoneT2000/Dimensions/blob/1493b47/src/Tournament/index.ts#L158</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/1493b47/src/MatchEngine/index.ts#L310">https://github.com/StoneT2000/Dimensions/blob/1493b47/src/MatchEngine/index.ts#L310</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p><a href="../classes/_tournament_tournamenttypes_ladder_index_.laddertournament.html">LadderTournament</a> type</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="round_robin" class="tsd-anchor"></a>
-					<h3>ROUND_<wbr>ROBIN</h3>
-					<div class="tsd-signature tsd-kind-icon">ROUND_<wbr>ROBIN<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;round_robin&quot;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/1493b47/src/Tournament/index.ts#L154">https://github.com/StoneT2000/Dimensions/blob/1493b47/src/Tournament/index.ts#L154</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p><a href="../classes/_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.html">RoundRobinTournament</a> enum</p>
-						</div>
-					</div>
 				</section>
 			</section>
 		</div>
@@ -160,7 +147,7 @@
 					<li class=" tsd-kind-module">
 						<a href="../modules/_match_index_.html">&quot;<wbr>Match/index&quot;</a>
 					</li>
-					<li class=" tsd-kind-module">
+					<li class="current tsd-kind-module">
 						<a href="../modules/_matchengine_index_.html">&quot;<wbr>Match<wbr>Engine/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -175,7 +162,7 @@
 					<li class=" tsd-kind-module">
 						<a href="../modules/_tournament_tournamenttypes_roundrobin_index_.html">&quot;<wbr>Tournament/<wbr>Tournament<wbr>Types/<wbr>Round<wbr>Robin/index&quot;</a>
 					</li>
-					<li class="current tsd-kind-module">
+					<li class=" tsd-kind-module">
 						<a href="../modules/_tournament_index_.html">&quot;<wbr>Tournament/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -194,110 +181,89 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_tournament_index_.player.html" class="tsd-kind-icon">Player</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_tournament_index_.tournament.html" class="tsd-kind-icon">Tournament</a>
+						<a href="../classes/_matchengine_index_.matchengine.html" class="tsd-kind-icon">Match<wbr>Engine</a>
 						<ul>
 							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
-								<a href="_tournament_index_.tournament.rank_system-1.html" class="tsd-kind-icon">RANK_<wbr>SYSTEM</a>
+								<a href="_matchengine_index_.matchengine.command_finish_policies.html" class="tsd-kind-icon">COMMAND_<wbr>FINISH_<wbr>POLICIES</a>
+							</li>
+							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
+								<a href="_matchengine_index_.matchengine.command_stream_type.html" class="tsd-kind-icon">COMMAND_<wbr>STREAM_<wbr>TYPE</a>
 							</li>
 							<li class="current tsd-kind-enum tsd-parent-kind-class tsd-is-static">
-								<a href="_tournament_index_.tournament.tournament_type.html" class="tsd-kind-icon">TOURNAMENT_<wbr>TYPE</a>
+								<a href="_matchengine_index_.matchengine.io_commands.html" class="tsd-kind-icon">IO_<wbr>COMMANDS</a>
 								<ul>
 									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-										<a href="_tournament_index_.tournament.tournament_type.html#elimination" class="tsd-kind-icon">ELIMINATION</a>
+										<a href="_matchengine_index_.matchengine.io_commands.html#move_finish" class="tsd-kind-icon">MOVE_<wbr>FINISH</a>
 									</li>
 									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-										<a href="_tournament_index_.tournament.tournament_type.html#ladder" class="tsd-kind-icon">LADDER</a>
-									</li>
-									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-										<a href="_tournament_index_.tournament.tournament_type.html#round_robin" class="tsd-kind-icon">ROUND_<wbr>ROBIN</a>
+										<a href="_matchengine_index_.matchengine.io_commands.html#move_start" class="tsd-kind-icon">MOVE_<wbr>START</a>
 									</li>
 								</ul>
 							</li>
-							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
-								<a href="_tournament_index_.tournament.tournamentstatus.html" class="tsd-kind-icon">Tournament<wbr>Status</a>
+							<li class=" tsd-kind-interface tsd-parent-kind-class">
+								<a href="../interfaces/_matchengine_index_.matchengine.command.html" class="tsd-kind-icon">Command</a>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="../interfaces/_tournament_index_.tournament.id.html" class="tsd-kind-icon">ID</a>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class tsd-has-type-parameter">
-								<a href="../interfaces/_tournament_index_.tournament.tournamentconfigs.html" class="tsd-kind-icon">Tournament<wbr>Configs</a>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="../interfaces/_tournament_index_.tournament.tournamentconfigsbase.html" class="tsd-kind-icon">Tournament<wbr>Configs<wbr>Base</a>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="../interfaces/_tournament_index_.tournament.tournamenttypeconfig.html" class="tsd-kind-icon">Tournament<wbr>Type<wbr>Config</a>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="../interfaces/_tournament_index_.tournament.tournamenttypestate.html" class="tsd-kind-icon">Tournament<wbr>Type<wbr>State</a>
+								<a href="../interfaces/_matchengine_index_.matchengine.engineoptions.html" class="tsd-kind-icon">Engine<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="../classes/_tournament_index_.tournament.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="../classes/_tournament_index_.tournament.html#competitors" class="tsd-kind-icon">competitors</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
-								<a href="../classes/_tournament_index_.tournament.html#design" class="tsd-kind-icon">design</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="../classes/_tournament_index_.tournament.html#id-1" class="tsd-kind-icon">id</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="../classes/_tournament_index_.tournament.html#log" class="tsd-kind-icon">log</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="../classes/_tournament_index_.tournament.html#matchqueue" class="tsd-kind-icon">match<wbr>Queue</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="../classes/_tournament_index_.tournament.html#matches" class="tsd-kind-icon">matches</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="../classes/_tournament_index_.tournament.html#name" class="tsd-kind-icon">name</a>
+								<a href="../classes/_matchengine_index_.matchengine.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="../classes/_tournament_index_.tournament.html#playerid" class="tsd-kind-icon">playerID</a>
+								<a href="../classes/_matchengine_index_.matchengine.html#design" class="tsd-kind-icon">design</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="../classes/_tournament_index_.tournament.html#state" class="tsd-kind-icon">state</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="../classes/_matchengine_index_.matchengine.html#engineoptions-1" class="tsd-kind-icon">engine<wbr>Options</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="../classes/_tournament_index_.tournament.html#status" class="tsd-kind-icon">status</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="../classes/_matchengine_index_.matchengine.html#log" class="tsd-kind-icon">log</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/_tournament_index_.tournament.html#addplayer" class="tsd-kind-icon">addplayer</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/_tournament_index_.tournament.html#getconfigs" class="tsd-kind-icon">get<wbr>Configs</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="../classes/_matchengine_index_.matchengine.html#timeoutbuffer" class="tsd-kind-icon">timeout<wbr>Buffer</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/_tournament_index_.tournament.html#getrankings" class="tsd-kind-icon">get<wbr>Rankings</a>
+								<a href="../classes/_matchengine_index_.matchengine.html#getcommands" class="tsd-kind-icon">get<wbr>Commands</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/_tournament_index_.tournament.html#resume" class="tsd-kind-icon">resume</a>
+								<a href="../classes/_matchengine_index_.matchengine.html#getengineoptions" class="tsd-kind-icon">get<wbr>Engine<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/_tournament_index_.tournament.html#run" class="tsd-kind-icon">run</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
-								<a href="../classes/_tournament_index_.tournament.html#runmatch" class="tsd-kind-icon">run<wbr>Match</a>
+								<a href="../classes/_matchengine_index_.matchengine.html#handlecommmand" class="tsd-kind-icon">handle<wbr>Commmand</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/_tournament_index_.tournament.html#setconfigs" class="tsd-kind-icon">set<wbr>Configs</a>
+								<a href="../classes/_matchengine_index_.matchengine.html#initialize" class="tsd-kind-icon">initialize</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/_tournament_index_.tournament.html#stop" class="tsd-kind-icon">stop</a>
+								<a href="../classes/_matchengine_index_.matchengine.html#kill" class="tsd-kind-icon">kill</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="../classes/_matchengine_index_.matchengine.html#killandclean" class="tsd-kind-icon">kill<wbr>And<wbr>Clean</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="../classes/_matchengine_index_.matchengine.html#resume" class="tsd-kind-icon">resume</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="../classes/_matchengine_index_.matchengine.html#send" class="tsd-kind-icon">send</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="../classes/_matchengine_index_.matchengine.html#setengineoptions" class="tsd-kind-icon">set<wbr>Engine<wbr>Options</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="../classes/_matchengine_index_.matchengine.html#setloglevel" class="tsd-kind-icon">set<wbr>Log<wbr>Level</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="../classes/_matchengine_index_.matchengine.html#stop" class="tsd-kind-icon">stop</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_matchengine_index_.html#engineoptions" class="tsd-kind-icon">Engine<wbr>Options</a>
+					</li>
 				</ul>
 			</nav>
 		</div>

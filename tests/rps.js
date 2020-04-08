@@ -5,7 +5,7 @@ const MatchStatus = Dimension.MatchStatus;
 /**
  * This rock paper scissors game lets 2 agents play a best of n rock paper scissors 
  */
-export class RockPaperScissorsDesign extends Dimension.Design{
+export class RockPaperScissorsDesign extends Dimension.Design {
   async initialize(match) {
     // This is the initialization step of the design, where you decide what to tell all the agents before they start
     // competing

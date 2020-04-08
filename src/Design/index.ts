@@ -1,10 +1,13 @@
-import { EngineOptions, COMMAND_FINISH_POLICIES } from "../MatchEngine";
+import { MatchEngine } from "../MatchEngine";
 import { deepMerge } from "../utils/DeepMerge";
 import { DeepPartial } from "../utils/DeepPartial";
 import { Agent, agentID } from "../Agent";
 import { Match, MatchStatus } from "../Match";
 import { Logger } from "../Logger";
-
+import EngineOptions = MatchEngine.EngineOptions;
+import COMMAND_FINISH_POLICIES = MatchEngine.COMMAND_FINISH_POLICIES;
+import COMMAND_STREAM_TYPE = MatchEngine.COMMAND_STREAM_TYPE;
+import Command = MatchEngine.Command;
 /**
  * @class Design
  * @classdesc Abstract class detailing a `Design` to be used as the platform that holds match lifecycle logic for
@@ -115,22 +118,6 @@ export abstract class Design {
 
 }
 
-// Standard ways for commands from agents to be streamed to `MatchEngine` for the `Design` to handle
-export enum COMMAND_STREAM_TYPE {
-  PARALLEL = 'parallel', // first come first serve for commands run, leads to all Agents sending commands based on old states
-  SEQUENTIAL = 'sequential' // each agent's set of command sequence is run before the next agent
-};
-export type CommandSequence = {
-  commands: Array<string>
-  agentID: agentID
-}
-/**
- * A command delimited by the delimiter of the match engine from all commands sent by agent specified by agentID
- */
-export type Command = {
-  command: string
-  agentID: agentID
-}
 export interface DesignOptions {
   engineOptions: EngineOptions
 };
