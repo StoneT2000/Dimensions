@@ -185,6 +185,7 @@ export class RockPaperScissorsDesign extends Dimension.Design{
       },
       ties: 0,
       winner: '',
+      loser: '',
       winnerID: -1,
       terminated: {
 
@@ -211,10 +212,15 @@ export class RockPaperScissorsDesign extends Dimension.Design{
       if (results.winner != 'Tie')  {
         if (match.state.terminated[0]) {
           results.winnerID = 1;
+          results.loser = match.agents[0].name;
         }
         else {
           results.winnerID = 0;
+          results.loser = match.agents[1].name;
         }
+      }
+      else {
+        results.loser = 'Tie';
       }
       return results;
     }
@@ -223,13 +229,16 @@ export class RockPaperScissorsDesign extends Dimension.Design{
     if (results.scores[0] > results.scores[1]) {
       results.winner = match.agents[0].name;
       results.winnerID = 0;
+      results.loser = match.agents[1].name;
     }
     else if (results.scores[0] < results.scores[1]) {
       results.winner = match.agents[1].name;
       results.winnerID = 1;
+      results.loser = match.agents[0].name;
     }
     else {
       results.winner = 'Tie';
+      results.loser = 'Tie';
     }
 
     // if there was an agent that failed, then they lose. The winner is the other agent
@@ -237,6 +246,7 @@ export class RockPaperScissorsDesign extends Dimension.Design{
       let winningAgent = (match.state.failedAgent + 1) % 2;
       results.winnerID = winningAgent;
       results.winner = match.agents[winningAgent].name;
+      results.loser = match.agents[match.state.failedAgent].name;
     }
     
     // we have to now return the results 

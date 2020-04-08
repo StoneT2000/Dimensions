@@ -72,7 +72,7 @@ export abstract class Tournament {
   }
 
   // Start the tournament
-  abstract run(configs: Tournament.TournamentConfigsBase): unknown;
+  abstract async run(configs?: DeepPartial<Tournament.TournamentConfigsBase>): Promise<any>;
 
   /**
    * Stops the tournament while running
@@ -92,7 +92,7 @@ export abstract class Tournament {
    * Set configs for this tournament
    * @param configs the configs to deep merge with the current configs
    */
-  abstract setConfigs(configs: Tournament.TournamentConfigsBase): void
+  abstract setConfigs(configs: DeepPartial<Tournament.TournamentConfigsBase>): void
 
   /**
    * Set configs for this tournament
@@ -208,9 +208,9 @@ export module Tournament {
     times: number
   }
   export interface RoundRobinState extends Tournament.TournamentTypeState {
-    botStats: Map<string, {bot: Bot, wins: number, ties: number, losses: number}>
+    botStats: Map<string, {bot: Bot, wins: number, ties: number, losses: number, matchesPlayed: number}>
     statistics: {
-
+      totalMatches: number
     }
     results: Array<any>
   }

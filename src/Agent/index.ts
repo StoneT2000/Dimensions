@@ -98,6 +98,7 @@ export class Agent {
     }
     if (options.tournamentID) {
       this.tournamentID = options.tournamentID;
+      this.name = this.tournamentID.name;
     }
     
 

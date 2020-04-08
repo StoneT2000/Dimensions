@@ -23,7 +23,9 @@ export class RoundRobinTournament extends Tournament {
   state: Tournament.RoundRobinState = {
     botStats: new Map(),
     results: [],
-    statistics: {}
+    statistics: {
+      totalMatches: 0
+    }
   };
   constructor(
     design: Design,
@@ -56,6 +58,7 @@ export class RoundRobinTournament extends Tournament {
   }
 
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<Tournament.RoundRobinConfigs>>) {
+    this.log.info('Running Tournament with competitors: ', this.competitors.map((bot) => bot.tournamentID.name));
     this.configs = deepMerge(this.configs, configs);
     this.initialize();
     this.schedule();
@@ -64,30 +67,7 @@ export class RoundRobinTournament extends Tournament {
       // running one at a time
       while (this.matchQueue.length) {
         let matchInfo = this.matchQueue.shift();
-        this.log.info('Running match - Competitors: ', matchInfo.map((bot) => bot.tournamentID.name));
-        let matchRes = await this.runMatch(matchInfo);
-        let resInfo: Tournament.RANK_SYSTEM.WinResults = this.configs.resultHandler(matchRes.results);
-        this.state.results.push(matchRes.results);
-        // resInfo contains agentIDs, which need to be remapped to tournament IDs
-        resInfo.winners.forEach((winnerID: agentID) => {
-          let tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(winnerID);
-          let oldBotStat = this.state.botStats.get(tournamentID.id);
-          oldBotStat.wins++;
-          this.state.botStats.set(tournamentID.id, oldBotStat);
-        });
-        resInfo.ties.forEach((tieBotID: agentID) => {
-          let tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(tieBotID);
-          let oldBotStat = this.state.botStats.get(tournamentID.id);
-          oldBotStat.ties++;
-          this.state.botStats.set(tournamentID.id, oldBotStat);
-        });
-        resInfo.losers.forEach((loserBotID: agentID) => {
-          let tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(loserBotID);
-          let oldBotStat = this.state.botStats.get(tournamentID.id);
-          oldBotStat.losses++;
-          this.state.botStats.set(tournamentID.id, oldBotStat);
-        });
-        
+        await this.handleMatch(matchInfo);        
 
         switch(this.configs.rankSystem) {
           case Tournament.RANK_SYSTEM.WINS:
@@ -99,6 +79,47 @@ export class RoundRobinTournament extends Tournament {
       }
       resolve(this.state);
     })
+  }
+
+  /**
+   * Handles the start and end of a match, and updates state accrding to match results and the given result handler
+   * @param matchInfo 
+   */
+  private async handleMatch(matchInfo: Array<Bot>) {
+    this.log.detail('Running match - Competitors: ', matchInfo.map((bot) => bot.tournamentID.name));
+    let matchRes = await this.runMatch(matchInfo);
+    let resInfo: Tournament.RANK_SYSTEM.WinResults = this.configs.resultHandler(matchRes.results);
+    this.state.results.push(matchRes.results);
+    
+    // update total matches
+    this.state.statistics.totalMatches++;
+    // update matches played per bot
+    matchInfo.map((bot) => {
+      let oldBotStat = this.state.botStats.get(bot.tournamentID.id);
+      oldBotStat.matchesPlayed++;
+      this.state.botStats.set(bot.tournamentID.id, oldBotStat);
+    })
+
+    // handle winners, tied, and losers bots and update their stats
+    resInfo.winners.forEach((winnerID: agentID) => {
+      // resInfo contains agentIDs, which need to be remapped to tournament IDs
+      let tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(winnerID);
+      let oldBotStat = this.state.botStats.get(tournamentID.id);
+      oldBotStat.wins++;
+      this.state.botStats.set(tournamentID.id, oldBotStat);
+    });
+    resInfo.ties.forEach((tieBotID: agentID) => {
+      let tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(tieBotID);
+      let oldBotStat = this.state.botStats.get(tournamentID.id);
+      oldBotStat.ties++;
+      this.state.botStats.set(tournamentID.id, oldBotStat);
+    });
+    resInfo.losers.forEach((loserBotID: agentID) => {
+      let tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(loserBotID);
+      let oldBotStat = this.state.botStats.get(tournamentID.id);
+      oldBotStat.losses++;
+      this.state.botStats.set(tournamentID.id, oldBotStat);
+    });
   }
 
   // TODO: move sorting to run function. It's ok too sort like this for small leagues, but larger will become slow.
@@ -131,19 +152,23 @@ export class RoundRobinTournament extends Tournament {
   }
 
   private initialize() {
+    this.state.botStats = new Map();
+    this.state.results = [];
     this.competitors.forEach((bot) => {
       this.state.botStats.set(bot.tournamentID.id, {
         bot: bot,
         wins: 0,
         ties: 0,
         losses: 0,
-      })
+        matchesPlayed: 0
+      });
     })
   }
   /**
    * Queue up all matches necessary
    */
   private schedule() {
+    this.log.detail('Scheduling... ');
     let matchSets: Array<Array<Bot>> = [];
     for (let i = 0; i < this.configs.tournamentConfigs.times; i++) {
       matchSets.push(...this.generateARound());
