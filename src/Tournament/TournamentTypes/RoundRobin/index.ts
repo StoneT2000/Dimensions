@@ -6,7 +6,7 @@ import { FatalError } from "../../../DimensionError";
 import { agentID } from "../../../Agent";
 
 // Configs specific to round robin tournaments, e.g association football
-export interface Configs extends Tournament.TournamentTypeConfig {
+export interface RoundRobinConfigs extends Tournament.TournamentTypeConfig {
   times: number
 }
 export interface State extends Tournament.TournamentTypeState {
@@ -20,12 +20,12 @@ export interface State extends Tournament.TournamentTypeState {
  * General expectations is it is always two agents only.
  */
 export class RoundRobinTournament extends Tournament {
-  configs: Tournament.TournamentConfigs<Configs> = {
+  private configs: Tournament.TournamentConfigs<RoundRobinConfigs> = {
     defaultMatchConfigs: {},
     type: Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
     rankSystem: null,
     rankSystemConfigs: null,
-    typeConfigs: {
+    tournamentConfigs: {
       times: 1,
     },
     resultHandler: null
@@ -40,8 +40,10 @@ export class RoundRobinTournament extends Tournament {
     tournamentConfigs: Tournament.TournamentConfigsBase,
     id: number
   ) {
-    super(design, files, id);
+    super(design, files, id, tournamentConfigs.loggingLevel);
 
+    this.name = tournamentConfigs.name ? tournamentConfigs.name : `tournament_${this.id}`;
+    this.log.identifier = this.name;
     // handle config defaults
     if (tournamentConfigs.rankSystem !== Tournament.RANK_SYSTEM.WINS) {
       throw new FatalError('We currently do not support Round Robin tournamnets with ranking system other than wins system');
@@ -61,7 +63,7 @@ export class RoundRobinTournament extends Tournament {
     this.log.info('Initialized Round Robin Tournament');
   }
 
-  public async run(configs?: DeepPartial<Tournament.TournamentConfigs<Configs>>) {
+  public async run(configs?: DeepPartial<Tournament.TournamentConfigs<RoundRobinConfigs>>) {
     this.configs = deepMerge(this.configs, configs);
     this.initialize();
     this.schedule();
@@ -106,6 +108,13 @@ export class RoundRobinTournament extends Tournament {
     })
   }
 
+  public getConfigs(): Tournament.TournamentConfigs<RoundRobinConfigs> {
+    return this.configs;
+  }
+  public setConfigs(configs: DeepPartial<Tournament.TournamentConfigs<RoundRobinConfigs>> = {}) {
+    this.configs = deepMerge(this.configs, configs);
+  }
+
   private initialize() {
     this.competitors.forEach((bot) => {
       this.state.botStats.set(bot.tournamentID.id, {
@@ -120,23 +129,21 @@ export class RoundRobinTournament extends Tournament {
    * Queue up all matches necessary
    */
   private schedule() {
-    let matchSets: Array<Set<Array<Bot>>> = [];
-    for (let i = 0; i < this.configs.typeConfigs.times; i++) {
-      matchSets.push(new Set());
-    };
-    for (let i = 0; i < this.configs.typeConfigs.times; i++) {
-      this.competitors.forEach((bot1) => {
-        this.competitors.forEach((bot2) => {
-          if (bot1.tournamentID.id != bot2.tournamentID.id)
-            matchSets[i].add([bot1, bot2]);
-        });
-      });
+    let matchSets: Array<Array<Bot>> = [];
+    for (let i = 0; i < this.configs.tournamentConfigs.times; i++) {
+      matchSets.push(...this.generateARound());
     }
-    for (let i = 0; i < this.configs.typeConfigs.times; i++) {
-      let set: Set<Array<Bot>> = matchSets[i];
-      set.forEach((bots) => {
-        this.matchQueue.push(bots);
-      })
-    };
+    this.matchQueue = matchSets;
+  }
+  private generateARound() {
+    let roundQueue: Array<Array<Bot>> = [];
+    for (let i = 0; i < this.competitors.length; i++) {
+      for (let j = i + 1; j < this.competitors.length; j++) {
+        let bot1 = this.competitors[i];
+        let bot2 = this.competitors[j];
+        roundQueue.push([bot1, bot2]);
+      }
+    }
+    return roundQueue;
   }
 }

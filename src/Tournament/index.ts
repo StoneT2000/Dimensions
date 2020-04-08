@@ -4,7 +4,7 @@ import { FatalError } from '../DimensionError';
 import { RoundRobinTournament } from './TournamentTypes/RoundRobin';
 import { EliminationTournament } from './TournamentTypes/Elimination';
 import { DeepPartial } from '../utils/DeepPartial';
-import { Logger } from '../Logger';
+import { Logger, LoggerLEVEL } from '../Logger';
 import { LeaderboardTournament } from './TournamentTypes/Ladder';
 import { agentID } from '../Agent';
 
@@ -24,7 +24,6 @@ export class Bot {
  * Station
  */
 export abstract class Tournament {
-  abstract configs: Tournament.TournamentConfigs<unknown>;
 
   // mapping match ids to active ongoing matches
   public matches: Map<number, Match> = new Map();
@@ -47,14 +46,18 @@ export abstract class Tournament {
 
   private botID = 0;
 
+  public name = '';
+
   constructor(
     protected design: Design,
     files: Array<string> | Array<{file: string, name:string}>, 
-    public id: number
+    public id: number,
+    level: LoggerLEVEL = LoggerLEVEL.INFO
   ) {
     files.forEach((file) => {
       this.addBot(file);
     });
+    this.log.level = level;
   }
 
   // static create(
@@ -101,6 +104,18 @@ export abstract class Tournament {
   }
 
   /**
+   * Set configs for this tournament
+   * @param configs the configs to deep merge with the current configs
+   */
+  abstract setConfigs(configs: Tournament.TournamentConfigsBase): void
+
+  /**
+   * Set configs for this tournament
+   * @param configs the configs to deep merge with the current configs
+   */
+  abstract getConfigs(): Tournament.TournamentConfigsBase
+
+  /**
    * 
    * @param bots - the bots to run
    * @returns a promise that resolves with the results and the associated match
@@ -110,7 +125,7 @@ export abstract class Tournament {
       try {
         if (!bots.length) reject (new FatalError('No bots provided for match'));
 
-        let matchConfigs = {...this.configs.defaultMatchConfigs};
+        let matchConfigs = {...this.getConfigs().defaultMatchConfigs};
         
         let match: Match;
         let filesAndNamesAndIDs = bots.map((bot) => {
@@ -160,10 +175,13 @@ export module Tournament {
     // the handler for returning the appropriate numbers given the results returned by getResults
     // is explicitly tied to the rank system chosen if necessary
     resultHandler: (results: any) => any
-    rankSystemConfigs?: any
+    rankSystemConfigs?: any,
+    loggingLevel?: LoggerLEVEL
+    name?: string
+    tournamentConfigs?: any
   }
   export interface TournamentConfigs<ConfigType> extends TournamentConfigsBase {
-    typeConfigs: ConfigType    
+    tournamentConfigs: ConfigType    
     rankSystemConfigs: any
   }
   export interface TournamentTypeConfig  {

@@ -9,9 +9,9 @@ chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 describe('Tournament Testing with RPS', () => {
-  let RPSDesign, myDimension_line_count, RPSDesign_line_count;
+  let RPSDesign, RPSTournament: Dimension.Tournament.TournamentClasses;
   let myDimension: Dimension.DimensionType;
-  let bots = ['./tests/js-kit/rps/rock.js', './tests/js-kit/rps/paper.js', './tests/js-kit/rps/rock.js']
+  let bots = ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/paper.js', './tests/js-kit/rps/errorBot.js']
   before(() => {
     RPSDesign = new RockPaperScissorsDesign('RPS!', {
       engineOptions: {
@@ -26,13 +26,16 @@ describe('Tournament Testing with RPS', () => {
       observe: false,
       loggingLevel: Dimension.Logger.LEVEL.WARN
     }); 
-  })
-
-  it('Initializing tournament', async () => {
-    myDimension.createTournament(bots, {
+    RPSTournament = myDimension.createTournament(bots, {
       type: Dimension.Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
       rankSystem: Dimension.Tournament.RANK_SYSTEM.WINS,
+      loggingLevel: Dimension.Logger.LEVEL.INFO,
+      defaultMatchConfigs: {
+        bestOf: 3,
+        loggingLevel: Dimension.Logger.LEVEL.WARN
+      },
       resultHandler: (results: any) => {
+        // console.log(results);
         let winners = [];
         let losers =[];
         let ties = [];
@@ -40,13 +43,20 @@ describe('Tournament Testing with RPS', () => {
           ties = [0, 1];
         }
         else {
-          winners.push(results.winningID);
-          losers.push((results.winningID + 1) % 2);
+          winners.push(results.winnerID);
+          losers.push((results.winnerID + 1) % 2);
         }
         return {winners: winners, losers: losers, ties: ties};
       }
     });
-    expect(myDimension.design).to.eql(RPSDesign);
+  })
+
+  it('Initializing tournament', async () => {
+    expect(RPSTournament.competitors.length).to.equal(3);
   });
+  it('Run Tourney', async () => {
+    let res = await RPSTournament.run();
+    console.log(res);
+  })
 
 });

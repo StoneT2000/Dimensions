@@ -382,8 +382,11 @@ export class Match {
         throw new FatalError(`${this.idToAgentsMap.get(agentID).name} | ${error.message}`); 
       })
     }
+    if (error.name === 'Dimension.MatchWarning') {
+      this.log.warn(`ID: ${agentID}, ${this.idToAgentsMap.get(agentID).name} | ${error}`);
+    }
     if (error.name === 'Dimension.MatchError') {
-      this.log.warn(`${this.idToAgentsMap.get(agentID).name} | ${error}`);
+      this.log.error(`ID: ${agentID}, ${this.idToAgentsMap.get(agentID).name} | ${error}`);
       // TODO, if match is set to store an error log, this should be logged!
     }
   }
