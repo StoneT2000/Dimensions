@@ -3,7 +3,7 @@ import { FatalError } from "../DimensionError";
 import { DeepPartial } from "../utils/DeepPartial";
 import { deepMerge } from "../utils/DeepMerge";
 import { COMMAND_STREAM_TYPE, Design, Command } from '../Design';
-import { LoggerLEVEL, Logger } from '../Logger';
+import { Logger } from '../Logger';
 import { Agent, agentID, AgentStatus } from '../Agent';
 import { Match } from '../Match';
 import { deepCopy } from '../utils/DeepCopy';
@@ -56,14 +56,14 @@ export class MatchEngine {
   // approx extra buffer time given to agents due to engine processing for timeout mechanism
   static timeoutBuffer: number = 25; 
   
-  constructor(design: Design, loggingLevel: LoggerLEVEL) {
+  constructor(design: Design, loggingLevel: Logger.LEVEL) {
     this.design = design;
     this.engineOptions = deepCopy(this.design.getDesignOptions().engineOptions);
     this.log.identifier = `Engine`;
     this.setLogLevel(loggingLevel);
   }
 
-  setLogLevel(loggingLevel: LoggerLEVEL) {
+  setLogLevel(loggingLevel: Logger.LEVEL) {
     this.log.level = loggingLevel;
   }
   getEngineOptions() {

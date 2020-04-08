@@ -4,7 +4,7 @@ import chaiAsPromised from 'chai-as-promised';
 import sinon, { SinonSandbox } from "sinon";
 import sinonChai from "sinon-chai";
 import 'mocha';
-import { LoggerLEVEL } from '../src';
+import { Logger } from '../src';
 import colors from 'colors';
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -14,7 +14,7 @@ describe('Test Logger', () => {
   let log = new Dimension.Logger();
   let consoleSpy, sandbox: SinonSandbox;
   
-  const init = (level: LoggerLEVEL) => {
+  const init = (level: Logger.LEVEL) => {
     log.level = level;
     log.systemIO('hello-sysIO');
     log.system2('hello-sys2');
@@ -37,13 +37,13 @@ describe('Test Logger', () => {
   })
   it('Level INFO', () => {
     
-    init(LoggerLEVEL.INFO);
+    init(Logger.LEVEL.INFO);
     expect(consoleSpy).to.have.been.calledWith(colors.blue('[INFO]') + ' (Log) -', 'hello-info');
     expect(consoleSpy).to.have.been.calledWith(colors.yellow('[WARN]') + ' (Log) -', 'hello-warn');
     expect(consoleSpy).to.have.been.calledWith(colors.red('[ERROR]') + ' (Log) -', 'hello-error');
   });
   it('Level SYSTEM', () => {
-    init(LoggerLEVEL.SYSTEM);
+    init(Logger.LEVEL.SYSTEM);
     expect(consoleSpy).to.have.been.calledWith(colors.blue('[INFO]') + ' (Log) -', 'hello-info');
     expect(consoleSpy).to.have.been.calledWith(colors.yellow('[WARN]') + ' (Log) -', 'hello-warn');
     expect(consoleSpy).to.have.been.calledWith(colors.red('[ERROR]') + ' (Log) -', 'hello-error');

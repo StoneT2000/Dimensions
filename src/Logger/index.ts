@@ -1,27 +1,14 @@
 import colors from 'colors';
-
-export enum LoggerLEVEL  {
-  NONE, // no logs
-  ERROR, // error logs
-  WARN, // TODO come up with a name that goes between warn and info
-  INFO, // for informational things user should know about
-  DETAIL, // for finer details
-  SYSTEM, // for high level system logs
-  SYSTEM2, // unused
-  SYSTEM_IO, // all lower level I/O related details (including the actual input and output of engine and agents)
-  ALL
-}
 /**
  * Dimensions Logging Class
  * @param level - The logging level to use
  * @param identifier - an identifier to identify which logger is being called
  */
 export class Logger {
-  public static LEVEL = LoggerLEVEL;
   public identifier: string; // an identifier for who is logging this
   //@ts-ignore
   public identifierColor = colors.bold.green;
-  constructor(public level: LoggerLEVEL = Logger.LEVEL.INFO, identifier = 'Log') {
+  constructor(public level: Logger.LEVEL = Logger.LEVEL.INFO, identifier = 'Log') {
     this.identifier = identifier;
   }
   getIdentifier() {
@@ -71,5 +58,18 @@ export class Logger {
   }
   error(...message: any[]) {
     if (this.level >= Logger.LEVEL.ERROR) console.log(`${colors.red('[ERROR]')} (${this.identifier}) -`, ...message);
+  }
+}
+export module Logger {
+  export enum LEVEL {
+    NONE, // no logs
+    ERROR, // error logs
+    WARN, // TODO come up with a name that goes between warn and info
+    INFO, // for informational things user should know about
+    DETAIL, // for finer details
+    SYSTEM, // for high level system logs
+    SYSTEM2, // unused
+    SYSTEM_IO, // all lower level I/O related details (including the actual input and output of engine and agents)
+    ALL
   }
 }

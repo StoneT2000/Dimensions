@@ -4,7 +4,7 @@ import { FatalError } from '../DimensionError';
 import { RoundRobinTournament } from './TournamentTypes/RoundRobin';
 import { EliminationTournament } from './TournamentTypes/Elimination';
 import { DeepPartial } from '../utils/DeepPartial';
-import { Logger, LoggerLEVEL } from '../Logger';
+import { Logger } from '../Logger';
 import { LadderTournament } from './TournamentTypes/Ladder';
 import { agentID } from '../Agent';
 import { deepCopy } from '../utils/DeepCopy';
@@ -58,7 +58,7 @@ export abstract class Tournament {
     files.forEach((file) => {
       this.addplayer(file);
     });
-    this.log.level = (tournamentConfigs.loggingLevel !== undefined) ? tournamentConfigs.loggingLevel : LoggerLEVEL.INFO;
+    this.log.level = (tournamentConfigs.loggingLevel !== undefined) ? tournamentConfigs.loggingLevel : Logger.LEVEL.INFO;
     this.name = tournamentConfigs.name ? tournamentConfigs.name : `tournament_${this.id}`;
     this.log.identifier = this.name;
   }
@@ -166,23 +166,67 @@ export module Tournament {
   }
   // Required info that will not be deep partialed in the Dimension class
   export interface TournamentConfigsBase {
+    /**
+     * The default match configurations to be applied throughout all tournament matches
+     */
     defaultMatchConfigs?: DeepPartial<MatchConfigs>
+    /**
+     * The tournament type to run. See {@link TOURNAMENT_TYPE}
+     */
     type: TOURNAMENT_TYPE,
+    /**
+     * The ranking system to use for this tournament. See {@link RANK_SYSTEM}
+     */
     rankSystem: RANK_SYSTEM,
-    // the handler for returning the appropriate numbers given the results returned by getResults
-    // is explicitly tied to the rank system chosen if necessary
+
+    /**
+     * The result handler for returning the appropriate results to the tournament for processing.
+     * @params results - the results received from calling the {@link Design.getResults} function
+     * 
+     * To find what kind of result should be returned, find the Results interface for a tournament. 
+     * 
+     * Example: For RoundRobin, go to Tournament.RoundRobin.Results
+     */
     resultHandler: (results: any) => any
+
+    /**
+     * The configurations for a specified rank system. For example, see {@link RANK_SYSTEM.WINS.Configs}, {@link RANK_SYSTEM.TRUESKILL.Configs}
+     */
     rankSystemConfigs?: any,
-    loggingLevel?: LoggerLEVEL
+
+    /**
+     * The tournament wide logging level to enforce
+     */
+    loggingLevel?: Logger.LEVEL
+
+    /**
+     * The name of the tournament
+     */
     name?: string
+
+    /**
+     * Tournament configurations. Dependent on the type of tournament chosen
+     */
     tournamentConfigs?: any
+
+    /**
+     * An array of valid number of players that can compete in a match. For Rock Paper Scissors for example this would 
+     * be [2]
+     * @default [2]
+     */
     agentsPerMatch: Array<number> // an array of valid players per match
+
+    /**
+     * Whether or not to display a continuous console log of the current tournament as it runs
+     * @default true
+     */
     consoleDisplay?: boolean
   }
   export interface TournamentConfigs<ConfigType> extends TournamentConfigsBase {
     tournamentConfigs: ConfigType    
     rankSystemConfigs: any
   }
+
   export interface TournamentTypeConfig  {
 
   }
@@ -282,12 +326,19 @@ export module Tournament {
      * Configuration interface for {@link RoundRobinTournament}
      */
     export interface Configs extends Tournament.TournamentTypeConfig {
+      /**
+       * Number of times each player competes against another player
+       * @default 2
+       */
       times: number
     }
     /**
      * The {@link RoundRobinTournament} state, consisting of the current player statistics and past results
      */
     export interface State extends Tournament.TournamentTypeState {
+      /**
+       * A map from a {@link Player} Tournament ID string to statistics
+       */
       playerStats: Map<string, {player: Player, wins: number, ties: number, losses: number, matchesPlayed: number}>
       statistics: {
         totalMatches: number
@@ -321,7 +372,7 @@ export module Tournament {
      */
     export interface State extends Tournament.TournamentTypeState {
       /**
-       * A map from player TournamnetID
+       * A map from a {@link Player} Tournament ID string to statistics
        */
       playerStats: Map<string, {player: Player, wins: number, ties: number, losses: number, matchesPlayed: number, rankState: any}>
       statistics: {

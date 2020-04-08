@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>State | dimensions-ai</title>
-	<meta name="description" content="">
+	<meta name="description" content="Documentation for dimensions-ai">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
 </head>
@@ -13,7 +13,7 @@
 	<div class="tsd-page-toolbar">
 		<div class="container">
 			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.js" data-base="..">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
 					<div class="field">
 						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
 						<input id="tsd-search-field" type="text" />
@@ -78,7 +78,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>The <a href="../classes/_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.html">RoundRobinTournament</a> state, consisting of the current bot statistics and past results</p>
+						<p>The <a href="../classes/_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.html">RoundRobinTournament</a> state, consisting of the current player statistics and past results</p>
 					</div>
 				</div>
 			</section>
@@ -97,7 +97,7 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.roundrobin.state.html#botstats" class="tsd-kind-icon">bot<wbr>Stats</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.roundrobin.state.html#playerstats" class="tsd-kind-icon">player<wbr>Stats</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.roundrobin.state.html#results" class="tsd-kind-icon">results</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.roundrobin.state.html#statistics" class="tsd-kind-icon">statistics</a></li>
 							</ul>
@@ -108,14 +108,19 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="botstats" class="tsd-anchor"></a>
-					<h3>bot<wbr>Stats</h3>
-					<div class="tsd-signature tsd-kind-icon">bot<wbr>Stats<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">{ </span>bot<span class="tsd-signature-symbol">: </span><a href="../classes/_tournament_index_.bot.html" class="tsd-signature-type">Bot</a><span class="tsd-signature-symbol">; </span>losses<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>matchesPlayed<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>ties<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>wins<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<a name="playerstats" class="tsd-anchor"></a>
+					<h3>player<wbr>Stats</h3>
+					<div class="tsd-signature tsd-kind-icon">player<wbr>Stats<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">{ </span>losses<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>matchesPlayed<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>player<span class="tsd-signature-symbol">: </span><a href="../classes/_tournament_index_.player.html" class="tsd-signature-type">Player</a><span class="tsd-signature-symbol">; </span>ties<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>wins<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/88c46fe/src/Tournament/index.ts#L291">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Tournament/index.ts:291</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb8b705/src/Tournament/index.ts#L342">https://github.com/StoneT2000/Dimensions/blob/fb8b705/src/Tournament/index.ts#L342</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A map from a <a href="../classes/_tournament_index_.player.html">Player</a> Tournament ID string to statistics</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="results" class="tsd-anchor"></a>
@@ -123,7 +128,7 @@
 					<div class="tsd-signature tsd-kind-icon">results<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/88c46fe/src/Tournament/index.ts#L295">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Tournament/index.ts:295</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb8b705/src/Tournament/index.ts#L346">https://github.com/StoneT2000/Dimensions/blob/fb8b705/src/Tournament/index.ts#L346</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -133,7 +138,7 @@
 					<div class="tsd-signature tsd-kind-icon">statistics<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>totalMatches<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/StoneT2000/Dimensions/blob/88c46fe/src/Tournament/index.ts#L292">Users/stone.tao/Desktop/Coding/Projects/AICompetitionFramework/dimensions/src/Tournament/index.ts:292</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb8b705/src/Tournament/index.ts#L343">https://github.com/StoneT2000/Dimensions/blob/fb8b705/src/Tournament/index.ts#L343</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
@@ -166,7 +171,7 @@
 						<a href="_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.roundrobin.state.html" class="tsd-kind-icon">State</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.roundrobin.state.html#botstats" class="tsd-kind-icon">bot<wbr>Stats</a>
+								<a href="_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.roundrobin.state.html#playerstats" class="tsd-kind-icon">player<wbr>Stats</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.roundrobin.state.html#results" class="tsd-kind-icon">results</a>
@@ -191,7 +196,6 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>

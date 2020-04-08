@@ -4,7 +4,7 @@ import statusAPI from './routes/api/status';
 import dimensionsAPI from './routes/api/dimensions';
 
 import { Dimension } from '../Dimension';
-import { Logger, LoggerLEVEL } from '../Logger';
+import { Logger } from '../Logger';
 import { Match } from '../Match';
 
 import * as error from './error';
@@ -37,7 +37,7 @@ export class Station {
   private log: Logger = new Logger(Logger.LEVEL.INFO, 'Station Log');
   private server: Server;
   public webapp: express.Application;
-  constructor(name: string = '', observedDimensions: Dimension | Array<Dimension>, loggingLevel?: LoggerLEVEL) {
+  constructor(name: string = '', observedDimensions: Dimension | Array<Dimension>, loggingLevel?: Logger.LEVEL) {
     // set logging level
     this.log.level = loggingLevel;
     

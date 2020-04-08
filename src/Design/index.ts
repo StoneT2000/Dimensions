@@ -3,7 +3,7 @@ import { deepMerge } from "../utils/DeepMerge";
 import { DeepPartial } from "../utils/DeepPartial";
 import { Agent, agentID } from "../Agent";
 import { Match, MatchStatus } from "../Match";
-import { Logger, LoggerLEVEL } from "../Logger";
+import { Logger } from "../Logger";
 
 /**
  * @class Design
@@ -63,7 +63,7 @@ export abstract class Design {
    * Set log level of the design
    * @param level - level to set design logger to
    */
-  _setLogLevel(level: LoggerLEVEL) {
+  _setLogLevel(level: Logger.LEVEL) {
     this.log.level = level;
   }
   

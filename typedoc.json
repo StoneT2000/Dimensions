@@ -1,0 +1,8 @@
+{
+  "inputFiles": ["./src"],
+  "mode": "modules",
+  "out": "docs",
+  "theme": "./theme/dimensions",
+  "tsconfig": "./tsconfig.json",
+  "exclude": ["./src/Station/**/*"]
+}

@@ -1,4 +1,4 @@
-import { Logger, LoggerLEVEL} from '../Logger';
+import { Logger} from '../Logger';
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
 import { MatchConfigs, Match } from '../Match';
@@ -15,7 +15,7 @@ export type DimensionConfigs = {
   name: string
   activateStation: boolean
   observe: boolean,
-  loggingLevel: LoggerLEVEL,
+  loggingLevel: Logger.LEVEL,
   defaultMatchConfigs: Partial<MatchConfigs>
 }
 /**

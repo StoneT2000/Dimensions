@@ -10,7 +10,7 @@ import LadderConfigs = Tournament.Ladder.Configs;
 
 import RANK_SYSTEM = Tournament.RANK_SYSTEM;
 import { sprintf } from 'sprintf-js';
-import { LoggerLEVEL } from "../../../Logger";
+import { Logger } from "../../../Logger";
 
 export class LadderTournament extends Tournament {
   configs: Tournament.TournamentConfigs<LadderConfigs> = {
@@ -207,7 +207,7 @@ export class LadderTournament extends Tournament {
   }
 
   private printTournamentStatus() {
-    if (this.log.level > LoggerLEVEL.NONE) {
+    if (this.log.level > Logger.LEVEL.NONE) {
       console.clear();
       console.log(this.log.bar())
       console.log(`Tournament: ${this.name} | Status: ${this.status} | Competitors: ${this.competitors.length} | Rank System: ${this.configs.rankSystem}\n`);

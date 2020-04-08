@@ -2,7 +2,7 @@ import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
 import { EngineOptions, MatchEngine } from '../MatchEngine';
 import { Agent, agentID } from '../Agent';
-import { Logger, LoggerLEVEL } from '../Logger';
+import { Logger } from '../Logger';
 import { Design, COMMAND_STREAM_TYPE, Command } from '../Design';
 import { FatalError } from '../DimensionError';
 import { Tournament } from '../Tournament';
@@ -23,7 +23,7 @@ export type MatchConfigs = {
   initializeConfig: any,
   updateConfig: any,
   getResultConfig: any,
-  loggingLevel: LoggerLEVEL,
+  loggingLevel: Logger.LEVEL,
   dimensionID: number, // id of the dimension match resides in
   engineOptions: DeepPartial<EngineOptions> // overriden engine options
   [key: string]: any

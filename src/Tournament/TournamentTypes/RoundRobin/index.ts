@@ -4,7 +4,7 @@ import { Design } from "../../../Design";
 import { deepMerge } from "../../../utils/DeepMerge";
 import { FatalError } from "../../../DimensionError";
 import { agentID } from "../../../Agent";
-import { LoggerLEVEL } from "../../../Logger";
+import { Logger } from "../../../Logger";
 import RANK_SYSTEM = Tournament.RANK_SYSTEM;
 import { sprintf } from 'sprintf-js';
 /**
@@ -19,7 +19,7 @@ export class RoundRobinTournament extends Tournament {
     rankSystem: null,
     rankSystemConfigs: null,
     tournamentConfigs: {
-      times: 1,
+      times: 2,
     },
     agentsPerMatch: [2],
     resultHandler: null,
@@ -218,7 +218,7 @@ export class RoundRobinTournament extends Tournament {
     return roundQueue;
   }
   private printTournamentStatus() {
-    if (this.log.level > LoggerLEVEL.NONE) {
+    if (this.log.level > Logger.LEVEL.NONE) {
       console.clear();
       console.log(this.log.bar())
       console.log(`Tournament: ${this.name} | Status: ${this.status} | Competitors: ${this.competitors.length} | Rank System: ${this.configs.rankSystem}\n`);
