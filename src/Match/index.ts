@@ -12,16 +12,12 @@ import Command = MatchEngine.Command;
 
 /**
  * @class Match
- * An match created using a {@link Design} and a list of Agents. The match can be started and stopped, and 
- * state can be retrieved at any point in time.
+ * @classdesc An match created using a {@link Design} and a list of Agents. The match can be stopped and resumed with 
+ * {@link stop}, {@link resume}, and state and configurations can be retrieved at any point in time with the 
+ * {@link state} and {@link configs} fields
  * 
- * @param design - The {@link Design} used
- * @param agents - List of agents used to create Match.
- * @param configs - Configurations that are passed to every run through initialize, update, and storeResults in the 
- * given {@link Design}
- * 
- * @see {@link Design}
- * @see {@link Agent}
+ * @see {@link Design} for Design information
+ * @see {@link Agent} for Agent information
  */
 
 export class Match {
@@ -59,7 +55,7 @@ export class Match {
   public agents: Array<Agent>;
 
   /**
-   * 
+   * Map from an {@link Agent.ID} ID to the {@link Agent}
    */
   public idToAgentsMap: Map<Agent.ID, Agent> = new Map();
 
@@ -97,26 +93,28 @@ export class Match {
   public mapAgentIDtoTournamentID: Map<Agent.ID, Tournament.ID> = new Map();
 
   /**
-   * Match Configurations
+   * Match Configurations. See {@link Match.Configs} for configuration options
    */
   public configs: Match.Configs = {
     name: '',
-    timeout: 1000,
-    initializeConfig: {},
-    updateConfig: {},
-    getResultConfig: {},
     loggingLevel: Logger.LEVEL.INFO,
     dimensionID: null,
     engineOptions: {}
-  }
+  };
 
+  /**
+   * Match Constructor
+   * @param design - The {@link Design} used
+   * @param agents - List of agents used to create Match.
+   * @param configs - Configurations that are passed to every run through {@link Design.initialize}, {@link Design.update}, and {@link Design.getResults} functioon in the 
+   * given {@link Design}
+   */
   constructor(
     public design: Design, 
     public agentFiles: Array<String> | Array<{file: string, name: string}> | Array<{file: string, tournamentID: Tournament.ID}>, 
     configs: DeepPartial<Match.Configs> = {}
   ) {
 
-    
     // override configs with provided configs argument
     this.configs = deepMerge(this.configs, configs);
 
@@ -315,7 +313,7 @@ export class Match {
   /**
    * Stop all agents through the match engine
    */
-  public async stopAndCleanUp() {
+  private async stopAndCleanUp() {
     await this.matchEngine.killAndClean(this);
   }
 
@@ -359,7 +357,7 @@ export class Match {
   // }
 
   /**
-   * Sends a message to all the standard input of all agents in this match
+   * Sends a message to the standard input of all agents in this match
    * @param message - the message to send to all agents available 
    * @returns a promise resolving true/false if it was succesfully sent
    */
@@ -423,26 +421,13 @@ export class Match {
 
 export module Match {
   /**
-   * Match Configurations
+   * Match Configurations. Has 4 specified fields. All other fields are up to user discretion
    */
   export interface Configs {
     /**
      * Name of the match
      */
     name: string
-    /**
-     * Initialization configs
-     */
-    initializeConfig: any,
-    /**
-     * Update configs
-     */
-    updateConfig: any,
-    /**
-     * get Result configs
-     */
-    getResultConfig: any,
-
     /**
      * Logging level for this match.
      * @see {@link Logger}
@@ -453,9 +438,9 @@ export module Match {
      */
     dimensionID: number,
     /**
-     * The to use in this match.
+     * The engine options to use in this match.
      */
-    engineOptions: DeepPartial<EngineOptions> // overriden engine options
+    engineOptions: DeepPartial<EngineOptions>
     [key: string]: any
   }
   export enum Status {
