@@ -1,6 +1,6 @@
 // const Dimension = require('dimensions-ai');
 let Dimension = require('../src');
-const MatchStatus = Dimension.MatchStatus;
+const Match = Dimension.Match;
 
 /**
  * This rock paper scissors game lets 2 agents play a best of n rock paper scissors 
@@ -52,21 +52,21 @@ export class RockPaperScissorsDesign extends Dimension.Design {
         1: 'terminated'
       }
       match.state.terminatedResult = 'Tie'
-      return MatchStatus.FINISHED;
+      return Match.Status.FINISHED;
     }
     else if (match.agents[0].isTerminated()) {
       match.state.terminated = {
         0: 'terminated'
       }
       match.state.terminatedResult = match.agents[1].name
-      return MatchStatus.FINISHED;
+      return Match.Status.FINISHED;
     }
     else if (match.agents[1].isTerminated()) {
       match.state.terminated = {
         1: 'terminated'
       }
       match.state.terminatedResult = match.agents[0].name
-      return MatchStatus.FINISHED;
+      return Match.Status.FINISHED;
     }
 
     // if no commands, just return and skip update
@@ -95,14 +95,14 @@ export class RockPaperScissorsDesign extends Dimension.Design {
         // and end the match
         match.throw(0, new Dimension.MatchError('attempted to send an additional command'));
         match.state.failedAgent = 0;
-        return MatchStatus.FINISHED;
+        return Match.Status.FINISHED;
       }
       if (agent0Command != null && commands[i].agentID === 0) {
         // agent 1 already had a command sent, and tried to send another, so we store that agent 1 is at fault 
         // and end the match
         match.throw(0, new Dimension.MatchError('attempted to send an additional command'));
         match.state.failedAgent = 1;
-        return MatchStatus.FINISHED;
+        return Match.Status.FINISHED;
       }
     }
 
@@ -113,12 +113,12 @@ export class RockPaperScissorsDesign extends Dimension.Design {
     if (!validChoices.has(agent0Command)) {
       match.throw(0, new Dimension.MatchError(agent0Command + ' is not a valid command!'));
       match.state.failedAgent = 0;
-      return MatchStatus.FINISHED;
+      return Match.Status.FINISHED;
     }
     if (!validChoices.has(agent1Command)) {
       match.throw(0, new Dimension.MatchError(agent1Command + ' is not a valid command!'));
       match.state.failedAgent = 1;
-      return MatchStatus.FINISHED;
+      return Match.Status.FINISHED;
     }
 
     // now we determine the winner, agent0 or agent1? or is it a tie?
@@ -171,7 +171,7 @@ export class RockPaperScissorsDesign extends Dimension.Design {
     // if way too many ties occured, stop the match
     if (match.state.ties >= match.configs.bestOf * 2 + 1) {
 
-      return MatchStatus.FINISHED;
+      return Match.Status.FINISHED;
     }
 
     // we send the status of this round to all agents
@@ -181,9 +181,9 @@ export class RockPaperScissorsDesign extends Dimension.Design {
     match.send(agent0Command, 1);
 
     // we now check the match status
-    // if rounds reaches maxrounds, we return MatchStatus.FINISHED
+    // if rounds reaches maxrounds, we return Match.Status.FINISHED
     if (match.state.rounds === match.state.maxRounds) {
-      return MatchStatus.FINISHED;
+      return Match.Status.FINISHED;
     }
 
     // not returning anything makes the engine assume the match is still running

@@ -44,24 +44,6 @@ function DimensionsPage(props: any) {
       }
     }
   ];
-  const mapMatchStatusToName = (status: number): string => {
-    switch(status) {
-      case 0:
-        return 'Uninitialized';
-      case 1:
-        return 'Ready';
-      case 2:
-        return 'Running';
-      case 3:
-        return 'Stopped';
-      case 4:
-        return 'Finished';
-      case 5:
-        return 'Error / Crash';
-      default:
-        return 'Unknown'
-    }
-  }
   
   const startRefresh = () => {
      intv = setInterval(() => {
@@ -75,7 +57,7 @@ function DimensionsPage(props: any) {
                 key: index,
                 matchname: match,
                 creationdate: match.creationDate,
-                status: mapMatchStatusToName(match.matchStatus),
+                status: match.matchStatus,
                 action: match
               }
             });

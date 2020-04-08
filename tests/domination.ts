@@ -1,4 +1,4 @@
-import { Design, MatchEngine, Match, Agent, MatchError, MatchWarn, MatchStatus } from '../src';
+import { Design, MatchEngine, Match, Agent, MatchError, MatchWarn } from '../src';
 
 // Test design for Domination Game
 // Basic overview
@@ -170,7 +170,7 @@ export class DominationDesign extends Design {
     match.log.info('End of Round ' + (match.state.round));
     
     if (match.state.round === match.state.MAX_ROUNDS) {
-      return MatchStatus.FINISHED;
+      return Match.Status.FINISHED;
     }
     match.state.round++;
     

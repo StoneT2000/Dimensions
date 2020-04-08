@@ -1,7 +1,7 @@
 import { Logger} from '../Logger';
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
-import { MatchConfigs, Match } from '../Match';
+import { Match } from '../Match';
 import { Station } from '../Station';
 import { FatalError } from '../DimensionError';
 import { Design } from '../Design';
@@ -16,7 +16,7 @@ export type DimensionConfigs = {
   activateStation: boolean
   observe: boolean,
   loggingLevel: Logger.LEVEL,
-  defaultMatchConfigs: Partial<MatchConfigs>
+  defaultMatchConfigs: DeepPartial<Match.Configs>
 }
 /**
  * @class Dimension
@@ -107,7 +107,8 @@ export class Dimension {
    * @param matchOptions - Options for the created match
    * @param configs - Configurations that are `Design` dependent
    */
-  public async createMatch(files: Array<string> | Array<{file: string, name: string}>, configs?: DeepPartial<MatchConfigs>): Promise<Match> {
+  public async createMatch(files: Array<string> | Array<{file: string, name: string}>, 
+    configs?: DeepPartial<Match.Configs>): Promise<Match> {
     return new Promise( async (resolve, reject) => {
       if (!files.length) reject(new FatalError('No files provided for match'));
 
@@ -151,7 +152,7 @@ export class Dimension {
    */
   public async runMatch(
     files: Array<string> | Array<{file: string, name: string}>, 
-    configs?: DeepPartial<MatchConfigs>): Promise<any> {
+    configs?: DeepPartial<Match.Configs>): Promise<any> {
     return new Promise( async (resolve, reject) => {
       
       try {

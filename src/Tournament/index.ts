@@ -1,4 +1,4 @@
-import { Match, MatchConfigs } from '../Match';
+import { Match } from '../Match';
 import { Design } from '../Design';
 import { FatalError } from '../DimensionError';
 import { RoundRobinTournament } from './TournamentTypes/RoundRobin';
@@ -169,7 +169,7 @@ export module Tournament {
     /**
      * The default match configurations to be applied throughout all tournament matches
      */
-    defaultMatchConfigs?: DeepPartial<MatchConfigs>
+    defaultMatchConfigs?: DeepPartial<Match.Configs>
     /**
      * The tournament type to run. See {@link TOURNAMENT_TYPE}
      */

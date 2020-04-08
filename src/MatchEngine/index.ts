@@ -1,11 +1,10 @@
-import { spawn } from 'child_process';
 import { FatalError } from "../DimensionError";
 import { DeepPartial } from "../utils/DeepPartial";
 import { deepMerge } from "../utils/DeepMerge";
 import { Design } from '../Design';
 import { Logger } from '../Logger';
 import { Agent, agentID, AgentStatus } from '../Agent';
-import { Match, MatchStatus } from '../Match';
+import { Match } from '../Match';
 import { deepCopy } from '../utils/DeepCopy';
 import EngineOptions = MatchEngine.EngineOptions;
 /**

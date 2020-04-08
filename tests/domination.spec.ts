@@ -81,7 +81,7 @@ describe('Testing with Domination Game', () => {
         }
       );
 
-      let status: Dimension.MatchStatus;
+      let status: Dimension.Match.Status;
       
       
       // Store results

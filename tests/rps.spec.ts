@@ -1,5 +1,5 @@
 import Dimension = require('../src');
-let MatchStatus = Dimension.MatchStatus;
+let MatchStatus = Dimension.Match.Status;
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import 'mocha';

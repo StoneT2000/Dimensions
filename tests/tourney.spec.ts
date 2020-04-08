@@ -1,5 +1,5 @@
 import * as Dimension from '../src';
-let MatchStatus = Dimension.MatchStatus;
+let MatchStatus = Dimension.Match.Status;
 const RockPaperScissorsDesign = require('./rps').RockPaperScissorsDesign;
 
 import chai from 'chai';

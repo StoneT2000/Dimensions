@@ -2,7 +2,7 @@ import { MatchEngine } from "../MatchEngine";
 import { deepMerge } from "../utils/DeepMerge";
 import { DeepPartial } from "../utils/DeepPartial";
 import { Agent, agentID } from "../Agent";
-import { Match, MatchStatus } from "../Match";
+import { Match } from "../Match";
 import { Logger } from "../Logger";
 import EngineOptions = MatchEngine.EngineOptions;
 import COMMAND_FINISH_POLICIES = MatchEngine.COMMAND_FINISH_POLICIES;
@@ -90,7 +90,7 @@ export abstract class Design {
 
   /**
    * Abstract function required to update `match` state with commands from Agents and send commands to Agents
-   * along with returning the current match status, one of which can be MatchStatus.FINISHED
+   * along with returning the current match status, one of which can be {@link Match.Status.FINISHED}
    * 
    * @see Match - This function is used by the `match` to update the `match` state and move forward a time step
    * 
@@ -99,10 +99,10 @@ export abstract class Design {
    *                   Each element has two keys, command and agentID. agentID is the id of the agent that outputted
    *                   that string in command
    * @param config - Any user configurations that can be added as parameters
-   * @returns A promise that resolves with the current `MatchStatus` at the end of this time step. Can also directly 
-   *          just return `MatchStatus`
+   * @returns A promise that resolves with the current `Match.Status` at the end of this time step. Can also directly 
+   *          just return `Match.Status`
    */
-  abstract async update(match: Match, commands: Array<Command>, config?: any): Promise<MatchStatus>
+  abstract async update(match: Match, commands: Array<Command>, config?: any): Promise<Match.Status>
 
   /**
    * Abstract function required to get the result of a `match`
