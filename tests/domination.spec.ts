@@ -10,13 +10,17 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 
 
-let dominationDesign = new DominationDesign('Domination');
-//@ts-ignore
-let myDimension = Dimension.create(dominationDesign, {
-  name: 'Domination',
-  loggingLevel: Dimension.Logger.LEVEL.NONE
-});
 describe('Testing with Domination Game', () => {
+  let dominationDesign, myDimension;
+  before(() => {
+    dominationDesign = new DominationDesign('Domination');
+    myDimension = Dimension.create(dominationDesign, {
+      name: 'Domination',
+      loggingLevel: Dimension.Logger.LEVEL.NONE,
+      observe: false,
+      activateStation: false
+    });
+  });
   it('Test Run A match of Domination', async () => {
     // expect.assertions(2);
 
@@ -79,17 +83,13 @@ describe('Testing with Domination Game', () => {
 
       let status: Dimension.MatchStatus;
       
-      // Run match, equiv to match.run();
-      do {
-        status = await match.next();
-      }
-      while (status != Dimension.MatchStatus.FINISHED)
       
       // Store results
-      let results = await match.getResults();
+      let results = await match.run();
 
       expect(results.finalMap).to.eql(expectedResultMap)
       expect(results.winningScore).to.eql(expectedScore);
+
       // expect(matchEngineLogSpy).to.equal(3);
     });
 
@@ -127,9 +127,10 @@ describe('Testing with Domination Game', () => {
   });
 
   describe('Test Create Match and Validate its contents', () => {
-    const agentCount = 4;
+  
+    it('Validate Agents', async () => {
+      const agentCount = 4;
     let match: Dimension.Match;
-    before( async () => {
       let jsSource = "./tests/js-kit/domination/deterministic.js";
       let botSources = [];
 
@@ -148,9 +149,6 @@ describe('Testing with Domination Game', () => {
           loggingLevel: Dimension.Logger.LEVEL.NONE
         }
       );
-    });
-    it('Validate Agents', () => {
-      
       expect(match.agents.length).to.equal(agentCount);
       expect(match.agentFiles.length).to.equal(agentCount);
       for (let i = 0; i < match.agentFiles.length; i++) {
@@ -160,6 +158,7 @@ describe('Testing with Domination Game', () => {
         expect(agent.process).not.to.equal(null); // ensure processes were made
         expect(agent.process.killed).to.equal(false); // ensure processes are alive after initiation
       }
+      match.run();
     });
   });
 });

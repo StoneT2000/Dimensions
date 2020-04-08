@@ -207,6 +207,13 @@ export class Dimension {
       return newTourney;
   }
 
+  /**
+   * Get the station
+   */
+  getStation() {
+    return Dimension.Station;
+  }
+
 }
 
 /**

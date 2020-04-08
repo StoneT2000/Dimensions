@@ -15,7 +15,7 @@ describe('Rock Paper Scissors Run', () => {
     RPSDesign = new RockPaperScissorsDesign('RPS!', {
       engineOptions: {
         timeout: {
-          max: 500,
+          max: 2000,
         }
       }
     });
@@ -115,7 +115,7 @@ describe('Rock Paper Scissors Run', () => {
         loggingLevel: Dimension.Logger.LEVEL.WARN,
         engineOptions: {
           timeout: {
-            max: 550
+            max: 1000
           }
         }
       }
@@ -138,7 +138,7 @@ describe('Rock Paper Scissors Run', () => {
             else {
               reject();
             }
-          }, 1000)
+          }, 500)
         }, 100)
       });
     }
@@ -152,15 +152,17 @@ describe('Rock Paper Scissors Run', () => {
 
   describe('Testing _buffer store and split up readable emits from process to engine', () => {
     it('should allow for delayed newline characters and split up stdout', async () => {
-      let results = await myDimension.runMatch(
+      let match = await myDimension.createMatch(
         ['./tests/js-kit/rps/delaynewlinepaper.js', './tests/js-kit/rps/delaynewlinerock.js'],
         {
           name: 'using _buffer match',
           bestOf: 3,
-          loggingLevel: Dimension.Logger.LEVEL.WARN
+          loggingLevel: Dimension.Logger.LEVEL.WARN,
         }
       );
+      let results = await match.run();
       expect(results.scores).to.eql({'0': 3, '1': 0});
+      expect(match.matchEngine.getEngineOptions().timeout.max).to.equal(2000)
     });
   });
 
@@ -170,7 +172,12 @@ describe('Rock Paper Scissors Run', () => {
         ['./tests/js-kit/rps/paper.js', './tests/js-kit/rps/delaybotrock.js'],
         {
           bestOf: 5,
-          loggingLevel: Dimension.Logger.LEVEL.ERROR
+          loggingLevel: Dimension.Logger.LEVEL.ERROR,
+          engineOptions: {
+            timeout: {
+              max: 500
+            }
+          }
         }
       );
       expect(res.terminated[1]).to.equal('terminated');
@@ -181,29 +188,37 @@ describe('Rock Paper Scissors Run', () => {
         ['./tests/js-kit/rps/delaybotrock.js', './tests/js-kit/rps/delaybotrock.js'],
         {
           bestOf: 5,
-          loggingLevel: Dimension.Logger.LEVEL.ERROR
+          loggingLevel: Dimension.Logger.LEVEL.ERROR,
+          engineOptions: {
+            timeout: {
+              max: 500
+            }
+          }
         }
       );
       expect(res.terminated[1]).to.equal('terminated');
       expect(res.terminated[0]).to.equal('terminated');
       expect(res.winner).to.equal('Tie');
     });
-    it('should provide timeout handlers with the `agent`, the match through `this` and a copy of `engineOptions and timeout options should still be the defaults', async () => {
+    it('should provide timeout handlers with the `agent`, the match through `this` and a copy of `engineOptions`', async () => {
       let match = await myDimension.createMatch(
         ['./tests/js-kit/rps/delaybotrock.js', './tests/js-kit/rps/delaybotrock.js'],
         {
           name: 'check-timeout-handler',
           bestOf: 5,
           loggingLevel: Dimension.Logger.LEVEL.ERROR,
-          timeout: {
-            timeoutCallback: (agent, match, engineOptions) => {
-              match.kill(agent.id);
-              match.log.error(`custom message! - agent ${agent.id} - '${agent.name}' timed out after ${engineOptions.timeout.max} ms`);
+          engineOptions: {
+            timeout: {
+              max: 100,
+              timeoutCallback: (agent, match, engineOptions) => {
+                match.kill(agent.id);
+                match.log.error(`custom message! - agent ${agent.id} - '${agent.name}' timed out after ${engineOptions.timeout.max} ms`);
+              }
             }
           }
         }
       );
-      expect(match.matchEngine.getEngineOptions().timeout.max).to.equal(500)
+      expect(match.matchEngine.getEngineOptions().timeout.max).to.equal(100)
       let res = await match.run();
     });
     it('should be allowed to override the timeout and turn it off', async () => {
