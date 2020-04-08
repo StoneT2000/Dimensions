@@ -2,10 +2,10 @@ import { Match, MatchConfigs } from '../Match';
 import { Design } from '../Design';
 import { FatalError } from '../DimensionError';
 import { RoundRobinTournament as _RoundRobinTournament } from './TournamentTypes/RoundRobin';
-import { EliminationTournament } from './TournamentTypes/Elimination';
+import { EliminationTournament as _EliminationTournament } from './TournamentTypes/Elimination';
 import { DeepPartial } from '../utils/DeepPartial';
 import { Logger, LoggerLEVEL } from '../Logger';
-import { LeaderboardTournament } from './TournamentTypes/Ladder';
+import { LadderTournament as _LadderTournament } from './TournamentTypes/Ladder';
 import { agentID } from '../Agent';
 import { deepCopy } from '../utils/DeepCopy';
 
@@ -53,12 +53,14 @@ export abstract class Tournament {
     protected design: Design,
     files: Array<string> | Array<{file: string, name:string}>, 
     public id: number,
-    level: LoggerLEVEL = LoggerLEVEL.INFO
+    tournamentConfigs: Tournament.TournamentConfigsBase
   ) {
     files.forEach((file) => {
       this.addBot(file);
     });
-    this.log.level = level;
+    this.log.level = tournamentConfigs.loggingLevel ? tournamentConfigs.loggingLevel : LoggerLEVEL.INFO;
+    this.name = tournamentConfigs.name ? tournamentConfigs.name : `tournament_${this.id}`;
+    this.log.identifier = this.name;
   }
 
   public addBot(file: string | {file: string, name: string}) {
@@ -144,13 +146,17 @@ export abstract class Tournament {
 
 export module Tournament {
   export type RoundRobinTournament = _RoundRobinTournament;
+  export type EliminationTournament = _EliminationTournament;
+  export type LadderTournament = _LadderTournament;
 
   export enum TOURNAMENT_TYPE {
     ROUND_ROBIN = 'round_robin', // can be n-tuple round robin. E.g double roundrobin like most Association Football Leagues
     ELIMINATION = 'elimination', // standard elimination tournament. can be single, double, triple, n-tuple knockout
+    LADDER = 'ladder', // like halite
   }
   export enum TournamentStatus {
     UNINITIALIZED = 'uninitialized',
+    INITIALIZED = 'initialized',
     STOPPED = 'stopped',
     RUNNING = 'running',
     CRASHED = 'crashed',
@@ -167,6 +173,7 @@ export module Tournament {
     loggingLevel?: LoggerLEVEL
     name?: string
     tournamentConfigs?: any
+    agentsPerMatch: Array<number> // an array of valid players per match
   }
   export interface TournamentConfigs<ConfigType> extends TournamentConfigsBase {
     tournamentConfigs: ConfigType    
@@ -178,6 +185,7 @@ export module Tournament {
   export interface TournamentTypeState  {
     
   }
+  // Bot ID
   export interface ID {
     id: string
     name: string
@@ -187,7 +195,7 @@ export module Tournament {
     ELO = 'elo', // ranking by elo
     TRUESKILL = 'trueskill' // ranking by trueskill
   }
-  export namespace RANK_SYSTEM {
+  export module RANK_SYSTEM {
     export interface WinConfigs {
       winValue: number
       tieValue: number
@@ -202,8 +210,18 @@ export module Tournament {
     export interface ELOConfigs {
 
     }
+    export interface ELOResults {
+      ranks: Array<{rank: number, agentID: agentID}> // ranks of agents, where rank 1 is highest
+    }
     export interface TrueSkillConfigs {
 
+    }
+    export interface TrueSkillResults {
+      ranks: Array<{rank: number, agentID: agentID}> // ranks of agents, where rank 1 is highest
+    }
+    export interface TrueSkillRankState {
+      mu: number,
+      sigma: number
     }
   }
   export interface RoundRobinConfigs extends Tournament.TournamentTypeConfig {
@@ -214,6 +232,21 @@ export module Tournament {
     statistics: {
       totalMatches: number
     }
+    results: Array<any>
+  }
+  // Configs specific to ladder like tournaments, e.g. halite, chess
+  export interface LadderConfigs extends Tournament.TournamentTypeConfig {
+    maxConcurrentMatches: number // max matches that can run concurrently on one node instance
+    endDate: Date // the date to stop running this tournament once it is started. If null, no end date
+  }
+  export interface LadderState extends Tournament.TournamentTypeState {
+    // maps tournamentID.id to object with bot info, wins/ties/losses and matches played along with rank state dependent 
+    // ranking system used
+    botStats: Map<string, {bot: Bot, wins: number, ties: number, losses: number, matchesPlayed: number, rankState: any}>
+    statistics: {
+      totalMatches: number
+    }
+    currentRanks: Array<{bot: Bot, rankState: any}>
     results: Array<any>
   }
 }

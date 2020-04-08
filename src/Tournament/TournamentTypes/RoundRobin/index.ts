@@ -18,6 +18,7 @@ export class RoundRobinTournament extends Tournament {
     tournamentConfigs: {
       times: 1,
     },
+    agentsPerMatch: [2],
     resultHandler: null
   }
   state: Tournament.RoundRobinState = {
@@ -33,13 +34,15 @@ export class RoundRobinTournament extends Tournament {
     tournamentConfigs: Tournament.TournamentConfigsBase,
     id: number
   ) {
-    super(design, files, id, tournamentConfigs.loggingLevel);
+    super(design, files, id, tournamentConfigs);
 
-    this.name = tournamentConfigs.name ? tournamentConfigs.name : `tournament_${this.id}`;
-    this.log.identifier = this.name;
     // handle config defaults
     if (tournamentConfigs.rankSystem !== Tournament.RANK_SYSTEM.WINS) {
-      throw new FatalError('We currently do not support Round Robin tournamnets with ranking system other than wins system');
+      throw new FatalError('We currently do not support Round Robin tournaments with ranking system other than wins system');
+    }
+    for (let i = 0; i < tournamentConfigs.agentsPerMatch.length; i++) {
+      if (tournamentConfigs.agentsPerMatch[i] != 2)
+        throw new FatalError('We currently only support 2 agents per match for Round Robin ');
     }
     if (!tournamentConfigs.rankSystemConfigs) {
       this.configs.rankSystemConfigs = {
@@ -54,6 +57,8 @@ export class RoundRobinTournament extends Tournament {
 
     // handle rest
     this.configs = deepMerge(this.configs, tournamentConfigs);
+
+    this.status = Tournament.TournamentStatus.INITIALIZED;
     this.log.info('Initialized Round Robin Tournament');
   }
 

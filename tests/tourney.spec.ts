@@ -36,13 +36,15 @@ describe('Tournament Testing with RPS', () => {
     DefaultRPSTournament = <Dimension.Tournament.RoundRobinTournament>myDimension.createTournament(bots, {
       type: Dimension.Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
       rankSystem: Dimension.Tournament.RANK_SYSTEM.WINS,
-      resultHandler: RockPaperScissorsDesign.resultHandler
+      resultHandler: RockPaperScissorsDesign.resultHandler,
+      agentsPerMatch: [2]
     });
     RPSTournament = <Dimension.Tournament.RoundRobinTournament>myDimension.createTournament(filesAndNames, {
       type: Dimension.Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
       rankSystem: Dimension.Tournament.RANK_SYSTEM.WINS,
       name: 'Rock Paper Scissors',
       loggingLevel: Dimension.Logger.LEVEL.WARN,
+      agentsPerMatch: [2],
       defaultMatchConfigs: {
         bestOf: 3,
         loggingLevel: Dimension.Logger.LEVEL.WARN
@@ -62,6 +64,7 @@ describe('Tournament Testing with RPS', () => {
       expect(DefaultRPSTournament.name).to.equal('tournament_0');
       expect(DefaultRPSTournament.competitors.length).to.equal(4);
       expect(DefaultRPSTournament.competitors[0].tournamentID.name).to.equal('bot-t0_0');
+      console.log(DefaultRPSTournament.log);
       expect(DefaultRPSTournament.log.level).to.equal(LoggerLEVEL.INFO);
     });
     it('should have correct overriden parameters', async () => {

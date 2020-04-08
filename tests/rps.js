@@ -16,7 +16,8 @@ export class RockPaperScissorsDesign extends Dimension.Design{
       maxRounds: match.configs.bestOf, // we will store the max rounds of rock paper scissors this game will run
       results: [], // we will also store the winner of each of those rounds by each agent's ID
       rounds: 0, // rounds passed so far
-      failedAgent: null // the id of the agent that failed to play correctly
+      failedAgent: null, // the id of the agent that failed to play correctly
+      ties: 0
     }
     match.state = state; // this stores the state defined above into the match for re-use
 
@@ -157,10 +158,21 @@ export class RockPaperScissorsDesign extends Dimension.Design{
       match.log.detail(`Round: ${match.state.rounds} - Agent ${winningAgent} won`);
     }
     else {
-      match.log.info(`Tie`);
+      match.log.detail(`Tie`);
     }
     // we increment the round if it wasn't a tie
-    if (winningAgent != -1) match.state.rounds++;
+    if (winningAgent != -1) {
+      match.state.rounds++;
+    }
+    else {
+      match.state.ties ++;
+    }
+    
+    // if way too many ties occured, stop the match
+    if (match.state.ties >= match.configs.bestOf * 2 + 1) {
+
+      return MatchStatus.FINISHED;
+    }
 
     // we send the status of this round to all agents
     match.sendAll(winningAgent);

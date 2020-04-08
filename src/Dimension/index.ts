@@ -1,7 +1,6 @@
 import { Logger, LoggerLEVEL} from '../Logger';
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
-// import { Tournament } from '../Tournament';
 import { MatchConfigs, Match } from '../Match';
 import { Station } from '../Station';
 import { FatalError } from '../DimensionError';
@@ -10,6 +9,7 @@ import { RoundRobinTournament } from '../Tournament/TournamentTypes/RoundRobin';
 import { EliminationTournament } from '../Tournament/TournamentTypes/Elimination';
 import { Tournament } from '../Tournament';
 import { deepCopy } from '../utils/DeepCopy';
+import { LadderTournament } from '../Tournament/TournamentTypes/Ladder';
 
 export type DimensionConfigs = {
   name: string
@@ -198,6 +198,9 @@ export class Dimension {
         case Tournament.TOURNAMENT_TYPE.ROUND_ROBIN:
           newTourney = new RoundRobinTournament(this.design, files, configs, id);
           break;
+        case Tournament.TOURNAMENT_TYPE.LADDER:
+          newTourney = new LadderTournament(this.design, files, configs, id);
+          break;
         case Tournament.TOURNAMENT_TYPE.ELIMINATION:
           newTourney = new EliminationTournament(this.design, files, configs, id);
           break;
@@ -206,6 +209,7 @@ export class Dimension {
       this.tournaments.push(newTourney);
       return newTourney;
   }
+  // TODO give option to directly create a Ladder/RoundRobin ... tourney with createLadderTournament etc.
 
   /**
    * Get the station

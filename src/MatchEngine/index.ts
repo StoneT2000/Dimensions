@@ -21,7 +21,7 @@ export enum COMMAND_FINISH_POLICIES {
   // TODO: implement custom finish policy
 }
 
-export type EngineOptions = {
+export interface EngineOptions {
   commandStreamType: COMMAND_STREAM_TYPE,
   commandDelimiter: string, // delimiter for seperating commands e.g move 01 02,buy 32_4_2,cmd 2 a b...
   commandFinishSymbol: string,

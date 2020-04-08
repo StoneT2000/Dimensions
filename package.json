@@ -27,7 +27,8 @@
     "@types/sinon-chai": "^3.2.4",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "trueskill": "0.0.2"
   },
   "devDependencies": {
     "@types/chai-as-promised": "^7.1.2",
