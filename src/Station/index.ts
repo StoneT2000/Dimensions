@@ -160,6 +160,19 @@ export class Station {
     })
   }
 
+  /**
+   * Stop the Station server / API
+   */
+  public async stop() {
+    return new Promise((resolve, reject) => {
+      this.log.warn("Stopping");
+      this.server.close((err) => {
+        if (err) reject(err);
+        resolve();
+      });
+    });
+  }
+
   public observe(dimension: Dimension) {
     this.app.set('dimensions', [...this.app.get('dimensions'), dimension]);
   }

@@ -35,25 +35,9 @@ function MatchPage() {
     {
       title: 'Status',
       dataIndex: 'status',
-      render: (status: AgentStatus) => <span>{mapAgentStatusToName(status)}</span>
+      render: (status: AgentStatus) => <span>{status}</span>
     },
   ];
-  const mapAgentStatusToName = (status: number): string => {
-    switch(status) {
-      case 0:
-        return 'Uninitialized';
-      case 1:
-        return 'Ready';
-      case 2:
-        return 'Running';
-      case 3:
-        return 'Crashed';
-      case 4:
-        return 'Killed / Finished';
-      default:
-        return 'Unknown'
-    }
-  }
   const startRefresh = () => {
     intv = setInterval(() => {
       getMatchFromDimension(params.id, params.matchID).then((res) => {

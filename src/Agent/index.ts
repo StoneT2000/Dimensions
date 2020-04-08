@@ -1,15 +1,17 @@
-import { Logger, LoggerLEVEL, FatalError } from "..";
 import { ChildProcess, exec, spawn } from "child_process";
 import path from 'path';
 import fs from 'fs';
+import { Logger, LoggerLEVEL } from "../Logger";
+import { FatalError } from "../DimensionError";
+import { Tournament } from "../Tournament";
 
 export enum AgentStatus {
-  UNINITIALIZED, // just created agent
-  READY, // agent that has been fully created and ready to be used by the engine for a match
-  RUNNING, // agent that has a process running with it now
-  CRASHED,
-  KILLED, // agent that has finished and is killed or was prematurely killed
-  STOPPED // agent is currently not running
+  UNINITIALIZED = 'uninitialized', // just created agent
+  READY = 'ready', // agent that has been fully created and ready to be used by the engine for a match
+  RUNNING = 'running', // agent that has a process running with it now
+  CRASHED = 'crashed',
+  KILLED = 'killed', // agent that has finished and is killed or was prematurely killed
+  STOPPED = 'stpped' // agent is currently not running
 }
 export type agentID = number;
 
@@ -20,7 +22,8 @@ export type agentID = number;
  */
 export class Agent {
   
-  public id: agentID = 0;
+  public id: agentID = 0; // id used within a match
+  public tournamentID: Tournament.ID = null; // a tournmanet ID if used within a tournament
   public name: string; // name of this agent
   public src: string; // path to file to run
   public ext: string;
@@ -92,6 +95,10 @@ export class Agent {
     }
     else {
       this.name = `agent_${this.id}`;
+    }
+    if (options.tournamentID) {
+      this.tournamentID = options.tournamentID;
+      this.name = this.tournamentID.name;
     }
     
 
@@ -219,7 +226,7 @@ export class Agent {
    *              and a name key for the name of the agent
    * @param loggingLevel - the logging level for all these agents
    */
-  static generateAgents(files: Array<String> | Array<{file: string, name: string}>, loggingLevel: LoggerLEVEL): Array<Agent> {
+  static generateAgents(files: Array<String> | Array<{file: string, name: string}> | Array<{file: string, tournamentID: Tournament.ID}>, loggingLevel: LoggerLEVEL): Array<Agent> {
     if (files.length === 0) {
       throw new FatalError('No files provided to generate agents with!');
     }
@@ -230,9 +237,15 @@ export class Agent {
         agents.push(new Agent(file, {id: index, name: null, loggingLevel: loggingLevel}))
       })
     }
-    else {
+    //@ts-ignore
+    else if (files[0].name !== undefined) {
       files.forEach((info, index) => {
         agents.push(new Agent(info.file, {id: index, name: info.name, loggingLevel: loggingLevel}))
+      })
+    }
+    else {
+      files.forEach((info, index) => {
+        agents.push(new Agent(info.file, {id: index, tournamentID: info.tournamentID, loggingLevel: loggingLevel}))
       })
     }
     return agents;

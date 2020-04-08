@@ -1,8 +1,9 @@
-import { Match, agentID, MatchStatus, Logger, LoggerLEVEL } from "..";
 import { EngineOptions, COMMAND_FINISH_POLICIES } from "../MatchEngine";
 import { deepMerge } from "../utils/DeepMerge";
 import { DeepPartial } from "../utils/DeepPartial";
-import { Agent } from "../Agent";
+import { Agent, agentID } from "../Agent";
+import { Match, MatchStatus } from "../Match";
+import { Logger, LoggerLEVEL } from "../Logger";
 
 /**
  * @class Design
@@ -116,8 +117,8 @@ export abstract class Design {
 
 // Standard ways for commands from agents to be streamed to `MatchEngine` for the `Design` to handle
 export enum COMMAND_STREAM_TYPE {
-  PARALLEL, // first come first serve for commands run, leads to all Agents sending commands based on old states
-  SEQUENTIAL // each agent's set of command sequence is run before the next agent
+  PARALLEL = 'parallel', // first come first serve for commands run, leads to all Agents sending commands based on old states
+  SEQUENTIAL = 'sequential' // each agent's set of command sequence is run before the next agent
 };
 export type CommandSequence = {
   commands: Array<string>

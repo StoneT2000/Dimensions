@@ -6,7 +6,8 @@
     "sourceMap": true,
     "declaration": true,
     "allowJs": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "isolatedModules": true
   },
   "include": [
     "src/**/*",
