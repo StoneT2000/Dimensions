@@ -108,7 +108,7 @@ export class LadderTournament extends Tournament {
   }
 
   private tourneyRunner() {
-    
+    let maxTotalMatches = this.configs.tournamentConfigs.maxTotalMatches;
     if (this.configs.tournamentConfigs.endDate) { 
       let currDate = new Date();
       if (currDate.getTime() > this.configs.tournamentConfigs.endDate.getTime()) {
@@ -118,8 +118,8 @@ export class LadderTournament extends Tournament {
         return;
       }
     }
-    if (this.configs.tournamentConfigs.maxTotalMatches) {
-      if (this.state.statistics.totalMatches >= this.configs.tournamentConfigs.maxTotalMatches) {
+    if (maxTotalMatches) {
+      if (this.state.statistics.totalMatches >= maxTotalMatches) {
         this.stop();
         return;
       }
@@ -130,7 +130,11 @@ export class LadderTournament extends Tournament {
     if (this.matchQueue.length < this.configs.tournamentConfigs.maxConcurrentMatches * 2) {
       this.schedule();
     }
+    // run as the minimum of the queued matches length, minimum to not go over maxConcurrent matches config, and not to go over a maxtTotalMatches limit if there is one
     for (let i = 0; i < Math.min(this.matchQueue.length, this.configs.tournamentConfigs.maxConcurrentMatches - this.matches.size); i++) {
+      if (maxTotalMatches && maxTotalMatches - this.state.statistics.totalMatches - this.matches.size <= 0) {
+        break;
+      }
       let matchInfo = this.matchQueue.shift();
       matchPromises.push(this.handleMatch(matchInfo));
     }
@@ -174,7 +178,7 @@ export class LadderTournament extends Tournament {
    * For now, we do random pairing
    */
   private schedule() {
-    const matchCount = 2;
+    const matchCount = this.configs.tournamentConfigs.maxConcurrentMatches;
     // runs a round of scheduling
     // for every bot, we schedule some m matches (TODO: configurable)
     let rankings = this.getRankings();
@@ -207,7 +211,7 @@ export class LadderTournament extends Tournament {
       console.clear();
       console.log(this.log.bar())
       console.log(`Tournament: ${this.name} | Status: ${this.status} | Competitors: ${this.competitors.length} | Rank System: ${this.configs.rankSystem}\n`);
-      console.log('Total Matches: ' + this.state.statistics.totalMatches);
+      console.log('Total Matches: ' + this.state.statistics.totalMatches + ' | Matches Queued: '  + this.matchQueue.length);
       let ranks = this.getRankings();
       switch(this.configs.rankSystem) {
         case RANK_SYSTEM.TRUESKILL:
