@@ -1,7 +1,7 @@
 import { MatchEngine } from "../MatchEngine";
 import { deepMerge } from "../utils/DeepMerge";
 import { DeepPartial } from "../utils/DeepPartial";
-import { Agent, agentID } from "../Agent";
+import { Agent } from "../Agent";
 import { Match } from "../Match";
 import { Logger } from "../Logger";
 import EngineOptions = MatchEngine.EngineOptions;

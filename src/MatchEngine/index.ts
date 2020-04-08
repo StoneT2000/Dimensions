@@ -3,7 +3,7 @@ import { DeepPartial } from "../utils/DeepPartial";
 import { deepMerge } from "../utils/DeepMerge";
 import { Design } from '../Design';
 import { Logger } from '../Logger';
-import { Agent, agentID, AgentStatus } from '../Agent';
+import { Agent } from '../Agent';
 import { Match } from '../Match';
 import { deepCopy } from '../utils/DeepCopy';
 import EngineOptions = MatchEngine.EngineOptions;
@@ -68,7 +68,7 @@ export class MatchEngine {
           match.idToAgentsMap.set(agent.id, agent);
 
           // set agent status as running
-          agent.status = AgentStatus.RUNNING;
+          agent.status = Agent.Status.RUNNING;
 
           // handler for stdout of Agent processes. Stores their output commands and resolves move promises
           
@@ -188,7 +188,7 @@ export class MatchEngine {
   public async stop(match: Match) {
     match.agents.forEach((agent) => {
       agent.process.kill('SIGSTOP')
-      agent.status = AgentStatus.STOPPED;
+      agent.status = Agent.Status.STOPPED;
     });
     this.log.system('Stopped all agents');
   }
@@ -201,7 +201,7 @@ export class MatchEngine {
     match.agents.forEach((agent) => {
       agent._allowCommands();
       agent.process.kill('SIGCONT')
-      agent.status = AgentStatus.RUNNING;
+      agent.status = Agent.Status.RUNNING;
     });
     this.log.system('Resumed all agents');
   }
@@ -212,7 +212,7 @@ export class MatchEngine {
   public async killAndClean(match: Match) {
     match.agents.forEach((agent) => {
       agent.process.kill('SIGKILL')
-      agent.status = AgentStatus.KILLED;
+      agent.status = Agent.Status.KILLED;
     });
   }
 
@@ -281,7 +281,7 @@ export class MatchEngine {
    * @param message - the message to send to agent's stdin
    * @param agentID - id that specifies the agent in the match to send the message to
    */
-  public async send(match: Match, message: string, agentID: agentID): Promise<boolean> {
+  public async send(match: Match, message: string, agentID: Agent.ID): Promise<boolean> {
     return new Promise((resolve, reject) => {
       let agent = match.idToAgentsMap.get(agentID);
       // TODO; add check to see if agent exists
@@ -350,6 +350,6 @@ export module MatchEngine {
    */
   export interface Command {
     command: string
-    agentID: agentID
+    agentID: Agent.ID
   }
 }

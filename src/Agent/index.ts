@@ -5,16 +5,6 @@ import { Logger } from "../Logger";
 import { FatalError } from "../DimensionError";
 import { Tournament } from "../Tournament";
 
-export enum AgentStatus {
-  UNINITIALIZED = 'uninitialized', // just created agent
-  READY = 'ready', // agent that has been fully created and ready to be used by the engine for a match
-  RUNNING = 'running', // agent that has a process running with it now
-  CRASHED = 'crashed',
-  KILLED = 'killed', // agent that has finished and is killed or was prematurely killed
-  STOPPED = 'stpped' // agent is currently not running
-}
-export type agentID = number;
-
 /**
  * @class Agent
  * @classdesc Reads in a file source for the code and creates an `Agent` for use in the `MatchEngine` and `Match`
@@ -22,7 +12,7 @@ export type agentID = number;
  */
 export class Agent {
   
-  public id: agentID = 0; // id used within a match
+  public id: Agent.ID = 0; // id used within a match
   public tournamentID: Tournament.ID = null; // a tournmanet ID if used within a tournament
   public name: string; // name of this agent
   public src: string; // path to file to run
@@ -34,8 +24,10 @@ export class Agent {
 
   process: ChildProcess = null;
 
-  // current status of the agent
-  public status: AgentStatus = AgentStatus.UNINITIALIZED;
+  /**
+   * Current status of the agent
+   */
+  public status: Agent.Status = Agent.Status.UNINITIALIZED;
 
   public currentMoveCommands: Array<string> = [];
 
@@ -107,7 +99,7 @@ export class Agent {
     this.log.system(`Created agent: ${this.name}`);
 
     // set agent as ready
-    this.status = AgentStatus.READY;
+    this.status = Agent.Status.READY;
 
   }
 
@@ -170,10 +162,10 @@ export class Agent {
 
 
   isTerminated() {
-    return this.status === AgentStatus.KILLED;
+    return this.status === Agent.Status.KILLED;
   }
   _terminate() {
-    this.status = AgentStatus.KILLED;
+    this.status = Agent.Status.KILLED;
   }
 
   _disallowCommands() {
@@ -250,4 +242,15 @@ export class Agent {
     }
     return agents;
   }
+}
+export module Agent {
+  export enum Status {
+    UNINITIALIZED = 'uninitialized', // just created agent
+    READY = 'ready', // agent that has been fully created and ready to be used by the engine for a match
+    RUNNING = 'running', // agent that has a process running with it now
+    CRASHED = 'crashed',
+    KILLED = 'killed', // agent that has finished and is killed or was prematurely killed
+    STOPPED = 'stpped' // agent is currently not running
+  }
+  export type ID = number;
 }

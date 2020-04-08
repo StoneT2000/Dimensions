@@ -10,7 +10,7 @@ import { getMatchFromDimension } from '../../actions/dimensions';
 
 // NOTE!! Can import outside src as long as we dont use instanceof dimension or actually use it, we can just it for typings
 import { Match } from '../../../../../Match';
-import { Agent, AgentStatus } from '../../../../../Agent';
+import { Agent } from '../../../../../Agent';
 
 let intv: any;
 function MatchPage() {
@@ -35,7 +35,7 @@ function MatchPage() {
     {
       title: 'Status',
       dataIndex: 'status',
-      render: (status: AgentStatus) => <span>{status}</span>
+      render: (status: Agent.Status) => <span>{status}</span>
     },
   ];
   const startRefresh = () => {

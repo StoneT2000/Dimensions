@@ -1,7 +1,7 @@
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
 import { MatchEngine } from '../MatchEngine';
-import { Agent, agentID } from '../Agent';
+import { Agent } from '../Agent';
 import { Logger } from '../Logger';
 import { Design } from '../Design';
 import { FatalError } from '../DimensionError';
@@ -61,7 +61,7 @@ export class Match {
   /**
    * 
    */
-  public idToAgentsMap: Map<agentID, Agent> = new Map();
+  public idToAgentsMap: Map<Agent.ID, Agent> = new Map();
 
   /**
    * The current time step of the Match. This time step is independent of any {@link Design} and agents are coordianted 
@@ -94,7 +94,7 @@ export class Match {
    * A mapping from {@link Agent} IDs to the tournament id of the {@link Player} in a tournament that generated the
    * {@link Agent}
    */
-  public mapAgentIDtoTournamentID: Map<agentID, Tournament.ID> = new Map();
+  public mapAgentIDtoTournamentID: Map<Agent.ID, Tournament.ID> = new Map();
 
   /**
    * Match Configurations
@@ -323,7 +323,7 @@ export class Match {
    * Terminate an {@link Agent}, kill the process. Note, the agent is still stored in the Match, but you can't send or 
    * receive messages from it anymore
    */
-  public async kill(agent: agentID | Agent) {
+  public async kill(agent: Agent.ID | Agent) {
     
     if (agent instanceof Agent) {
       this.matchEngine.kill(agent);
@@ -383,9 +383,9 @@ export class Match {
    * Functional method for sending a message string to a particular {@link Agent}. Returns a promise that resolves true 
    * if succesfully sent
    * @param message - the string message to send
-   * @param receiver - receiver of message can be specified by the `Agent` or it's agentID (a number)
+   * @param receiver - receiver of message can be specified by the {@link Agent} or it's {@link Agent.ID} (a number)
    */
-  public async send(message: string, receiver: Agent | agentID): Promise<boolean> {
+  public async send(message: string, receiver: Agent | Agent.ID): Promise<boolean> {
     if (receiver instanceof Agent) {
       return this.matchEngine.send(this, message, receiver.id);
     }
@@ -401,7 +401,7 @@ export class Match {
    * @param agentID - the misbehaving agent's ID
    * @param error - The error
    */
-  public async throw(agentID: agentID, error: Error) {
+  public async throw(agentID: Agent.ID, error: Error) {
 
     // Fatal errors are logged and end the whole match
     // TODO: Try to use `instanceof`

@@ -3,7 +3,7 @@ import { DeepPartial } from "../../../utils/DeepPartial";
 import { Design } from '../../../Design';
 import { deepMerge } from "../../../utils/DeepMerge";
 import { FatalError } from "../../../DimensionError";
-import { agentID } from "../../../Agent";
+import { Agent } from "../../../Agent";
 import { Logger } from "../../../Logger";
 import RANK_SYSTEM = Tournament.RANK_SYSTEM;
 import { sprintf } from 'sprintf-js';
@@ -110,20 +110,20 @@ export class RoundRobinTournament extends Tournament {
     })
 
     // handle winners, tied, and losers players and update their stats
-    resInfo.winners.forEach((winnerID: agentID) => {
+    resInfo.winners.forEach((winnerID: Agent.ID) => {
       // resInfo contains agentIDs, which need to be remapped to tournament IDs
       let tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(winnerID);
       let oldplayerStat = this.state.playerStats.get(tournamentID.id);
       oldplayerStat.wins++;
       this.state.playerStats.set(tournamentID.id, oldplayerStat);
     });
-    resInfo.ties.forEach((tieplayerID: agentID) => {
+    resInfo.ties.forEach((tieplayerID: Agent.ID) => {
       let tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(tieplayerID);
       let oldplayerStat = this.state.playerStats.get(tournamentID.id);
       oldplayerStat.ties++;
       this.state.playerStats.set(tournamentID.id, oldplayerStat);
     });
-    resInfo.losers.forEach((loserplayerID: agentID) => {
+    resInfo.losers.forEach((loserplayerID: Agent.ID) => {
       let tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(loserplayerID);
       let oldplayerStat = this.state.playerStats.get(tournamentID.id);
       oldplayerStat.losses++;

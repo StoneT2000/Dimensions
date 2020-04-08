@@ -3,7 +3,7 @@ import { DeepPartial } from "../../../utils/DeepPartial";
 import { Design } from '../../../Design';
 import { deepMerge } from "../../../utils/DeepMerge";
 import { FatalError } from "../../../DimensionError";
-import { agentID } from "../../../Agent";
+import { Agent } from "../../../Agent";
 import trueskill from "trueskill";
 import LadderState = Tournament.Ladder.State;
 import LadderConfigs = Tournament.Ladder.Configs;
@@ -38,7 +38,7 @@ export class LadderTournament extends Tournament {
 
   // queue of the results to process. Use of queue avoids asynchronous editing of player stats such as 
   // sigma and mu for trueskill
-  resultProcessingQueue: Array<{result: any, mapAgentIDtoTournamentID: Map<agentID, Tournament.ID>}> = [];
+  resultProcessingQueue: Array<{result: any, mapAgentIDtoTournamentID: Map<Agent.ID, Tournament.ID>}> = [];
 
   constructor(
     design: Design,

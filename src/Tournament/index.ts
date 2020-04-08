@@ -6,7 +6,7 @@ import { EliminationTournament } from './TournamentTypes/Elimination';
 import { DeepPartial } from '../utils/DeepPartial';
 import { Logger } from '../Logger';
 import { LadderTournament } from './TournamentTypes/Ladder';
-import { agentID } from '../Agent';
+import { Agent } from '../Agent';
 import { deepCopy } from '../utils/DeepCopy';
 
 /**
@@ -278,11 +278,11 @@ export module Tournament {
       /** The results interface that must be returned by a result handler for a {@link Tournament} */
       export interface Results {
         /** Array of agent IDs of {@link agent}s that won in the {@link Match}*/
-        winners: Array<agentID>
+        winners: Array<Agent.ID>
         /** Array of agent IDs of {@link agent}s that tied in the {@link Match}*/
-        ties: Array<agentID>
+        ties: Array<Agent.ID>
         /** Array of agent IDs of {@link agent}s that lost in the {@link Match}*/
-        losers: Array<agentID>
+        losers: Array<Agent.ID>
       }
     }
     export namespace ELO {
@@ -291,8 +291,8 @@ export module Tournament {
       }
       /** The results interface that must be returned by a result handler for a {@link Tournament} */
       export interface Results {
-        /** Array of agentIDs and their ranks in a {@link Match}, where rank 1 is highest */
-        ranks: Array<{rank: number, agentID: agentID}>
+        /** Array of {@link Agent.ID}s and their ranks in a {@link Match}, where rank 1 is highest */
+        ranks: Array<{rank: number, agentID: Agent.ID}>
       }
     }
 
@@ -307,7 +307,7 @@ export module Tournament {
       /** The results interface that must be returned by a result handler for a {@link Tournament} */
       export interface Results {
         /** Array of agentIDs and their ranks in a {@link Match}, where rank 1 is highest */
-        ranks: Array<{rank: number, agentID: agentID}> 
+        ranks: Array<{rank: number, agentID: Agent.ID}> 
       }
       export interface RankState {
         /** The current Mu value of a player */
