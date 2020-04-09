@@ -6,9 +6,9 @@ const Parser = require('./parser');
 const parse = new Parser(',');
 
 /**
- * Agent Control for sequential `Designs`
+ * Agent for sequential `Designs`
  */
-class AgentControl {
+class Agent {
   _setup() {
 
     // Prepare to read input
@@ -91,4 +91,4 @@ class AgentControl {
   }
 }
 
-module.exports = AgentControl;
+module.exports = { Agent };

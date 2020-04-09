@@ -1,5 +1,6 @@
-const Agent = require('./agent');
-const agent = new Agent();
+const kit = require('./kit');
+// create a new agent
+const agent = new kit.Agent();
 agent.initialize().then(async () => {
   let choices = ['R', 'S', 'P'];
   while(true) {
