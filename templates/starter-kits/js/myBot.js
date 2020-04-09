@@ -1,7 +1,7 @@
-const Agent = require('./agent');
+const kit = require('./kit');
 
 // create a new agent
-const agent = new Agent();
+const agent = new kit.Agent();
 
 try {
   // first initialize the agent, and then proceed to go in a loop waiting for updates and running the AI

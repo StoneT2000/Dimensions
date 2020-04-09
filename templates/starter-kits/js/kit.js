@@ -6,9 +6,9 @@ const Parser = require('./parser');
 const parse = new Parser(',');
 
 /**
- * Agent Control for sequential `Designs`
+ * Agent for sequential `Designs`
  */
-class AgentControl {
+class Agent {
   _setup() {
 
     // Prepare to read input
@@ -72,13 +72,8 @@ class AgentControl {
    */
   async update() {
 
-    // wait for the engine to send the result of the last round, which is the ID of the agent who won
-    let result = (await this.getLine()).nextInt();
-    this.roundResults.push(result);
-
-    // wait for the engine to send you the opponent's last move, which is either 'R', 'P', or 'S'
-    let lastOpponentMove = (await this.getLine()).nextStr();
-    this.pastOpponentMoves.push(lastOpponentMove);
+    // wait for the engine to send any updates
+    // let updates = (await this.getLine());
   }
 
   /**

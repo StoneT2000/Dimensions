@@ -151,7 +151,7 @@ Other starter kit templates in other languages can be found in [/templates/start
 
 AI Starter kits are suggested to contain at least two files, `agent.js` (or whichever extension matches your language) and [`myBot.js`](https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/myBot.js). It can be merged into one but for organization, splitting it up is better.
 
-[`agent.js`](https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/agent.js) should have a `AgentControl` class with some kind of asynchronous  `initialize, update` functions and a `endTurn` function.
+[`kit.js`](https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/kit.js) should have a `Agent` class with some kind of asynchronous  `initialize, update` functions and a `endTurn` function.
 
 `initialize` should have the agent wait for a line input from `stdin` (standard in) if anything is being sent to the agent through `match.send` in the `design` in `initialize(match)`.
 
@@ -159,47 +159,40 @@ AI Starter kits are suggested to contain at least two files, `agent.js` (or whic
 
 `endTurn` should always just print to `stdout` (standard out) `'D_FINISH`
 
-Then in `myBot.js`, a new `AgentControl` should be initialized as `agent` and should run `agent.initialize`
+Then in `myBot.js`, a new `kit.Agent` should be initialized as `agent` and should run `agent.initialize`
 
 Once initialization is completely done, then there should be a infinite while loop that runs the AI agent's code and also waits for updates through `agent.update`
 
 For example, in JS this would be equivalent to
 
 ```js
-const Agent = require('./agent');
+const kit = require('./kit');
 
 // create a new agent
-const agent = new Agent();
+const agent = new kit.Agent();
+// first initialize the agent, and then proceed to go in a loop waiting for updates and running the AI
+agent.initialize().then(async () => {
+  while(true) {
 
-try {
-  // first initialize the agent, and then proceed to go in a loop waiting for updates and running the AI
-  agent.initialize().then(async () => {
-    while(true) {
-      
-      // wait for update from match engine
-      await agent.update();
+    // wait for update from match engine
+    await agent.update();
 
-      /** AI Code goes here */
+    /** AI Code goes here */
 
-      let commands = [];
+    let commands = [];
 
-      // push some commands in to be processed by the `MatchEngine` working under a `Design`
-      commands.push('somecommand');
-      commands.push('anothercommand');
+    // push some commands in to be processed by the MatchEngine
+    commands.push('somecommand');
+    commands.push('anothercommand');
 
-      // submit commands to the `MatchEngine` and the `Match`, using ',' as the delimiter
-      console.log(commands.join(','));
-      
-      // now we end our turn
-      agent.endTurn();
-      
-    }
-  });
-}
-catch(error) {
-  // log any errors if they come up
-  console.error(error);
-}
+    // submit commands to the `MatchEngine` and the `Match`, using ',' as the delimiter
+    console.log(commands.join(','));
+
+    // now we end our turn
+    agent.endTurn();
+
+  }
+});
 ```
 
 Note that the `await agent.update()` can be moved after `agent.endTurn()` if needed, this really depends on how you make the `design` .
