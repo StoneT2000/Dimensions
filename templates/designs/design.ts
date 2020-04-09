@@ -1,5 +1,11 @@
 import * as Dimension from 'dimensions-ai';
-import { Logger, MatchStatus } from 'dimensions-ai';
+import Match = Dimension.Match;
+import Tournament = Dimension.Tournament;
+
+
+interface MyMatchResults {
+  ranks: Array<{rank: number, agentID: number}>
+}
 
 export class MyDesign extends Dimension.Design {
   constructor(name: string) {
@@ -7,7 +13,7 @@ export class MyDesign extends Dimension.Design {
   }
 
   // Initialization step of each match
-  async initialize(match: Dimension.Match) {
+  async initialize(match: Match) {
     
     // configure some state
     let state = {};
@@ -16,7 +22,7 @@ export class MyDesign extends Dimension.Design {
 
     // a good design is to send each agent their ID to tell them the match is starting
     for (let i = 0; i < match.agents.length; i++) {
-      let agentID = match.agents[i].agentID;
+      let agentID = match.agents[i].id;
       // sends the string `${agentID}` to the agent specified by agentID
       match.send(`${agentID}`, agentID);
     }
@@ -27,7 +33,7 @@ export class MyDesign extends Dimension.Design {
   }
 
   // Update step of each match, called whenever the match moves forward by a single unit in time (1 timeStep)
-  async update(match: Dimension.Match, commands: Array<Dimension.Command>) {
+  async update(match: Match, commands: Array<Dimension.MatchEngine.Command>) {
     
     // match.log is the logging tool to print to console during a match
     // infobar logs a bar for seperation
@@ -45,7 +51,7 @@ export class MyDesign extends Dimension.Design {
       let incorrectBehavior = false;
       if (incorrectBehavior) {
         // if there's incorrect behavior from an agent that is not fatal, you can log a match error for an agent
-        match.throw(agentID, new Dimension.MatchError('Incorrect behavior'))
+        match.throw(agentID, new Dimension.MatchWarn('Incorrect behavior'))
       }
       let fatalError = false;
       if (fatalError) {
@@ -69,18 +75,44 @@ export class MyDesign extends Dimension.Design {
 
     if (matchOver) {
       // if match is over, return finished
-      return MatchStatus.FINISHED
+      return Dimension.Match.Status.FINISHED
     }
     // otherwise no need to return and match continues
 
   }
 
   // Result calculation of concluded match. Should return the results of a match after it finishes
-  async getResults(match: Dimension.Match) {
+  async getResults(match: Match): Promise<MyMatchResults> {
     // calculate results
-    let results = {};
+    let results = {
+      ranks: [{rank: 1, agentID: 0}, {rank: 2, agentID: 2}, {rank: 3, agentID: 1}]
+    };
 
     // return them
     return results;
   } 
+
+  // It's recommended to write result handlers for the different rank systems so that people using the design
+  // can run tournaments with it
+
+  // result handler for RANK_SYSTEM.WINS 
+  static winsResultHandler(results: MyMatchResults): Tournament.RANK_SYSTEM.WINS.Results {
+    let winners = []; let ties = []; let losers = [];
+    // push the numerical agent ids of the winners, tied players, and losers into the arrays and return them
+    return {
+      winners: winners,
+      ties: ties,
+      losers: losers
+    }
+  }
+
+  // result handler for RANK_SYSTEM.TRUESKILL
+  static trueskillResultHandler(results: MyMatchResults): Tournament.RANK_SYSTEM.TRUESKILL.Results {
+    let rankings = [];
+    for (let i = 0; i < results.ranks.length; i++) {
+      let info = results.ranks[i];
+      rankings.push({rank: info.rank, agentID: info.agentID});
+    }
+    return {ranks: rankings}
+  }
 }

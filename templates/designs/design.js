@@ -1,5 +1,4 @@
-import * as Dimension from 'dimensions-ai';
-import { Logger, MatchStatus } from 'dimensions-ai';
+const Dimension = require('dimensions-ai');
 
 export class MyDesign extends Dimension.Design {
   construct(name) {
@@ -16,13 +15,13 @@ export class MyDesign extends Dimension.Design {
 
     // a good design is to send each agent their ID to tell them the match is starting
     for (let i = 0; i < match.agents.length; i++) {
-      let agentID = match.agents[i].agentID;
+      let agentID = match.agents[i].id;
       // sends the string `${agentID}` to the agent specified by agentID
       match.send(`${agentID}`, agentID);
     }
 
     // also would be good to send any global information to all agents
-    match.sendAll('initial information')
+    match.sendAll('initial information');
     
   }
 
@@ -44,8 +43,8 @@ export class MyDesign extends Dimension.Design {
 
       let incorrectBehavior = false;
       if (incorrectBehavior) {
-        // if there's incorrect behavior from an agent that is not fatal, you can log a match error for an agent
-        match.throw(agentID, new Dimension.MatchError('Incorrect behavior'))
+        // if there's incorrect / unintended behavior from an agent that is not fatal, you can log a match warning for an agent
+        match.throw(agentID, new Dimension.MatchWarn('Incorrect behavior'))
       }
       let fatalError = false;
       if (fatalError) {
@@ -69,7 +68,7 @@ export class MyDesign extends Dimension.Design {
 
     if (matchOver) {
       // if match is over, return finished
-      return MatchStatus.FINISHED
+      return Dimension.Match.Status.FINISHED
     }
     // otherwise no need to return and match continues
 
@@ -82,5 +81,29 @@ export class MyDesign extends Dimension.Design {
 
     // return them
     return results;
-  } 
+  }
+  
+  // It's recommended to write result handlers for the different rank systems so that people using the design
+  // can run tournaments with it
+
+  // result handler for RANK_SYSTEM.WINS 
+  winsResultHandler(results) {
+    let winners = []; let ties = []; let losers = [];
+    // push the numerical agent ids of the winners, tied players, and losers into the arrays and return them
+    return {
+      winners: winners,
+      ties: ties,
+      losers: losers
+    }
+  }
+
+  // result handler for RANK_SYSTEM.TRUESKILL
+  trueskillResultHandler(results) {
+    let rankings = [];
+    for (let i = 0; i < results.ranks.length; i++) {
+      let info = results.ranks[i];
+      rankings.push({rank: info.rank, agentID: info.agentID});
+    }
+    return {ranks: rankings}
+  }
 }

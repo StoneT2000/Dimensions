@@ -50,12 +50,12 @@ Create a new file called `run.js` and inside it we need to first `require` the p
 const Dimension = require('dimensions-ai');
 ```
 
-In order to start writing AI to compete against each other in a competition, you need to do two thing.
+In order to start writing AI to compete against each other in a competition, you need to do two things.
 
 1. Design the competition
 2. Design an AI starter kit
 
-You need to design a competition to allow people to compete and facilitate the matches. More info on that soon. And it is highly suggest to design an AI starter kit so people can get straight into competing.
+You need to design a competition to allow people to compete and facilitate the matches. More info on that soon. And it is highly suggested to design an AI starter kit so people can get straight into competing.
 
 Let's first design a simple RockPaperScissors competition. To design a competition, you will need to code. On the roadmap there are plans to potentially make a no-code competition designer.
 
@@ -68,6 +68,8 @@ To design the competition we need to create a `class` that extends `Dimension.De
 | `initialize`               | Perform match initializations                  |
 | `update`                   | Update the match state and return match status |
 | `getResults`               | Return the match results                       |
+
+More details found on the documentation [here](https://stonet2000.github.io/Dimensions/classes/_design_index_.design.html)
 
 So now we would have something like
 
@@ -87,7 +89,7 @@ class RockPaperScissorsDesign extend Dimension.Design {
 }
 ```
 
-Each `match` parameter passed in is of type `Match` and is the same `match` that each lifecycle function works with. A `match` exposes key properties and functions for use to design the competition. The most important properties are `match.agents, match.state, match.configs` and important functions are `match.send, match.sendAll`. 
+Each `match` parameter passed in is of type `Match` and is the same `match` that each lifecycle function works with. A `match` exposes key properties and functions for use to design the competition. The most important properties are `match.agents, match.state, match.configs` and important functions are `match.send, match.sendAll`. All documented [here](https://stonet2000.github.io/Dimensions/classes/_match_index_.match.html)
 
 `match.agents` contains all the participating players, named as `agents`, all of type `Agent`. Each agent has fields such as `agent.id` and `agent.name`, useful for designing a competition when trying to decide what to communicate with agents in a competition. In rock paper scissors, usually theres only 2 agents. Note that agents are numbered from 0, 1, 2... and so forth.
 
