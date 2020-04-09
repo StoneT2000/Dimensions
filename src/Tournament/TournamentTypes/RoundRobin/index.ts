@@ -67,6 +67,7 @@ export class RoundRobinTournament extends Tournament {
   }
 
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<Tournament.RoundRobin.Configs>>) {
+    this.status = Tournament.TournamentStatus.RUNNING;
     this.log.info('Running Tournament with competitors: ', this.competitors.map((player) => player.tournamentID.name));
     this.configs = deepMerge(this.configs, configs);
     this.initialize();
@@ -88,6 +89,24 @@ export class RoundRobinTournament extends Tournament {
    * @param matchInfo 
    */
   private async handleMatch(matchInfo: Array<Player>) {
+    if (this.configs.consoleDisplay) {
+      this.printTournamentStatus();
+      console.log();
+      console.log('Current Matches: ' + (this.matches.size + 1));
+      this.matches.forEach((match) => {
+        let names = [];
+        match.agents.forEach((agent) => {
+          names.push(agent.name);
+        });
+        console.log(names);
+      });
+      let names = [];
+      matchInfo.forEach((player) => {
+        names.push(player.tournamentID.name);
+      });
+      console.log(names);
+    }
+    
     this.log.detail('Running match - Competitors: ', matchInfo.map((player) => player.tournamentID.name));
     let matchRes = await this.runMatch(matchInfo);
     let resInfo = <Tournament.RANK_SYSTEM.WINS.Results>this.configs.resultHandler(matchRes.results);
@@ -124,6 +143,15 @@ export class RoundRobinTournament extends Tournament {
     });
     if (this.configs.consoleDisplay) {
       this.printTournamentStatus();
+      console.log();
+      console.log('Current Matches: ' + this.matches.size);
+      this.matches.forEach((match) => {
+        let names = [];
+        match.agents.forEach((agent) => {
+          names.push(agent.name);
+        });
+        console.log(names);
+      });
     }
   }
 
@@ -227,15 +255,6 @@ export class RoundRobinTournament extends Tournament {
           });
           break;
       }
-      console.log();
-      console.log('Current Matches: ' + this.matches.size);
-      this.matches.forEach((match) => {
-        let names = [];
-        match.agents.forEach((agent) => {
-          names.push(agent.name);
-        });
-        console.log(names);
-      });
     }
   }
 }

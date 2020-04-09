@@ -7,3 +7,4 @@ replays
 coverage
 __pycache__
 tests/run.*.ts
+.DS_STORE

@@ -12,6 +12,28 @@ Dimensions utilizes an I/O based model to run competitions and pit AI agents aga
 
 This was inspired by [Battlecode](battlecode.org/) and [Halite](https://halite.io/)
 
+Keep reading to learn how to get started and make a tournament like this:
+
+![dimensions-trueskill-RPS](assets/dimensions-trueskill-RPS.gif)
+
+Of which the [AI bots]() are all coded in about 10 lines or less (ignoring the starter kit)
+
+```js
+const Agent = require('./agent');
+const agent = new Agent();
+agent.initialize().then(async () => {
+  while(true) {
+    console.log('R'); // tell the match you want to play Rock in the game
+    agent.endTurn(); // end turn
+    await agent.update(); // wait for updates
+  }
+});
+```
+
+
+
+Or jump straight to [Documentation](https://stonet2000.github.io/Dimensions/index.html),  [Contributing](#Contributing), [Development](#Development) or [Plans](#Plans) curated by the owner and the community
+
 ## Getting Started
 
 At the moment, Dimensions supports competition designing through JavaScript / TypeScript only. However, all AI agents can be coded in any language due to the I/O model.
@@ -115,7 +137,7 @@ Some existing `designs` are provided as examples at [/examples](https://github.c
 
 If you want to kick start development on your own `design`, check out [/templates/designs](https://github.com/StoneT2000/Dimensions/tree/master/templates/designs)
 
-Full documentation on `Match, Agent` and other data that can be used, along with configuration can be found here: TODO add link
+Look into the documentation on [Match](https://stonet2000.github.io/Dimensions/classes/_match_index_.match.html) and [Agent](https://stonet2000.github.io/Dimensions/classes/_agent_index_.agent.html) for what data is available to you to use in your design.
 
 ### Designing an AI Starter Kit
 
@@ -213,9 +235,49 @@ Notice that your console will also print something about a station. It'll give y
 
 ### Run a Tournament
 
-This framework also provides tournament running features, including Round Robin, Ladder, and Elimination type tournaments. Additionally, there are various ranking systems used, such as Win/Tie/Loss, TrueSkill, and ELO.
+This framework also provides tournament running features, including [Round Robin](), and [Ladder]() type tournaments. Additionally, there are various ranking systems used, such as Win/Tie/Loss and Trueskill.
 
-Here is how you run a tournament. First, you will need a `resultHandler` function. This function must given to the tournament to indicate how the results of a `match` should be interpreted. Recall that these results are returned by the `getResult` command in your design.
+Here is how you run a tournament. First, you will need a `resultHandler` function. This function must given to the tournament to indicate how the results of a `match` should be interpreted. Recall that these results are returned by the `getResult` command in your design. It is suggested to provide these result handlers in your `Design`. 
+
+```js
+let RPSDesign = new RockPaperScissorsDesign('RPS!');
+let myDimension = Dimension.create(RPSDesign);
+let Tournament = Dimension.Tournament;
+let simpleBot = "./bots/rock.js";
+let botSources = [simpleBot, simpleBot, simpleBot, simpleBot, simpleBot];
+
+let RPSTournament = myDimension.createTournament(fileAndNames, {
+  name: 'A Best of 329 Rock Paper Scissors Tournament', // give it a name
+  type: Tournament.TOURNAMENT_TYPE.LADDER, // Create a Ladder Tournament
+  rankSystem: Tournament.RANK_SYSTEM.TRUESKILL, // Use Trueskill to rank bots
+  agentsPerMatch: [2],
+  defaultMatchConfigs: {
+    bestOf: 329
+		loggingLevel: Dimension.Logger.LEVEL.NONE
+  }
+  resultHandler: (results: any) => {
+    let ranks = [];
+    if (results.winner === 'Tie') {
+      ranks = [{rank: 1, agentID: 0}, {rank: 1, agentID: 1}]
+    }
+    else {
+      let loserID = (results.winnerID + 1) % 2;
+      ranks = [{rank: 1, agentID: results.winnerID}, {rank: 2, agentID: loserID}]
+    }
+    return {
+      ranks: ranks
+    }
+  }
+});
+```
+
+Full documentation on Tournaments can be found [here](https://stonet2000.github.io/Dimensions/classes/_tournament_index_.tournament.html) and documentation on the configuration you can pass in can be found [here](https://stonet2000.github.io/Dimensions/interfaces/_tournament_index_.tournament.tournamentconfigsbase.html). Documentation 
+
+Note that different tournament types have different tournament configurations and different rank systems have different ranking configurations, all of which can be found on the documentation.
+
+### More Stuff!
+
+Refer to the [wiki](https://github.com/StoneT2000/Dimensions/wiki) for some more basic and advanced usages of this framework. This ranges from how to configure the match engine, configuring various tournaments and rank systems, to tips on designing a successful competition.
 
 ## Contributing
 
@@ -255,7 +317,7 @@ npm run build
 
 to build the entire library, including any frontend code.
 
-## Road Map / Plans / Possible Features
+## Plans
 
 - Add tournament running
   - Single and Double elimination, seeded and random options
