@@ -1,7 +1,7 @@
-from agent import AgentController
+from kit import Agent
 
 # Create new agent
-agent = AgentController()
+agent = Agent()
 
 # initialize agent
 agent.initialize()

@@ -10,7 +10,7 @@ def read_input():
     except EOFError as eof:
         raise SystemExit(eof)
       
-class AgentController:
+class Agent:
     def __init__(self):
         pass
 
