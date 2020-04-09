@@ -100,6 +100,7 @@ export class LadderTournament extends Tournament {
     
   }
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<LadderConfigs>>) {
+    this.status = Tournament.TournamentStatus.RUNNING;
     this.log.info('Running Tournament with competitors: ', this.competitors.map((player) => player.tournamentID.name));
     this.configs = deepMerge(this.configs, configs);
     this.initialize();

@@ -67,6 +67,7 @@ export class RoundRobinTournament extends Tournament {
   }
 
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<Tournament.RoundRobin.Configs>>) {
+    this.status = Tournament.TournamentStatus.RUNNING;
     this.log.info('Running Tournament with competitors: ', this.competitors.map((player) => player.tournamentID.name));
     this.configs = deepMerge(this.configs, configs);
     this.initialize();
