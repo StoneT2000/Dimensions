@@ -31,8 +31,9 @@ agent.initialize().then(async () => {
 ```
 
 
+Or jump straight to [Documentation](https://stonet2000.github.io/Dimensions/index.html),  [Contributing](#Contributing), [Development](#Development) or [Plans](#Plans) curated by the owner and the community.
 
-Or jump straight to [Documentation](https://stonet2000.github.io/Dimensions/index.html),  [Contributing](#Contributing), [Development](#Development) or [Plans](#Plans) curated by the owner and the community
+Also checkout the blog post introducing the motivation for Dimensions and thoughts about it here: https://stonet2000.github.io/blog/posts/Dimensions/index.html
 
 ## Getting Started
 
