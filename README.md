@@ -19,8 +19,8 @@ Keep reading to learn how to get started and make a tournament like this:
 Of which the [AI bots]() are all coded in about 10 lines or less (ignoring the starter kit)
 
 ```js
-const Agent = require('./agent');
-const agent = new Agent();
+const kit = require('./kit');
+const agent = new kit.Agent();
 agent.initialize().then(async () => {
   while(true) {
     console.log('R'); // tell the match you want to play Rock in the game
