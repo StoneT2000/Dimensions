@@ -279,7 +279,7 @@ Note that different tournament types have different tournament configurations an
 
 ### More Stuff!
 
-Refer to the [wiki](https://github.com/StoneT2000/Dimensions/wiki) for some more basic and advanced usages of this framework. This ranges from how to configure the match engine, configuring various tournaments and rank systems, to tips on designing a successful competition.
+The [wiki](https://github.com/StoneT2000/Dimensions/wiki) will soon be populated with more basic and advanced example usages of this framework. This ranges from how to configure the match engine, configuring various tournaments and rank systems, to tips on designing a successful competition.
 
 ## Contributing
 
@@ -321,7 +321,7 @@ to build the entire library, including any frontend code.
 
 ## Plans
 
-- Add tournament running
+- Add tournament running (in progress)
   - Single and Double elimination, seeded and random options
   - Trueskill / ELO rankings based, giving option of number of matches to run and other configs (Like Halite)
   - Simple round robins (Like associating football)
