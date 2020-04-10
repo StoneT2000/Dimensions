@@ -19,8 +19,8 @@ Keep reading to learn how to get started and make a tournament like this:
 Of which the [AI bots]() are all coded in about 10 lines or less (ignoring the starter kit)
 
 ```js
-const Agent = require('./agent');
-const agent = new Agent();
+const kit = require('./kit');
+const agent = new kit.Agent();
 agent.initialize().then(async () => {
   while(true) {
     console.log('R'); // tell the match you want to play Rock in the game
@@ -31,8 +31,9 @@ agent.initialize().then(async () => {
 ```
 
 
+Or jump straight to [Documentation](https://stonet2000.github.io/Dimensions/index.html),  [Contributing](#Contributing), [Development](#Development) or [Plans](#Plans) curated by the owner and the community.
 
-Or jump straight to [Documentation](https://stonet2000.github.io/Dimensions/index.html),  [Contributing](#Contributing), [Development](#Development) or [Plans](#Plans) curated by the owner and the community
+Also checkout the blog post introducing the motivation for Dimensions and thoughts about it here: https://stonet2000.github.io/blog/posts/Dimensions/index.html
 
 ## Getting Started
 
@@ -272,7 +273,7 @@ Note that different tournament types have different tournament configurations an
 
 ### More Stuff!
 
-Refer to the [wiki](https://github.com/StoneT2000/Dimensions/wiki) for some more basic and advanced usages of this framework. This ranges from how to configure the match engine, configuring various tournaments and rank systems, to tips on designing a successful competition.
+The [wiki](https://github.com/StoneT2000/Dimensions/wiki) will soon be populated with more basic and advanced example usages of this framework. This ranges from how to configure the match engine, configuring various tournaments and rank systems, to tips on designing a successful competition.
 
 ## Contributing
 
@@ -314,7 +315,7 @@ to build the entire library, including any frontend code.
 
 ## Plans
 
-- Add tournament running
+- Add tournament running (in progress)
   - Single and Double elimination, seeded and random options
   - Trueskill / ELO rankings based, giving option of number of matches to run and other configs (Like Halite)
   - Simple round robins (Like associating football)
