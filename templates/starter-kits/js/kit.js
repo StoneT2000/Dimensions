@@ -6,9 +6,9 @@ const Parser = require('./parser');
 const parse = new Parser(',');
 
 /**
- * Agent Control for sequential `Designs`
+ * Agent for sequential `Designs`
  */
-class AgentControl {
+class Agent {
   _setup() {
 
     // Prepare to read input
@@ -49,7 +49,7 @@ class AgentControl {
   }
 
   /**
-   * Constructor for a new agent controller
+   * Constructor for a new agent
    * User should edit this according to the `Design` this agent will compete under
    */
   constructor() {
@@ -58,33 +58,32 @@ class AgentControl {
 
   /**
    * Initialize Agent for the `Match`
-   * User should edit this according to the `Design` this agent will compete under
+   * User should edit this according to their `Design`
    */
   async initialize() {
 
     // use (await this.getLine()) to get a parsed line of commands from the match engine
     // This parsed line is an object from which you can get the nextInt, nextFloat, nextIntArr etc..
-
+    
+    // get agent ID
+    this.id = (await this.getLine).nextInt();
+    // get some other necessary initial input
+    let input = (await this.getLine).nextStr();
   }
   /**
    * Updates agent's own known state of `Match`
-   * User should edit this according to the `Design` this agent will compete under
+   * User should edit this according to their `Design`.
    */
   async update() {
 
-    // wait for the engine to send the result of the last round, which is the ID of the agent who won
-    let result = (await this.getLine()).nextInt();
-    this.roundResults.push(result);
-
-    // wait for the engine to send you the opponent's last move, which is either 'R', 'P', or 'S'
-    let lastOpponentMove = (await this.getLine()).nextStr();
-    this.pastOpponentMoves.push(lastOpponentMove);
+    // wait for the engine to send any updates
+    let updates = (await this.getLine());
+    let theNextInt = updates.nextInt();
+    let theNextString = updates.nextStr();
   }
 
   /**
-   * End a 'turn'
-   * Effectively tells the `MatchEngine` to stop processing this agent's commands and mark this agent as finished for 
-   * the current timeStep
+   * End a turn
    */
   endTurn() {
     console.log('D_FINISH');

@@ -7,4 +7,7 @@ replays
 coverage
 __pycache__
 tests/run.*.ts
-.DS_STORE
+*.DS_STORE
+*.DS_Store
+*.out
+*.class

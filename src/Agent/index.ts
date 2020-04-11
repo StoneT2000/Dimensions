@@ -34,10 +34,13 @@ export class Agent {
   /** The extension of the file */
   public ext: string;
 
+  /** file without extension */
+  public srcNoExt: string
+
   /** The current working directory of the source file */
   public cwd: string;
   /** The command used to run the file */
-  public cmd: string;
+  public cmd: string = null;
 
   /**
    * Creation date of the agent
@@ -88,12 +91,18 @@ export class Agent {
         break;
       case '.java':
         this.cmd = 'java'
+        break;
+      case '.c':
+      case '.cpp':
+        this.cmd = ''
+        break;
       default:
         // throw new DimensionError(`${ext} is not a valid file type`);
     }
     let pathparts = file.split('/');
     this.cwd = pathparts.slice(0, -1).join('/');
     this.src = pathparts.slice(-1).join('/');
+    this.srcNoExt = this.src.slice(0, -this.ext.length);
 
     // check if file exists
     if(!fs.existsSync(file)) {
@@ -102,7 +111,7 @@ export class Agent {
 
     if (options.command) {
       this.cmd = options.command;
-    } else if (!this.cmd) {
+    } else if (this.cmd === undefined || this.cmd === null) {
       throw new FatalError(`No command provided or inferable for agent using ${file}`);
     }
     if (options.id !== undefined) {
@@ -144,13 +153,29 @@ export class Agent {
         case '.js':
           resolve();
           break;
+        case '.cpp':
+          exec(`g++ -O3  -o ${this.srcNoExt}.out ${this.src}`, {
+            cwd: this.cwd
+          }, (err) => {
+            if (err) reject(err);
+            resolve();
+          });
+          break;
+        case '.c':
+          exec(`gcc -O3 -o ${this.srcNoExt}.out ${this.src}`, {
+            cwd: this.cwd
+          }, (err) => {
+            if (err) reject(err);
+            resolve();
+          });
+          break;
         case '.java':
           exec("javac " + this.src, {
             cwd: this.cwd
           }, (err) => {
             if (err) reject(err);
             resolve();
-          })
+          });
           break;
         default:
           reject('Unrecognized file');
@@ -173,14 +198,17 @@ export class Agent {
           resolve(p);
           break;
         case '.java':
-          let src = this.src.slice(0, -5);
-          p = spawn(this.cmd, [src], {
+          p = spawn(this.cmd, [this.srcNoExt], {
             cwd: this.cwd
           }).on('error', function( err ){ reject(err) });
           resolve(p);
           break;
         case '.c':
         case '.cpp':
+          p = spawn('./' + this.srcNoExt + '.out', {
+            cwd: this.cwd
+          }).on('error', function( err ){ reject(err) });
+          resolve(p);
           break;
         default:
           reject('Unrecognized file');
