@@ -343,7 +343,9 @@ export module Tournament {
         /** Array of agentIDs and their ranks in a {@link Match}, where rank 1 is highest */
         ranks: Array<{rank: number, agentID: Agent.ID}> 
       }
+      /** The current rank state of a player */
       export interface RankState { 
+        /** The trueskill rating */
         rating: Rating
       }
     }

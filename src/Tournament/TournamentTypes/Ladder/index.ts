@@ -300,14 +300,11 @@ export class LadderTournament extends Tournament {
       let tournamentID = mapAgentIDtoTournamentID.get(rank.agentID);
       let currentplayerStats = this.state.playerStats.get(tournamentID.id);
       let currRankState = <RANK_SYSTEM.TRUESKILL.RankState>currentplayerStats.rankState;
-      // ranksAndSkillsOfplayers.push({
-      //   skill: [currRankState.rating.mu, currRankState.sigma], rank: rank.rank, tournamentID: tournamentID
-      // });
       playerRatings.push([currRankState.rating]);
       ranks.push(rank.rank);
       tourneyIDs.push({id: tournamentID, stats: currentplayerStats});
     });
-    // trueskill.AdjustPlayers(ranksAndSkillsOfplayers);
+
     let newRatings = rate(playerRatings, ranks);
     tourneyIDs.forEach((info, i) => {
       let tourneyID = info.id.id;
@@ -316,13 +313,6 @@ export class LadderTournament extends Tournament {
       this.state.playerStats.set(tourneyID, currentStats);
     })
 
-
-    // ranksAndSkillsOfplayers.forEach((playerInfo) => {
-    //   let currentplayerStats = this.state.playerStats.get(playerInfo.tournamentID.id);
-    //   (<RANK_SYSTEM.TRUESKILL.RankState>(currentplayerStats.rankState)).mu = playerInfo.skill[0];
-    //   (<RANK_SYSTEM.TRUESKILL.RankState>(currentplayerStats.rankState)).sigma = playerInfo.skill[1];
-    //   this.state.playerStats.set(playerInfo.tournamentID.id, currentplayerStats);
-    // });
     if (this.configs.consoleDisplay) {
       this.printTournamentStatus();
       console.log();
