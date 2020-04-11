@@ -39,6 +39,7 @@ namespace kit {
 
         /**
          * Updates agent's own known state of `Match`.
+         * User should edit this according to their `Design`.
          */
         static void update() {
             int updateInfo = kit::getline();

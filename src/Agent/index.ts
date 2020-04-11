@@ -84,13 +84,16 @@ export class Agent {
     this.ext = path.extname(file);
     switch(this.ext) {
       case '.py':
-        this.cmd = 'python'
+        this.cmd = 'python';
         break;
       case '.js':
-        this.cmd = 'node'
+        this.cmd = 'node';
         break;
       case '.java':
-        this.cmd = 'java'
+        this.cmd = 'java';
+        break;
+      case '.php':
+        this.cmd = 'php';
         break;
       case '.c':
       case '.cpp':
@@ -148,9 +151,8 @@ export class Agent {
     return new Promise((resolve, reject) => {
       switch(this.ext) {
         case '.py':
-          resolve();
-          break;
         case '.js':
+        case '.php':
           resolve();
           break;
         case '.cpp':
@@ -210,6 +212,11 @@ export class Agent {
           }).on('error', function( err ){ reject(err) });
           resolve(p);
           break;
+        case '.php':
+          p = spawn(this.cmd, [this.src], {
+            cwd: this.cwd
+          }).on('error', function( err ){ reject(err) });
+          resolve(p);
         default:
           reject('Unrecognized file');
       }

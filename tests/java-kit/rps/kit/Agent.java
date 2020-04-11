@@ -16,7 +16,7 @@ public class Agent {
     }
 
     public void update() {
-      int result = scanner.nextInt();
+      String result = scanner.nextLine();
       String lastOpponentMove = scanner.nextLine();
     }
 

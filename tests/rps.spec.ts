@@ -113,6 +113,16 @@ describe('Rock Paper Scissors Run', () => {
       )
       expect(results.scores).to.eql({'0': 3, '1': 1});
     });
+    it('should support php', async () => {
+      let results = await myDimension.runMatch(
+        ['./tests/js-kit/rps/smarter.js', './tests/php-kit/rps/rock.php'],
+        {
+          name: 'mult-lang (php)',
+          bestOf: 4
+        }
+      )
+      expect(results.scores).to.eql({'0': 3, '1': 1});
+    });
   }).timeout(5000);
 
   it('should log match errors', async () => {
