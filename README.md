@@ -16,7 +16,7 @@ Keep reading to learn how to [get started](#Getting Started) and make a tourname
 
 ![dimensions-trueskill-RPS](assets/dimensions-trueskill-RPS.gif)
 
-Of which the [AI bots]() are all coded in about 10 lines or less (ignoring the starter kit)
+Of which the [AI bots](https://github.com/StoneT2000/Dimensions/blob/master/tests/js-kit/rps/rock.js) are all coded in about 10 lines or less (ignoring the starter kit)
 
 ```js
 const kit = require('./kit');
