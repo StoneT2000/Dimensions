@@ -61,8 +61,6 @@ export class LadderTournament extends Tournament {
           this.configs.rankSystemConfigs = trueskillConfigs
         }
         break;
-      case RANK_SYSTEM.ELO:
-        break;
       default:
         throw new FatalError('We currently do not support this rank system for ladder tournaments');
     }

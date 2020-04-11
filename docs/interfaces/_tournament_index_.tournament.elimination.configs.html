@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>EliminationConfigs | dimensions-ai</title>
+	<title>Configs | dimensions-ai</title>
 	<meta name="description" content="Documentation for dimensions-ai">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,19 +56,32 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_tournament_tournamenttypes_elimination_index_.html">&quot;Tournament/TournamentTypes/Elimination/index&quot;</a>
+					<a href="../modules/_tournament_index_.html">&quot;Tournament/index&quot;</a>
 				</li>
 				<li>
-					<a href="_tournament_tournamenttypes_elimination_index_.eliminationconfigs.html">EliminationConfigs</a>
+					<a href="../classes/_tournament_index_.tournament.html">Tournament</a>
+				</li>
+				<li>
+					<a href="../modules/_tournament_index_.tournament.elimination.html">Elimination</a>
+				</li>
+				<li>
+					<a href="_tournament_index_.tournament.elimination.configs.html">Configs</a>
 				</li>
 			</ul>
-			<h1>Interface EliminationConfigs</h1>
+			<h1>Interface Configs</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Configuration interface for <a href="../classes/_tournament_tournamenttypes_elimination_index_.eliminationtournament.html">EliminationTournament</a></p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -76,7 +89,7 @@
 						<a href="_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.tournamenttypeconfig.html" class="tsd-signature-type">TournamentTypeConfig</a>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">EliminationConfigs</span>
+								<span class="target">Configs</span>
 							</li>
 						</ul>
 					</li>
@@ -89,7 +102,9 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_tournamenttypes_elimination_index_.eliminationconfigs.html#times" class="tsd-kind-icon">times</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_index_.tournament.elimination.configs.html#lives" class="tsd-kind-icon">lives</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_index_.tournament.elimination.configs.html#seeding" class="tsd-kind-icon">seeding</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_index_.tournament.elimination.configs.html#times" class="tsd-kind-icon">times</a></li>
 							</ul>
 						</section>
 					</div>
@@ -98,14 +113,66 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="lives" class="tsd-anchor"></a>
+					<h3>lives</h3>
+					<div class="tsd-signature tsd-kind-icon">lives<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">1</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/94e07c3/src/Tournament/index.ts#L458">https://github.com/StoneT2000/Dimensions/blob/94e07c3/src/Tournament/index.ts#L458</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Number of times a player can lose before being eliminated. Can be 1 for single elimination. 2 for double
+							elimination is not implemented yet</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p><code>1</code></p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="seeding" class="tsd-anchor"></a>
+					<h3>seeding</h3>
+					<div class="tsd-signature tsd-kind-icon">seeding<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/94e07c3/src/Tournament/index.ts#L465">https://github.com/StoneT2000/Dimensions/blob/94e07c3/src/Tournament/index.ts#L465</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The seeding of the competitors in the order they are loaded.
+							When set to null, no seeds are used. When the ith array element is null, the ith competitor loaded, which has * tournament ID of i, does not have a seed.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p><code>null</code></p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="times" class="tsd-anchor"></a>
 					<h3>times</h3>
 					<div class="tsd-signature tsd-kind-icon">times<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/61e1d20/src/Tournament/TournamentTypes/Elimination/index.ts#L8">https://github.com/StoneT2000/Dimensions/blob/61e1d20/src/Tournament/TournamentTypes/Elimination/index.ts#L8</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/94e07c3/src/Tournament/index.ts#L452">https://github.com/StoneT2000/Dimensions/blob/94e07c3/src/Tournament/index.ts#L452</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Number of times the elimination tournament runs</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p><code>2</code></p>
+							</dd>
+						</dl>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -115,99 +182,33 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
-					<li class="label tsd-is-external">
-						<span>Internals</span>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_agent_index_.html">&quot;<wbr>Agent/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_design_index_.html">&quot;<wbr>Design/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_dimension_index_.html">&quot;<wbr>Dimension/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_dimensionerror_index_.html">&quot;<wbr>Dimension<wbr>Error/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_logger_index_.html">&quot;<wbr>Logger/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_match_index_.html">&quot;<wbr>Match/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_matchengine_index_.html">&quot;<wbr>Match<wbr>Engine/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_parser_index_.html">&quot;<wbr>Parser/index&quot;</a>
-					</li>
-					<li class="current tsd-kind-module">
-						<a href="../modules/_tournament_tournamenttypes_elimination_index_.html">&quot;<wbr>Tournament/<wbr>Tournament<wbr>Types/<wbr>Elimination/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_tournament_tournamenttypes_ladder_index_.html">&quot;<wbr>Tournament/<wbr>Tournament<wbr>Types/<wbr>Ladder/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_tournament_tournamenttypes_roundrobin_index_.html">&quot;<wbr>Tournament/<wbr>Tournament<wbr>Types/<wbr>Round<wbr>Robin/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_tournament_index_.html">&quot;<wbr>Tournament/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_index_.html">&quot;index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_utils_deepcopy_.html">&quot;utils/<wbr>Deep<wbr>Copy&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_utils_deepmerge_.html">&quot;utils/<wbr>Deep<wbr>Merge&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_utils_deeppartial_.html">&quot;utils/<wbr>Deep<wbr>Partial&quot;</a>
-					</li>
-					<li class="label tsd-is-external">
-						<span>Externals</span>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="../modules/_station_error_index_.html">&quot;<wbr>Station/error/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="../modules/_station_index_.html">&quot;<wbr>Station/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="../modules/_station_routes_api_dimensions_index_.html">&quot;<wbr>Station/routes/api/dimensions/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="../modules/_station_routes_api_dimensions_match_index_.html">&quot;<wbr>Station/routes/api/dimensions/match/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="../modules/_station_routes_api_dimensions_tournament_index_.html">&quot;<wbr>Station/routes/api/dimensions/tournament/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="../modules/_station_routes_api_status_.html">&quot;<wbr>Station/routes/api/status&quot;</a>
-					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_tournament_tournamenttypes_elimination_index_.eliminationtournament.html" class="tsd-kind-icon">Elimination<wbr>Tournament</a>
-					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-module">
-						<a href="_tournament_tournamenttypes_elimination_index_.eliminationconfigs.html" class="tsd-kind-icon">Elimination<wbr>Configs</a>
+					<li class="current tsd-kind-interface tsd-parent-kind-namespace">
+						<a href="_tournament_index_.tournament.elimination.configs.html" class="tsd-kind-icon">Configs</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_tournament_tournamenttypes_elimination_index_.eliminationconfigs.html#times" class="tsd-kind-icon">times</a>
+								<a href="_tournament_index_.tournament.elimination.configs.html#lives" class="tsd-kind-icon">lives</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_tournament_index_.tournament.elimination.configs.html#seeding" class="tsd-kind-icon">seeding</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_tournament_index_.tournament.elimination.configs.html#times" class="tsd-kind-icon">times</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_tournament_tournamenttypes_elimination_index_.state.html" class="tsd-kind-icon">State</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
+						<a href="_tournament_index_.tournament.elimination.state.html" class="tsd-kind-icon">State</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-namespace">
+						<a href="../modules/_tournament_index_.tournament.elimination.html#tournament" class="tsd-kind-icon">Tournament</a>
 					</li>
 				</ul>
 			</nav>

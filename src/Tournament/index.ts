@@ -436,5 +436,61 @@ export module Tournament {
     }
   }
   
+  /**
+   * The Elimination Tournament namespace
+   */
+  export namespace Elimination {
+    export type Tournament = EliminationTournament
+    /**
+     * Configuration interface for {@link EliminationTournament}
+     */
+    export interface Configs extends Tournament.TournamentTypeConfig {
+      /**
+       * Number of times the elimination tournament runs
+       * @default `2`
+       */
+      times: number,
+      /**
+       * Number of times a player can lose before being eliminated. Can be 1 for single elimination. 2 for double 
+       * elimination is not implemented yet
+       * @default `1`
+       */
+      lives: 1,
+
+      /**
+       * The seeding of the competitors in the order they are loaded. 
+       * When set to null, no seeds are used. When the ith array element is null, the ith competitor loaded, which has * tournament ID of i, does not have a seed.
+       * @default `null`
+       */
+      seeding: Array<number>
+    }
+    /**
+     * The {@link EliminationTournament} state, consisting of the current player statistics and past results
+     */
+    export interface State extends Tournament.TournamentTypeState {
+      /**
+       * A map from a {@link Player} Tournament ID string to statistics
+       */
+      playerStats: Map<string, {player: Player, wins: number, losses: number, matchesPlayed: number, seed: number, rank: number}>
+      /**
+       * Stats for this Tournament
+       */
+      statistics: {
+        totalMatches: number
+      }
+
+      currentRound: number
+      /**
+       * Past results stored. Each element is what is returned by {@link Design.getResults}
+       */
+      results: Array<any>
+
+      /**
+       * A match hash in the tournament indicating what seeds are meant to compete against each other.
+       * This maps a match hash to the result at the part of the tournament, indicating who won and lost
+       */
+      resultsMap: Map<string, {winner: Player, loser: Player}>
+    }
+  }
   
 }

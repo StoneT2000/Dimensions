@@ -36,7 +36,7 @@ describe('Tournament Testing with RPS', () => {
     DefaultRPSTournament = <Dimension.Tournament.RoundRobin.Tournament>myDimension.createTournament(players, {
       type: Dimension.Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
       rankSystem: Dimension.Tournament.RANK_SYSTEM.WINS,
-      resultHandler: RockPaperScissorsDesign.resultHandler,
+      resultHandler: RockPaperScissorsDesign.winsResultHandler,
       agentsPerMatch: [2],
       consoleDisplay: false
     });
@@ -51,7 +51,7 @@ describe('Tournament Testing with RPS', () => {
         bestOf: 3,
         loggingLevel: Dimension.Logger.LEVEL.WARN
       },
-      resultHandler: RockPaperScissorsDesign.resultHandler
+      resultHandler: RockPaperScissorsDesign.winsResultHandler
     });
     RPSTournament.setConfigs({
       rankSystemConfigs: {
