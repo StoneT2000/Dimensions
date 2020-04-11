@@ -240,9 +240,11 @@ If you want to view the API from a website, see this repo: https://github.com/St
 
 ### Run a Tournament
 
-This framework also provides tournament running features, including [Round Robin](), and [Ladder]() type tournaments. Additionally, there are various ranking systems used, such as Win/Tie/Loss and Trueskill.
+This framework also provides tournament running features, including [Round Robin](https://stonet2000.github.io/Dimensions/classes/_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.html), and [Ladder](https://stonet2000.github.io/Dimensions/classes/_tournament_tournamenttypes_ladder_index_.laddertournament.html) type tournaments. Additionally, there are various ranking systems used, such as Win/Tie/Loss and Trueskill.
 
 Here is how you run a tournament. First, you will need a `resultHandler` function. This function must given to the tournament to indicate how the results of a `match` should be interpreted. Recall that these results are returned by the `getResult` command in your design. It is suggested to provide these result handlers in your `Design`. 
+
+Next, you need to pass in some required configurations, namely `type, rankSystem, agentsPerMatch, resultHandler`. The following code snippet shows an example. 
 
 ```js
 let RPSDesign = new RockPaperScissorsDesign('RPS!');
@@ -251,11 +253,11 @@ let Tournament = Dimension.Tournament;
 let simpleBot = "./bots/rock.js";
 let botSources = [simpleBot, simpleBot, simpleBot, simpleBot, simpleBot];
 
-let RPSTournament = myDimension.createTournament(fileAndNames, {
+let RPSTournament = myDimension.createTournament(botSources, {
   name: 'A Best of 329 Rock Paper Scissors Tournament', // give it a name
   type: Tournament.TOURNAMENT_TYPE.LADDER, // Create a Ladder Tournament
   rankSystem: Tournament.RANK_SYSTEM.TRUESKILL, // Use Trueskill to rank bots
-  agentsPerMatch: [2],
+  agentsPerMatch: [2], // specify how many bots can play at a time
   defaultMatchConfigs: {
     bestOf: 329
 		loggingLevel: Dimension.Logger.LEVEL.NONE
@@ -276,7 +278,7 @@ let RPSTournament = myDimension.createTournament(fileAndNames, {
 });
 ```
 
-Full documentation on Tournaments can be found [here](https://stonet2000.github.io/Dimensions/classes/_tournament_index_.tournament.html) and documentation on the configuration you can pass in can be found [here](https://stonet2000.github.io/Dimensions/interfaces/_tournament_index_.tournament.tournamentconfigsbase.html). Documentation 
+Full documentation on Tournaments can be found [here](https://stonet2000.github.io/Dimensions/classes/_tournament_index_.tournament.html) and documentation on the configuration you can pass in can be found [here](https://stonet2000.github.io/Dimensions/interfaces/_tournament_index_.tournament.tournamentconfigsbase.html).
 
 Note that different tournament types have different tournament configurations and different rank systems have different ranking configurations, all of which can be found on the documentation.
 
