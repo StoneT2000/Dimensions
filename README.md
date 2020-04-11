@@ -102,7 +102,7 @@ Each `match` parameter passed in is of type `Match` and is the same `match` that
 
 The `commands` parameter is an array of commands objects of the form `{command: string, agentID: number}`
 
-Each command holds a command string, which is essentially something that was logged to output from one of the agents. For example, if an agent with ID `0` did `print('P')` in python or `console.log('P')`, the match engine will pick this up and populate commands with an array item `{command: 'P', agentID: 0}`
+Each command holds a command string, which is essentially something that was logged to output from one of the agents. For example, if an agent with ID `0` did `print('P')` in python or `console.log('P')`, the match engine will pick this up and populate `commands` with the array item `{command: 'P', agentID: 0}`
 
 There are some requirements for these lifecycle functions:
 
@@ -134,7 +134,7 @@ class RockPaperScissorsDesign extend Dimension.Design {
 }
 ```
 
-An example of a rock paper scissors competition design can be found [here](https://github.com/StoneT2000/Dimensions/blob/master/examples/rock-paper-scissors/rps.js#L8)
+An example of a rock paper scissors competition design can be found [here](https://github.com/StoneT2000/Dimensions/blob/master/examples/rock-paper-scissors/rps.js)
 
 Some existing `designs` are provided as examples at [/examples](https://github.com/StoneT2000/Dimensions/blob/master/examples/), which currently includes Rock Paper Scissors (RPS). A Halite 3 design using this framework has also been made and can be found [here](https://www.npmjs.com/package/@dimensions-ai/designs-halite3)
 

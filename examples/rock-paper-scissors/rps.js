@@ -15,7 +15,8 @@ class RockPaperScissorsDesign extends Dimension.Design{
       maxRounds: match.configs.bestOf, // we will store the max rounds of rock paper scissors this game will run
       results: [], // we will also store the winner of each of those rounds by each agent's ID
       rounds: 0, // rounds passed so far
-      failedAgent: null // the id of the agent that failed to play correctly
+      failedAgent: null, // the id of the agent that failed to play correctly
+      ties: 0 // ties so far
     }
     match.state = state; // this stores the state defined above into the match for re-use
 
@@ -150,15 +151,25 @@ class RockPaperScissorsDesign extends Dimension.Design{
 
     // update the match state
     match.state.results.push(winningAgent);
-    // log the winner at the info level
+    // log the winner at the detail level
     if (winningAgent != -1) {
       match.log.detail(`Round: ${match.state.rounds} - Agent ${winningAgent} won`);
     }
     else {
-      match.log.info(`Tie`);
+      match.log.detail(`Tie`);
     }
     // we increment the round if it wasn't a tie
-    if (winningAgent != -1) match.state.rounds++;
+    if (winningAgent != -1) {
+      match.state.rounds++;
+    }
+    else {
+      match.state.ties++;
+    }
+    
+    // if way too many ties occured, stop the match
+    if (match.state.ties >= match.configs.bestOf * 2 + 1) {
+      return Match.Status.FINISHED;
+    }
 
     // we send the status of this round to all agents
     match.sendAll(winningAgent);
@@ -183,6 +194,8 @@ class RockPaperScissorsDesign extends Dimension.Design{
       },
       ties: 0,
       winner: '',
+      loser: '',
+      winnerID: -1,
       terminated: {
 
       }
@@ -205,31 +218,50 @@ class RockPaperScissorsDesign extends Dimension.Design{
     if (match.state.terminated) {
       results.terminated = match.state.terminated;
       results.winner = match.state.terminatedResult;
+      if (results.winner != 'Tie')  {
+        if (match.state.terminated[0]) {
+          results.winnerID = 1;
+          results.loser = match.agents[0].name;
+        }
+        else {
+          results.winnerID = 0;
+          results.loser = match.agents[1].name;
+        }
+      }
+      else {
+        results.loser = 'Tie';
+      }
       return results;
     }
 
     // determine the winner and store it
     if (results.scores[0] > results.scores[1]) {
       results.winner = match.agents[0].name;
+      results.winnerID = 0;
+      results.loser = match.agents[1].name;
     }
     else if (results.scores[0] < results.scores[1]) {
       results.winner = match.agents[1].name;
+      results.winnerID = 1;
+      results.loser = match.agents[0].name;
     }
     else {
       results.winner = 'Tie';
+      results.loser = 'Tie';
     }
 
     // if there was an agent that failed, then they lose. The winner is the other agent
     if (match.state.failedAgent != null) {
       let winningAgent = (match.state.failedAgent + 1) % 2;
+      results.winnerID = winningAgent;
       results.winner = match.agents[winningAgent].name;
+      results.loser = match.agents[match.state.failedAgent].name;
     }
     
     // we have to now return the results 
     return results;
   }
-  static resultHandler(results) {
-    // console.log(results);
+  static winsResultHandler(results) {
     let winners = [];
     let losers =[];
     let ties = [];
@@ -237,8 +269,8 @@ class RockPaperScissorsDesign extends Dimension.Design{
       ties = [0, 1];
     }
     else {
-      winners.push(results.winnerID);
-      losers.push((results.winnerID + 1) % 2);
+      winners.push(parseInt(results.winnerID));
+      losers.push((parseInt(results.winnerID)+ 1) % 2);
     }
     return {winners: winners, losers: losers, ties: ties};
   }
@@ -257,3 +289,19 @@ myDimension.runMatch(
 ).then((results) => {
   console.log(results);
 });
+
+let tourney = myDimension.createTournament(['./bots/js/smarter.js', './bots/python/rock.py', './bots/js/paper.js', './bots/js/rock.js',],{
+  name: 'tourney',
+  type: Dimension.Tournament.TOURNAMENT_TYPE.ROUND_ROBIN, // run a round robin tournament
+  rankSystem: Dimension.Tournament.RANK_SYSTEM.WINS, // use a win/loss/ties based ranking
+  agentsPerMatch: [2], // specify design can only have 2 players at a time
+  resultHandler: RockPaperScissorsDesign.winsResultHandler, // give a result handler
+  defaultMatchConfigs: {
+    bestOf: 101 // play best of 101 because why not
+  },
+  tournamentConfigs: {
+    times: 20 // specify that we want the round robin to run 20 times
+  }
+});
+
+tourney.run();

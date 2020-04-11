@@ -53,7 +53,7 @@ export class RoundRobinTournament extends Tournament {
         winValue: 3,
         tieValue: 1,
         lossValue: 0,
-        descending: true
+        ascending: false
       };
     }
 
