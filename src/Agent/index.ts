@@ -154,7 +154,15 @@ export class Agent {
           resolve();
           break;
         case '.cpp':
-          exec(`g++ -O3  -o ${this.srcNoExt} ${this.src}`, {
+          exec(`g++ -O3  -o ${this.srcNoExt}.out ${this.src}`, {
+            cwd: this.cwd
+          }, (err) => {
+            if (err) reject(err);
+            resolve();
+          });
+          break;
+        case '.c':
+          exec(`gcc -O3 -o ${this.srcNoExt}.out ${this.src}`, {
             cwd: this.cwd
           }, (err) => {
             if (err) reject(err);
@@ -197,7 +205,7 @@ export class Agent {
           break;
         case '.c':
         case '.cpp':
-          p = spawn('./' + this.srcNoExt, {
+          p = spawn('./' + this.srcNoExt + '.out', {
             cwd: this.cwd
           }).on('error', function( err ){ reject(err) });
           resolve(p);
