@@ -11,3 +11,4 @@ tests/run.*.ts
 *.DS_Store
 *.out
 *.class
+tests/ts-kit/**/*.js
