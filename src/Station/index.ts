@@ -56,30 +56,9 @@ export class Station {
      
 
     this.app = express(); // api app
-    this.webapp = express(); // web app
 
     // CORS
-    this.webapp.use(cors());
     this.app.use(cors());
-    
-    this.webapp.use(express.static(path.join(__dirname, 'web/build')));
-    this.webapp.get('/*', function (req, res) {
-      res.sendFile(path.join(__dirname, 'web/build', 'index.html'));
-    });
-
-    // Try to start up web app
-    const webSuccessStart = () => {
-      this.log.infobar();
-      this.log.info(`Running '${this.name}' Web at http://localhost:${this.webport}`);
-    }
-    this.tryToListen(this.webapp, this.webport).then((port: number) => {
-      this.webport = port;
-      webSuccessStart();
-    }).catch(() => {
-      this.log.error(`Station Web: ${this.name}, couldn't find an open port after 16 attempts`);
-    })
-
-   
 
     // store all observed dimensions
     if (observedDimensions instanceof Array) {
