@@ -13,7 +13,7 @@ import { sprintf } from 'sprintf-js';
  * Only supports two agent matches at the moment and a {@link RANK_SYSTEM.WINS} system only
  */
 export class RoundRobinTournament extends Tournament {
-  private configs: Tournament.TournamentConfigs<Tournament.RoundRobin.Configs> = {
+  configs: Tournament.TournamentConfigs<Tournament.RoundRobin.Configs> = {
     defaultMatchConfigs: {},
     type: Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
     rankSystem: null,

@@ -175,7 +175,16 @@ export class LadderTournament extends Tournament {
             losses: 0,
             matchesPlayed: 0,
             rankState: {
-              rating: new Rating(trueskillConfigs.initialMu, trueskillConfigs.initialSigma)
+              rating: new Rating(trueskillConfigs.initialMu, trueskillConfigs.initialSigma),
+              toJSON: () => {
+                let rating = this.state.playerStats.get(player.tournamentID.id).rankState.rating
+                return {
+                  rating: {...rating,
+                    mu: rating.mu,
+                    sigma: rating.sigma
+                  }
+                }
+              }
             }
           });
         });

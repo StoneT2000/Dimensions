@@ -20,9 +20,22 @@ router.get('/', (req: Request, res: Response) => {
   res.json({error: null, tournaments: req.data.dimension.tournaments})
 });
 router.use('/:tournamentID', findTournament);
+
 // Get tournament details
 router.get('/:tournamentID', (req, res) => {
-  res.json({error: null, tournament: req.data.tournament});
+  const picked = (({status, state, competitors, name, configs}) => ({status, state, competitors, name, configs}))(req.data.tournament);
+  res.json({error: null, tournament: picked});
+});
+
+// Get tournament's ongoing matches
+router.get('/:tournamentID/matches', (req, res) => {
+  res.json({error: null, matches: Array.from(req.data.tournament.matches)});
+});
+
+// Get tournament's current matchqueue
+router.get('/:tournamentID/matchQueue', (req, res) => {
+  const picked = (({matchQueue}) => ({matchQueue}))(req.data.tournament);
+  res.json({error: null, matchQueue: picked});
 });
 
 router.post('/:tournament/run', async (req: Request, res: Response, next: NextFunction) => {

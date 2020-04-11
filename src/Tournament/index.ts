@@ -27,6 +27,9 @@ export class Player {
  */
 export abstract class Tournament {
 
+  /** Tournament configs */
+  abstract configs: Tournament.TournamentConfigsBase;
+
   /** Mapping match ids to active ongoing matches */
   public matches: Map<number, Match> = new Map();
 
@@ -347,7 +350,9 @@ export module Tournament {
       /** The current rank state of a player */
       export interface RankState { 
         /** The trueskill rating */
-        rating: Rating
+        rating: Rating,
+        /** Function to return some internal data of rating when using API */
+        toJSON?: Function
       }
     }
   }
