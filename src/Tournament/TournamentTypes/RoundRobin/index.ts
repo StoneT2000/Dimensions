@@ -94,7 +94,7 @@ export class RoundRobinTournament extends Tournament {
       console.log();
       console.log('Current Matches: ' + (this.matches.size + 1));
       this.matches.forEach((match) => {
-        let names = [];
+        let names: Array<string> = [];
         match.agents.forEach((agent) => {
           names.push(agent.name);
         });
