@@ -12,7 +12,7 @@ Dimensions utilizes an I/O based model to run competitions and pit AI agents aga
 
 This was inspired by [Battlecode](battlecode.org/) and [Halite](https://halite.io/)
 
-Keep reading to learn how to [get started](#Getting Started) and make a tournament like this:
+Keep reading to learn how to [get started](#getting-started) and make a tournament like this:
 
 ![dimensions-trueskill-RPS](assets/dimensions-trueskill-RPS.gif)
 
