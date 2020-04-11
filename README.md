@@ -12,7 +12,7 @@ Dimensions utilizes an I/O based model to run competitions and pit AI agents aga
 
 This was inspired by [Battlecode](battlecode.org/) and [Halite](https://halite.io/)
 
-Keep reading to learn how to get started and make a tournament like this:
+Keep reading to learn how to [get started](#Getting Started) and make a tournament like this:
 
 ![dimensions-trueskill-RPS](assets/dimensions-trueskill-RPS.gif)
 
@@ -34,6 +34,13 @@ agent.initialize().then(async () => {
 Or jump straight to [Documentation](https://stonet2000.github.io/Dimensions/index.html),  [Contributing](#Contributing), [Development](#Development) or [Plans](#Plans) curated by the owner and the community.
 
 Also checkout the blog post introducing the motivation for Dimensions and thoughts about it here: https://stonet2000.github.io/blog/posts/Dimensions/index.html
+
+## Features
+
+- Easy to build an AI competition that is language agnostic, allowing any kind of bot in any language to compete in your competition
+- Can run many kinds of AI competitions and run different kinds of competition formats like round robin or using Trueskill in a ladder tournament.
+- Comes with an API served locally that gives access to data on ongoing matches and tournaments
+  - Check out https://github.com/StoneT2000/Dimensions-web if you want a website to view the API from.
 
 ## Getting Started
 
@@ -136,7 +143,7 @@ class RockPaperScissorsDesign extend Dimension.Design {
 
 An example of a rock paper scissors competition design can be found [here](https://github.com/StoneT2000/Dimensions/blob/master/examples/rock-paper-scissors/rps.js)
 
-Some existing `designs` are provided as examples at [/examples](https://github.com/StoneT2000/Dimensions/blob/master/examples/), which currently includes Rock Paper Scissors (RPS). A Halite 3 design using this framework has also been made and can be found [here](https://www.npmjs.com/package/@dimensions-ai/designs-halite3)
+Some existing `designs` are provided as examples at [/examples](https://github.com/StoneT2000/Dimensions/blob/master/examples/), which currently includes Rock Paper Scissors (RPS). A Halite 3 design using this framework has also been made and can be found [here](https://github.com/StoneT2000/dimensions-halite3)
 
 If you want to kick start development on your own `design`, check out [/templates/designs](https://github.com/StoneT2000/Dimensions/tree/master/templates/designs)
 
@@ -154,7 +161,7 @@ AI Starter kits are suggested to contain at least two files, `agent.js` (or whic
 
 [`kit.js`](https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/kit.js) should have a `Agent` class with some kind of asynchronous  `initialize, update` functions and a `endTurn` function.
 
-`initialize` should have the agent wait for a line input from `stdin` (standard in) if anything is being sent to the agent through `match.send` in the `design` in `initialize(match)`.
+`initialize` should have the agent wait for a line input from `stdin` (standard input) if anything is being sent to the agent through `match.send` in the `design` in `initialize(match)`.
 
 `update` should do the same thing as `initialize` but is used to update the agent with new information from the match. Updates are sent to this agent through `match.send` in the `design` in `update(match, commands)`.  The agent should typically wait for some signal from the match to tell it to proceed in processing. This can either be a explicit message like `match.sendAll('START')` or just the next set of update commands from the `match`.
 
@@ -216,7 +223,7 @@ let results = await myDimension.runMatch(
   ['./examples/rock-paper-scissors/bots/smarter.js', 
    './examples/rock-paper-scissors/bots/smarter.js'],
   {
-    bestOf: 5 // a configuration accessible in mathc through match.configs.bestOf
+    bestOf: 5 // a configuration accessible in match through match.configs.bestOf
   }
 )
 ```
@@ -227,7 +234,9 @@ You can now log the results, of which are the same results returned by your `des
 console.log(results)
 ```
 
-Notice that your console will also print something about a station. It'll give you a link to the `Station`, a local server that lets you see what's going on with your Dimension, Matches, Tournaments and more
+Notice that your console will also print something about a station. It'll give you a link to the `Station`, a local server that gives you access to an API to access data on your Dimension, Matches, Tournaments and more.
+
+If you want to view the API from a website, see this repo: https://github.com/StoneT2000/Dimensions-web
 
 ### Run a Tournament
 
