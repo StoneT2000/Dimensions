@@ -4,6 +4,7 @@
 import express, { Request, Response } from 'express';
 import { Dimension } from '../../../../Dimension';
 import matchAPI from './match';
+import tournamentAPI from './tournament';
 import * as error from '../../../error'
 const router = express.Router();
 
@@ -35,5 +36,7 @@ router.get('/:id', (req, res) => {
 });
 
 router.use('/:id/match', matchAPI);
+
+router.use('/:id/tournament', tournamentAPI);
 
 export default router

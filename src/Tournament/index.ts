@@ -8,6 +8,7 @@ import { Logger } from '../Logger';
 import { LadderTournament } from './TournamentTypes/Ladder';
 import { Agent } from '../Agent';
 import { deepCopy } from '../utils/DeepCopy';
+import { Rating } from 'ts-trueskill';
 
 /**
  * Player class that persists data for the same ephemereal agent across multiple matches
@@ -100,6 +101,7 @@ export abstract class Tournament {
    * Retrieve some form of rankings from the tournament's current state
    */
   public abstract getRankings()
+
 
   /**
    * Set configs for this tournament
@@ -342,11 +344,10 @@ export module Tournament {
         /** Array of agentIDs and their ranks in a {@link Match}, where rank 1 is highest */
         ranks: Array<{rank: number, agentID: Agent.ID}> 
       }
-      export interface RankState {
-        /** The current Mu value of a player */
-        mu: number,
-        /** The current sigma value of a player */
-        sigma: number
+      /** The current rank state of a player */
+      export interface RankState { 
+        /** The trueskill rating */
+        rating: Rating
       }
     }
   }
