@@ -70,12 +70,12 @@
 				<p>This is an <strong>open sourced</strong> <strong>generic</strong> <strong>Artificial Intelligence competition framework</strong>, intended to provide you all the infrastructure needed to run your own AI competition with no hassle.</p>
 				<p>All you need to do?</p>
 				<p>Code a competition design and code a bot</p>
-				<p>Dimensions handles the rest, including match running, tournament running, TrueSkill/ELO ranking, and a local website through which you can watch this all happen at once.</p>
+				<p>Dimensions handles the rest, including match running, tournament running, TrueSkill rankings, and a local API and website through which you can watch this all happen at once.</p>
 				<p>Dimensions utilizes an I/O based model to run competitions and pit AI agents against each other, allowing it to be generic and language agnostic.</p>
 				<p>This was inspired by <a href="battlecode.org/">Battlecode</a> and <a href="https://halite.io/">Halite</a></p>
-				<p>Keep reading to learn how to get started and make a tournament like this:</p>
+				<p>Keep reading to learn how to <a href="#getting-started">get started</a> and make a tournament like this:</p>
 				<p><img src="assets/dimensions-trueskill-RPS.gif" alt="dimensions-trueskill-RPS"></p>
-				<p>Of which the <a href="">AI bots</a> are all coded in about 10 lines or less (ignoring the starter kit)</p>
+				<p>Of which the <a href="https://github.com/StoneT2000/Dimensions/blob/master/tests/js-kit/rps/rock.js">AI bots</a> are all coded in about 10 lines or less (ignoring the starter kit)</p>
 				<pre><code class="language-js"><span class="hljs-keyword">const</span> kit = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./kit'</span>);
 <span class="hljs-keyword">const</span> agent = <span class="hljs-keyword">new</span> kit.Agent();
 agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
@@ -87,6 +87,17 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
 });</code></pre>
 				<p>Or jump straight to <a href="https://stonet2000.github.io/Dimensions/index.html">Documentation</a>,  <a href="#Contributing">Contributing</a>, <a href="#Development">Development</a> or <a href="#Plans">Plans</a> curated by the owner and the community.</p>
 				<p>Also checkout the blog post introducing the motivation for Dimensions and thoughts about it here: <a href="https://stonet2000.github.io/blog/posts/Dimensions/index.html">https://stonet2000.github.io/blog/posts/Dimensions/index.html</a></p>
+				<a href="#features" id="features" style="color: inherit; text-decoration: none;">
+					<h2>Features</h2>
+				</a>
+				<ul>
+					<li>Easy to build an AI competition that is language agnostic, allowing any kind of bot in any language to compete in your competition</li>
+					<li>Can run many kinds of AI competitions and run different kinds of competition formats like round robin or using Trueskill in a ladder tournament.</li>
+					<li>Comes with an API served locally that gives access to data on ongoing matches and tournaments and allows for direct control of matches and tournaments through the API. See this page for details on this API: <a href="https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API">https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API</a><ul>
+							<li>Check out <a href="https://github.com/StoneT2000/Dimensions-web">https://github.com/StoneT2000/Dimensions-web</a> if you want a website to view the API from.</li>
+						</ul>
+					</li>
+				</ul>
 				<a href="#getting-started" id="getting-started" style="color: inherit; text-decoration: none;">
 					<h2>Getting Started</h2>
 				</a>
@@ -146,7 +157,7 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
 				<p><code>match.configs</code> is the same argument you pass in when running a <code>Match</code>, <code>Tournament</code> etc. You can send in same configurations such as how many rounds of rock paper scissors will be played.</p>
 				<p><code>match.send(message, agentID or Agent)</code> sends a string <code>message</code> to the <code>agent</code> specified or the agent specified by its <code>agentID</code>. <code>match.sendAll(message)</code> sends the same message to all agents.</p>
 				<p>The <code>commands</code> parameter is an array of commands objects of the form <code>{command: string, agentID: number}</code></p>
-				<p>Each command holds a command string, which is essentially something that was logged to output from one of the agents. For example, if an agent with ID <code>0</code> did <code>print(&#39;P&#39;)</code> in python or <code>console.log(&#39;P&#39;)</code>, the match engine will pick this up and populate commands with an array item <code>{command: &#39;P&#39;, agentID: 0}</code></p>
+				<p>Each command holds a command string, which is essentially something that was logged to output from one of the agents. For example, if an agent with ID <code>0</code> did <code>print(&#39;P&#39;)</code> in python or <code>console.log(&#39;P&#39;)</code>, the match engine will pick this up and populate <code>commands</code> with the array item <code>{command: &#39;P&#39;, agentID: 0}</code></p>
 				<p>There are some requirements for these lifecycle functions:</p>
 				<p>For <code>initialize</code>, nothing needs to be returned</p>
 				<p>For <code>update</code>, if you don&#39;t return anything, the engine assumes the match is still running. If you return <code>Dimension.Match.Status.FINISHED</code>, the engine will conclude the match and stop it.</p>
@@ -170,8 +181,8 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
     <span class="hljs-keyword">return</span> results; <span class="hljs-comment">// return them</span>
   }
 }</code></pre>
-				<p>An example of a rock paper scissors competition design can be found <a href="https://github.com/StoneT2000/Dimensions/blob/master/examples/rock-paper-scissors/rps.js#L8">here</a></p>
-				<p>Some existing <code>designs</code> are provided as examples at <a href="https://github.com/StoneT2000/Dimensions/blob/master/examples/">/examples</a>, which currently includes Rock Paper Scissors (RPS). A Halite 3 design using this framework has also been made and can be found <a href="https://www.npmjs.com/package/@dimensions-ai/designs-halite3">here</a></p>
+				<p>An example of a rock paper scissors competition design can be found <a href="https://github.com/StoneT2000/Dimensions/blob/master/examples/rock-paper-scissors/rps.js">here</a></p>
+				<p>Some existing <code>designs</code> are provided as examples at <a href="https://github.com/StoneT2000/Dimensions/blob/master/examples/">/examples</a>, which currently includes Rock Paper Scissors (RPS). A Halite 3 design using this framework has also been made and can be found <a href="https://github.com/StoneT2000/dimensions-halite3">here</a></p>
 				<p>If you want to kick start development on your own <code>design</code>, check out <a href="https://github.com/StoneT2000/Dimensions/tree/master/templates/designs">/templates/designs</a></p>
 				<p>Look into the documentation on <a href="https://stonet2000.github.io/Dimensions/classes/_match_index_.match.html">Match</a> and <a href="https://stonet2000.github.io/Dimensions/classes/_agent_index_.agent.html">Agent</a> for what data is available to you to use in your design.</p>
 				<a href="#designing-an-ai-starter-kit" id="designing-an-ai-starter-kit" style="color: inherit; text-decoration: none;">
@@ -182,7 +193,7 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
 				<p>Other starter kit templates in other languages can be found in <a href="https://github.com/StoneT2000/Dimensions/tree/master/templates/starter-kits/">/templates/starter-kits</a> and you can use them to help kickstart development for your own starter kit for your own <code>design</code></p>
 				<p>AI Starter kits are suggested to contain at least two files, <code>agent.js</code> (or whichever extension matches your language) and <a href="https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/myBot.js"><code>myBot.js</code></a>. It can be merged into one but for organization, splitting it up is better.</p>
 				<p><a href="https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/kit.js"><code>kit.js</code></a> should have a <code>Agent</code> class with some kind of asynchronous  <code>initialize, update</code> functions and a <code>endTurn</code> function.</p>
-				<p><code>initialize</code> should have the agent wait for a line input from <code>stdin</code> (standard in) if anything is being sent to the agent through <code>match.send</code> in the <code>design</code> in <code>initialize(match)</code>.</p>
+				<p><code>initialize</code> should have the agent wait for a line input from <code>stdin</code> (standard input) if anything is being sent to the agent through <code>match.send</code> in the <code>design</code> in <code>initialize(match)</code>.</p>
 				<p><code>update</code> should do the same thing as <code>initialize</code> but is used to update the agent with new information from the match. Updates are sent to this agent through <code>match.send</code> in the <code>design</code> in <code>update(match, commands)</code>.  The agent should typically wait for some signal from the match to tell it to proceed in processing. This can either be a explicit message like <code>match.sendAll(&#39;START&#39;)</code> or just the next set of update commands from the <code>match</code>.</p>
 				<p><code>endTurn</code> should always just print to <code>stdout</code> (standard out) <code>&#39;D_FINISH</code></p>
 				<p>Then in <code>myBot.js</code>, a new <code>kit.Agent</code> should be initialized as <code>agent</code> and should run <code>agent.initialize</code></p>
@@ -228,28 +239,30 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
   [<span class="hljs-string">'./examples/rock-paper-scissors/bots/smarter.js'</span>, 
    <span class="hljs-string">'./examples/rock-paper-scissors/bots/smarter.js'</span>],
   {
-    <span class="hljs-attr">bestOf</span>: <span class="hljs-number">5</span> <span class="hljs-comment">// a configuration accessible in mathc through match.configs.bestOf</span>
+    <span class="hljs-attr">bestOf</span>: <span class="hljs-number">5</span> <span class="hljs-comment">// a configuration accessible in match through match.configs.bestOf</span>
   }
 )</code></pre>
 				<p>You can now log the results, of which are the same results returned by your <code>design&#39;s</code> <code>getResult</code> function.</p>
 				<pre><code class="language-js"><span class="hljs-built_in">console</span>.log(results)</code></pre>
-				<p>Notice that your console will also print something about a station. It&#39;ll give you a link to the <code>Station</code>, a local server that lets you see what&#39;s going on with your Dimension, Matches, Tournaments and more</p>
+				<p>Notice that your console will also print something about a station. It&#39;ll give you a link to the <code>Station</code>, a local server that gives you access to an API to access and control your Dimension, Matches, Tournaments and more. Check <a href="https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API">https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API</a> for details on the API.</p>
+				<p>If you want to view the API from a website, see this repo: <a href="https://github.com/StoneT2000/Dimensions-web">https://github.com/StoneT2000/Dimensions-web</a></p>
 				<a href="#run-a-tournament" id="run-a-tournament" style="color: inherit; text-decoration: none;">
 					<h3>Run a Tournament</h3>
 				</a>
-				<p>This framework also provides tournament running features, including <a href="">Round Robin</a>, and <a href="">Ladder</a> type tournaments. Additionally, there are various ranking systems used, such as Win/Tie/Loss and Trueskill.</p>
+				<p>This framework also provides tournament running features, including <a href="https://stonet2000.github.io/Dimensions/classes/_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.html">Round Robin</a>, and <a href="https://stonet2000.github.io/Dimensions/classes/_tournament_tournamenttypes_ladder_index_.laddertournament.html">Ladder</a> type tournaments. Additionally, there are various ranking systems used, such as Win/Tie/Loss and Trueskill.</p>
 				<p>Here is how you run a tournament. First, you will need a <code>resultHandler</code> function. This function must given to the tournament to indicate how the results of a <code>match</code> should be interpreted. Recall that these results are returned by the <code>getResult</code> command in your design. It is suggested to provide these result handlers in your <code>Design</code>. </p>
+				<p>Next, you need to pass in some required configurations, namely <code>type, rankSystem, agentsPerMatch, resultHandler</code>. The following code snippet shows an example. </p>
 				<pre><code class="language-js"><span class="hljs-keyword">let</span> RPSDesign = <span class="hljs-keyword">new</span> RockPaperScissorsDesign(<span class="hljs-string">'RPS!'</span>);
 <span class="hljs-keyword">let</span> myDimension = Dimension.create(RPSDesign);
 <span class="hljs-keyword">let</span> Tournament = Dimension.Tournament;
 <span class="hljs-keyword">let</span> simpleBot = <span class="hljs-string">"./bots/rock.js"</span>;
 <span class="hljs-keyword">let</span> botSources = [simpleBot, simpleBot, simpleBot, simpleBot, simpleBot];
 
-<span class="hljs-keyword">let</span> RPSTournament = myDimension.createTournament(fileAndNames, {
+<span class="hljs-keyword">let</span> RPSTournament = myDimension.createTournament(botSources, {
   <span class="hljs-attr">name</span>: <span class="hljs-string">'A Best of 329 Rock Paper Scissors Tournament'</span>, <span class="hljs-comment">// give it a name</span>
   <span class="hljs-attr">type</span>: Tournament.TOURNAMENT_TYPE.LADDER, <span class="hljs-comment">// Create a Ladder Tournament</span>
   <span class="hljs-attr">rankSystem</span>: Tournament.RANK_SYSTEM.TRUESKILL, <span class="hljs-comment">// Use Trueskill to rank bots</span>
-  <span class="hljs-attr">agentsPerMatch</span>: [<span class="hljs-number">2</span>],
+  <span class="hljs-attr">agentsPerMatch</span>: [<span class="hljs-number">2</span>], <span class="hljs-comment">// specify how many bots can play at a time</span>
   <span class="hljs-attr">defaultMatchConfigs</span>: {
     <span class="hljs-attr">bestOf</span>: <span class="hljs-number">329</span>
         <span class="hljs-attr">loggingLevel</span>: Dimension.Logger.LEVEL.NONE
@@ -268,7 +281,7 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
     }
   }
 });</code></pre>
-				<p>Full documentation on Tournaments can be found <a href="https://stonet2000.github.io/Dimensions/classes/_tournament_index_.tournament.html">here</a> and documentation on the configuration you can pass in can be found <a href="https://stonet2000.github.io/Dimensions/interfaces/_tournament_index_.tournament.tournamentconfigsbase.html">here</a>. Documentation </p>
+				<p>Full documentation on Tournaments can be found <a href="https://stonet2000.github.io/Dimensions/classes/_tournament_index_.tournament.html">here</a> and documentation on the configuration you can pass in can be found <a href="https://stonet2000.github.io/Dimensions/interfaces/_tournament_index_.tournament.tournamentconfigsbase.html">here</a>.</p>
 				<p>Note that different tournament types have different tournament configurations and different rank systems have different ranking configurations, all of which can be found on the documentation.</p>
 				<a href="#more-stuff" id="more-stuff" style="color: inherit; text-decoration: none;">
 					<h3>More Stuff!</h3>
