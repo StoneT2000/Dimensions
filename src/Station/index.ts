@@ -11,6 +11,7 @@ import * as error from './error';
 
 import cors from 'cors';
 import { Server } from 'http';
+import { Tournament } from '../Tournament';
 
 // declare global and merge declaration with Express Request to allow storage of data across middlewhere in typescript 
 declare global {
@@ -19,6 +20,7 @@ declare global {
       data: {
         dimension?: Dimension,
         match?: Match,
+        tournament?: Tournament
         [x: string]: any
       }
     }

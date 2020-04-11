@@ -82,10 +82,10 @@ export class LadderTournament extends Tournament {
             id: stat.player.tournamentID.id,
             matchesPlayed: stat.matchesPlayed,
             rankState: {...rankState, score: rankState.rating.mu - 3 * rankState.rating.sigma}
-          })
+          });
         });
         rankings.sort((a, b) => {
-          return a.rankState.score - b.rankState.score
+          return b.rankState.score - a.rankState.score
         });
         break;
       case RANK_SYSTEM.ELO:
@@ -188,10 +188,10 @@ export class LadderTournament extends Tournament {
     const matchCount = this.configs.tournamentConfigs.maxConcurrentMatches;
     // runs a round of scheduling
     // for every player, we schedule some m matches (TODO: configurable)
-    let rankings = this.getRankings();
+    // let rankings = this.getRankings();
     for (let i = 0; i < matchCount; i++) {
         let competitorCount = this.selectRandomAgentAmountForMatch();
-        let random = this.selectRandomplayersFromArray(rankings, competitorCount).map((info) => info.player);
+        let random = this.selectRandomplayersFromArray(this.competitors, competitorCount);
         this.matchQueue.push([...random]);
     }
     this.competitors.forEach((player) => {
