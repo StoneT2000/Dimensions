@@ -123,6 +123,16 @@ describe('Rock Paper Scissors Run', () => {
       )
       expect(results.scores).to.eql({'0': 3, '1': 1});
     });
+    it('should support go', async () => {
+      let results = await myDimension.runMatch(
+        ['./tests/js-kit/rps/smarter.js', './tests/go-kit/rps/rock.go'],
+        {
+          name: 'mult-lang (go)',
+          bestOf: 4
+        }
+      )
+      expect(results.scores).to.eql({'0': 3, '1': 1});
+    });
   }).timeout(5000);
 
   it('should log match errors', async () => {

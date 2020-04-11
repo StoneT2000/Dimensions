@@ -97,6 +97,7 @@ export class Agent {
         break;
       case '.c':
       case '.cpp':
+      case '.go':
         this.cmd = ''
         break;
       default:
@@ -155,6 +156,14 @@ export class Agent {
         case '.php':
           resolve();
           break;
+        case '.go':
+          exec(`go build -o ${this.srcNoExt}.out ${this.src}`, {
+            cwd: this.cwd
+          }, (err) => {
+            if (err) reject(err);
+            resolve();
+          });
+          break;
         case '.cpp':
           exec(`g++ -O3  -o ${this.srcNoExt}.out ${this.src}`, {
             cwd: this.cwd
@@ -207,6 +216,7 @@ export class Agent {
           break;
         case '.c':
         case '.cpp':
+        case '.go':
           p = spawn('./' + this.srcNoExt + '.out', {
             cwd: this.cwd
           }).on('error', function( err ){ reject(err) });
