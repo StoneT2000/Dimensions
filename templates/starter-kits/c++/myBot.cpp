@@ -8,12 +8,13 @@ int main() {
   agent.initialize();
 
   while(true) {
+    // wait for updates
+    agent.update();
     // send some commands
     std::cout << 'my command, other command' << std::endl << std::flush;
     // end turn
     agent.end_turn();
-    // wait for updates
-    agent.update();
+    
   }
   
   return 0;

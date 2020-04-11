@@ -1,14 +1,16 @@
-const fs = require('fs');
-const readline = require('readline');
+import fs from 'fs';
+import readline from 'readline';
 
 // Create parser and use ',' as the delimiter between commands being sent by the `Match` and `MatchEngine`
-const Parser = require('./parser');
-const parse = new Parser(',');
+import { Parser, Parsed } from './parser';
+const parse = (new Parser(',')).parse;
 
 /**
  * Agent for sequential `Designs`
  */
-class Agent {
+export class Agent {
+  public getLine: () => Promise<Parsed>;
+  public id: number;
   _setup() {
 
     // Prepare to read input
@@ -35,7 +37,7 @@ class Agent {
     let currentPromise = makePromise();
     
     // with await, we pause process until there is input
-    const getLine = async () => {
+    const getLine = async (): Promise<Parsed> => {
       return new Promise(async (resolve) => {
         while (buffer.length === 0) {
           // pause while buffer is empty, continue if new line read
@@ -89,5 +91,3 @@ class Agent {
     console.log('D_FINISH');
   }
 }
-
-module.exports = Agent;
