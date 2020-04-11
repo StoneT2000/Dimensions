@@ -6,7 +6,7 @@ All you need to do?
 
 Code a competition design and code a bot
 
-Dimensions handles the rest, including match running, tournament running, TrueSkill/ELO ranking, and a local website through which you can watch this all happen at once.
+Dimensions handles the rest, including match running, tournament running, TrueSkill rankings, and a local API and website through which you can watch this all happen at once.
 
 Dimensions utilizes an I/O based model to run competitions and pit AI agents against each other, allowing it to be generic and language agnostic.
 
