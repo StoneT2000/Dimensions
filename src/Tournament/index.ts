@@ -23,7 +23,7 @@ export class Player {
 /**
  * @class Tournament
  * @classdesc The tournament class extended by all concrete Tournament Classes. Tournament Types available now are
- * {@link RoundRobin.Tournament} and {@link Ladder.Tournament}
+ * {@link RoundRobin.Tournament}, {@link Ladder.Tournament}, {@link Elimination.Tournament}
  */
 export abstract class Tournament {
 
@@ -165,7 +165,7 @@ export module Tournament {
 
   export enum TOURNAMENT_TYPE {
     /** {@link RoundRobinTournament} type */
-    ROUND_ROBIN = 'round_robin', // can be n-tuple round robin. E.g double roundrobin like most Association Football Leagues
+    ROUND_ROBIN = 'round_robin',
     /** {@link EliminationTournament} type */
     ELIMINATION = 'elimination',
     /** {@link LadderTournament} type */
