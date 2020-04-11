@@ -39,7 +39,7 @@ Also checkout the blog post introducing the motivation for Dimensions and though
 
 - Easy to build an AI competition that is language agnostic, allowing any kind of bot in any language to compete in your competition
 - Can run many kinds of AI competitions and run different kinds of competition formats like round robin or using Trueskill in a ladder tournament.
-- Comes with an API served locally that gives access to data on ongoing matches and tournaments
+- Comes with an API served locally that gives access to data on ongoing matches and tournaments and allows for direct control of matches and tournaments through the API. See this page for details on this API: https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API
   - Check out https://github.com/StoneT2000/Dimensions-web if you want a website to view the API from.
 
 ## Getting Started
@@ -234,7 +234,7 @@ You can now log the results, of which are the same results returned by your `des
 console.log(results)
 ```
 
-Notice that your console will also print something about a station. It'll give you a link to the `Station`, a local server that gives you access to an API to access data on your Dimension, Matches, Tournaments and more.
+Notice that your console will also print something about a station. It'll give you a link to the `Station`, a local server that gives you access to an API to access and control your Dimension, Matches, Tournaments and more. Check https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API for details on the API.
 
 If you want to view the API from a website, see this repo: https://github.com/StoneT2000/Dimensions-web
 
