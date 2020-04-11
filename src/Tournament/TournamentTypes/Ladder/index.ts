@@ -4,7 +4,7 @@ import { Design } from '../../../Design';
 import { deepMerge } from "../../../utils/DeepMerge";
 import { FatalError } from "../../../DimensionError";
 import { Agent } from "../../../Agent";
-import trueskill from "trueskill";
+import { Rating, rate, quality } from "ts-trueskill";
 import LadderState = Tournament.Ladder.State;
 import LadderConfigs = Tournament.Ladder.Configs;
 
@@ -81,7 +81,7 @@ export class LadderTournament extends Tournament {
             name: stat.player.tournamentID.name,
             id: stat.player.tournamentID.id,
             matchesPlayed: stat.matchesPlayed,
-            rankState: {...rankState, score: rankState.mu - 3 * rankState.sigma}
+            rankState: {...rankState, score: rankState.rating.mu - 3 * rankState.rating.sigma}
           })
         });
         rankings.sort((a, b) => {
@@ -159,8 +159,7 @@ export class LadderTournament extends Tournament {
             losses: 0,
             matchesPlayed: 0,
             rankState: {
-              mu: 75, // TODO, make this configurable
-              sigma: 25/3,
+              rating: new Rating(75, 25/3)
             }
           });
         });
@@ -184,11 +183,9 @@ export class LadderTournament extends Tournament {
     // for every player, we schedule some m matches (TODO: configurable)
     let rankings = this.getRankings();
     for (let i = 0; i < matchCount; i++) {
-      rankings.forEach((info) => {
         let competitorCount = this.selectRandomAgentAmountForMatch();
-        let random = this.selectRandomplayersFromArray(rankings, competitorCount - 1).map((info) => info.player);
-        this.matchQueue.push([info.player, ...random]);
-      })
+        let random = this.selectRandomplayersFromArray(rankings, competitorCount).map((info) => info.player);
+        this.matchQueue.push([...random]);
     }
     this.competitors.forEach((player) => {
       // let rankState = <RANK_SYSTEM.TrueSkillRankState>this.state.playerStats.get(player.tournamentID.id).rankState;
@@ -199,12 +196,21 @@ export class LadderTournament extends Tournament {
   private selectRandomAgentAmountForMatch(): number {
     return this.configs.agentsPerMatch[Math.floor(Math.random() * this.configs.agentsPerMatch.length)];
   }
+
+  // using resovoir sampling to select num distinct randomly
   private selectRandomplayersFromArray(arr, num: number) {
-    let r = [];
+    let reservoir = [];
+    // put the first num into reservoir
     for (let i = 0; i < num; i++) {
-      r.push(arr[Math.floor(Math.random() * arr.length)]);
+      reservoir.push(arr[i]);
     }
-    return r;
+    for (let i = num; i < arr.length; i++) {
+      let j = Math.floor(Math.random() * i);
+      if (j < num) {
+        reservoir[j] = arr[i];
+      }
+    }
+    return reservoir;
   }
 
   private printTournamentStatus() {
@@ -220,7 +226,7 @@ export class LadderTournament extends Tournament {
             `%-20s | %-8s | %-15s | %-18s | %-8s`.underline, 'Name', 'ID', 'Score=(μ - 3σ)', 'Mu: μ, Sigma: σ', 'Matches'));
           ranks.forEach((info) => {
             console.log(sprintf(
-              `%-20s`.blue+ ` | %-8s | ` + `%-15s`.green + ` | ` + `μ=%-6s, σ=%-6s`.yellow +` | %-8s`, info.player.tournamentID.name, info.player.tournamentID.id, info.rankState.score.toFixed(7), info.rankState.mu.toFixed(3), info.rankState.sigma.toFixed(3), info.matchesPlayed));
+              `%-20s`.blue+ ` | %-8s | ` + `%-15s`.green + ` | ` + `μ=%-6s, σ=%-6s`.yellow +` | %-8s`, info.player.tournamentID.name, info.player.tournamentID.id, info.rankState.score.toFixed(7), info.rankState.rating.mu.toFixed(3), info.rankState.rating.sigma.toFixed(3), info.matchesPlayed));
           });
           break;
         case RANK_SYSTEM.ELO:
@@ -282,26 +288,41 @@ export class LadderTournament extends Tournament {
     this.state.results.push(matchRes.results);
   }
 
-  private handleMatchWithTrueSkill() {
+  private async handleMatchWithTrueSkill() {
     let toProcess = this.resultProcessingQueue.shift();
     let mapAgentIDtoTournamentID = toProcess.mapAgentIDtoTournamentID;
     let result = <RANK_SYSTEM.TRUESKILL.Results>toProcess.result;
-    let ranksAndSkillsOfplayers: Array<{skill: Array<number>, rank: number, tournamentID: Tournament.ID}> = [];
+    let playerRatings: Array<Array<Rating>> = [];
+    let tourneyIDs: Array<{id: Tournament.ID, stats: any}> = [];
+    let ranks: Array<number> = [];
+    result.ranks.sort((a, b) => a.rank - b.rank);
     result.ranks.forEach((rank) => {
       let tournamentID = mapAgentIDtoTournamentID.get(rank.agentID);
       let currentplayerStats = this.state.playerStats.get(tournamentID.id);
       let currRankState = <RANK_SYSTEM.TRUESKILL.RankState>currentplayerStats.rankState;
-      ranksAndSkillsOfplayers.push({
-        skill: [currRankState.mu, currRankState.sigma], rank: rank.rank, tournamentID: tournamentID
-      });
+      // ranksAndSkillsOfplayers.push({
+      //   skill: [currRankState.rating.mu, currRankState.sigma], rank: rank.rank, tournamentID: tournamentID
+      // });
+      playerRatings.push([currRankState.rating]);
+      ranks.push(rank.rank);
+      tourneyIDs.push({id: tournamentID, stats: currentplayerStats});
     });
-    trueskill.AdjustPlayers(ranksAndSkillsOfplayers);
-    ranksAndSkillsOfplayers.forEach((playerInfo) => {
-      let currentplayerStats = this.state.playerStats.get(playerInfo.tournamentID.id);
-      (<RANK_SYSTEM.TRUESKILL.RankState>(currentplayerStats.rankState)).mu = playerInfo.skill[0];
-      (<RANK_SYSTEM.TRUESKILL.RankState>(currentplayerStats.rankState)).sigma = playerInfo.skill[1];
-      this.state.playerStats.set(playerInfo.tournamentID.id, currentplayerStats);
-    });
+    // trueskill.AdjustPlayers(ranksAndSkillsOfplayers);
+    let newRatings = rate(playerRatings, ranks);
+    tourneyIDs.forEach((info, i) => {
+      let tourneyID = info.id.id;
+      let currentStats = info.stats;
+      (<RANK_SYSTEM.TRUESKILL.RankState>currentStats.rankState).rating = newRatings[i][0];
+      this.state.playerStats.set(tourneyID, currentStats);
+    })
+
+
+    // ranksAndSkillsOfplayers.forEach((playerInfo) => {
+    //   let currentplayerStats = this.state.playerStats.get(playerInfo.tournamentID.id);
+    //   (<RANK_SYSTEM.TRUESKILL.RankState>(currentplayerStats.rankState)).mu = playerInfo.skill[0];
+    //   (<RANK_SYSTEM.TRUESKILL.RankState>(currentplayerStats.rankState)).sigma = playerInfo.skill[1];
+    //   this.state.playerStats.set(playerInfo.tournamentID.id, currentplayerStats);
+    // });
     if (this.configs.consoleDisplay) {
       this.printTournamentStatus();
       console.log();
