@@ -52,6 +52,14 @@ export class LadderTournament extends Tournament {
     }
     switch(tournamentConfigs.rankSystem) {
       case RANK_SYSTEM.TRUESKILL:
+        // set default rank system configs
+        let trueskillConfigs: RANK_SYSTEM.TRUESKILL.Configs = {
+          initialMu: 25,
+          initialSigma: 25/3
+        }
+        if (this.configs.rankSystemConfigs === null) {
+          this.configs.rankSystemConfigs = trueskillConfigs
+        }
         break;
       case RANK_SYSTEM.ELO:
         break;
@@ -158,6 +166,7 @@ export class LadderTournament extends Tournament {
     this.state.results = [];
     switch(this.configs.rankSystem) {
       case RANK_SYSTEM.TRUESKILL:
+        let trueskillConfigs: RANK_SYSTEM.TRUESKILL.Configs = this.configs.rankSystemConfigs;
         this.competitors.forEach((player) => {
           this.state.playerStats.set(player.tournamentID.id, {
             player: player,
@@ -166,7 +175,7 @@ export class LadderTournament extends Tournament {
             losses: 0,
             matchesPlayed: 0,
             rankState: {
-              rating: new Rating(75, 25/3)
+              rating: new Rating(trueskillConfigs.initialMu, trueskillConfigs.initialSigma)
             }
           });
         });
@@ -224,16 +233,16 @@ export class LadderTournament extends Tournament {
     if (this.log.level > Logger.LEVEL.NONE) {
       console.clear();
       console.log(this.log.bar())
-      console.log(`Tournament: ${this.name} | Status: ${this.status} | Competitors: ${this.competitors.length} | Rank System: ${this.configs.rankSystem}\n`);
+      console.log(`Tournament: ${this.name} \nStatus: ${this.status} | Competitors: ${this.competitors.length} | Rank System: ${this.configs.rankSystem}\n`);
       console.log('Total Matches: ' + this.state.statistics.totalMatches + ' | Matches Queued: '  + this.matchQueue.length);
       let ranks = this.getRankings();
       switch(this.configs.rankSystem) {
         case RANK_SYSTEM.TRUESKILL:
           console.log(sprintf(
-            `%-20s | %-8s | %-15s | %-18s | %-8s`.underline, 'Name', 'ID', 'Score=(μ - 3σ)', 'Mu: μ, Sigma: σ', 'Matches'));
+            `%-30s | %-8s | %-15s | %-18s | %-8s`.underline, 'Name', 'ID', 'Score=(μ - 3σ)', 'Mu: μ, Sigma: σ', 'Matches'));
           ranks.forEach((info) => {
             console.log(sprintf(
-              `%-20s`.blue+ ` | %-8s | ` + `%-15s`.green + ` | ` + `μ=%-6s, σ=%-6s`.yellow +` | %-8s`, info.player.tournamentID.name, info.player.tournamentID.id, info.rankState.score.toFixed(7), info.rankState.rating.mu.toFixed(3), info.rankState.rating.sigma.toFixed(3), info.matchesPlayed));
+              `%-30s`.blue+ ` | %-8s | ` + `%-15s`.green + ` | ` + `μ=%-6s, σ=%-6s`.yellow +` | %-8s`, info.player.tournamentID.name, info.player.tournamentID.id, info.rankState.score.toFixed(7), info.rankState.rating.mu.toFixed(3), info.rankState.rating.sigma.toFixed(3), info.matchesPlayed));
           });
           break;
         case RANK_SYSTEM.ELO:

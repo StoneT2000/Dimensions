@@ -102,6 +102,7 @@ export abstract class Tournament {
    */
   public abstract getRankings()
 
+
   /**
    * Set configs for this tournament
    * @param configs the configs to deep merge with the current configs
