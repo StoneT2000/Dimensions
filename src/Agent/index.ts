@@ -87,6 +87,7 @@ export class Agent {
         this.cmd = 'python';
         break;
       case '.js':
+      case '.ts':
         this.cmd = 'node';
         break;
       case '.java':
@@ -156,6 +157,15 @@ export class Agent {
         case '.php':
           resolve();
           break;
+        case '.ts':
+          //tsc --esModuleInterop --allowJs -m commonjs --lib es5
+          exec(`tsc --esModuleInterop --allowJs -m commonjs --lib es5 ${this.src}`, {
+            cwd: this.cwd
+          }, (err) => {
+            if (err) reject(err);
+            resolve();
+          });
+          break;
         case '.go':
           exec(`go build -o ${this.srcNoExt}.out ${this.src}`, {
             cwd: this.cwd
@@ -203,7 +213,14 @@ export class Agent {
       switch(this.ext) {
         case '.py':
         case '.js':
+        case '.php':
           p = spawn(this.cmd, [this.src], {
+            cwd: this.cwd
+          }).on('error', function( err ){ reject(err) });
+          resolve(p);
+          break;
+        case '.ts':
+          p = spawn(this.cmd, [this.srcNoExt + '.js'], {
             cwd: this.cwd
           }).on('error', function( err ){ reject(err) });
           resolve(p);

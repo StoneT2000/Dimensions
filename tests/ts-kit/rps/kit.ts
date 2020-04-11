@@ -11,6 +11,7 @@ const DELIMITER = ',';
 export class Agent {
   public getLine: () => Promise<Parsed>;
   public id: number;
+  public roundResults: Array<number> = [];
   _setup() {
 
     // Prepare to read input
@@ -70,7 +71,7 @@ export class Agent {
     // get agent ID
     this.id = (await this.getLine()).nextInt();
     // get some other necessary initial input
-    let input = (await this.getLine()).nextStr();
+    let maxRounds = (await this.getLine()).nextInt();
   }
   /**
    * Updates agent's own known state of `Match`
@@ -78,10 +79,12 @@ export class Agent {
    */
   async update() {
 
-    // wait for the engine to send any updates
-    let updates = (await this.getLine());
-    let theNextInt = updates.nextInt();
-    let theNextString = updates.nextStr();
+    // wait for the engine to send the result of the last round, which is the ID of the agent who won
+    let result = (await this.getLine()).nextInt();
+    this.roundResults.push(result);
+
+    // wait for the engine to send you the opponent's last move, which is either 'R', 'P', or 'S'
+    let lastOpponentMove = (await this.getLine()).nextStr();
   }
 
   /**

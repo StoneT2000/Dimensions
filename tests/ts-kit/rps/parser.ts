@@ -1,7 +1,7 @@
 /**
  * Parser class to help parse a input line of data
  */
-export function parse(str: string, delimmiter: string): Parsed {
+export function parse(str, delimmiter): Parsed {
   return new Parsed(str, this.delimiter);
 }
 export class Parsed {
