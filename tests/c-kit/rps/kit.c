@@ -17,6 +17,8 @@ void agent_initialize() {
 
 void agent_end_turn() {
     printf("D_FINISH\n");
+    // flush it all out
+    fflush(stdout);
 }
 void agent_update() {
     int result;

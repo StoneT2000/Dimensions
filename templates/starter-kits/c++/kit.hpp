@@ -27,8 +27,10 @@ namespace kit {
          * User should edit this according to their `Design`
          */
         void initialize() {
+            // get agent ID
             id = stoi(kit::getline());
-            max_rounds = stoi(kit::getline());
+            // get some other necessary initial input
+            string input = kit::getline();
         }
         // end a turn
         static void end_turn() {
@@ -39,7 +41,7 @@ namespace kit {
          * Updates agent's own known state of `Match`.
          */
         static void update() {
-            int result = stoi(kit::getline());
+            int updateInfo = kit::getline();
         }
     };
     
