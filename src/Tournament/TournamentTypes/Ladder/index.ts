@@ -94,10 +94,13 @@ export class LadderTournament extends Tournament {
     return rankings;
   }
   public async stop() {
-
+    this.log.info('Stopping Tournament...');
+    this.status = Tournament.TournamentStatus.STOPPED;
   }
   public async resume() {
-    
+    this.log.info('Resuming Tournament...');
+    this.status = Tournament.TournamentStatus.RUNNING;
+    this.tourneyRunner();
   }
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<LadderConfigs>>) {
     this.status = Tournament.TournamentStatus.RUNNING;
@@ -139,8 +142,12 @@ export class LadderTournament extends Tournament {
       let matchInfo = this.matchQueue.shift();
       matchPromises.push(this.handleMatch(matchInfo));
     }
+
+    // as soon as one match finished, call it again
     Promise.race(matchPromises).then(() => {
-      this.tourneyRunner();
+      if (this.status == Tournament.TournamentStatus.RUNNING) {
+        this.tourneyRunner();
+      }
     }).catch((error) => {
       this.log.error(error);
     });
