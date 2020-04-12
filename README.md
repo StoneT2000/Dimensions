@@ -6,9 +6,9 @@ All you need to do?
 
 Code a competition design and code a bot
 
-Dimensions handles the rest, including match running, tournament running, TrueSkill rankings, and a local API and website through which you can watch this all happen at once.
+Dimensions handles the rest, including match running, tournament running, TrueSkill rankings, and a local API and website through which you can watch this all happen at once. Dimensions allows you to design virtually any kind of AI competition you want with its vast array of configuration options and choices.
 
-Dimensions utilizes an I/O based model to run competitions and pit AI agents against each other, allowing it to be generic and language agnostic.
+Moreover, Dimensions utilizes an I/O based model to run competitions and pit AI agents against each other, allowing it to be generic and language agnostic so anyone from any background can compete in your competition design.
 
 This was inspired by [Battlecode](battlecode.org/) and [Halite](https://halite.io/)
 
