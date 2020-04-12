@@ -304,18 +304,13 @@ myDimension.runMatch(
   console.log(results);
 });
 
-let tourney = myDimension.createTournament(['./bots/js/smarter.js', './bots/python/rock.py', './bots/js/paper.js', './bots/js/rock.js',],{
-  name: 'tourney',
-  type: Dimension.Tournament.TOURNAMENT_TYPE.ROUND_ROBIN, // run a round robin tournament
-  rankSystem: Dimension.Tournament.RANK_SYSTEM.WINS, // use a win/loss/ties based ranking
+let tourney = myDimension.createTournament(['./bots/js/smarter.js', './bots/python/rock.py', './bots/js/paper.js', './bots/js/rock.js'], {
+  name: 'RPS Best of 101 Tournament',
+  type: Dimension.Tournament.TOURNAMENT_TYPE.LADDER, // run a round robin tournament
+  rankSystem: Dimension.Tournament.RANK_SYSTEM.TRUESKILL, // use a win/loss/ties based ranking
   agentsPerMatch: [2], // specify design can only have 2 players at a time
-  resultHandler: RockPaperScissorsDesign.winsResultHandler, // give a result handler
+  resultHandler: RockPaperScissorsDesign.trueskillResultHandler, // give a result handler
   defaultMatchConfigs: {
     bestOf: 101 // play best of 101 because why not
-  },
-  tournamentConfigs: {
-    times: 20 // specify that we want the round robin to run 20 times
   }
 });
-
-tourney.run();
