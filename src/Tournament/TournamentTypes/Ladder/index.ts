@@ -11,6 +11,7 @@ import LadderConfigs = Tournament.Ladder.Configs;
 import RANK_SYSTEM = Tournament.RANK_SYSTEM;
 import { sprintf } from 'sprintf-js';
 import { Logger } from "../../../Logger";
+import { ELOSystem, ELORating } from "../../ELO";
 
 export class LadderTournament extends Tournament {
   configs: Tournament.TournamentConfigs<LadderConfigs> = {
@@ -34,7 +35,9 @@ export class LadderTournament extends Tournament {
     statistics: {
       totalMatches: 0
     }
-  };;
+  };
+
+  private elo: ELOSystem;
 
   // queue of the results to process. Use of queue avoids asynchronous editing of player stats such as 
   // sigma and mu for trueskill
@@ -60,6 +63,22 @@ export class LadderTournament extends Tournament {
         if (this.configs.rankSystemConfigs === null) {
           this.configs.rankSystemConfigs = trueskillConfigs
         }
+        break;
+      case RANK_SYSTEM.ELO:
+        // check if other settings are valid
+        if (!(this.configs.agentsPerMatch.length === 1 && this.configs.agentsPerMatch[0] === 2)) {
+          throw new FatalError('We currently only support ranking matches with 2 agents under the ELO system');
+        }
+
+        // set default rank system configs
+        let eloConfigs: RANK_SYSTEM.ELO.Configs = {
+          startingScore: 1000,
+          kFactor: 32
+        }
+        if (this.configs.rankSystemConfigs === null) {
+          this.configs.rankSystemConfigs = eloConfigs
+        }
+        this.elo = new ELOSystem(this.configs.rankSystemConfigs.kFactor, this.configs.rankSystemConfigs.startingScore)
         break;
       default:
         throw new FatalError('We currently do not support this rank system for ladder tournaments');
@@ -95,6 +114,19 @@ export class LadderTournament extends Tournament {
         });
         break;
       case RANK_SYSTEM.ELO:
+        this.state.playerStats.forEach((stat) => {
+          let rankState = <RANK_SYSTEM.ELO.RankState>stat.rankState;
+          rankings.push({
+            player: stat.player,
+            name: stat.player.tournamentID.name,
+            id: stat.player.tournamentID.id,
+            matchesPlayed: stat.matchesPlayed,
+            rankState: rankState
+          });
+        });
+        rankings.sort((a, b) => {
+          return b.rankState.rating.score - a.rankState.rating.score
+        });
         break;
     }
     return rankings;
@@ -188,6 +220,19 @@ export class LadderTournament extends Tournament {
         });
         break;
       case RANK_SYSTEM.ELO:
+        let eloConfigs: RANK_SYSTEM.ELO.Configs = this.configs.rankSystemConfigs;
+        this.competitors.forEach((player) => {
+          this.state.playerStats.set(player.tournamentID.id, {
+            player: player,
+            wins: 0,
+            ties: 0,
+            losses: 0,
+            matchesPlayed: 0,
+            rankState: {
+              rating: this.elo.createRating()
+            }
+          });
+        });
         break;
     }
     if (this.configs.consoleDisplay) {
@@ -210,10 +255,6 @@ export class LadderTournament extends Tournament {
         let random = this.selectRandomplayersFromArray(this.competitors, competitorCount);
         this.matchQueue.push([...random]);
     }
-    this.competitors.forEach((player) => {
-      // let rankState = <RANK_SYSTEM.TrueSkillRankState>this.state.playerStats.get(player.tournamentID.id).rankState;
-
-    });
   }
 
   private selectRandomAgentAmountForMatch(): number {
@@ -242,9 +283,10 @@ export class LadderTournament extends Tournament {
       console.log(this.log.bar())
       console.log(`Tournament: ${this.name} \nStatus: ${this.status} | Competitors: ${this.competitors.length} | Rank System: ${this.configs.rankSystem}\n`);
       console.log('Total Matches: ' + this.state.statistics.totalMatches + ' | Matches Queued: '  + this.matchQueue.length);
-      let ranks = this.getRankings();
+      let ranks;
       switch(this.configs.rankSystem) {
         case RANK_SYSTEM.TRUESKILL:
+          ranks = this.getRankings();
           console.log(sprintf(
             `%-30s | %-8s | %-15s | %-18s | %-8s`.underline, 'Name', 'ID', 'Score=(μ - 3σ)', 'Mu: μ, Sigma: σ', 'Matches'));
           ranks.forEach((info) => {
@@ -253,6 +295,13 @@ export class LadderTournament extends Tournament {
           });
           break;
         case RANK_SYSTEM.ELO:
+          ranks = this.getRankings();
+          console.log(sprintf(
+            `%-30s | %-8s | %-15s | %-8s`.underline, 'Name', 'ID', 'ELO Score', 'Matches'));
+          ranks.forEach((info) => {
+            console.log(sprintf(
+              `%-30s`.blue+ ` | %-8s | ` + `%-15s`.green + ` | %-8s`, info.player.tournamentID.name, info.player.tournamentID.id, info.rankState.rating.score, info.matchesPlayed));
+          });
           break;
       }
       
@@ -305,6 +354,9 @@ export class LadderTournament extends Tournament {
         this.handleMatchWithTrueSkill();
         break;
       case RANK_SYSTEM.ELO:
+        // push to result processing queue
+        this.resultProcessingQueue.push(
+          {result: resInfo, mapAgentIDtoTournamentID: matchRes.match.mapAgentIDtoTournamentID});
         this.handleMatchWithELO();
         break;
     }
@@ -350,7 +402,35 @@ export class LadderTournament extends Tournament {
     }
   }
 
-  private handleMatchWithELO() {
+  private async handleMatchWithELO() {
+    let toProcess = this.resultProcessingQueue.shift();
+    let mapAgentIDtoTournamentID = toProcess.mapAgentIDtoTournamentID;
+    let result = <RANK_SYSTEM.ELO.Results>toProcess.result;
+    let ratingsToChange: Array<ELORating> = [];
+    let ranks = [];
+    result.ranks.forEach((rankInfo) => {
+      let tournamentID = mapAgentIDtoTournamentID.get(rankInfo.agentID);
+      let currentplayerStats = this.state.playerStats.get(tournamentID.id);
+      let currRankState = <RANK_SYSTEM.ELO.RankState>currentplayerStats.rankState;
+      ratingsToChange.push(currRankState.rating);
+      ranks.push(rankInfo.rank);
+    })
+
+    // re adjust rankings
+    this.elo.rate(ratingsToChange, ranks);
+
+    if (this.configs.consoleDisplay) {
+      this.printTournamentStatus();
+      console.log();
+      console.log('Current Matches: ' + (this.matches.size));
+      this.matches.forEach((match) => {
+        let names = [];
+        match.agents.forEach((agent) => {
+          names.push(agent.name);
+        });
+        console.log(names);
+      });
+    }
 
   }
 }

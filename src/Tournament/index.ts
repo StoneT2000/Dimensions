@@ -9,6 +9,7 @@ import { LadderTournament } from './TournamentTypes/Ladder';
 import { Agent } from '../Agent';
 import { deepCopy } from '../utils/DeepCopy';
 import { Rating } from 'ts-trueskill';
+import { ELORating } from './ELO';
 
 /**
  * Player class that persists data for the same ephemereal agent across multiple matches
@@ -325,21 +326,47 @@ export module Tournament {
        * The configuration interface for configuring the {@link ELO} ranking system
        */
       export interface Configs {
-
+        /** 
+         * Starting ELO score 
+         * @default `1000`
+         */
+        startingScore: number,
+        /** 
+         * The k factor to use for the ranking.
+         * @default `32`
+         */
+        kFactor: number,
       }
       /** The results interface that must be returned by a result handler for a {@link Tournament} */
       export interface Results {
-        /** Array of {@link Agent.ID}s and their ranks in a {@link Match}, where rank 1 is highest */
+        /** 
+         * Array of {@link Agent.ID}s and their ranks in a {@link Match}, 
+         * An agent scores a 1 against another agent if their rank is higher. 0.5 if the same, and 0 if lower
+         * Same interface as {@link TRUESKILL.Results} and result handlers can be used interchangeably
+         */
         ranks: Array<{rank: number, agentID: Agent.ID}>
+      }
+
+      /** The current rank state of a player */
+      export interface RankState {
+        /** The ELO Rating */
+        rating: ELORating,
+        toJSON?: Function
       }
     }
 
     export namespace TRUESKILL {
       /** The Configuration interface used for configuring the {@link TRUESKILL} ranking system */
       export interface Configs {
-        /** The initial Mu value players start with */
+        /** 
+         * The initial Mu value players start with 
+         * @default `25`
+         */
         initialMu: number,
-        /** The initial sigma value players start with */
+        /** 
+         * The initial sigma value players start with 
+         * @default `25/3`
+         */
         initialSigma: number
       }
       /** The results interface that must be returned by a result handler for a {@link Tournament} */

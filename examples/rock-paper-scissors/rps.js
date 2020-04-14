@@ -274,7 +274,22 @@ class RockPaperScissorsDesign extends Dimension.Design{
     }
     return {winners: winners, losers: losers, ties: ties};
   }
+
+  static eloResultHandler(results) {
+    let ranks = [];
+    if (results.winner === 'Tie') {
+      ranks = [{rank: 1, agentID: 0}, {rank: 1, agentID: 1}]
+    }
+    else {
+      let loserID = (results.winnerID + 1) % 2;
+      ranks = [{rank: 1, agentID: results.winnerID}, {rank: 2, agentID: loserID}]
+    }
+    return {
+      ranks: ranks
+    }
+  }
   
+  /** Note, ELO Result handler is the same as the Trueskill one, they shouldw return the same type */
   static trueskillResultHandler(results) {
     let ranks = [];
     if (results.winner === 'Tie') {
