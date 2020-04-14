@@ -114,12 +114,14 @@
 					<div class="tsd-signature tsd-kind-icon">ranks<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>agentID<span class="tsd-signature-symbol">: </span><a href="../classes/_agent_index_.agent.html#id" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol">; </span>rank<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a2899d9/src/Tournament/index.ts#L333">https://github.com/StoneT2000/Dimensions/blob/a2899d9/src/Tournament/index.ts#L333</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e17a795/src/Tournament/index.ts#L347">https://github.com/StoneT2000/Dimensions/blob/e17a795/src/Tournament/index.ts#L347</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Array of <a href="../classes/_agent_index_.agent.html#id">Agent.ID</a>s and their ranks in a <a href="../classes/_match_index_.match.html">Match</a>, where rank 1 is highest</p>
+							<p>Array of <a href="../classes/_agent_index_.agent.html#id">Agent.ID</a>s and their ranks in a <a href="../classes/_match_index_.match.html">Match</a>,
+								An agent scores a 1 against another agent if their rank is higher. 0.5 if the same, and 0 if lower
+							Same interface as <a href="_tournament_tournamenttypes_ladder_index_.laddertournament.rank_system.trueskill.results.html">TRUESKILL.Results</a> and result handlers can be used interchangeably</p>
 						</div>
 					</div>
 				</section>
@@ -137,6 +139,9 @@
 				<ul class="before-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
 						<a href="_tournament_tournamenttypes_ladder_index_.laddertournament.rank_system.elo.configs.html" class="tsd-kind-icon">Configs</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
+						<a href="_tournament_tournamenttypes_ladder_index_.laddertournament.rank_system.elo.rankstate.html" class="tsd-kind-icon">Rank<wbr>State</a>
 					</li>
 				</ul>
 				<ul class="current">

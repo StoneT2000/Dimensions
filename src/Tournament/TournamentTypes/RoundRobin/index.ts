@@ -10,7 +10,7 @@ import { sprintf } from 'sprintf-js';
 /**
  * The Round Robin Tournament Class
  * 
- * Only supports two agent matches at the moment and a {@link RANK_SYSTEM.WINS} system only
+ * Only supports two agent matches at the moment
  */
 export class RoundRobinTournament extends Tournament {
   configs: Tournament.TournamentConfigs<Tournament.RoundRobin.Configs> = {
@@ -39,6 +39,9 @@ export class RoundRobinTournament extends Tournament {
     id: number
   ) {
     super(design, files, id, tournamentConfigs);
+    if (tournamentConfigs.consoleDisplay) {
+      this.configs.consoleDisplay = tournamentConfigs.consoleDisplay;
+    }
 
     // handle config defaults
     if (tournamentConfigs.rankSystem !== Tournament.RANK_SYSTEM.WINS) {
