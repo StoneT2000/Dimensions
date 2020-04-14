@@ -1,6 +1,6 @@
 {
   "name": "dimensions-ai",
-  "version": "1.1.1",
+  "version": "1.1.0",
   "description": "A generic, multi-level ai competition framework",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -19,9 +19,6 @@
     "competition",
     "framework"
   ],
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  },
   "author": "StoneT2000",
   "license": "MIT",
   "dependencies": {
