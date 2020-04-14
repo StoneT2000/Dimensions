@@ -19,6 +19,7 @@
     "competition",
     "framework"
   ],
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
   "author": "StoneT2000",
   "license": "MIT",
   "dependencies": {
