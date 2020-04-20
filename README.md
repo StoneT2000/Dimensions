@@ -30,8 +30,9 @@ agent.initialize().then(async () => {
 });
 ```
 
+As another proof of concept of how seamless and generalizable this framework is, I [re-created Halite 3](https://github.com/StoneT2000/dimensions-halite3) with this framework.
 
-Or jump straight to [Documentation](https://stonet2000.github.io/Dimensions/index.html),  [Contributing](#Contributing), [Development](#Development) or [Plans](#Plans) curated by the owner and the community.
+Follow these links to jump straight to [Documentation](https://stonet2000.github.io/Dimensions/index.html),  [Contributing](#Contributing), [Development](#Development) or [Plans](#Plans) curated by the owner and the community.
 
 Also checkout the blog post introducing the motivation for Dimensions and thoughts about it here: https://stonet2000.github.io/blog/posts/Dimensions/index.html
 
