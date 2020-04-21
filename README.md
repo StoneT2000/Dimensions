@@ -30,7 +30,7 @@ agent.initialize().then(async () => {
 });
 ```
 
-As another proof of concept of how seamless and generalizable this framework is, I [re-created Halite 3](https://github.com/StoneT2000/dimensions-halite3) with this framework.
+As another proof of concept of how seamless and generalizable this framework is, see [the recreation of Halite 3](https://github.com/StoneT2000/dimensions-halite3) using this framework.
 
 Follow these links to jump straight to [Documentation](https://stonet2000.github.io/Dimensions/index.html),  [Contributing](#contributing), [Development](#development) or [Plans](#plans) curated by the owner and the community.
 
