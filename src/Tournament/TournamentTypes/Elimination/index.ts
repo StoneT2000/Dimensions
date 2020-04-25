@@ -17,6 +17,7 @@ export class EliminationTournament extends Tournament {
     rankSystemConfigs: null,
     tournamentConfigs: {
       times: 1,
+      storePastResults: true,
       lives: 1,
       seeding: null
     },
@@ -128,7 +129,8 @@ export class EliminationTournament extends Tournament {
     this.log.detail('Running match - Competitors: ', matchInfo.map((player) => {return player.tournamentID.name}));
     let matchRes = await this.runMatch(matchInfo);
     let res: RANK_SYSTEM.WINS.Results = this.configs.resultHandler(matchRes.results);
-    this.state.results.push(res);
+
+    if (this.configs.tournamentConfigs.storePastResults) this.state.results.push(res);
     this.state.statistics.totalMatches++;
 
     let rankSystemConfigs: RANK_SYSTEM.WINS.Configs = this.configs.rankSystemConfigs;

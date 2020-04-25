@@ -22,6 +22,7 @@ export class LadderTournament extends Tournament {
     tournamentConfigs: {
       maxConcurrentMatches: 1,
       endDate: null,
+      storePastResults: true,
       maxTotalMatches: null
     },
     resultHandler: null,
@@ -251,9 +252,9 @@ export class LadderTournament extends Tournament {
     // for every player, we schedule some m matches (TODO: configurable)
     // let rankings = this.getRankings();
     for (let i = 0; i < matchCount; i++) {
-        let competitorCount = this.selectRandomAgentAmountForMatch();
-        let random = this.selectRandomplayersFromArray(this.competitors, competitorCount);
-        this.matchQueue.push([...random]);
+      let competitorCount = this.selectRandomAgentAmountForMatch();
+      let random = this.selectRandomplayersFromArray(this.competitors, competitorCount);
+      this.matchQueue.push([...random]);
     }
   }
 
@@ -262,7 +263,7 @@ export class LadderTournament extends Tournament {
   }
 
   // using resovoir sampling to select num distinct randomly
-  private selectRandomplayersFromArray(arr, num: number) {
+  private selectRandomplayersFromArray(arr, num: number, excludedSet: Set<number> = new Set()) {
     let reservoir = [];
     // put the first num into reservoir
     for (let i = 0; i < num; i++) {
@@ -360,7 +361,9 @@ export class LadderTournament extends Tournament {
         this.handleMatchWithELO();
         break;
     }
-    this.state.results.push(matchRes.results);
+    if (this.configs.tournamentConfigs.storePastResults) {
+      this.state.results.push(matchRes.results);
+    }
   }
 
   private async handleMatchWithTrueSkill() {

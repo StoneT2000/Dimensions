@@ -257,7 +257,11 @@ export module Tournament {
   }
 
   export interface TournamentTypeConfig  {
-
+    /**
+     * Whether or not to store past results using the specified option of the dimension (database or in memory)
+     * @default `true`
+     */
+    storePastResults: boolean
   }
   export interface TournamentTypeState  {
     

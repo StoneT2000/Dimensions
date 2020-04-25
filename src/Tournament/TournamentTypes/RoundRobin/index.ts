@@ -20,6 +20,7 @@ export class RoundRobinTournament extends Tournament {
     rankSystemConfigs: null,
     tournamentConfigs: {
       times: 2,
+      storePastResults: true
     },
     agentsPerMatch: [2],
     resultHandler: null,
@@ -113,7 +114,8 @@ export class RoundRobinTournament extends Tournament {
     this.log.detail('Running match - Competitors: ', matchInfo.map((player) => player.tournamentID.name));
     let matchRes = await this.runMatch(matchInfo);
     let resInfo = <Tournament.RANK_SYSTEM.WINS.Results>this.configs.resultHandler(matchRes.results);
-    this.state.results.push(matchRes.results);
+    
+    if (this.configs.tournamentConfigs.storePastResults) this.state.results.push(matchRes.results);
     
     // update total matches
     this.state.statistics.totalMatches++;
