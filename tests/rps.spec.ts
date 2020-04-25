@@ -3,6 +3,7 @@ let MatchStatus = Dimension.Match.Status;
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import 'mocha';
+import { Logger } from '../src';
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
@@ -83,15 +84,21 @@ describe('Rock Paper Scissors Run', () => {
       )
       expect(results.scores).to.eql({'0': 3, '1': 1});
     });
-    it('should support java', async () => {
-      let results = await myDimension.runMatch(
-        ['./tests/js-kit/rps/smarter.js', './tests/java-kit/rps/Rock.java'],
-        {
-          name: 'mult-lang (java)',
-          bestOf: 4
-        }
-      )
-      expect(results.scores).to.eql({'0': 3, '1': 1});
+    it('should support java (run 5 times)', async () => {
+      // TODO: look into why sometimes the java bot doesn't respond with any commands
+      // It doesn't time out but does send the D_FINISH signal, so not sure why we don't receive the rock signal 
+      // sometimes
+      for (let i = 0; i < 5; i++) {
+        let results = await myDimension.runMatch(
+          ['./tests/js-kit/rps/smarter.js', './tests/java-kit/rps/Rock.java'],
+          {
+            name: 'mult-lang (java)',
+            bestOf: 10,
+            loggingLevel: Logger.LEVEL.ERROR
+          }
+        )
+        expect(results.scores).to.eql({'0': 9, '1': 1});
+      }
     });
     it('should support c++', async () => {
       let results = await myDimension.runMatch(

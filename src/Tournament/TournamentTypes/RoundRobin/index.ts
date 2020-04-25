@@ -20,6 +20,7 @@ export class RoundRobinTournament extends Tournament {
     rankSystemConfigs: null,
     tournamentConfigs: {
       times: 2,
+      storePastResults: true
     },
     agentsPerMatch: [2],
     resultHandler: null,
@@ -64,6 +65,11 @@ export class RoundRobinTournament extends Tournament {
 
     // handle rest
     this.configs = deepMerge(this.configs, tournamentConfigs);
+
+    // add all players
+    files.forEach((file) => {
+      this.addplayer(file);
+    });
 
     this.status = Tournament.TournamentStatus.INITIALIZED;
     this.log.info('Initialized Round Robin Tournament');
@@ -113,7 +119,8 @@ export class RoundRobinTournament extends Tournament {
     this.log.detail('Running match - Competitors: ', matchInfo.map((player) => player.tournamentID.name));
     let matchRes = await this.runMatch(matchInfo);
     let resInfo = <Tournament.RANK_SYSTEM.WINS.Results>this.configs.resultHandler(matchRes.results);
-    this.state.results.push(matchRes.results);
+    
+    if (this.configs.tournamentConfigs.storePastResults) this.state.results.push(matchRes.results);
     
     // update total matches
     this.state.statistics.totalMatches++;
@@ -241,6 +248,14 @@ export class RoundRobinTournament extends Tournament {
     }
     return roundQueue;
   }
+
+  internalAddPlayer(player: Player) {
+    return;
+  }
+  updatePlayer(player: Player, oldname: string, oldfile: string) {
+    throw new FatalError('You are not allowed to update a player during elimination tournaments');
+  }
+
   private printTournamentStatus() {
     if (this.log.level > Logger.LEVEL.NONE) {
       console.clear();

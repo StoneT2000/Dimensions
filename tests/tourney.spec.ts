@@ -44,7 +44,7 @@ describe('Tournament Testing with RPS', () => {
       type: Dimension.Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
       rankSystem: Dimension.Tournament.RANK_SYSTEM.WINS,
       name: 'Rock Paper Scissors',
-      loggingLevel: Dimension.Logger.LEVEL.WARN,
+      loggingLevel: Dimension.Logger.LEVEL.ERROR,
       agentsPerMatch: [2],
       consoleDisplay: false,
       defaultMatchConfigs: {
@@ -66,14 +66,14 @@ describe('Tournament Testing with RPS', () => {
       expect(DefaultRPSTournament.name).to.equal('tournament_0');
       expect(DefaultRPSTournament.competitors.length).to.equal(4);
       expect(DefaultRPSTournament.competitors[0].tournamentID.name).to.equal('player-t0_0');
-      console.log(DefaultRPSTournament.log);
-      expect(DefaultRPSTournament.log.level).to.equal(Logger.LEVEL.INFO);
+      // should be same as dimension
+      expect(DefaultRPSTournament.log.level).to.equal(Logger.LEVEL.WARN);
     });
     it('should have correct overriden parameters', async () => {
       expect(RPSTournament.name).to.equal('Rock Paper Scissors');
       expect(RPSTournament.competitors.length).to.equal(4);
       expect(RPSTournament.competitors[0].tournamentID.name).to.equal('smarter');
-      expect(RPSTournament.log.level).to.equal(Logger.LEVEL.WARN);
+      expect(RPSTournament.log.level).to.equal(Logger.LEVEL.ERROR);
     });
   })
   describe('Running Tournament', async() => {

@@ -18,6 +18,7 @@
     "lib",
     "examples",
     "templates",
-    "src/Station/web/**/*"
+    "src/Station/web/**/*",
+    "src/Station/local/**/*"
   ]
 }

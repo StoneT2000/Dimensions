@@ -221,6 +221,10 @@ export class Dimension {
   public createTournament(files: Array<string> | Array<{file: string, name:string}>, configs: Tournament.TournamentConfigsBase): Tournament {
       let id = this.statistics.tournamentsCreated;
       let newTourney;
+      if (configs.loggingLevel === undefined) {
+        // set default logging level to that of the dimension
+        configs.loggingLevel = this.log.level;
+      }
       switch(configs.type) {
         case Tournament.TOURNAMENT_TYPE.ROUND_ROBIN:
           newTourney = new RoundRobinTournament(this.design, files, configs, id);

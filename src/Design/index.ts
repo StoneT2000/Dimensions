@@ -4,6 +4,7 @@ import { DeepPartial } from "../utils/DeepPartial";
 import { Agent } from "../Agent";
 import { Match } from "../Match";
 import { Logger } from "../Logger";
+import { Design as DesignTypes} from './types';
 import EngineOptions = MatchEngine.EngineOptions;
 import COMMAND_FINISH_POLICIES = MatchEngine.COMMAND_FINISH_POLICIES;
 import COMMAND_STREAM_TYPE = MatchEngine.COMMAND_STREAM_TYPE;
@@ -47,6 +48,14 @@ export abstract class Design {
          * }
          */
       }
+    },
+    override: {
+      active: false,
+      command: 'echo NO COMMAND PROVIDED',
+      conclude_command: 'D_MATCH_FINISHED',
+      arguments: [],
+      timeout: 600000, // 10 minutes
+      resultHandler: () => {}
     }
   }
 
@@ -132,6 +141,57 @@ export abstract class Design {
    */
   abstract async getResults(match: Match): Promise<any>
 
+  /**
+   * Creates a Design class wrapper around a custom design written without the use of Dimensions framework
+   */
+  public static createCustom(name: string, overrideOptions: DeepPartial<DesignTypes.OverrideOptions>) {
+    return new CustomDesign(name, overrideOptions);
+  }
+
+}
+
+/**
+ * This class is meant for wrapping around existing designs built without the use of Dimensions framework
+ * This is created so a user provided non-dimension framework based design can be used within the Dimensions framework
+ * and leverage other features such as tournament running, an API for viewing relevant data, and automatic, full blown
+ * competition running
+ */
+class CustomDesign extends Design {
+  constructor(name: string, overrideOptions: DeepPartial<DesignTypes.OverrideOptions>) {
+    // this should always be true
+    overrideOptions.active = true;
+    // pass in the override options to Design
+    super(name, {
+      override: overrideOptions
+    });
+  }
+
+  /**
+   * Initializer. Declares any relevant state fields
+   */
+  async initialize(match: Match) {
+    match.state = {
+      matchOutput: []
+    };
+    match.results = [];
+    return;
+  }
+
+  /**
+   * Empty function, not used
+   */
+  async update(): Promise<Match.Status> {
+    return;
+  }
+
+  /**
+   * Returns the results stored
+   * @param match - Match to get results of
+   */
+  async getResults(match: Match) {
+    return match.results;
+  }
+
 }
 
 /**
@@ -139,5 +199,11 @@ export abstract class Design {
  */
 export interface DesignOptions {
   /** The default engine options to use for all matches created using this design */
-  engineOptions: EngineOptions
+  engineOptions: EngineOptions,
+
+  /** 
+   * Override configurations if user wants to run matches with a non-dimensions based design and run their own design
+   * in another language
+   */
+  override: DesignTypes.OverrideOptions
 };

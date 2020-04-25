@@ -1,12 +1,15 @@
-import { FatalError } from "../DimensionError";
+import { FatalError, MatchError } from "../DimensionError";
 import { DeepPartial } from "../utils/DeepPartial";
 import { deepMerge } from "../utils/DeepMerge";
 import { Design } from '../Design';
+import { Design as DesignTypes } from '../Design/types';
 import { Logger } from '../Logger';
 import { Agent } from '../Agent';
 import { Match } from '../Match';
 import { deepCopy } from '../utils/DeepCopy';
+import { spawn } from 'child_process';
 import EngineOptions = MatchEngine.EngineOptions;
+import DDS = DesignTypes.DynamicDataStrings;
 /**
  * @class MatchEngine
  * @classdesc The Match Engine that takes a {@link Design} and starts matches by spawning new processes for each 
@@ -22,6 +25,9 @@ export class MatchEngine {
 
   /** Engine options */
   private engineOptions: EngineOptions;
+  
+  /** Override options */
+  private overrideOptions: DesignTypes.OverrideOptions;
 
   /** Logger */
   private log = new Logger();
@@ -37,6 +43,7 @@ export class MatchEngine {
   constructor(design: Design, loggingLevel: Logger.LEVEL) {
     this.design = design;
     this.engineOptions = deepCopy(this.design.getDesignOptions().engineOptions);
+    this.overrideOptions = deepCopy(this.design.getDesignOptions().override);
     this.log.identifier = `Engine`;
     this.setLogLevel(loggingLevel);
   }
@@ -69,11 +76,15 @@ export class MatchEngine {
 
       match.agents.forEach( async (agent: Agent, index: number) => {
         agentSetupPromises.push(new Promise( async (res, rej) => {
-          // spawn a process
+
           this.log.system("Setting up and spawning " + agent.name + ` | Command: ${agent.cmd} ${agent.src}`);
         
+          // wait for compilation step
           await agent._compile();
+
           this.log.system('Succesfully ran compile step for agent ' + agent.id);
+
+          // spawn the agent process
           let p = await agent._spawn();
 
           match.idToAgentsMap.set(agent.id, agent);
@@ -310,6 +321,145 @@ export class MatchEngine {
         this.log.error(`Agent ${agentID} - ${agent.name} - has been killed off already, can't send messages now`);
       }
     });
+  }
+
+  /**
+   * TODO: Initialize a custom design based match and run through some basic security measures
+   * @param match - The match to initialize with a custom design
+   */
+  async initializeCustom(match: Match): Promise<boolean> {
+    return true;
+  }
+
+  /**
+   * Run a custom match. A custom match much print to stdout all relevant data to be used by the engine and 
+   * Dimensions framework. All output after the conclude command from {@link Design.OverrideOptions} is outputted
+   * is stored as a list of new line delimited strings and returned as the match results. The match must exit with 
+   * exit code 0 to be marked as succesfully complete and the processing of results stops and this function resolves
+   * @param match - the match to run
+   */
+  public async runCustom(match: Match): Promise<Array<string>> {
+    return new Promise((resolve, reject) => {
+      
+      if (this.overrideOptions.active == false) {
+        reject(new FatalError('Override was not set active! Make sure to set the overide.active field to true'));
+      }
+      let cmd = this.overrideOptions.command;
+  
+      let parsed = this.parseCustomArguments(match, this.overrideOptions.arguments);
+  
+      // spawn the match process with the parsed arguments
+      let matchProcessTimer;
+
+      let pathparts = cmd.split('/');
+      let cwd = pathparts.slice(0, -1).join('/');
+      let fullcmd = [cmd, parsed.join(' ')];
+      let matchProcess = spawn(cmd, parsed).on('error', (err) => {
+        if (err) throw err;
+      });
+      this.log.system(`${match.name} | id: ${match.id} - spawned: ${fullcmd}`);
+
+      let matchTimedOut = false;
+      // set up timer if specified
+      if (this.overrideOptions.timeout !== null) {
+        matchProcessTimer = setTimeout(() => {
+          this.log.system(`${match.name} | id: ${match.id} - Timed out`);
+          matchProcess.kill('SIGKILL');
+          matchTimedOut = true;
+        }, this.overrideOptions.timeout);
+      }
+
+  
+      let processingStage = false;
+      let results: Array<string> = [];
+      matchProcess.stdout.on('readable', () => {
+        let data: string[];
+        while (data = matchProcess.stdout.read()) {
+          // split chunks into line by line and handle each line of output
+          let strs = `${data}`.split('\n');
+          for (let i = 0; i < strs.length; i++) {
+            let str = strs[i];
+
+            // skip empties
+            if (str === '') continue;
+  
+            // if we reached conclude command, default being D_MATCH_FINISHED, we start the processing stage
+            if (str === this.overrideOptions.conclude_command) {
+              processingStage = true;
+            }
+            // else if we aren't in the processing stage
+            else if (!processingStage) {
+              // store all stdout 
+              match.state.matchOutput.push(str);
+            }
+            // otherwise we are in processing stage
+            else {
+              // store into results
+              match.results.push(str);
+            }
+          }
+        }
+      });
+
+      matchProcess.stdout.on('close', (code) => {
+        this.log.system(`${match.name} | id: ${match.id} - exited with code ${code}`);
+        if (matchTimedOut) {
+          reject(new MatchError('Match timed out'));
+        }
+        else {
+          clearTimeout(matchProcessTimer);
+          resolve(match.results);
+          
+        }
+      });
+
+    });
+  }
+
+  /**
+   * Parses a list of arguments for a given match and populates relevant strings as needed
+   * @param match - the match to parse arguments for
+   * @param args - the arguments to parse
+   */
+  private parseCustomArguments(match: Match, args: Array<string | DDS>): Array<string> {
+
+    if (match.matchStatus === Match.Status.UNINITIALIZED) {
+      throw new FatalError(`Match ${match.id} - ${match.name} is not initialized yet`);
+    }
+
+    let parsed = [];
+    
+    for (let i = 0; i < args.length; i++) {
+      switch(args[i]) {
+        case DDS.D_FILES:
+          match.agents.forEach((agent) => {
+            parsed.push(agent.file);
+          });
+          break;
+        case DDS.D_TOURNAMENT_IDS:
+          match.agents.forEach((agent) => {
+            // pass in tournament ID string if it exists, otherwise pass in 0
+            parsed.push(agent.tournamentID.id ? agent.tournamentID : '0');
+          });
+          break;
+        case DDS.D_AGENT_IDS:
+          match.agents.forEach((agent) => {
+            parsed.push(agent.id);
+          });
+          break;
+        case DDS.D_MATCH_ID:
+          parsed.push(match.id);
+          break;
+        case DDS.D_MATCH_NAME:
+          parsed.push(match.name);
+          break;
+        default:
+          parsed.push(args[i]);
+          break;
+      }
+    }
+
+    return parsed;
   }
 
 }
