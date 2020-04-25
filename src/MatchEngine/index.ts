@@ -2,13 +2,14 @@ import { FatalError, MatchError } from "../DimensionError";
 import { DeepPartial } from "../utils/DeepPartial";
 import { deepMerge } from "../utils/DeepMerge";
 import { Design } from '../Design';
+import { Design as DesignTypes } from '../Design/types';
 import { Logger } from '../Logger';
 import { Agent } from '../Agent';
 import { Match } from '../Match';
 import { deepCopy } from '../utils/DeepCopy';
 import { spawn } from 'child_process';
 import EngineOptions = MatchEngine.EngineOptions;
-import DDS = Design.DynamicDataStrings;
+import DDS = DesignTypes.DynamicDataStrings;
 /**
  * @class MatchEngine
  * @classdesc The Match Engine that takes a {@link Design} and starts matches by spawning new processes for each 
@@ -26,7 +27,7 @@ export class MatchEngine {
   private engineOptions: EngineOptions;
   
   /** Override options */
-  private overrideOptions: Design.OverrideOptions;
+  private overrideOptions: DesignTypes.OverrideOptions;
 
   /** Logger */
   private log = new Logger();
@@ -414,7 +415,7 @@ export class MatchEngine {
    * @param match - the match to parse arguments for
    * @param args - the arguments to parse
    */
-  private parseCustomArguments(match: Match, args: Array<string | Design.DynamicDataStrings>): Array<string> {
+  private parseCustomArguments(match: Match, args: Array<string | DesignTypes.DynamicDataStrings>): Array<string> {
 
     if (match.matchStatus === Match.Status.UNINITIALIZED) {
       throw new FatalError(`Match ${match.id} - ${match.name} is not initialized yet`);
