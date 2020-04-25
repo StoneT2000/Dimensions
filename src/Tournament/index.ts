@@ -62,29 +62,90 @@ export abstract class Tournament {
     public id: number,
     tournamentConfigs: Tournament.TournamentConfigsBase
   ) {
-    files.forEach((file) => {
-      this.addplayer(file);
-    });
     this.log.level = (tournamentConfigs.loggingLevel !== undefined) ? tournamentConfigs.loggingLevel : Logger.LEVEL.INFO;
     this.name = tournamentConfigs.name ? tournamentConfigs.name : `tournament_${this.id}`;
     this.log.identifier = this.name;
   }
 
   /**
-   * Add a player to the tournament. Currently only supports adding during the match.
+   * Add a player to the tournament. Can specify an ID to use. If that ID exists already, this will update the file for 
+   * that player instead 
    * @param file - The file to the bot or an object with the file and a name for the player specified
    */
-  public addplayer(file: string | {file: string, name: string}) {
-    let id = `t${this.id}_${this.playerID++}`;
-    if (typeof file === 'string') {
-      let name = `player-${id}`;
-      this.competitors.push(new Player({id: id, name: name}, file));
+  public addplayer(file: string | {file: string, name: string}, existingID?: string) {
+    let id: string;
+    if (existingID) {
+      let content = existingID.split('_');
+      let existingPlayerID = parseInt(content[1]);
+      if (existingPlayerID < this.competitors.length) {
+        // bot exists already
+        let player = this.competitors[existingPlayerID];
+        let oldname = player.tournamentID.name;
+        let oldfile = player.file;
+        if (typeof file === 'string') {
+          player.file = file;
+        }
+        else {
+          player.file = file.file;
+          player.tournamentID.name = file.name;
+        }
+        // update bot instead and call a tournament's updateBot function
+        this.updatePlayer(player, oldname, oldfile)
+        id = existingID;
+        return;
+      }
+      else {
+        id = existingID;
+      }
     }
     else {
-      this.competitors.push(new Player({id: id, name: file.name}, file.file));
+      id = this.generateNextTournamentIDString();
+    }
+    
+    // push new competitor and call internal add so tournaments can internall sort out the addition of a new player
+    if (typeof file === 'string') {
+      let name = `player-${id}`;
+      let newPlayer = new Player({id: id, name: name}, file);
+      this.competitors.push(newPlayer);
+      this.internalAddPlayer(newPlayer);
+    }
+    else {
+      let newPlayer = new Player({id: id, name: file.name}, file.file);
+      this.competitors.push(newPlayer);
+      this.internalAddPlayer(newPlayer);
     }
   }
 
+  abstract internalAddPlayer(player: Player): void;
+
+  /**
+   * Returns a new and unique id
+   */
+  public generateNextTournamentIDString() {
+    return `t${this.id}_${this.playerID++}`;
+  }
+
+  /**
+   * Returns true if the id given is associated to this tournament and valid for use
+   */
+  public validateTournamentID(id: string) {
+    let content = id.split('_');
+    if (content.length !== 2) {
+      return false;
+    }
+    let playerID = content[1];
+    if (isNaN(parseInt(playerID))) {
+      return false;
+    }
+    if (content[0][0] !== 't') {
+      return false;
+    }
+    let tourneyID = content[0].slice(1);
+    if (isNaN(parseInt(tourneyID)) || parseInt(tourneyID) !== this.id) {
+      return false;
+    }
+    return true;
+  }
   /**
    * Start the tournament
    * @param configs - the configs to use for the tournament
@@ -104,7 +165,15 @@ export abstract class Tournament {
   /**
    * Retrieve some form of rankings from the tournament's current state
    */
-  public abstract getRankings()
+  public abstract getRankings(): any;
+
+  /**
+   * Update function that is called whenever an existing player is updated
+   * @param player - the {@link Player} that was updated
+   * @param oldname - the previous name for the player
+   * @param oldfile - the previous file for the player
+   */
+  abstract updatePlayer(player: Player, oldname: string, oldfile: string): void;
 
 
   /**
@@ -271,8 +340,8 @@ export module Tournament {
    * Tournament.ID. Represents an identifier for players competing in a {@link Tournament}
    */
   export interface ID {
-    /** A string id */
-    id: string
+    /** A string id. This should never change */
+    readonly id: string
     /** A display name */
     name: string
   }

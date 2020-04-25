@@ -59,11 +59,13 @@ export class EliminationTournament extends Tournament {
           this.configs.rankSystemConfigs = winsConfigs
         }
         break;
-      case RANK_SYSTEM.ELO:
-        break;
       default:
         throw new FatalError('We currently do not support this rank system for ladder tournaments');
     }
+    // add all players
+    files.forEach((file) => {
+      this.addplayer(file);
+    });
   }
   public getConfigs(): Tournament.TournamentConfigs<EliminationConfigs> {
     return this.configs;
@@ -293,5 +295,12 @@ export class EliminationTournament extends Tournament {
       arr[j] = tmp;
     }
     return arr;
+  }
+
+  internalAddPlayer(player: Player) {
+    return;
+  }
+  updatePlayer(player: Player, oldname: string, oldfile: string) {
+    throw new FatalError('You are not allowed to update a player during elimination tournaments');
   }
 }

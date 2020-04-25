@@ -87,6 +87,12 @@ export class LadderTournament extends Tournament {
 
 
     this.configs = deepMerge(this.configs, tournamentConfigs);
+
+    // add all players
+    files.forEach((file) => {
+      this.addplayer(file);
+    });
+
     this.status = Tournament.TournamentStatus.INITIALIZED;
     this.log.info('Initialized Ladder Tournament');
   }
@@ -191,48 +197,53 @@ export class LadderTournament extends Tournament {
       this.log.error(error);
     });
   }
-
+  private initializeTrueskillPlayerStats(player: Player) {
+    let trueskillConfigs: RANK_SYSTEM.TRUESKILL.Configs = this.configs.rankSystemConfigs;
+    this.state.playerStats.set(player.tournamentID.id, {
+      player: player,
+      wins: 0,
+      ties: 0,
+      losses: 0,
+      matchesPlayed: 0,
+      rankState: {
+        rating: new Rating(trueskillConfigs.initialMu, trueskillConfigs.initialSigma),
+        toJSON: () => {
+          let rating = this.state.playerStats.get(player.tournamentID.id).rankState.rating
+          return {
+            rating: {...rating,
+              mu: rating.mu,
+              sigma: rating.sigma
+            }
+          }
+        }
+      }
+    });
+  }
+  private initializeELOPlayerStats(player: Player) {
+    let eloConfigs: RANK_SYSTEM.ELO.Configs = this.configs.rankSystemConfigs;
+    this.state.playerStats.set(player.tournamentID.id, {
+      player: player,
+      wins: 0,
+      ties: 0,
+      losses: 0,
+      matchesPlayed: 0,
+      rankState: {
+        rating: this.elo.createRating()
+      }
+    });
+  }
   private initialize() {
     this.state.playerStats = new Map();
     this.state.results = [];
     switch(this.configs.rankSystem) {
       case RANK_SYSTEM.TRUESKILL:
-        let trueskillConfigs: RANK_SYSTEM.TRUESKILL.Configs = this.configs.rankSystemConfigs;
         this.competitors.forEach((player) => {
-          this.state.playerStats.set(player.tournamentID.id, {
-            player: player,
-            wins: 0,
-            ties: 0,
-            losses: 0,
-            matchesPlayed: 0,
-            rankState: {
-              rating: new Rating(trueskillConfigs.initialMu, trueskillConfigs.initialSigma),
-              toJSON: () => {
-                let rating = this.state.playerStats.get(player.tournamentID.id).rankState.rating
-                return {
-                  rating: {...rating,
-                    mu: rating.mu,
-                    sigma: rating.sigma
-                  }
-                }
-              }
-            }
-          });
+          this.initializeTrueskillPlayerStats(player);
         });
         break;
       case RANK_SYSTEM.ELO:
-        let eloConfigs: RANK_SYSTEM.ELO.Configs = this.configs.rankSystemConfigs;
         this.competitors.forEach((player) => {
-          this.state.playerStats.set(player.tournamentID.id, {
-            player: player,
-            wins: 0,
-            ties: 0,
-            losses: 0,
-            matchesPlayed: 0,
-            rankState: {
-              rating: this.elo.createRating()
-            }
-          });
+          this.initializeELOPlayerStats(player);
         });
         break;
     }
@@ -276,6 +287,40 @@ export class LadderTournament extends Tournament {
       }
     }
     return reservoir;
+  }
+
+  // when adding a new player
+  internalAddPlayer(player: Player) {
+    switch(this.configs.rankSystem) {
+      case RANK_SYSTEM.TRUESKILL:
+        this.initializeTrueskillPlayerStats(player);
+        break;
+      case RANK_SYSTEM.ELO:
+        this.initializeELOPlayerStats(player);
+      break;
+    }
+  }
+
+  updatePlayer(player: Player, oldname: string, oldfile: string) {
+    let playerStats = this.state.playerStats.get(player.tournamentID.id);
+    switch(this.configs.rankSystem) {
+      case RANK_SYSTEM.ELO: {
+        let rankSystemConfigs = <RANK_SYSTEM.ELO.Configs>this.configs.rankSystemConfigs;
+        let currState = <RANK_SYSTEM.ELO.RankState>playerStats.rankState;
+        
+        // TODO: Give user option to define how to reset score
+        currState.rating.score = rankSystemConfigs.startingScore;
+        break;
+      }
+      case RANK_SYSTEM.TRUESKILL: {
+        let rankSystemConfigs = <RANK_SYSTEM.TRUESKILL.Configs>this.configs.rankSystemConfigs;
+        let currState = <RANK_SYSTEM.TRUESKILL.RankState>playerStats.rankState;
+
+        // TODO: Give user option to define how to reset score
+        currState.rating = new Rating(rankSystemConfigs.initialMu, rankSystemConfigs.initialSigma)
+        break;
+      }
+    }
   }
 
   private printTournamentStatus() {

@@ -66,6 +66,11 @@ export class RoundRobinTournament extends Tournament {
     // handle rest
     this.configs = deepMerge(this.configs, tournamentConfigs);
 
+    // add all players
+    files.forEach((file) => {
+      this.addplayer(file);
+    });
+
     this.status = Tournament.TournamentStatus.INITIALIZED;
     this.log.info('Initialized Round Robin Tournament');
   }
@@ -243,6 +248,14 @@ export class RoundRobinTournament extends Tournament {
     }
     return roundQueue;
   }
+
+  internalAddPlayer(player: Player) {
+    return;
+  }
+  updatePlayer(player: Player, oldname: string, oldfile: string) {
+    throw new FatalError('You are not allowed to update a player during elimination tournaments');
+  }
+
   private printTournamentStatus() {
     if (this.log.level > Logger.LEVEL.NONE) {
       console.clear();

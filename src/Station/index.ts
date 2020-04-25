@@ -12,6 +12,11 @@ import * as error from './error';
 import cors from 'cors';
 import { Server } from 'http';
 import { Tournament } from '../Tournament';
+import { existsSync, mkdirSync } from 'fs';
+
+
+const BOT_DIR = path.join(__dirname, 'local/bots');
+const BOT_DIR_TEMP = path.join(__dirname, 'local/botstemp');
 
 // declare global and merge declaration with Express Request to allow storage of data across middlewhere in typescript 
 declare global {
@@ -101,7 +106,15 @@ export class Station {
       successStart();
     }).catch(() => {
       this.log.error(`Station: ${this.name}, couldn't find an open port after 16 attempts`);
-    })
+    });
+
+    // make local bot directories if not made yet
+    if (!existsSync(BOT_DIR_TEMP)) {
+      mkdirSync(BOT_DIR_TEMP, { recursive: true });
+    }
+    if (!existsSync(BOT_DIR_TEMP)) {
+      mkdirSync(BOT_DIR_TEMP, { recursive: true });
+    }
     
   }
   /**
