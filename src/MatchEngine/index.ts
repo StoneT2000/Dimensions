@@ -400,7 +400,7 @@ export class MatchEngine {
           }
         }
       });
-      
+
       matchProcess.stdout.on('close', (code) => {
         this.log.system(`${match.name} | id: ${match.id} - exited with code ${code}`);
         if (matchTimedOut) {
