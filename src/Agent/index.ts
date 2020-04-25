@@ -43,6 +43,11 @@ export class Agent {
   public cmd: string = null;
 
   /**
+   * The original file path provided
+   */
+  public file: string;
+
+  /**
    * Creation date of the agent
    */
   public creationDate: Date;
@@ -80,7 +85,9 @@ export class Agent {
   
   constructor(file: string, options: any) {
     this.creationDate = new Date();
-
+    this.file = file;
+    
+    // get extension
     this.ext = path.extname(file);
     switch(this.ext) {
       case '.py':
@@ -199,7 +206,7 @@ export class Agent {
           });
           break;
         default:
-          reject('Unrecognized file');
+          reject(new FatalError('Unrecognized file'));
       }
     });
   }
@@ -209,26 +216,26 @@ export class Agent {
    */
   async _spawn(): Promise<ChildProcess> {
     return new Promise((resolve, reject) => {
-      let p;
+      let p: ChildProcess;
       switch(this.ext) {
         case '.py':
         case '.js':
         case '.php':
           p = spawn(this.cmd, [this.src], {
             cwd: this.cwd
-          }).on('error', function( err ){ reject(err) });
+          }).on('error', (err) => { reject(err) });
           resolve(p);
           break;
         case '.ts':
           p = spawn(this.cmd, [this.srcNoExt + '.js'], {
             cwd: this.cwd
-          }).on('error', function( err ){ reject(err) });
+          }).on('error', (err) => { reject(err) });
           resolve(p);
           break;
         case '.java':
           p = spawn(this.cmd, [this.srcNoExt], {
             cwd: this.cwd
-          }).on('error', function( err ){ reject(err) });
+          }).on('error', (err) => { reject(err) });
           resolve(p);
           break;
         case '.c':
@@ -236,13 +243,13 @@ export class Agent {
         case '.go':
           p = spawn('./' + this.srcNoExt + '.out', {
             cwd: this.cwd
-          }).on('error', function( err ){ reject(err) });
+          }).on('error', (err) => { reject(err) });
           resolve(p);
           break;
         case '.php':
           p = spawn(this.cmd, [this.src], {
             cwd: this.cwd
-          }).on('error', function( err ){ reject(err) });
+          }).on('error', (err) => { reject(err) });
           resolve(p);
         default:
           reject('Unrecognized file');

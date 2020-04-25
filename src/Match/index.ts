@@ -44,7 +44,11 @@ export class Match {
   private static _id: number = 0;
 
   /**
-   * The state field. This can be used to store anything by the user when this `match` is passed to the {@link Design} life cycle functions {@link Design.initialize}, {@link Design.update}, and {@link Design.getResults}
+   * The state field. This can be used to store anything by the user when this `match` is passed to the {@link Design} 
+   * life cycle functions {@link Design.initialize}, {@link Design.update}, and {@link Design.getResults}
+   * 
+   * This is also used by the {@link CustomDesign} class to store all standard outputted match output for 
+   * matches running using a custom design and passing in {@link Design.OverrideOptions}.
    */
   public state: any;
 
@@ -147,6 +151,9 @@ export class Match {
 
         this.log.infobar();
         this.log.info(`Design: ${this.design.name} | Initializing match: ${this.name}`);
+
+        let overrideOptions = this.design.getDesignOptions().override;
+
         this.log.detail('Match Configs', this.configs);
         
         this.timeStep = 0;
@@ -158,10 +165,17 @@ export class Match {
           if (agent.tournamentID !== null) {
             this.mapAgentIDtoTournamentID.set(agent.id, agent.tournamentID);
           }
-        })
+        });
 
-        // Initialize the matchEngine and get it ready to run and process I/O for agents
-        await this.matchEngine.initialize(this.agents, this);
+        // if overriding wiith custom design, log some other info and use a different engine initialization function
+        if (overrideOptions.active) {
+          this.log.detail('Match Arguments', overrideOptions.arguments);
+          await this.matchEngine.initializeCustom(this);
+        }
+        else {
+          // Initialize the matchEngine and get it ready to run and process I/O for agents
+          await this.matchEngine.initialize(this.agents, this);
+        }
         
         // by now all agents should up and running, all compiled and ready
         // Initialize match according to `design` by delegating intialization task to the enforced `design`
@@ -171,7 +185,6 @@ export class Match {
         // TODO: add more security checks etc. before marking match as ready to run
         this.matchStatus = Match.Status.READY;
         resolve(true);
-        
       }
       catch(error) {
         reject(error);
@@ -181,29 +194,40 @@ export class Match {
 
 
   /**
-   * Runs this match to completion. Resolves / returns the match results when done
+   * Runs this match to completion. Sets this.results to match results and resolves with the match results when done
    */
   public async run(): Promise<any> {
     let status: Match.Status;
-    // Run match
-    do {
-      status = await this.next();
 
+    // check if our design is a javascript/typescript based design or custom and to be executed with a provided command
+    
+    let overrideOptions = this.design.getDesignOptions().override;
+    if (overrideOptions.active) {
+      this.results = this.matchEngine.runCustom(this);
+      return this.results;
     }
-    while (status != Match.Status.FINISHED)
-    this.agents.forEach((agent: Agent) => {
-      agent.clearTimer();
-    })
-    this.results = await this.getResults();
+    else {
+      // otherwise run the match using the design with calls to this.next()
+      do {
+        status = await this.next();
 
-    // TODO: Perhaps add a cleanup status if cleaning up processes takes a long time
-    await this.stopAndCleanUp();
-   
-    return this.results;
+      }
+      while (status != Match.Status.FINISHED)
+      this.agents.forEach((agent: Agent) => {
+        agent.clearTimer();
+      });
+      this.results = await this.getResults();
+
+      // TODO: Perhaps add a cleanup status if cleaning up processes takes a long time
+      await this.stopAndCleanUp();
+    
+      return this.results;
+    }
   }
 
   /**
    * Next function. Moves match forward by one timestep. Resolves with the match status
+   * This function should always used to advance forward a match unless a custom design is provided
    */
   public async next(): Promise<Match.Status> {
     return new Promise(async (resolve, reject) => {
@@ -236,11 +260,13 @@ export class Match {
         else {
           this.matchStatus = status;
         }
-        // after we run update and likely send all the messages that need to be sent, 
+
+        // after we run update have send all the messages that need to be sent, 
         // we now reset each Agent for the next move
         this.agents.forEach((agent: Agent) => {
-          // continue agent again
+          // continue agents again
           agent.process.kill('SIGCONT');
+          // setup the agent and its promises and get it ready for the next move
           agent._setupMove();
           if (engineOptions.timeout.active) {
             agent.setTimeout(() => {
@@ -302,6 +328,7 @@ export class Match {
       return false;
     }
     this.log.info('Resuming match...');
+
     // set back to running and resolve
     this.matchStatus = Match.Status.RUNNING;
     this.resumeResolve();
