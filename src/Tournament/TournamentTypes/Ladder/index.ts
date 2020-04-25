@@ -315,12 +315,17 @@ export class LadderTournament extends Tournament {
       case RANK_SYSTEM.TRUESKILL: {
         let rankSystemConfigs = <RANK_SYSTEM.TRUESKILL.Configs>this.configs.rankSystemConfigs;
         let currState = <RANK_SYSTEM.TRUESKILL.RankState>playerStats.rankState;
+        
 
         // TODO: Give user option to define how to reset score
         currState.rating = new Rating(rankSystemConfigs.initialMu, rankSystemConfigs.initialSigma)
         break;
       }
     }
+    playerStats.matchesPlayed = 0;
+    playerStats.losses = 0;
+    playerStats.wins = 0;
+    playerStats.ties = 0;
   }
 
   private printTournamentStatus() {
