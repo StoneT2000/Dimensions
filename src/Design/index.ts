@@ -174,7 +174,6 @@ class CustomDesign extends Design {
       matchOutput: []
     };
     match.results = [];
-    console.log(match.results, match.id);
     return;
   }
 
