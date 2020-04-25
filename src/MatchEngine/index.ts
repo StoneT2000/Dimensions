@@ -362,11 +362,13 @@ export class MatchEngine {
       let matchTimedOut = false;
       // set up timer if specified
       if (this.overrideOptions.timeout !== null) {
-        setTimeout(() => {
+        matchProcessTimer = setTimeout(() => {
+          this.log.system(`${match.name} | id: ${match.id} - Timed out`);
           matchProcess.kill('SIGKILL');
           matchTimedOut = true;
         }, this.overrideOptions.timeout);
       }
+
   
       let processingStage = false;
       let results: Array<string> = [];
@@ -398,22 +400,20 @@ export class MatchEngine {
           }
         }
       });
-
+      
       matchProcess.stdout.on('close', (code) => {
         this.log.system(`${match.name} | id: ${match.id} - exited with code ${code}`);
         if (matchTimedOut) {
           reject(new MatchError('Match timed out'));
         }
         else {
+          clearTimeout(matchProcessTimer);
           resolve(match.results);
+          
         }
       });
 
     });
-  }
-
-  public async processCustomResults(match: Match) {
-
   }
 
   /**
