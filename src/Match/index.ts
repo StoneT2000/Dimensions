@@ -203,14 +203,15 @@ export class Match {
     
     let overrideOptions = this.design.getDesignOptions().override;
     if (overrideOptions.active) {
-      this.results = this.matchEngine.runCustom(this);
+      this.log.system('Running custom');
+      await this.matchEngine.runCustom(this);
+      this.results = await this.getResults();
       return this.results;
     }
     else {
       // otherwise run the match using the design with calls to this.next()
       do {
         status = await this.next();
-
       }
       while (status != Match.Status.FINISHED)
       this.agents.forEach((agent: Agent) => {

@@ -351,11 +351,13 @@ export class MatchEngine {
       // spawn the match process with the parsed arguments
       let matchProcessTimer;
 
-      
+      let pathparts = cmd.split('/');
+      let cwd = pathparts.slice(0, -1).join('/');
+      let fullcmd = [cmd, parsed.join(' ')];
       let matchProcess = spawn(cmd, parsed).on('error', (err) => {
         if (err) throw err;
       });
-      this.log.system(`${match.name} | id: ${match.id} - spawned`);
+      this.log.system(`${match.name} | id: ${match.id} - spawned: ${fullcmd}`);
 
       let matchTimedOut = false;
       // set up timer if specified
@@ -375,7 +377,11 @@ export class MatchEngine {
           let strs = `${data}`.split('\n');
           for (let i = 0; i < strs.length; i++) {
             let str = strs[i];
+
+            // skip empties
+            if (str === '') continue;
   
+            // if we reached conclude command, default being D_MATCH_FINISHED, we start the processing stage
             if (str === this.overrideOptions.conclude_command) {
               processingStage = true;
             }
@@ -415,7 +421,7 @@ export class MatchEngine {
    * @param match - the match to parse arguments for
    * @param args - the arguments to parse
    */
-  private parseCustomArguments(match: Match, args: Array<string | DesignTypes.DynamicDataStrings>): Array<string> {
+  private parseCustomArguments(match: Match, args: Array<string | DDS>): Array<string> {
 
     if (match.matchStatus === Match.Status.UNINITIALIZED) {
       throw new FatalError(`Match ${match.id} - ${match.name} is not initialized yet`);
@@ -424,7 +430,7 @@ export class MatchEngine {
     let parsed = [];
     
     for (let i = 0; i < args.length; i++) {
-      switch(parsed[i]) {
+      switch(args[i]) {
         case DDS.D_FILES:
           match.agents.forEach((agent) => {
             parsed.push(agent.file);
@@ -440,6 +446,12 @@ export class MatchEngine {
           match.agents.forEach((agent) => {
             parsed.push(agent.id);
           });
+          break;
+        case DDS.D_MATCH_ID:
+          parsed.push(match.id);
+          break;
+        case DDS.D_MATCH_NAME:
+          parsed.push(match.name);
           break;
         default:
           parsed.push(args[i]);

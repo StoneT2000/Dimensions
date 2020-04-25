@@ -9,7 +9,8 @@ export module Design {
     /**
      * Whether or not to use the override configurations
      * 
-     * @default `false`
+     * @default `false` in a normal design using Dimensions
+     * @default `true` in a custom design running a custom match
      */
     active: boolean,
 
@@ -31,7 +32,7 @@ export module Design {
      * 
      * @example ['--debug=false', 'D_FILES', '--replay-directory=my_replays', '--some-option=400']
      */
-    arguments: Array<string | Design.DynamicDataStrings>
+    arguments: Array<string | DynamicDataStrings>
 
     /**
      * The command telling the engine that the match is done and should now process the remaining lines as results until
@@ -48,7 +49,12 @@ export module Design {
      * 
      * @default `600000`, equivalent to 10 minutes
      */
-    timeout: number
+    timeout: number,
+
+    /**
+     * The result handler to handle results returned by the command provided in the {@link OverrideOptions}.
+     */
+    resultHandler: (results: Array<string>) => any
 
   }
 
@@ -86,6 +92,20 @@ export module Design {
      * @example Suppose a match in a tournament with ID 0 is running 4 agents with tournament IDs t0_1, t0_9, t0_11, 
      * t0_15. Then `D_TOURNAMENT_IDS` will be passed into your command as `t0_1 t0_0 t0_11 t0_15`
      */
-    D_TOURNAMENT_IDS = 'D_TOURNAMENT_IDS'
+    D_TOURNAMENT_IDS = 'D_TOURNAMENT_IDS',
+
+    /**
+     * D_MATCH_ID is automatically replaced with the id of the match being run
+     * 
+     * @example Suppose the match has ID 12, then `D_MATCH_ID` is passed into your command as `12`
+     */
+    D_MATCH_ID = 'D_MATCH_ID',
+
+    /**
+     * D_MATCH_NAME is automatically replaced with the name of the match being run
+     * 
+     * @example Suppose the match has name 'my_match'. Then `D_MATCH_NAME` is passed into your commnad as `my_match`
+     */
+    D_MATCH_NAME = 'D_MATCH_NAME'
   }
 }

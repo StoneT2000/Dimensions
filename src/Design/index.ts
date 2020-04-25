@@ -54,7 +54,8 @@ export abstract class Design {
       command: 'echo NO COMMAND PROVIDED',
       conclude_command: 'D_MATCH_FINISHED',
       arguments: [],
-      timeout: 600000 // 10 minutes
+      timeout: 600000, // 10 minutes
+      resultHandler: () => {}
     }
   }
 
@@ -143,7 +144,7 @@ export abstract class Design {
   /**
    * Creates a Design class wrapper around a custom design written without the use of Dimensions framework
    */
-  public createCustom(name: string, overrideOptions: DesignTypes.OverrideOptions) {
+  public static createCustom(name: string, overrideOptions: DeepPartial<DesignTypes.OverrideOptions>) {
     return new CustomDesign(name, overrideOptions);
   }
 
@@ -155,9 +156,11 @@ export abstract class Design {
  * and leverage other features such as tournament running, an API for viewing relevant data, and automatic, full blown
  * competition running
  */
-export class CustomDesign extends Design {
-  constructor(name: string, overrideOptions: DesignTypes.OverrideOptions) {
-    // pass in the override options
+class CustomDesign extends Design {
+  constructor(name: string, overrideOptions: DeepPartial<DesignTypes.OverrideOptions>) {
+    // this should always be true
+    overrideOptions.active = true;
+    // pass in the override options to Design
     super(name, {
       override: overrideOptions
     });
@@ -167,14 +170,18 @@ export class CustomDesign extends Design {
    * Initializer. Declares any relevant state fields
    */
   async initialize(match: Match) {
-    match.state.matchOutput = [];
+    match.state = {
+      matchOutput: []
+    };
+    match.results = [];
+    console.log(match.results, match.id);
     return;
   }
 
   /**
    * Empty function, not used
    */
-  async update(match: Match, commands: Array<Command>): Promise<Match.Status> {
+  async update(): Promise<Match.Status> {
     return;
   }
 

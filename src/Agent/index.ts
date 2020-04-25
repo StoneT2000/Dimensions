@@ -121,11 +121,6 @@ export class Agent {
       throw new FatalError(`${file} does not exist, check if file path provided is correct`);
     }
 
-    if (options.command) {
-      this.cmd = options.command;
-    } else if (this.cmd === undefined || this.cmd === null) {
-      throw new FatalError(`No command provided or inferable for agent using ${file}`);
-    }
     if (options.id !== undefined) {
       this.id = options.id;
     } else {
@@ -205,8 +200,6 @@ export class Agent {
             resolve();
           });
           break;
-        default:
-          reject(new FatalError('Unrecognized file'));
       }
     });
   }
