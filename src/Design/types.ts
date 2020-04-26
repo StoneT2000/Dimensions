@@ -106,6 +106,14 @@ export module Design {
      * 
      * @example Suppose the match has name 'my_match'. Then `D_MATCH_NAME` is passed into your commnad as `my_match`
      */
-    D_MATCH_NAME = 'D_MATCH_NAME'
+    D_MATCH_NAME = 'D_MATCH_NAME',
+
+    /**
+     * D_NAMES is automatically replaced with the names of the agents
+     * 
+     * @example Suppose the agents 0 and 1 had names `bob, richard`. Then `D_NAMES` is passed into your commnad as 
+     * `bob richard`
+     */
+    D_NAMES = 'D_NAMES'
   }
 }

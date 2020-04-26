@@ -453,6 +453,13 @@ export class MatchEngine {
         case DDS.D_MATCH_NAME:
           parsed.push(match.name);
           break;
+        case DDS.D_NAMES:
+          match.agents.forEach((agent) => {
+            let parsedName = agent.name;
+            parsedName = parsedName.replace('/', '-');
+            parsedName = parsedName.replace(' ', '_');
+            parsed.push(parsedName);
+          });
         default:
           parsed.push(args[i]);
           break;
