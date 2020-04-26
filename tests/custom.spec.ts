@@ -8,7 +8,7 @@ const expect = chai.expect;
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
 let Match = Dimension.Match;
-let pathtorunner = './tests/bh20testsfiles/run_game.sh'
+let pathtorunner = './tests/bh20files/run_game.sh'
 
 let bh2020 = Dimension.Design.createCustom('bh2020trueskill', {
   resultHandler: (res) => {
@@ -35,8 +35,8 @@ let battlecodeDimension = Dimension.create(bh2020, {
   activateStation: false,
 })
 
-let pathToExampleFuncs = 'tests/bh20testsfiles/examplefuncsplayer'
-let pathToEmptyBot = 'tests/bh20testsfiles/emptybot'
+let pathToExampleFuncs = 'tests/bh20files/examplefuncsplayer'
+let pathToEmptyBot = 'tests/bh20files/emptybot'
 
 let botlist = [{file: pathToExampleFuncs, name: 'example_1'}, {file: pathToEmptyBot, name: 'empty_1'}];
 
