@@ -109,10 +109,10 @@ export class Station {
     });
 
     // make local bot directories if not made yet
-    if (!existsSync(BOT_DIR_TEMP)) {
+    if (!existsSync(BOT_DIR)) {
       mkdirSync(BOT_DIR_TEMP, { recursive: true });
     }
-    if (!existsSync(BOT_DIR_TEMP)) {
+    if (!existsSync(BOT_DIR)) {
       mkdirSync(BOT_DIR_TEMP, { recursive: true });
     }
     
