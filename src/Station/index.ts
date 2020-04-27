@@ -112,7 +112,7 @@ export class Station {
     if (!existsSync(BOT_DIR)) {
       mkdirSync(BOT_DIR, { recursive: true });
     }
-    if (!existsSync(BOT_DIR)) {
+    if (!existsSync(BOT_DIR_TEMP)) {
       mkdirSync(BOT_DIR_TEMP, { recursive: true });
     }
     
