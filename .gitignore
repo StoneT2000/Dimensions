@@ -12,4 +12,5 @@ tests/run.*.js
 *.out
 *.class
 tests/ts-kit/**/*.js
+.nyc_output
 src/Station/local/bots
