@@ -1,12 +1,12 @@
 # Dimensions
 
-This is an **open sourced** **generic** **Artificial Intelligence competition framework**, intended to provide you all the infrastructure needed to run your own AI competition with no hassle.
+This is an **open sourced** **generic** **Artificial Intelligence competition framework**, intended to provide you fully scalable infrastructure needed to run your own AI competition with no hassle.
 
 All you need to do?
 
 Code a competition design and code a bot
 
-Dimensions handles the rest, including match running, tournament running, TrueSkill rankings, and a local API and website through which you can watch this all happen at once. Dimensions allows you to design virtually any kind of AI competition you want with its vast array of configuration options and choices.
+Dimensions handles the rest, including match running, tournament running, TrueSkill rankings, and a local API and website through which you can watch this all happen at once. Dimensions allows you to design virtually any kind of AI competition you want in any language with its vast array of configuration options and choices.
 
 Moreover, Dimensions utilizes an I/O based model to run competitions and pit AI agents against each other, allowing it to be generic and language agnostic so anyone from any background can compete in your competition design.
 
@@ -45,7 +45,7 @@ Also checkout the blog post introducing the motivation for Dimensions and though
 
 ## Getting Started
 
-At the moment, Dimensions supports competition designing through JavaScript / TypeScript only. However, all AI agents can be coded in any language due to the I/O model.
+This guide will take you through how to start and run a competition built with Javascript/Typescript. To see how to use this framework to run a custom competition built without the dimensions framework, see this wiki on setting override options.
 
 First, install the `dimensions-ai` package
 
