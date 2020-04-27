@@ -2,7 +2,7 @@ import { Tournament, Player } from "../../";
 import { DeepPartial } from "../../../utils/DeepPartial";
 import { Design } from '../../../Design';
 import { deepMerge } from "../../../utils/DeepMerge";
-import { FatalError, isMatchDestroyedError } from "../../../DimensionError";
+import { FatalError, MatchDestroyedError } from "../../../DimensionError";
 import { Agent } from "../../../Agent";
 import { Rating, rate, quality } from "ts-trueskill";
 import LadderState = Tournament.Ladder.State;
@@ -195,7 +195,7 @@ export class LadderTournament extends Tournament {
       }
     }).catch((error) => {
       this.log.error(error);
-      if (isMatchDestroyedError(error)) {
+      if (error instanceof MatchDestroyedError) {
         // keep running even if a match is destroyed
         this.tourneyRunner();
       }

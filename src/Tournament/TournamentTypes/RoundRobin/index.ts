@@ -2,11 +2,12 @@ import { Tournament, Player, } from "../../";
 import { DeepPartial } from "../../../utils/DeepPartial";
 import { Design } from '../../../Design';
 import { deepMerge } from "../../../utils/DeepMerge";
-import { FatalError, isMatchDestroyedError } from "../../../DimensionError";
+import { FatalError } from "../../../DimensionError";
 import { Agent } from "../../../Agent";
 import { Logger } from "../../../Logger";
 import RANK_SYSTEM = Tournament.RANK_SYSTEM;
 import { sprintf } from 'sprintf-js';
+
 /**
  * The Round Robin Tournament Class
  * 
