@@ -12,6 +12,12 @@ import * as error from './error';
 import cors from 'cors';
 import { Server } from 'http';
 import { Tournament } from '../Tournament';
+import { existsSync, mkdirSync } from 'fs';
+import { Agent } from '../Agent';
+
+
+const BOT_DIR = path.join(__dirname, 'local/bots');
+const BOT_DIR_TEMP = path.join(__dirname, 'local/botstemp');
 
 // declare global and merge declaration with Express Request to allow storage of data across middlewhere in typescript 
 declare global {
@@ -21,6 +27,7 @@ declare global {
         dimension?: Dimension,
         match?: Match,
         tournament?: Tournament
+        agent?: Agent,
         [x: string]: any
       }
     }
@@ -101,13 +108,21 @@ export class Station {
       successStart();
     }).catch(() => {
       this.log.error(`Station: ${this.name}, couldn't find an open port after 16 attempts`);
-    })
+    });
+
+    // make local bot directories if not made yet
+    if (!existsSync(BOT_DIR)) {
+      mkdirSync(BOT_DIR, { recursive: true });
+    }
+    if (!existsSync(BOT_DIR_TEMP)) {
+      mkdirSync(BOT_DIR_TEMP, { recursive: true });
+    }
     
   }
   /**
-   * Try to listen to this.maxAttempts ports
+   * Try to listen to this.maxAttempts ports. Resolves with the port nunber used
    */
-  private async tryToListen(app: express.Application, startingPort: number) {
+  private tryToListen(app: express.Application, startingPort: number): Promise<number> {
     // Try to listen function without breaking if port is busy. try up to an 16 ports (16 is arbitrary #)
     let attempts = 0;
     return new Promise((resolve, reject) => {
@@ -130,13 +145,14 @@ export class Station {
 
   /**
    * Restart Station server / API
+   * Resolves with the port number used
    */
-  public async restart() {
+  public restart(): Promise<number> {
     return new Promise((resolve, reject) => {
       this.log.warn("RESTARTING");
       this.server.close((err) => {
         if (err) reject(err);
-        this.tryToListen(this.app, this.port).then(resolve).catch(reject)
+        this.tryToListen(this.app, this.port).then(resolve).catch(reject);
       });
     })
   }
@@ -144,7 +160,7 @@ export class Station {
   /**
    * Stop the Station server / API
    */
-  public async stop() {
+  public stop(): Promise<void> {
     return new Promise((resolve, reject) => {
       this.log.warn("Stopping");
       this.server.close((err) => {

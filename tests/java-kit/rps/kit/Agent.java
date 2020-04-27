@@ -22,6 +22,5 @@ public class Agent {
 
     public void endTurn() {
         System.out.println("D_FINISH");
-        System.out.flush();
     }
 }

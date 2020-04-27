@@ -1,13 +1,13 @@
 {
   "name": "dimensions-ai",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A generic, multi-level ai competition framework",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "scripts": {
     "prepare": "npm run build",
     "prepublishOnly": "npm run test",
-    "test": "npm run clean && mocha -r ts-node/register tests/**/*.spec.ts",
+    "test": "npm run clean && mocha -t 10000 -r ts-node/register tests/**/*.spec.ts",
     "test-watch": "jest --watch tests --collectCoverage",
     "docs": "typedoc --theme ./theme/dimensions/ --mode modules --exclude ./src/Station/ --out docs ./src",
     "watch": "tsc -w",
@@ -25,11 +25,15 @@
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "extract-zip": "^2.0.0",
+    "formidable": "^1.2.2",
+    "ncp": "^2.0.0",
     "sprintf-js": "^1.1.2",
-    "ts-trueskill": "^2.5.5",
-    "typedoc": "^0.17.4"
+    "ts-trueskill": "^2.5.5"
   },
   "devDependencies": {
+    "typedoc": "^0.17.4",
+    "@types/formidable": "^1.0.31",
     "@types/sinon": "^9.0.0",
     "@types/sinon-chai": "^3.2.4",
     "@types/chai-as-promised": "^7.1.2",

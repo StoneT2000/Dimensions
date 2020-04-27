@@ -6,7 +6,7 @@
  * These classes descend from the base Error class, so they also automatically capture
  * stack traces--useful for debugging.
  */
-
+import express, { Request, Response, NextFunction } from 'express';
 /**
  * Base error class.
  *
@@ -82,10 +82,18 @@ export class NotImplemented extends HttpError {
  * General error handling middleware. Attaches to Express so that throwing or calling next() with
  * an error ends up here and all errors are handled uniformly.
  */
-export const errorHandler = (err, req, res, next) => {
-  if (!err) err = new InternalServerError('An unknown error occurred');
+export const errorHandler = (err: HttpError, req: Request, res: Response, next: NextFunction) => {
+  if (!err) err = new InternalServerError('An unknown error occurred in the errorHandler');
   if (!err.status) err = new InternalServerError(err.message);
-  console.error(err);
+
+  // fully error log only the internal server errors
+  if (err.status === 500) {
+    console.error(err);
+  }
+  else {
+    // otherwise just error log the
+    console.error(`Station ${err.status}: ${err.message}`);
+  }
   res.status(err.status).json({
     error: {
       status: err.status,

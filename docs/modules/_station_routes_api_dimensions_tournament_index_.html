@@ -73,13 +73,16 @@
 						<section class="tsd-index-section tsd-is-external tsd-is-not-exported">
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-variable tsd-parent-kind-module tsd-is-external tsd-is-not-exported"><a href="_station_routes_api_dimensions_tournament_index_.html#bot_dir" class="tsd-kind-icon">BOT_<wbr>DIR</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module tsd-is-external tsd-is-not-exported"><a href="_station_routes_api_dimensions_tournament_index_.html#bot_dir_temp" class="tsd-kind-icon">BOT_<wbr>DIR_<wbr>TEMP</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-module tsd-is-external tsd-is-not-exported"><a href="_station_routes_api_dimensions_tournament_index_.html#router" class="tsd-kind-icon">router</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section tsd-is-external tsd-is-not-exported">
+						<section class="tsd-index-section tsd-is-external">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external tsd-is-not-exported"><a href="_station_routes_api_dimensions_tournament_index_.html#findtournament" class="tsd-kind-icon">find<wbr>Tournament</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external tsd-is-not-exported"><a href="_station_routes_api_dimensions_tournament_index_.html#gettournament" class="tsd-kind-icon">get<wbr>Tournament</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-external"><a href="_station_routes_api_dimensions_tournament_index_.html#picktournament" class="tsd-kind-icon">pick<wbr>Tournament</a></li>
 							</ul>
 						</section>
 					</div>
@@ -88,31 +91,56 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-external tsd-is-not-exported">
 				<h2>Variables</h2>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module tsd-is-external tsd-is-not-exported">
+					<a name="bot_dir" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> BOT_<wbr>DIR</h3>
+					<div class="tsd-signature tsd-kind-icon">BOT_<wbr>DIR<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = path.join(__dirname, &#x27;../../../../local/bots&#x27;)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/Station/routes/api/dimensions/tournament/index.ts#L16">https://github.com/StoneT2000/Dimensions/blob/0124128/src/Station/routes/api/dimensions/tournament/index.ts#L16</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module tsd-is-external tsd-is-not-exported">
+					<a name="bot_dir_temp" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> BOT_<wbr>DIR_<wbr>TEMP</h3>
+					<div class="tsd-signature tsd-kind-icon">BOT_<wbr>DIR_<wbr>TEMP<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = path.join(__dirname, &#x27;../../../../local/botstemp&#x27;)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/Station/routes/api/dimensions/tournament/index.ts#L17">https://github.com/StoneT2000/Dimensions/blob/0124128/src/Station/routes/api/dimensions/tournament/index.ts#L17</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module tsd-is-external tsd-is-not-exported">
 					<a name="router" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagConst">Const</span> router</h3>
 					<div class="tsd-signature tsd-kind-icon">router<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Router</span><span class="tsd-signature-symbol"> = express.Router()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e17a795/src/Station/routes/api/dimensions/tournament/index.ts#L7">https://github.com/StoneT2000/Dimensions/blob/e17a795/src/Station/routes/api/dimensions/tournament/index.ts#L7</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/Station/routes/api/dimensions/tournament/index.ts#L18">https://github.com/StoneT2000/Dimensions/blob/0124128/src/Station/routes/api/dimensions/tournament/index.ts#L18</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-external tsd-is-not-exported">
+			<section class="tsd-panel-group tsd-member-group tsd-is-external">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-external tsd-is-not-exported">
-					<a name="findtournament" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> find<wbr>Tournament</h3>
+					<a name="gettournament" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> get<wbr>Tournament</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-external tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">find<wbr>Tournament<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Request</span>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Response</span>, next<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">NextFunction</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Tournament<span class="tsd-signature-symbol">(</span>req<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Request</span>, res<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Response</span>, next<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">NextFunction</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e17a795/src/Station/routes/api/dimensions/tournament/index.ts#L10">https://github.com/StoneT2000/Dimensions/blob/e17a795/src/Station/routes/api/dimensions/tournament/index.ts#L10</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/Station/routes/api/dimensions/tournament/index.ts#L23">https://github.com/StoneT2000/Dimensions/blob/0124128/src/Station/routes/api/dimensions/tournament/index.ts#L23</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Get tournament by tournamentID in request. Requires dimension to be stored.</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -129,6 +157,36 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-external">
+					<a name="picktournament" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> pick<wbr>Tournament</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-external">
+						<li class="tsd-signature tsd-kind-icon">pick<wbr>Tournament<span class="tsd-signature-symbol">(</span>t<span class="tsd-signature-symbol">: </span><a href="../classes/_tournament_index_.tournament.html" class="tsd-signature-type">Tournament</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{}</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/Station/routes/api/dimensions/tournament/index.ts#L38">https://github.com/StoneT2000/Dimensions/blob/0124128/src/Station/routes/api/dimensions/tournament/index.ts#L38</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Picks out relevant fields for a tournament</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>t: <a href="../classes/_tournament_index_.tournament.html" class="tsd-signature-type">Tournament</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">{}</span></h4>
+							<ul class="tsd-parameters">
+							</ul>
+						</li>
+					</ul>
+				</section>
 			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -137,90 +195,27 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
-					<li class="label tsd-is-external">
-						<span>Internals</span>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="_agent_index_.html">&quot;<wbr>Agent/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="_design_index_.html">&quot;<wbr>Design/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="_dimension_index_.html">&quot;<wbr>Dimension/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="_dimensionerror_index_.html">&quot;<wbr>Dimension<wbr>Error/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="_logger_index_.html">&quot;<wbr>Logger/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="_match_index_.html">&quot;<wbr>Match/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="_matchengine_index_.html">&quot;<wbr>Match<wbr>Engine/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="_parser_index_.html">&quot;<wbr>Parser/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="_tournament_elo_index_.html">&quot;<wbr>Tournament/ELO/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="_tournament_tournamenttypes_elimination_index_.html">&quot;<wbr>Tournament/<wbr>Tournament<wbr>Types/<wbr>Elimination/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="_tournament_tournamenttypes_ladder_index_.html">&quot;<wbr>Tournament/<wbr>Tournament<wbr>Types/<wbr>Ladder/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="_tournament_tournamenttypes_roundrobin_index_.html">&quot;<wbr>Tournament/<wbr>Tournament<wbr>Types/<wbr>Round<wbr>Robin/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="_tournament_index_.html">&quot;<wbr>Tournament/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="_index_.html">&quot;index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="_utils_deepcopy_.html">&quot;utils/<wbr>Deep<wbr>Copy&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="_utils_deepmerge_.html">&quot;utils/<wbr>Deep<wbr>Merge&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="_utils_deeppartial_.html">&quot;utils/<wbr>Deep<wbr>Partial&quot;</a>
-					</li>
-					<li class="label tsd-is-external">
-						<span>Externals</span>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="_station_error_index_.html">&quot;<wbr>Station/error/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="_station_index_.html">&quot;<wbr>Station/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="_station_routes_api_dimensions_index_.html">&quot;<wbr>Station/routes/api/dimensions/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="_station_routes_api_dimensions_match_index_.html">&quot;<wbr>Station/routes/api/dimensions/match/index&quot;</a>
-					</li>
 					<li class="current tsd-kind-module tsd-is-external">
 						<a href="_station_routes_api_dimensions_tournament_index_.html">&quot;<wbr>Station/routes/api/dimensions/tournament/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="_station_routes_api_status_.html">&quot;<wbr>Station/routes/api/status&quot;</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-external tsd-is-not-exported">
+						<a href="_station_routes_api_dimensions_tournament_index_.html#bot_dir" class="tsd-kind-icon">BOT_<wbr>DIR</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-external tsd-is-not-exported">
+						<a href="_station_routes_api_dimensions_tournament_index_.html#bot_dir_temp" class="tsd-kind-icon">BOT_<wbr>DIR_<wbr>TEMP</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-external tsd-is-not-exported">
 						<a href="_station_routes_api_dimensions_tournament_index_.html#router" class="tsd-kind-icon">router</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-external tsd-is-not-exported">
-						<a href="_station_routes_api_dimensions_tournament_index_.html#findtournament" class="tsd-kind-icon">find<wbr>Tournament</a>
+						<a href="_station_routes_api_dimensions_tournament_index_.html#gettournament" class="tsd-kind-icon">get<wbr>Tournament</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-external">
+						<a href="_station_routes_api_dimensions_tournament_index_.html#picktournament" class="tsd-kind-icon">pick<wbr>Tournament</a>
 					</li>
 				</ul>
 			</nav>
@@ -232,8 +227,10 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
 				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>

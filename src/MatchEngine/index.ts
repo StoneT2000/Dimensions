@@ -1,12 +1,15 @@
-import { FatalError } from "../DimensionError";
+import { FatalError, MatchError } from "../DimensionError";
 import { DeepPartial } from "../utils/DeepPartial";
 import { deepMerge } from "../utils/DeepMerge";
 import { Design } from '../Design';
+import { Design as DesignTypes } from '../Design/types';
 import { Logger } from '../Logger';
 import { Agent } from '../Agent';
 import { Match } from '../Match';
 import { deepCopy } from '../utils/DeepCopy';
+import { spawn, ChildProcess } from 'child_process';
 import EngineOptions = MatchEngine.EngineOptions;
+import DDS = DesignTypes.DynamicDataStrings;
 /**
  * @class MatchEngine
  * @classdesc The Match Engine that takes a {@link Design} and starts matches by spawning new processes for each 
@@ -22,6 +25,9 @@ export class MatchEngine {
 
   /** Engine options */
   private engineOptions: EngineOptions;
+  
+  /** Override options */
+  private overrideOptions: DesignTypes.OverrideOptions;
 
   /** Logger */
   private log = new Logger();
@@ -37,6 +43,7 @@ export class MatchEngine {
   constructor(design: Design, loggingLevel: Logger.LEVEL) {
     this.design = design;
     this.engineOptions = deepCopy(this.design.getDesignOptions().engineOptions);
+    this.overrideOptions = deepCopy(this.design.getDesignOptions().override);
     this.log.identifier = `Engine`;
     this.setLogLevel(loggingLevel);
   }
@@ -60,93 +67,95 @@ export class MatchEngine {
    * @param match - The match to initialize
    * @returns a promise that resolves true if succesfully initialized
    */
-  async initialize(agents: Array<Agent>, match: Match): Promise<boolean> {
+  async initialize(agents: Array<Agent>, match: Match): Promise<void> {
     
     this.log.systembar();
 
-    return new Promise((resolve, reject) => {
-      let agentSetupPromises: Array<Promise<boolean>> = [];
+    let agentSetupPromises: Array<Promise<void>> = [];
 
-      match.agents.forEach( async (agent: Agent, index: number) => {
-        agentSetupPromises.push(new Promise( async (res, rej) => {
-          // spawn a process
-          this.log.system("Setting up and spawning " + agent.name + ` | Command: ${agent.cmd} ${agent.src}`);
-        
-          await agent._compile();
-          this.log.system('Succesfully ran compile step for agent ' + agent.id);
-          let p = await agent._spawn();
+    match.agents.forEach((agent: Agent, index: number) => {
+      agentSetupPromises.push(this.initializeAgent(agent, match));
+    }, this);
 
-          match.idToAgentsMap.set(agent.id, agent);
+    await Promise.all(agentSetupPromises);
+    this.log.system('FINISHED INITIALIZATION OF PROCESSES\n');
+    return;
+  }
 
-          // set agent status as running
-          agent.status = Agent.Status.RUNNING;
+  /**
+   * Initializes a single agent, called by {@link initialize}
+   * @param agent - agent to initialize
+   * @param match - match to initialize in
+   */
+  private async initializeAgent(agent: Agent, match: Match): Promise<void> {
+    this.log.system("Setting up and spawning " + agent.name + ` | Command: ${agent.cmd} ${agent.src}`);
+    // wait for compilation step
+    
+    await agent._compile();
+    this.log.system('Succesfully ran compile step for agent ' + agent.id);
 
-          // handler for stdout of Agent processes. Stores their output commands and resolves move promises
+    // spawn the agent process
+    let p = await agent._spawn();
+
+    match.idToAgentsMap.set(agent.id, agent);
+
+    // set agent status as running
+    agent.status = Agent.Status.RUNNING;
+
+    // handler for stdout of Agent processes. Stores their output commands and resolves move promises
+    p.stdout.on('readable', () => {
+      let data: string[];
+      while (data = p.stdout.read()) {
+        // split chunks into line by line and handle each line of commands
+        let strs = `${data}`.split('\n');
+        // first store data into a buffer and process later if no newline character is detected
+        if (this.engineOptions.commandLines.waitForNewline && strs.length >= 1 && strs[strs.length - 1] != '') {
+          // using split with \n should make any existing final \n character to be set as '' in strs array
           
-          p.stdout.on('readable', () => {
-            let data: string[];
-            while (data = p.stdout.read()) {
-              // split chunks into line by line and handle each line of commands
-              let strs = `${data}`.split('\n');
-              // first store data into a buffer and process later if no newline character is detected
-              if (this.engineOptions.commandLines.waitForNewline && strs.length >= 1 && strs[strs.length - 1] != '') {
-                // using split with \n should make any existing final \n character to be set as '' in strs array
-                
-                // if there is an existing buffer from the previous 'readable' event, 
-                // concat it to the first strs element as it belongs with that
-                if (strs.length > 1) {
-                  // greater than 1 implies the first strs element is delimited by a \n
-                  strs[0] = agent._buffer.join('').concat(strs[0])
-                  agent._buffer = [];
-                }
-                for (let i = 0; i < strs.length - 1; i++) {
-                  if (agent.getAllowedToSendCommands()) {
-                    this.handleCommmand(agent, strs[i]);
-                  }
-                }
-                // push whatever didn't have a newline into buffer
-                agent._buffer.push(strs[strs.length - 1]);
-              }
-              else {
-                if (strs.length > 1) {
-                  // greater than 1 implies the first strs element is delimited by a \n
-                  strs[0] = agent._buffer.join('').concat(strs[0]);
-                  agent._buffer = [];
-                }
-                this.log.systemIO(`${agent.name} - stdout: ${strs}`);
-                for (let i = 0; i < strs.length; i++) {
-                  if (agent.getAllowedToSendCommands()) {
-                    this.handleCommmand(agent, strs[i]);
-                  }
-                }
-              }
-              
+          // if there is an existing buffer from the previous 'readable' event, 
+          // concat it to the first strs element as it belongs with that
+          if (strs.length > 1) {
+            // greater than 1 implies the first strs element is delimited by a \n
+            strs[0] = agent._buffer.join('').concat(strs[0])
+            agent._buffer = [];
+          }
+          for (let i = 0; i < strs.length - 1; i++) {
+            if (agent.getAllowedToSendCommands()) {
+              this.handleCommmand(agent, strs[i]);
             }
-          });
+          }
+          // push whatever didn't have a newline into buffer
+          agent._buffer.push(strs[strs.length - 1]);
+        }
+        else {
+          if (strs.length > 1) {
+            // greater than 1 implies the first strs element is delimited by a \n
+            strs[0] = agent._buffer.join('').concat(strs[0]);
+            agent._buffer = [];
+          }
+          // this.log.systemIO(`${agent.name} - stdout: ${strs}`);
+          for (let i = 0; i < strs.length; i++) {
+            if (agent.getAllowedToSendCommands()) {
+              this.handleCommmand(agent, strs[i]);
+            }
+          }
+        }
+        
+      }
+    });
 
-          // log stderr from agents to this stderr
-          p.stderr.on('data', (data) => {
-            this.log.error(`${agent.id}: ${data.slice(0, data.length - 1)}`);
-          });
+    // log stderr from agents to this stderr
+    p.stderr.on('data', (data) => {
+      this.log.error(`${agent.id}: ${data.slice(0, data.length - 1)}`);
+    });
 
-          // when process closes, print message
-          p.on('close', (code) => {
-            this.log.system(`${agent.name} | id: ${agent.id} - exited with code ${code}`);
-          });
+    // when process closes, print message
+    p.on('close', (code) => {
+      this.log.system(`${agent.name} | id: ${agent.id} - exited with code ${code}`);
+    });
 
-          // store process
-          agent.process = p;
-          res();
-        }))
-      }, this);
-
-      this.log.system('FINISHED INITIALIZATION OF PROCESSES\n');
-      Promise.all(agentSetupPromises).then(() => {
-        resolve();
-      }).catch((error) => {
-        reject(error);
-      })
-    })
+    // store process
+    agent.process = p;
   }
 
   /**
@@ -223,7 +232,8 @@ export class MatchEngine {
   }
 
   /**
-   * Kills all agents and processes from a match and cleans up
+   * Kills all agents and processes from a match and cleans up. Kills any game processes as well. Shouldn't be used
+   * for custom design based matches.
    * @param match - the match to kill all agents in and clean up
    */
   public async killAndClean(match: Match) {
@@ -251,43 +261,37 @@ export class MatchEngine {
    * @returns a promise that resolves with an array of {@link MatchEngine.Command} elements, holding the command and id 
    * of the agent that sent it
    */
-  public async getCommands(match: Match): Promise<Array<MatchEngine.Command>> {
-    return new Promise((resolve, reject) => {
-      try {
-        let commands: Array<MatchEngine.Command> = [];
-        let nonTerminatedAgents = match.agents.filter((agent: Agent) => {
-          return !agent.isTerminated();
-        })
-        let allAgentMovePromises = nonTerminatedAgents.map((agent: Agent) => {
-          return agent.currentMovePromise;
-        });
-        Promise.all(allAgentMovePromises).then(() => {
-          
-          this.log.system(`All move promises resolved`);
-          match.agents.forEach((agent: Agent) => {
-            // TODO: Add option to store sets of commands delimited by '\n' for an Agent as different sets of commands /// for that Agent. Default right now is store every command delimited by the delimiter
+  public getCommands(match: Match): Promise<Array<MatchEngine.Command>> {
+    return new Promise((resolve) => {
+      let commands: Array<MatchEngine.Command> = [];
+      let nonTerminatedAgents = match.agents.filter((agent: Agent) => {
+        return !agent.isTerminated();
+      })
+      let allAgentMovePromises = nonTerminatedAgents.map((agent: Agent) => {
+        return agent.currentMovePromise;
+      });
+      Promise.all(allAgentMovePromises).then(() => {
+        
+        this.log.system(`All move promises resolved`);
+        match.agents.forEach((agent: Agent) => {
+          // TODO: Add option to store sets of commands delimited by '\n' for an Agent as different sets of commands /// for that Agent. Default right now is store every command delimited by the delimiter
 
-            // for each set of commands delimited by '\n' in stdout of process, split it by delimiter and push to 
-            // commands
-            agent.currentMoveCommands.forEach((commandString) => {
-              commandString.split(this.engineOptions.commandDelimiter).forEach((c) => {
-                // we don't accept '' as commands.
-                if (c !== '') {
-                  commands.push({command: c, agentID: agent.id})
-                }
-              });
+          // for each set of commands delimited by '\n' in stdout of process, split it by delimiter and push to 
+          // commands
+          agent.currentMoveCommands.forEach((commandString) => {
+            commandString.split(this.engineOptions.commandDelimiter).forEach((c) => {
+              // we don't accept '' as commands.
+              if (c !== '') {
+                commands.push({command: c, agentID: agent.id})
+              }
             });
           });
-
-          this.log.system2(`Agent commands at end of time step ${match.timeStep} to be sent to match on time step ${match.timeStep + 1} `);
-          this.log.system2(commands.length ? JSON.stringify(commands) : 'No commands');
-          resolve(commands);
         });
 
-      }
-      catch(error) {
-        reject(error);
-      }
+        this.log.system2(`Agent commands at end of time step ${match.timeStep} to be sent to match on time step ${match.timeStep + 1} `);
+        this.log.system2(commands.length ? JSON.stringify(commands) : 'No commands');
+        resolve(commands);
+      });
     });
   }
 
@@ -297,7 +301,7 @@ export class MatchEngine {
    * @param message - the message to send to agent's stdin
    * @param agentID - id that specifies the agent in the match to send the message to
    */
-  public async send(match: Match, message: string, agentID: Agent.ID): Promise<boolean> {
+  public send(match: Match, message: string, agentID: Agent.ID): Promise<boolean> {
     return new Promise((resolve, reject) => {
       let agent = match.idToAgentsMap.get(agentID);
       if (!agent.process.stdin.destroyed) {
@@ -310,6 +314,177 @@ export class MatchEngine {
         this.log.error(`Agent ${agentID} - ${agent.name} - has been killed off already, can't send messages now`);
       }
     });
+  }
+
+  /**
+   * TODO: Initialize a custom design based match and run through some basic security measures
+   * @param match - The match to initialize with a custom design
+   */
+  async initializeCustom(match: Match): Promise<boolean> {
+    return true;
+  }
+
+  /**
+   * Run a custom match. A custom match much print to stdout all relevant data to be used by the engine and 
+   * Dimensions framework. All output after the conclude command from {@link Design.OverrideOptions} is outputted
+   * is stored as a list of new line delimited strings and returned as the match results. The match must exit with 
+   * exit code 0 to be marked as succesfully complete and the processing of results stops and this function resolves
+   * @param match - the match to run
+   */
+  public runCustom(match: Match): Promise<Array<string>> {
+    return new Promise((resolve, reject) => {
+      
+      if (this.overrideOptions.active == false) {
+        reject(new FatalError('Override was not set active! Make sure to set the overide.active field to true'));
+      }
+      let cmd = this.overrideOptions.command;
+  
+      let parsed = this.parseCustomArguments(match, this.overrideOptions.arguments);
+  
+      // spawn the match process with the parsed arguments
+      let matchProcessTimer: any;
+
+      let fullcmd = [cmd, parsed.join(' ')];
+      match.matchProcess = spawn(cmd, parsed).on('error', (err) => {
+        if (err) throw err;
+      });
+      this.log.system(`${match.name} | id: ${match.id} - spawned: ${fullcmd}`);
+
+      let matchTimedOut = false;
+      // set up timer if specified
+      if (this.overrideOptions.timeout !== null) {
+        matchProcessTimer = setTimeout(() => {
+          this.log.system(`${match.name} | id: ${match.id} - Timed out`);
+          match.matchProcess.kill('SIGKILL');
+          matchTimedOut = true;
+        }, this.overrideOptions.timeout);
+      }
+
+  
+      let processingStage = false;
+      let results: Array<string> = [];
+      match.matchProcess.stdout.on('readable', () => {
+        let data: string[];
+        while (data = match.matchProcess.stdout.read()) {
+          // split chunks into line by line and handle each line of output
+          let strs = `${data}`.split('\n');
+          for (let i = 0; i < strs.length; i++) {
+            let str = strs[i];
+
+            // skip empties
+            if (str === '') continue;
+  
+            // if we reached conclude command, default being D_MATCH_FINISHED, we start the processing stage
+            if (str === this.overrideOptions.conclude_command) {
+              processingStage = true;
+            }
+            // else if we aren't in the processing stage
+            else if (!processingStage) {
+              // store all stdout 
+              match.state.matchOutput.push(str);
+            }
+            // otherwise we are in processing stage
+            else {
+              // store into results
+              match.results.push(str);
+            }
+          }
+        }
+      });
+
+     match.matchProcess.stdout.on('close', (code) => {
+        this.log.system(`${match.name} | id: ${match.id} - exited with code ${code}`);
+        if (matchTimedOut) {
+          reject(new MatchError('Match timed out'));
+        }
+        else {
+          clearTimeout(matchProcessTimer);
+          resolve(match.results);
+          
+        }
+      });
+
+    });
+  }
+
+  /**
+   * Attempts to stop a {@link Match} based on a custom {@link Design}
+   * @param match - the match to stop
+   */
+  public async stopCustom(match: Match) {
+    // attempt to stop the match
+    match.matchProcess.kill('SIGSTOP');
+    // TODO: stop the match process timer
+  };
+
+  /**
+   * Attempts to resume a {@link Match} based on a custom {@link Design}
+   * @param match - the match to stop
+   */
+  public async resumeCustom(match: Match) {
+    // attempt to resume the match
+    match.matchProcess.kill('SIGCONT');
+  };
+
+  /**
+   * Attempts to kill and clean up anything else for a custom design based match
+   * @param match - the match to kill and clean up
+   */
+  public async killAndCleanCustom(match: Match) {
+    if (match.matchProcess) match.matchProcess.kill('SIGKILL');
+  }
+
+  /**
+   * Parses a list of arguments for a given match and populates relevant strings as needed
+   * @param match - the match to parse arguments for
+   * @param args - the arguments to parse
+   */
+  private parseCustomArguments(match: Match, args: Array<string | DDS>): Array<string> {
+
+    if (match.matchStatus === Match.Status.UNINITIALIZED) {
+      throw new FatalError(`Match ${match.id} - ${match.name} is not initialized yet`);
+    }
+
+    let parsed = [];
+    
+    for (let i = 0; i < args.length; i++) {
+      switch(args[i]) {
+        case DDS.D_FILES:
+          match.agents.forEach((agent) => {
+            parsed.push(agent.file);
+          });
+          break;
+        case DDS.D_TOURNAMENT_IDS:
+          match.agents.forEach((agent) => {
+            // pass in tournament ID string if it exists, otherwise pass in 0
+            parsed.push(agent.tournamentID.id ? agent.tournamentID : '0');
+          });
+          break;
+        case DDS.D_AGENT_IDS:
+          match.agents.forEach((agent) => {
+            parsed.push(agent.id);
+          });
+          break;
+        case DDS.D_MATCH_ID:
+          parsed.push(match.id);
+          break;
+        case DDS.D_MATCH_NAME:
+          parsed.push(match.name);
+          break;
+        case DDS.D_NAMES:
+          match.agents.forEach((agent) => {
+            let parsedName = agent.name;
+            parsedName = parsedName.replace('/', '-');
+            parsedName = parsedName.replace(' ', '_');
+            parsed.push(parsedName);
+          });
+        default:
+          parsed.push(args[i]);
+          break;
+      }
+    }
+
+    return parsed;
   }
 
 }

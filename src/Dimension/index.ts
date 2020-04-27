@@ -35,7 +35,7 @@ export class Dimension {
   /**
    * The matches running in this Dimension
    */
-  public matches: Array<Match> = [];
+  public matches: Map<number, Match> = new Map();
 
   /**
    * Tounraments in this Dimension.
@@ -130,36 +130,32 @@ export class Dimension {
    */
   public async createMatch(files: Array<string> | Array<{file: string, name: string}>, 
     configs?: DeepPartial<Match.Configs>): Promise<Match> {
-    return new Promise( async (resolve, reject) => {
-      if (!files.length) reject(new FatalError('No files provided for match'));
 
-      // override dimension defaults with provided configs
-      // TOOD: change to deep copy
-      let matchConfigs = deepCopy(this.configs.defaultMatchConfigs);
-      matchConfigs = deepMerge(matchConfigs, configs);
+    if (!files.length) {
+      throw new FatalError('No files provided for match');
+    }
 
-      // create new match
-      let match: Match;
-      if (typeof files[0] === 'string') {
-        match = new Match(this.design, <Array<string>> files, matchConfigs);
-      } else {
-        match = new Match(this.design, <Array<{file: string, name: string}>> files, matchConfigs);
-      }
-      this.statistics.matchesCreated++;
+    // override dimension defaults with provided configs
+    // TOOD: change to deep copy
+    let matchConfigs = deepCopy(this.configs.defaultMatchConfigs);
+    matchConfigs = deepMerge(matchConfigs, configs);
 
-      // store match into dimension
-      this.matches.push(match);
+    // create new match
+    let match: Match;
+    if (typeof files[0] === 'string') {
+      match = new Match(this.design, <Array<string>> files, matchConfigs);
+    } else {
+      match = new Match(this.design, <Array<{file: string, name: string}>> files, matchConfigs);
+    }
+    this.statistics.matchesCreated++;
 
-      // Initialize match with initialization configuration
-      try {
-        await match.initialize();
-      }
-      catch(error) {
-        reject(error);
-      }
-      
-      resolve(match);
-    });
+    // store match into dimension
+    this.matches.set(match.id, match);
+
+    // Initialize match with initialization configuration
+    
+    await match.initialize();
+    return match;
   }
 
   /**
@@ -174,40 +170,31 @@ export class Dimension {
   public async runMatch(
     files: Array<string> | Array<{file: string, name: string}>, 
     configs?: DeepPartial<Match.Configs>): Promise<any> {
-    return new Promise( async (resolve, reject) => {
-      
-      try {
-        if (!files.length) reject (new FatalError('No files provided for match'));
+    if (!files.length) throw new FatalError('No files provided for match');
 
-        // override dimension defaults with provided configs
-        let matchConfigs = deepCopy(this.configs.defaultMatchConfigs);
-        matchConfigs = deepMerge(matchConfigs, configs);
-        
-        let match: Match;
-        if (typeof files[0] === 'string') {
-          match = new Match(this.design, <Array<string>> files, matchConfigs);
-        } else {
-          match = new Match(this.design, <Array<{file: string, name: string}>> files, matchConfigs);
-        }
-        this.statistics.matchesCreated++;
+    // override dimension defaults with provided configs
+    let matchConfigs = deepCopy(this.configs.defaultMatchConfigs);
+    matchConfigs = deepMerge(matchConfigs, configs);
+    
+    let match: Match;
+    if (typeof files[0] === 'string') {
+      match = new Match(this.design, <Array<string>> files, matchConfigs);
+    } else {
+      match = new Match(this.design, <Array<{file: string, name: string}>> files, matchConfigs);
+    }
+    this.statistics.matchesCreated++;
 
-        // store match into dimension
-        this.matches.push(match);
+    // store match into dimension
+    this.matches.set(match.id, match);
 
-        // Initialize match with initialization configuration
-        await match.initialize();
+    // Initialize match with initialization configuration
+    await match.initialize();
 
-        // Get results
-        let results = await match.run();
+    // Get results
+    let results = await match.run();
 
-        // Resolve the results
-        resolve(results);
-      }
-      catch(error) {
-        reject(error);
-      }
-      
-    });
+    // Return the results
+    return results
   }
 
   /**
@@ -221,6 +208,10 @@ export class Dimension {
   public createTournament(files: Array<string> | Array<{file: string, name:string}>, configs: Tournament.TournamentConfigsBase): Tournament {
       let id = this.statistics.tournamentsCreated;
       let newTourney;
+      if (configs.loggingLevel === undefined) {
+        // set default logging level to that of the dimension
+        configs.loggingLevel = this.log.level;
+      }
       switch(configs.type) {
         case Tournament.TOURNAMENT_TYPE.ROUND_ROBIN:
           newTourney = new RoundRobinTournament(this.design, files, configs, id);
@@ -243,6 +234,18 @@ export class Dimension {
    */
   getStation() {
     return Dimension.Station;
+  }
+
+  /**
+   * Removes a match by id. Returns true if deleted, false if nothing was deleted
+   */
+  public async removeMatch(matchID: number) {
+    if (this.matches.has(matchID)) {
+      let match = this.matches.get(matchID);
+      await match.destroy();
+      return this.matches.delete(matchID);
+    }
+    return false;
   }
 
 }
