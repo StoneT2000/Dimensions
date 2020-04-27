@@ -13,6 +13,7 @@ import cors from 'cors';
 import { Server } from 'http';
 import { Tournament } from '../Tournament';
 import { existsSync, mkdirSync } from 'fs';
+import { Agent } from '../Agent';
 
 
 const BOT_DIR = path.join(__dirname, 'local/bots');
@@ -26,6 +27,7 @@ declare global {
         dimension?: Dimension,
         match?: Match,
         tournament?: Tournament
+        agent?: Agent,
         [x: string]: any
       }
     }
