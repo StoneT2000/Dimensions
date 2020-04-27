@@ -326,12 +326,6 @@ npm run build
 to build the entire library, including any frontend code.
 
 ## Plans
-
-- Add tournament running (in progress)
-  - Single and Double elimination, seeded and random options
-  - Trueskill / ELO rankings based, giving option of number of matches to run and other configs (Like Halite)
-  - Simple round robins (Like associating football)
-- Make the `Design` language agnostic through developing an I/O based API for other languages in order to implement the 3 Lifecycle functions `initialize, update, getResults`  
 - Make it easier to create a `Design` (design a competition)
   - Make README easier to READ, and reduce the initial "getting-used-to-framework" curve.
 - Make it easier for users to dive deeper into the `MatchEngine`, `Matches`, `Dimensions` to give them greater flexibility over the backend infrastructure
