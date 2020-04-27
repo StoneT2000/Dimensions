@@ -4,7 +4,7 @@ import { MatchEngine } from '../MatchEngine';
 import { Agent } from '../Agent';
 import { Logger } from '../Logger';
 import { Design } from '../Design';
-import { FatalError, MatchError } from '../DimensionError';
+import { FatalError, MatchDestroyedError } from '../DimensionError';
 import { Tournament } from '../Tournament';
 import EngineOptions = MatchEngine.EngineOptions;
 import COMMAND_STREAM_TYPE = MatchEngine.COMMAND_STREAM_TYPE;
@@ -103,6 +103,9 @@ export class Match {
 
   /** Match process used to store the process governing a match running on a custom design */
   matchProcess: ChildProcess;
+
+  /** The timer set for the match process */
+  matchProcessTimer: any;
 
   /** Signal to stop at next time step */
   private shouldStop: boolean = false;
@@ -470,7 +473,7 @@ export class Match {
    */
   public async destroy() {
     // reject the run promise first
-    this.runReject(new MatchError('Match was destroyed'));
+    this.runReject(new MatchDestroyedError('Match was destroyed'));
 
     // now actually stop and clean up
     await this.killAndCleanUp(); // Theoretically this line is not needed for custom matches, but in here in case

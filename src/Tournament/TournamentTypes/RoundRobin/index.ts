@@ -2,7 +2,7 @@ import { Tournament, Player, } from "../../";
 import { DeepPartial } from "../../../utils/DeepPartial";
 import { Design } from '../../../Design';
 import { deepMerge } from "../../../utils/DeepMerge";
-import { FatalError } from "../../../DimensionError";
+import { FatalError, isMatchDestroyedError } from "../../../DimensionError";
 import { Agent } from "../../../Agent";
 import { Logger } from "../../../Logger";
 import RANK_SYSTEM = Tournament.RANK_SYSTEM;
@@ -85,8 +85,7 @@ export class RoundRobinTournament extends Tournament {
     // running one at a time
     while (this.matchQueue.length) {
       let matchInfo = this.matchQueue.shift();
-      await this.handleMatch(matchInfo);        
-
+      await this.handleMatch(matchInfo);
     }
     return this.state;
   }

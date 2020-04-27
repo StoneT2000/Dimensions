@@ -245,6 +245,7 @@ export class Dimension {
       await match.destroy();
       return this.matches.delete(matchID);
     }
+    return false;
   }
 
 }

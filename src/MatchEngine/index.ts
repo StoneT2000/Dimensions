@@ -414,6 +414,7 @@ export class MatchEngine {
   public async stopCustom(match: Match) {
     // attempt to stop the match
     match.matchProcess.kill('SIGSTOP');
+    // TODO: stop the match process timer
   };
 
   /**

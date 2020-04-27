@@ -12,7 +12,7 @@ import { getMatch } from '../';
 const router = express.Router();
 
 /**
- * Agent finding middleware. Requires a tournament or dimension to be stored
+ * Gets agent by agentID in request. Requires a match to be stored
  */
 export const getAgent = (req: Request, res: Response, next: NextFunction) => {
   let agent = 
@@ -26,7 +26,6 @@ export const getAgent = (req: Request, res: Response, next: NextFunction) => {
 
 /**
  * Picks out relevant fields of the agent
- * @param agent 
  */
 export const pickAgent = (agent: Agent) => {
   let picked = pick(agent, 'agentTimeStep', 'cmd', 'creationDate', 'cwd', 'file', 'id', 'isTerminated', 'name', 'src', 'status', 'tournamentID');

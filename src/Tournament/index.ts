@@ -219,6 +219,17 @@ export abstract class Tournament {
     // Resolve the results
     return {results: results, match: match};
   }
+  /**
+   * Removes a match by id. Returns true if deleted, false if nothing was deleted
+   */
+  public async removeMatch(matchID: number) {
+    if (this.matches.has(matchID)) {
+      let match = this.matches.get(matchID);
+      await match.destroy();
+      return this.matches.delete(matchID);
+    }
+    return false;
+  }
 }
 
 /**

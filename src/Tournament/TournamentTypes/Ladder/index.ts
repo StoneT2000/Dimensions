@@ -2,7 +2,7 @@ import { Tournament, Player } from "../../";
 import { DeepPartial } from "../../../utils/DeepPartial";
 import { Design } from '../../../Design';
 import { deepMerge } from "../../../utils/DeepMerge";
-import { FatalError } from "../../../DimensionError";
+import { FatalError, isMatchDestroyedError } from "../../../DimensionError";
 import { Agent } from "../../../Agent";
 import { Rating, rate, quality } from "ts-trueskill";
 import LadderState = Tournament.Ladder.State;
@@ -195,6 +195,10 @@ export class LadderTournament extends Tournament {
       }
     }).catch((error) => {
       this.log.error(error);
+      if (isMatchDestroyedError(error)) {
+        // keep running even if a match is destroyed
+        this.tourneyRunner();
+      }
     });
   }
   private initializeTrueskillPlayerStats(player: Player) {
