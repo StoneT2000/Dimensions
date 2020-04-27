@@ -294,5 +294,27 @@ describe('Rock Paper Scissors Run', () => {
       expect(res.winner).to.equal('agent_0');
     });
   });
-})
+  describe('Testing removing matches', () => {
+    it('should remove matches from dimension', async () => {
+      let match = await myDimension.createMatch(
+        ['./tests/js-kit/rps/delaybotpaper.js', './tests/js-kit/rps/delaybotrock.js'],
+        {
+          bestOf: 11,
+          loggingLevel: Dimension.Logger.LEVEL.ERROR,
+          engineOptions: {
+            timeout: {
+              active: false
+            }
+          }
+        }
+      );
+      expect(match.run()).to.eventually.be.rejectedWith('Match was destroyed');
+      await myDimension.removeMatch(match.id);
+
+    });
+    it('should remove active and queued matches from tournament', () => {
+
+    });
+  })
+});
 

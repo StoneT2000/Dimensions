@@ -87,22 +87,19 @@ export class EliminationTournament extends Tournament {
     this.configs = deepMerge(this.configs, configs);
     this.initialize();
 
-    return new Promise(async (resolve) => {
-      // running one at a time
-      while (this.matchQueue.length) {
-        let matchInfo = this.matchQueue.shift();
-        let matchHash = this.matchHashes.shift();
-        await this.handleMatch(matchInfo, matchHash);        
-        if (this.state.currentRound === 2) {
-          break;
-        }
-        if (this.matchQueue.length === 0) {
-          // once a round is done, perform the next round
-          this.generateRound();
-        }
+    while (this.matchQueue.length) {
+      let matchInfo = this.matchQueue.shift();
+      let matchHash = this.matchHashes.shift();
+      await this.handleMatch(matchInfo, matchHash);        
+      if (this.state.currentRound === 2) {
+        break;
       }
-      resolve(this.state);
-    })
+      if (this.matchQueue.length === 0) {
+        // once a round is done, perform the next round
+        this.generateRound();
+      }
+    }
+    return this.state;
   }
 
   /**

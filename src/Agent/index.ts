@@ -151,7 +151,7 @@ export class Agent {
   /**
    * Compile whatever is needed
    */
-  async _compile(): Promise<void> {
+  _compile(): Promise<void> {
     return new Promise((resolve, reject) => {
       switch(this.ext) {
         case '.py':
@@ -207,7 +207,7 @@ export class Agent {
   /**
    * Spawn the process and return the process
    */
-  async _spawn(): Promise<ChildProcess> {
+  _spawn(): Promise<ChildProcess> {
     return new Promise((resolve, reject) => {
       let p: ChildProcess;
       switch(this.ext) {
@@ -247,7 +247,7 @@ export class Agent {
         default:
           reject('Unrecognized file');
       }
-    })
+    });
   }
 
 

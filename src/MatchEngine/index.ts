@@ -7,7 +7,7 @@ import { Logger } from '../Logger';
 import { Agent } from '../Agent';
 import { Match } from '../Match';
 import { deepCopy } from '../utils/DeepCopy';
-import { spawn } from 'child_process';
+import { spawn, ChildProcess } from 'child_process';
 import EngineOptions = MatchEngine.EngineOptions;
 import DDS = DesignTypes.DynamicDataStrings;
 /**
@@ -67,97 +67,95 @@ export class MatchEngine {
    * @param match - The match to initialize
    * @returns a promise that resolves true if succesfully initialized
    */
-  async initialize(agents: Array<Agent>, match: Match): Promise<boolean> {
+  async initialize(agents: Array<Agent>, match: Match): Promise<void> {
     
     this.log.systembar();
 
-    return new Promise((resolve, reject) => {
-      let agentSetupPromises: Array<Promise<boolean>> = [];
+    let agentSetupPromises: Array<Promise<void>> = [];
 
-      match.agents.forEach( async (agent: Agent, index: number) => {
-        agentSetupPromises.push(new Promise( async (res, rej) => {
+    match.agents.forEach((agent: Agent, index: number) => {
+      agentSetupPromises.push(this.initializeAgent(agent, match));
+    }, this);
 
-          this.log.system("Setting up and spawning " + agent.name + ` | Command: ${agent.cmd} ${agent.src}`);
-        
-          // wait for compilation step
-          await agent._compile();
+    await Promise.all(agentSetupPromises);
+    this.log.system('FINISHED INITIALIZATION OF PROCESSES\n');
+    return;
+  }
 
-          this.log.system('Succesfully ran compile step for agent ' + agent.id);
+  /**
+   * Initializes a single agent, called by {@link initialize}
+   * @param agent - agent to initialize
+   * @param match - match to initialize in
+   */
+  private async initializeAgent(agent: Agent, match: Match): Promise<void> {
+    this.log.system("Setting up and spawning " + agent.name + ` | Command: ${agent.cmd} ${agent.src}`);
+    // wait for compilation step
+    
+    await agent._compile();
+    this.log.system('Succesfully ran compile step for agent ' + agent.id);
 
-          // spawn the agent process
-          let p = await agent._spawn();
+    // spawn the agent process
+    let p = await agent._spawn();
 
-          match.idToAgentsMap.set(agent.id, agent);
+    match.idToAgentsMap.set(agent.id, agent);
 
-          // set agent status as running
-          agent.status = Agent.Status.RUNNING;
+    // set agent status as running
+    agent.status = Agent.Status.RUNNING;
 
-          // handler for stdout of Agent processes. Stores their output commands and resolves move promises
+    // handler for stdout of Agent processes. Stores their output commands and resolves move promises
+    p.stdout.on('readable', () => {
+      let data: string[];
+      while (data = p.stdout.read()) {
+        // split chunks into line by line and handle each line of commands
+        let strs = `${data}`.split('\n');
+        // first store data into a buffer and process later if no newline character is detected
+        if (this.engineOptions.commandLines.waitForNewline && strs.length >= 1 && strs[strs.length - 1] != '') {
+          // using split with \n should make any existing final \n character to be set as '' in strs array
           
-          p.stdout.on('readable', () => {
-            let data: string[];
-            while (data = p.stdout.read()) {
-              // split chunks into line by line and handle each line of commands
-              let strs = `${data}`.split('\n');
-              // first store data into a buffer and process later if no newline character is detected
-              if (this.engineOptions.commandLines.waitForNewline && strs.length >= 1 && strs[strs.length - 1] != '') {
-                // using split with \n should make any existing final \n character to be set as '' in strs array
-                
-                // if there is an existing buffer from the previous 'readable' event, 
-                // concat it to the first strs element as it belongs with that
-                if (strs.length > 1) {
-                  // greater than 1 implies the first strs element is delimited by a \n
-                  strs[0] = agent._buffer.join('').concat(strs[0])
-                  agent._buffer = [];
-                }
-                for (let i = 0; i < strs.length - 1; i++) {
-                  if (agent.getAllowedToSendCommands()) {
-                    this.handleCommmand(agent, strs[i]);
-                  }
-                }
-                // push whatever didn't have a newline into buffer
-                agent._buffer.push(strs[strs.length - 1]);
-              }
-              else {
-                if (strs.length > 1) {
-                  // greater than 1 implies the first strs element is delimited by a \n
-                  strs[0] = agent._buffer.join('').concat(strs[0]);
-                  agent._buffer = [];
-                }
-                this.log.systemIO(`${agent.name} - stdout: ${strs}`);
-                for (let i = 0; i < strs.length; i++) {
-                  if (agent.getAllowedToSendCommands()) {
-                    this.handleCommmand(agent, strs[i]);
-                  }
-                }
-              }
-              
+          // if there is an existing buffer from the previous 'readable' event, 
+          // concat it to the first strs element as it belongs with that
+          if (strs.length > 1) {
+            // greater than 1 implies the first strs element is delimited by a \n
+            strs[0] = agent._buffer.join('').concat(strs[0])
+            agent._buffer = [];
+          }
+          for (let i = 0; i < strs.length - 1; i++) {
+            if (agent.getAllowedToSendCommands()) {
+              this.handleCommmand(agent, strs[i]);
             }
-          });
+          }
+          // push whatever didn't have a newline into buffer
+          agent._buffer.push(strs[strs.length - 1]);
+        }
+        else {
+          if (strs.length > 1) {
+            // greater than 1 implies the first strs element is delimited by a \n
+            strs[0] = agent._buffer.join('').concat(strs[0]);
+            agent._buffer = [];
+          }
+          // this.log.systemIO(`${agent.name} - stdout: ${strs}`);
+          for (let i = 0; i < strs.length; i++) {
+            if (agent.getAllowedToSendCommands()) {
+              this.handleCommmand(agent, strs[i]);
+            }
+          }
+        }
+        
+      }
+    });
 
-          // log stderr from agents to this stderr
-          p.stderr.on('data', (data) => {
-            this.log.error(`${agent.id}: ${data.slice(0, data.length - 1)}`);
-          });
+    // log stderr from agents to this stderr
+    p.stderr.on('data', (data) => {
+      this.log.error(`${agent.id}: ${data.slice(0, data.length - 1)}`);
+    });
 
-          // when process closes, print message
-          p.on('close', (code) => {
-            this.log.system(`${agent.name} | id: ${agent.id} - exited with code ${code}`);
-          });
+    // when process closes, print message
+    p.on('close', (code) => {
+      this.log.system(`${agent.name} | id: ${agent.id} - exited with code ${code}`);
+    });
 
-          // store process
-          agent.process = p;
-          res();
-        }))
-      }, this);
-
-      this.log.system('FINISHED INITIALIZATION OF PROCESSES\n');
-      Promise.all(agentSetupPromises).then(() => {
-        resolve();
-      }).catch((error) => {
-        reject(error);
-      })
-    })
+    // store process
+    agent.process = p;
   }
 
   /**
@@ -234,7 +232,8 @@ export class MatchEngine {
   }
 
   /**
-   * Kills all agents and processes from a match and cleans up
+   * Kills all agents and processes from a match and cleans up. Kills any game processes as well. Shouldn't be used
+   * for custom design based matches.
    * @param match - the match to kill all agents in and clean up
    */
   public async killAndClean(match: Match) {
@@ -262,43 +261,37 @@ export class MatchEngine {
    * @returns a promise that resolves with an array of {@link MatchEngine.Command} elements, holding the command and id 
    * of the agent that sent it
    */
-  public async getCommands(match: Match): Promise<Array<MatchEngine.Command>> {
-    return new Promise((resolve, reject) => {
-      try {
-        let commands: Array<MatchEngine.Command> = [];
-        let nonTerminatedAgents = match.agents.filter((agent: Agent) => {
-          return !agent.isTerminated();
-        })
-        let allAgentMovePromises = nonTerminatedAgents.map((agent: Agent) => {
-          return agent.currentMovePromise;
-        });
-        Promise.all(allAgentMovePromises).then(() => {
-          
-          this.log.system(`All move promises resolved`);
-          match.agents.forEach((agent: Agent) => {
-            // TODO: Add option to store sets of commands delimited by '\n' for an Agent as different sets of commands /// for that Agent. Default right now is store every command delimited by the delimiter
+  public getCommands(match: Match): Promise<Array<MatchEngine.Command>> {
+    return new Promise((resolve) => {
+      let commands: Array<MatchEngine.Command> = [];
+      let nonTerminatedAgents = match.agents.filter((agent: Agent) => {
+        return !agent.isTerminated();
+      })
+      let allAgentMovePromises = nonTerminatedAgents.map((agent: Agent) => {
+        return agent.currentMovePromise;
+      });
+      Promise.all(allAgentMovePromises).then(() => {
+        
+        this.log.system(`All move promises resolved`);
+        match.agents.forEach((agent: Agent) => {
+          // TODO: Add option to store sets of commands delimited by '\n' for an Agent as different sets of commands /// for that Agent. Default right now is store every command delimited by the delimiter
 
-            // for each set of commands delimited by '\n' in stdout of process, split it by delimiter and push to 
-            // commands
-            agent.currentMoveCommands.forEach((commandString) => {
-              commandString.split(this.engineOptions.commandDelimiter).forEach((c) => {
-                // we don't accept '' as commands.
-                if (c !== '') {
-                  commands.push({command: c, agentID: agent.id})
-                }
-              });
+          // for each set of commands delimited by '\n' in stdout of process, split it by delimiter and push to 
+          // commands
+          agent.currentMoveCommands.forEach((commandString) => {
+            commandString.split(this.engineOptions.commandDelimiter).forEach((c) => {
+              // we don't accept '' as commands.
+              if (c !== '') {
+                commands.push({command: c, agentID: agent.id})
+              }
             });
           });
-
-          this.log.system2(`Agent commands at end of time step ${match.timeStep} to be sent to match on time step ${match.timeStep + 1} `);
-          this.log.system2(commands.length ? JSON.stringify(commands) : 'No commands');
-          resolve(commands);
         });
 
-      }
-      catch(error) {
-        reject(error);
-      }
+        this.log.system2(`Agent commands at end of time step ${match.timeStep} to be sent to match on time step ${match.timeStep + 1} `);
+        this.log.system2(commands.length ? JSON.stringify(commands) : 'No commands');
+        resolve(commands);
+      });
     });
   }
 
@@ -308,7 +301,7 @@ export class MatchEngine {
    * @param message - the message to send to agent's stdin
    * @param agentID - id that specifies the agent in the match to send the message to
    */
-  public async send(match: Match, message: string, agentID: Agent.ID): Promise<boolean> {
+  public send(match: Match, message: string, agentID: Agent.ID): Promise<boolean> {
     return new Promise((resolve, reject) => {
       let agent = match.idToAgentsMap.get(agentID);
       if (!agent.process.stdin.destroyed) {
@@ -338,7 +331,7 @@ export class MatchEngine {
    * exit code 0 to be marked as succesfully complete and the processing of results stops and this function resolves
    * @param match - the match to run
    */
-  public async runCustom(match: Match): Promise<Array<string>> {
+  public runCustom(match: Match): Promise<Array<string>> {
     return new Promise((resolve, reject) => {
       
       if (this.overrideOptions.active == false) {
@@ -349,12 +342,10 @@ export class MatchEngine {
       let parsed = this.parseCustomArguments(match, this.overrideOptions.arguments);
   
       // spawn the match process with the parsed arguments
-      let matchProcessTimer;
+      let matchProcessTimer: any;
 
-      let pathparts = cmd.split('/');
-      let cwd = pathparts.slice(0, -1).join('/');
       let fullcmd = [cmd, parsed.join(' ')];
-      let matchProcess = spawn(cmd, parsed).on('error', (err) => {
+      match.matchProcess = spawn(cmd, parsed).on('error', (err) => {
         if (err) throw err;
       });
       this.log.system(`${match.name} | id: ${match.id} - spawned: ${fullcmd}`);
@@ -364,7 +355,7 @@ export class MatchEngine {
       if (this.overrideOptions.timeout !== null) {
         matchProcessTimer = setTimeout(() => {
           this.log.system(`${match.name} | id: ${match.id} - Timed out`);
-          matchProcess.kill('SIGKILL');
+          match.matchProcess.kill('SIGKILL');
           matchTimedOut = true;
         }, this.overrideOptions.timeout);
       }
@@ -372,9 +363,9 @@ export class MatchEngine {
   
       let processingStage = false;
       let results: Array<string> = [];
-      matchProcess.stdout.on('readable', () => {
+      match.matchProcess.stdout.on('readable', () => {
         let data: string[];
-        while (data = matchProcess.stdout.read()) {
+        while (data = match.matchProcess.stdout.read()) {
           // split chunks into line by line and handle each line of output
           let strs = `${data}`.split('\n');
           for (let i = 0; i < strs.length; i++) {
@@ -401,7 +392,7 @@ export class MatchEngine {
         }
       });
 
-      matchProcess.stdout.on('close', (code) => {
+     match.matchProcess.stdout.on('close', (code) => {
         this.log.system(`${match.name} | id: ${match.id} - exited with code ${code}`);
         if (matchTimedOut) {
           reject(new MatchError('Match timed out'));
@@ -414,6 +405,32 @@ export class MatchEngine {
       });
 
     });
+  }
+
+  /**
+   * Attempts to stop a {@link Match} based on a custom {@link Design}
+   * @param match - the match to stop
+   */
+  public async stopCustom(match: Match) {
+    // attempt to stop the match
+    match.matchProcess.kill('SIGSTOP');
+  };
+
+  /**
+   * Attempts to resume a {@link Match} based on a custom {@link Design}
+   * @param match - the match to stop
+   */
+  public async resumeCustom(match: Match) {
+    // attempt to resume the match
+    match.matchProcess.kill('SIGCONT');
+  };
+
+  /**
+   * Attempts to kill and clean up anything else for a custom design based match
+   * @param match - the match to kill and clean up
+   */
+  public async killAndCleanCustom(match: Match) {
+    if (match.matchProcess) match.matchProcess.kill('SIGKILL');
   }
 
   /**

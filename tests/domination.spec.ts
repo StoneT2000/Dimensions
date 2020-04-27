@@ -92,7 +92,7 @@ describe('Testing with Domination Game', () => {
       // expect(matchEngineLogSpy).to.equal(3);
     });
 
-    it('Fatal Errors', async () => {
+    it('should throw fatal Errors', async () => {
       let botSources = [];
       for (let i = 0; i < 3; i++) {
         botSources.push('./tests/js-kit/domination/deterministic.js');
@@ -109,10 +109,10 @@ describe('Testing with Domination Game', () => {
             maxRounds: 5
           }
         }
-      )).to.be.rejectedWith('Dimension.FatalError: No files provided for match');
+      )).to.be.rejectedWith('./tests/js-kit/domination/fakefile.js does not exist, check if file path provided is correct');
 
       // Throw missing file error
-      expect(myDimension.createMatch(
+      let match = myDimension.createMatch(
         [],
         {
           name: 'test-domination-match-fatalerrors',
@@ -121,7 +121,8 @@ describe('Testing with Domination Game', () => {
             maxRounds: 5
           }
         }
-      )).to.be.rejectedWith('Dimension.FatalError: ./tests/js-kit/domination/fakefile.js does not exist, check if file path provided is correct');
+      )
+      expect(match).to.eventually.be.rejectedWith('No files provided for match');
     });
   });
 

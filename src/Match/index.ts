@@ -4,11 +4,12 @@ import { MatchEngine } from '../MatchEngine';
 import { Agent } from '../Agent';
 import { Logger } from '../Logger';
 import { Design } from '../Design';
-import { FatalError } from '../DimensionError';
+import { FatalError, MatchError } from '../DimensionError';
 import { Tournament } from '../Tournament';
 import EngineOptions = MatchEngine.EngineOptions;
 import COMMAND_STREAM_TYPE = MatchEngine.COMMAND_STREAM_TYPE;
 import Command = MatchEngine.Command;
+import { ChildProcess } from 'child_process';
 
 /**
  * @class Match
@@ -36,12 +37,6 @@ export class Match {
    * A unique ID for the match, unique to the current node process
    */
   public id: number;
-
-  private shouldStop: boolean = false;
-  private resumePromise: Promise<void>;
-  private resumeResolve: Function;
-
-  private static _id: number = 0;
 
   /**
    * The state field. This can be used to store anything by the user when this `match` is passed to the {@link Design} 
@@ -72,7 +67,7 @@ export class Match {
   /**
    * The associated {@link MatchEngine} that is running this match and serves as the backend for this match.
    */
-  public matchEngine: MatchEngine; // could potentially made MatchEngine all static, but each match engine does have configurations dependent on design and per match, so holding this as a private field 
+  public matchEngine: MatchEngine;
 
   /**
    * The match logger. 
@@ -105,6 +100,23 @@ export class Match {
     dimensionID: null,
     engineOptions: {}
   };
+
+  /** Match process used to store the process governing a match running on a custom design */
+  matchProcess: ChildProcess;
+
+  /** Signal to stop at next time step */
+  private shouldStop: boolean = false;
+
+  /** Promise for resuming */
+  private resumePromise: Promise<void>;
+
+  /** Resolver for the above promise */
+  private resumeResolve: Function;
+
+  /** Rejecter for the run promise */
+  private runReject: Function;
+
+  private static _id: number = 0;
 
   /**
    * Match Constructor
@@ -146,84 +158,89 @@ export class Match {
    * @returns a promise that resolves true/false if initialized correctly
    */
   public async initialize(): Promise<boolean> {
-    return new Promise( async (resolve, reject) => {
-      try {
+    this.log.infobar();
+    this.log.info(`Design: ${this.design.name} | Initializing match: ${this.name}`);
 
-        this.log.infobar();
-        this.log.info(`Design: ${this.design.name} | Initializing match: ${this.name}`);
+    let overrideOptions = this.design.getDesignOptions().override;
 
-        let overrideOptions = this.design.getDesignOptions().override;
-
-        this.log.detail('Match Configs', this.configs);
-        
-        this.timeStep = 0;
-        
-        // Initialize agents with agent files
-        this.agents = Agent.generateAgents(this.agentFiles, this.log.level);
-        this.agents.forEach((agent) => {
-          this.idToAgentsMap.set(agent.id, agent);
-          if (agent.tournamentID !== null) {
-            this.mapAgentIDtoTournamentID.set(agent.id, agent.tournamentID);
-          }
-        });
-
-        // if overriding wiith custom design, log some other info and use a different engine initialization function
-        if (overrideOptions.active) {
-          this.log.detail('Match Arguments', overrideOptions.arguments);
-          await this.matchEngine.initializeCustom(this);
-        }
-        else {
-          // Initialize the matchEngine and get it ready to run and process I/O for agents
-          await this.matchEngine.initialize(this.agents, this);
-        }
-        
-        // by now all agents should up and running, all compiled and ready
-        // Initialize match according to `design` by delegating intialization task to the enforced `design`
-        await this.design.initialize(this);
-
-        // remove initialized status and set as READY
-        // TODO: add more security checks etc. before marking match as ready to run
-        this.matchStatus = Match.Status.READY;
-        resolve(true);
-      }
-      catch(error) {
-        reject(error);
+    this.log.detail('Match Configs', this.configs);
+    
+    this.timeStep = 0;
+    
+    // Initialize agents with agent files
+    this.agents = Agent.generateAgents(this.agentFiles, this.log.level);
+    this.agents.forEach((agent) => {
+      this.idToAgentsMap.set(agent.id, agent);
+      if (agent.tournamentID !== null) {
+        this.mapAgentIDtoTournamentID.set(agent.id, agent.tournamentID);
       }
     });
+
+    // if overriding wiith custom design, log some other info and use a different engine initialization function
+    if (overrideOptions.active) {
+      this.log.detail('Match Arguments', overrideOptions.arguments);
+      await this.matchEngine.initializeCustom(this);
+    }
+    else {
+      // Initialize the matchEngine and get it ready to run and process I/O for agents
+      await this.matchEngine.initialize(this.agents, this);
+    }
+    
+    // by now all agents should up and running, all compiled and ready
+    // Initialize match according to `design` by delegating intialization task to the enforced `design`
+    await this.design.initialize(this);
+
+    // remove initialized status and set as READY
+    // TODO: add more security checks etc. before marking match as ready to run
+    this.matchStatus = Match.Status.READY;
+
+    return true;
   }
 
 
   /**
    * Runs this match to completion. Sets this.results to match results and resolves with the match results when done
    */
-  public async run(): Promise<any> {
-    let status: Match.Status;
+  public run(): Promise<any> {
 
-    // check if our design is a javascript/typescript based design or custom and to be executed with a provided command
-    
-    let overrideOptions = this.design.getDesignOptions().override;
-    if (overrideOptions.active) {
-      this.log.system('Running custom');
-      await this.matchEngine.runCustom(this);
-      this.results = await this.getResults();
-      return this.results;
-    }
-    else {
-      // otherwise run the match using the design with calls to this.next()
-      do {
-        status = await this.next();
+    // returning new promise explicitly here because we need to store reject
+    return new Promise( async (resolve, reject) => {
+      try {
+        this.runReject = reject;
+        let status: Match.Status;
+        
+        this.matchStatus = Match.Status.RUNNING
+
+        // check if our design is a javascript/typescript based design or custom and to be executed with a provided command
+        
+        let overrideOptions = this.design.getDesignOptions().override;
+        if (overrideOptions.active) {
+          this.log.system('Running custom');
+          await this.matchEngine.runCustom(this);
+          this.results = await this.getResults();
+          resolve(this.results);
+        }
+        else {
+          // otherwise run the match using the design with calls to this.next()
+          do {
+            status = await this.next();
+          }
+          while (status != Match.Status.FINISHED)
+          this.agents.forEach((agent: Agent) => {
+            agent.clearTimer();
+          });
+          this.results = await this.getResults();
+
+          // TODO: Perhaps add a cleanup status if cleaning up processes takes a long time
+          await this.killAndCleanUp();
+        
+          resolve(this.results);
+        }
       }
-      while (status != Match.Status.FINISHED)
-      this.agents.forEach((agent: Agent) => {
-        agent.clearTimer();
-      });
-      this.results = await this.getResults();
-
-      // TODO: Perhaps add a cleanup status if cleaning up processes takes a long time
-      await this.stopAndCleanUp();
-    
-      return this.results;
-    }
+      catch (error) {
+        reject(error);
+      }
+    });
   }
 
   /**
@@ -231,72 +248,71 @@ export class Match {
    * This function should always used to advance forward a match unless a custom design is provided
    */
   public async next(): Promise<Match.Status> {
-    return new Promise(async (resolve, reject) => {
-      const engineOptions = this.matchEngine.getEngineOptions()
-      if (engineOptions.commandStreamType === COMMAND_STREAM_TYPE.SEQUENTIAL) {
-        // if this.shouldStop is set to true, await for the resume promise to resolve
-        if (this.shouldStop == true) {
-          // set status and stop the engine
-          this.matchStatus = Match.Status.STOPPED;
-          this.matchEngine.stop(this);
-          this.log.info('Stopped match');
-          await this.resumePromise;
-          this.matchEngine.resume(this);
-          this.log.info('Resumed match');
-          this.shouldStop = false;
-        }
-        // at the start of each time step, we send any updates based on what agents sent us on the previous timestep
-        // Updates sent by agents on previous timestep can be obtained with MatchEngine.getCommands
-        // This is also the COORDINATION step, where we essentially wait for all commands from all agents to be
-        // delivered out
-        const commands: Array<Command> = await this.matchEngine.getCommands(this);
-        this.log.system(`Retrieved ${commands.length} commands`);
-        // Updates the match state and sends appropriate signals to all Agents based on the stored `Design`
-        const status: Match.Status = await this.design.update(this, commands);
+    const engineOptions = this.matchEngine.getEngineOptions()
+    if (engineOptions.commandStreamType === COMMAND_STREAM_TYPE.SEQUENTIAL) {
+      // if this.shouldStop is set to true, await for the resume promise to resolve
+      if (this.shouldStop == true) {
+        // set status and stop the engine
+        this.matchStatus = Match.Status.STOPPED;
+        this.matchEngine.stop(this);
+        this.log.info('Stopped match');
+        await this.resumePromise;
+        this.matchEngine.resume(this);
+        this.log.info('Resumed match');
+        this.shouldStop = false;
+      }
+      // at the start of each time step, we send any updates based on what agents sent us on the previous timestep
+      // Updates sent by agents on previous timestep can be obtained with MatchEngine.getCommands
+      // This is also the COORDINATION step, where we essentially wait for all commands from all agents to be
+      // delivered out
+      const commands: Array<Command> = await this.matchEngine.getCommands(this);
+      this.log.system(`Retrieved ${commands.length} commands`);
+      // Updates the match state and sends appropriate signals to all Agents based on the stored `Design`
+      const status: Match.Status = await this.design.update(this, commands);
 
-        // default status is running if no status returned
-        if (!status) {
-          this.matchStatus = Match.Status.RUNNING
-        }
-        else {
-          this.matchStatus = status;
-        }
-
-        // after we run update have send all the messages that need to be sent, 
-        // we now reset each Agent for the next move
-        this.agents.forEach((agent: Agent) => {
-          // continue agents again
-          agent.process.kill('SIGCONT');
-          // setup the agent and its promises and get it ready for the next move
-          agent._setupMove();
-          if (engineOptions.timeout.active) {
-            agent.setTimeout(() => {
-              // if agent times out, call the provided callback in engine options
-              engineOptions.timeout.timeoutCallback(agent, this, engineOptions);
-            }, engineOptions.timeout.max + MatchEngine.timeoutBuffer);
-          }
-          // each of these steps can take ~2 ms
-        });
-
-        // update timestep now
-        this.timeStep += 1;
-
-        resolve(status);
+      // default status is running if no status returned
+      if (!status) {
+        this.matchStatus = Match.Status.RUNNING;
+      }
+      else {
+        this.matchStatus = status;
       }
 
-      // TODO: implement this
-      else if (engineOptions.commandStreamType === COMMAND_STREAM_TYPE.PARALLEL) {
-        // with a parallel structure, the `Design` updates the match after each command sequence, delimited by \n
-        // this means agents end up sending commands using out of sync state information, so the `Design` would need to 
-        // adhere to this. Possibilities include stateless designs, or heavily localized designs where out of 
-        // sync states wouldn't matter much
-      }
-    })
+      // after we run update have send all the messages that need to be sent, 
+      // we now reset each Agent for the next move
+      this.agents.forEach((agent: Agent) => {
+        // continue agents again
+        agent.process.kill('SIGCONT');
+        // setup the agent and its promises and get it ready for the next move
+        agent._setupMove();
+        if (engineOptions.timeout.active) {
+          agent.setTimeout(() => {
+            // if agent times out, call the provided callback in engine options
+            engineOptions.timeout.timeoutCallback(agent, this, engineOptions);
+          }, engineOptions.timeout.max + MatchEngine.timeoutBuffer);
+        }
+        // each of these steps can take ~2 ms
+      });
 
+      // update timestep now
+      this.timeStep += 1;
+
+      return status;
+    }
+
+    // TODO: implement this
+    else if (engineOptions.commandStreamType === COMMAND_STREAM_TYPE.PARALLEL) {
+      // with a parallel structure, the `Design` updates the match after each command sequence, delimited by \n
+      // this means agents end up sending commands using out of sync state information, so the `Design` would need to 
+      // adhere to this. Possibilities include stateless designs, or heavily localized designs where out of 
+      // sync states wouldn't matter much
+      throw new FatalError('PARALLEL command streaming has not been implemented yet');
+    }
   }
 
   /**
-   * Stops at the next nearest timestep possible
+   * Stops the match. For non-custom designs, stops at the next nearest timestep possible. Otherwise attempts to stop
+   * the match using the {@link MatchEngine} stopCustom function.
    * 
    * Notes:
    * - If design uses a PARALLEL match engine, stopping behavior can be a little unpredictable
@@ -315,6 +331,11 @@ export class Match {
     this.resumePromise = new Promise((resolve) => {
       this.resumeResolve = resolve;
     });
+
+    // if override is on, we stop using the matchEngine stop function
+    if (this.design.getDesignOptions().override.active) {
+      this.matchEngine.stopCustom(this);
+    }
    
     return true;
   }
@@ -333,6 +354,11 @@ export class Match {
     // set back to running and resolve
     this.matchStatus = Match.Status.RUNNING;
     this.resumeResolve();
+
+    // if override is on, we resume using the matchEngine resume function
+    if (this.design.getDesignOptions().override.active) {
+      this.matchEngine.resumeCustom(this);
+    }
     
     return true;
 
@@ -341,7 +367,7 @@ export class Match {
   /**
    * Stop all agents through the match engine
    */
-  private async stopAndCleanUp() {
+  private async killAndCleanUp() {
     await this.matchEngine.killAndClean(this);
   }
 
@@ -363,16 +389,8 @@ export class Match {
    * Retrieve results through delegating the task to {@link Design.getResults}
    */
   public async getResults() {
-    return new Promise( async (resolve, reject) => {
-      try {
-        // Retrieve match results according to `design` by delegating storeResult task to the enforced `design`
-        let res = await this.design.getResults(this);
-        resolve(res);
-      }
-      catch(error) {
-        reject(error);
-      }
-    });
+    // Retrieve match results according to `design` by delegating storeResult task to the enforced `design`
+    return await this.design.getResults(this);
   }
 
   /* TODO
@@ -389,20 +407,20 @@ export class Match {
    * @param message - the message to send to all agents available 
    * @returns a promise resolving true/false if it was succesfully sent
    */
-  public async sendAll(message: string): Promise<boolean> {
+  public sendAll(message: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
       let sendPromises = [];
       this.agents.forEach((agent: Agent) => {
         sendPromises.push(this.send(message, agent));
-      })
+      });
 
       Promise.all(sendPromises).then(() => {
         // if all promises resolve, we sent all messages
         resolve(true);
       }).catch((error) => {
         reject(error);
-      })
-    })
+      });
+    });
   }
 
   /**
@@ -433,9 +451,9 @@ export class Match {
     // TODO: Try to use `instanceof`
     if (error.name === 'Dimension.FatalError') {
       console.log('FATAL')
-      this.stopAndCleanUp().then(() => {
+      this.killAndCleanUp().then(() => {
         throw new FatalError(`${this.idToAgentsMap.get(agentID).name} | ${error.message}`); 
-      })
+      });
     }
     if (error.name === 'Dimension.MatchWarning') {
       this.log.warn(`ID: ${agentID}, ${this.idToAgentsMap.get(agentID).name} | ${error}`);
@@ -444,6 +462,19 @@ export class Match {
       this.log.error(`ID: ${agentID}, ${this.idToAgentsMap.get(agentID).name} | ${error}`);
       // TODO, if match is set to store an error log, this should be logged!
     }
+  }
+
+  /**
+   * Destroys this match and makes sure to remove any leftover processes
+   * 
+   */
+  public async destroy() {
+    // reject the run promise first
+    this.runReject(new MatchError('Match was destroyed'));
+
+    // now actually stop and clean up
+    await this.killAndCleanUp(); // Theoretically this line is not needed for custom matches, but in here in case
+    await this.matchEngine.killAndCleanCustom(this);
   }
 }
 

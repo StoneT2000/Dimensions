@@ -81,16 +81,14 @@ export class RoundRobinTournament extends Tournament {
     this.configs = deepMerge(this.configs, configs);
     this.initialize();
     this.schedule();
+    
+    // running one at a time
+    while (this.matchQueue.length) {
+      let matchInfo = this.matchQueue.shift();
+      await this.handleMatch(matchInfo);        
 
-    return new Promise(async (resolve) => {
-      // running one at a time
-      while (this.matchQueue.length) {
-        let matchInfo = this.matchQueue.shift();
-        await this.handleMatch(matchInfo);        
-
-      }
-      resolve(this.state);
-    })
+    }
+    return this.state;
   }
 
   /**

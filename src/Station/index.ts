@@ -118,9 +118,9 @@ export class Station {
     
   }
   /**
-   * Try to listen to this.maxAttempts ports
+   * Try to listen to this.maxAttempts ports. Resolves with the port nunber used
    */
-  private async tryToListen(app: express.Application, startingPort: number) {
+  private tryToListen(app: express.Application, startingPort: number): Promise<number> {
     // Try to listen function without breaking if port is busy. try up to an 16 ports (16 is arbitrary #)
     let attempts = 0;
     return new Promise((resolve, reject) => {
@@ -143,13 +143,14 @@ export class Station {
 
   /**
    * Restart Station server / API
+   * Resolves with the port number used
    */
-  public async restart() {
+  public restart(): Promise<number> {
     return new Promise((resolve, reject) => {
       this.log.warn("RESTARTING");
       this.server.close((err) => {
         if (err) reject(err);
-        this.tryToListen(this.app, this.port).then(resolve).catch(reject)
+        this.tryToListen(this.app, this.port).then(resolve).catch(reject);
       });
     })
   }
@@ -157,7 +158,7 @@ export class Station {
   /**
    * Stop the Station server / API
    */
-  public async stop() {
+  public stop(): Promise<void> {
     return new Promise((resolve, reject) => {
       this.log.warn("Stopping");
       this.server.close((err) => {

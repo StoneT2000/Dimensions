@@ -194,37 +194,30 @@ export abstract class Tournament {
    * @returns a promise that resolves with the results and the associated match
    */
   protected async runMatch(players: Array<Player>): Promise<{results: any, match: Match}> {
-    return new Promise( async (resolve, reject) => {
-      try {
-        if (!players.length) reject (new FatalError('No players provided for match'));
+    if (!players.length) throw new FatalError('No players provided for match');
 
-        let matchConfigs = deepCopy(this.getConfigs().defaultMatchConfigs);
-        
-        let match: Match;
-        let filesAndNamesAndIDs = players.map((player) => {
-          return {file: player.file, tournamentID: player.tournamentID}
-        });
-        match = new Match(this.design, <Array<{file: string, tournamentID: Tournament.ID}>>(filesAndNamesAndIDs), matchConfigs);
-
-        // store match into the tournament
-        this.matches.set(match.id, match);
-
-        // Initialize match with initialization configuration
-        await match.initialize();
-
-        // Get results
-        let results = await match.run();
-        // remove the match from the active matches list
-        this.matches.delete(match.id);
-        // TODO: Add option to just archive matches instead
-        
-        // Resolve the results
-        resolve({results: results, match: match});
-      }
-      catch(error) {
-        reject(error);
-      }
+    let matchConfigs = deepCopy(this.getConfigs().defaultMatchConfigs);
+    
+    let match: Match;
+    let filesAndNamesAndIDs = players.map((player) => {
+      return {file: player.file, tournamentID: player.tournamentID}
     });
+    match = new Match(this.design, <Array<{file: string, tournamentID: Tournament.ID}>>(filesAndNamesAndIDs), matchConfigs);
+
+    // store match into the tournament
+    this.matches.set(match.id, match);
+
+    // Initialize match with initialization configuration
+    await match.initialize();
+
+    // Get results
+    let results = await match.run();
+    // remove the match from the active matches list
+    this.matches.delete(match.id);
+    // TODO: Add option to just archive matches instead
+    
+    // Resolve the results
+    return {results: results, match: match};
   }
 }
 
