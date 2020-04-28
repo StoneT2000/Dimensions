@@ -2,7 +2,7 @@ import { Tournament, Player, } from "../../";
 import { DeepPartial } from "../../../utils/DeepPartial";
 import { Design } from '../../../Design';
 import { deepMerge } from "../../../utils/DeepMerge";
-import { FatalError } from "../../../DimensionError";
+import { FatalError, TournamentError } from "../../../DimensionError";
 import { Agent } from "../../../Agent";
 import { Logger } from "../../../Logger";
 import RANK_SYSTEM = Tournament.RANK_SYSTEM;
@@ -27,6 +27,11 @@ export class RoundRobinTournament extends Tournament {
     resultHandler: null,
     consoleDisplay: true
   }
+  private shouldStop: boolean = false;
+  private resumePromise: Promise<void>;
+  private resumeResolver: Function;
+  private resolveStopPromise: Function;
+
   public state: Tournament.RoundRobin.State = {
     playerStats: new Map(),
     results: [],
@@ -76,6 +81,11 @@ export class RoundRobinTournament extends Tournament {
     this.log.info('Initialized Round Robin Tournament');
   }
 
+  /**
+   * Runs a round robin to completion using the configurations given and resolves with the {@link RoundRobin.State} at 
+   * the end.
+   * @param configs - the configs to use for this run
+   */
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<Tournament.RoundRobin.Configs>>) {
     this.status = Tournament.TournamentStatus.RUNNING;
     this.log.info('Running Tournament with competitors: ', this.competitors.map((player) => player.tournamentID.name));
@@ -85,9 +95,18 @@ export class RoundRobinTournament extends Tournament {
     
     // running one at a time
     while (this.matchQueue.length) {
+      // stop logic
+      if (this.shouldStop) {
+        this.log.info('Stopped Tournament');
+        this.resolveStopPromise();
+        await this.resumePromise;
+        this.log.info('Resumed Tournament');
+        this.shouldStop = false;
+      }
       let matchInfo = this.matchQueue.shift();
       await this.handleMatch(matchInfo);
     }
+    this.status = Tournament.TournamentStatus.FINISHED;
     return this.state;
   }
 
@@ -163,14 +182,41 @@ export class RoundRobinTournament extends Tournament {
     }
   }
 
-  public async stop() {
-
+  /**
+   * Stops the tournament
+   */
+  public stop(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (this.status !== Tournament.TournamentStatus.RUNNING) {
+        throw new TournamentError(`Can't stop a tournament that isn't running`);
+      }
+      this.log.info('Stopping Tournament...');
+      this.status = Tournament.TournamentStatus.STOPPED;
+      this.resumePromise = new Promise((resumeResolve) => {
+        this.resumeResolver = resumeResolve;
+      });
+      this.shouldStop = true;
+      this.resolveStopPromise = resolve;
+    });
   }
-  public async resume() {
+
+  /**
+   * Resumes the tournament
+   */
+  public async resume(): Promise<void> {
+    if (this.status !== Tournament.TournamentStatus.STOPPED) {
+      throw new TournamentError(`Can't resume a tournament that isn't stopped`);
+    }
     
+    this.log.info('Resuming Tournament...');
+    this.status = Tournament.TournamentStatus.RUNNING;
+    this.resumeResolver();
   }
 
   // TODO: move sorting to run function. It's ok too sort like this for small leagues, but larger will become slow.
+  /**
+   * Returns the current rankings
+   */
   public getRankings() {
     let ranks = [];
     this.state.playerStats.forEach((playerStat) => {
@@ -201,12 +247,22 @@ export class RoundRobinTournament extends Tournament {
     }
     return ranks;
   }
+
+  /**
+   * Gets the current configs
+   */
   public getConfigs(): Tournament.TournamentConfigs<Tournament.RoundRobin.Configs> {
     return this.configs;
   }
+
+  /**
+   * Sets the configs
+   * @param configs - configs to use
+   */
   public setConfigs(configs: DeepPartial<Tournament.TournamentConfigs<Tournament.RoundRobin.Configs>> = {}) {
     this.configs = deepMerge(this.configs, configs);
   }
+
 
   private initialize() {
     this.state.playerStats = new Map();
@@ -224,6 +280,7 @@ export class RoundRobinTournament extends Tournament {
       this.printTournamentStatus();
     }
   }
+  
   /**
    * Queue up all matches necessary
    */

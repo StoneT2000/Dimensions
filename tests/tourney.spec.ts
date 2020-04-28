@@ -6,13 +6,36 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import 'mocha';
 import { Tournament, Logger, TournamentError } from '../src';
+import { fail } from 'assert';
 chai.use(chaiAsPromised);
 const expect = chai.expect;
+
+const testTournamentStopResume = async (t: Tournament) => {
+  let res = t.run();
+  expect(res).to.eventually.not.be.equal(undefined);
+  const testResume = async () => {
+    expect(t.stop()).to.eventually.be.rejectedWith(TournamentError);
+    expect(t.status).to.equal(Dimension.Tournament.TournamentStatus.STOPPED);
+    await t.resume();
+    expect(t.status).to.equal(Dimension.Tournament.TournamentStatus.RUNNING);
+  }
+  setTimeout(() => {
+    expect(t.resume()).to.eventually.be.rejectedWith(TournamentError);
+    expect(t.status).to.equal(Dimension.Tournament.TournamentStatus.RUNNING);
+    t.stop();
+    
+  }, 400);
+  setTimeout(() => {
+    testResume();
+  }, 1500);
+
+}
 
 describe('Tournament Testing with RPS', () => {
   let RPSDesign, RPSTournament: Dimension.Tournament.RoundRobin.Tournament;
   let DefaultRPSTournament: Dimension.Tournament.RoundRobin.Tournament;
   let myDimension: Dimension.DimensionType;
+  
   let players = ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/paper.js', './tests/js-kit/rps/errorbot.js', './tests/js-kit/rps/rock.js'];
   let names = ['smarter', 'paper', 'errorplayer', 'rock'];
   let filesAndNames = [];
@@ -33,7 +56,7 @@ describe('Tournament Testing with RPS', () => {
         activateStation: false,
         observe: false,
         loggingLevel: Dimension.Logger.LEVEL.WARN
-      }); 
+      });
       DefaultRPSTournament = <Dimension.Tournament.RoundRobin.Tournament>myDimension.createTournament(players, {
         type: Dimension.Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
         rankSystem: Dimension.Tournament.RANK_SYSTEM.WINS,
@@ -89,8 +112,22 @@ describe('Tournament Testing with RPS', () => {
         expect(ranks[2]).to.contain({name:'paper', id:'t1_1', score: 8});
         expect(ranks[3]).to.contain({name:'smarter', id:'t1_0', score: 12});
       });
-      it('should run be able to stop and resume a tourney', async () => {
-    
+      it('should run be able to stop and resume a tourney and handle errors', async () => {
+        let t = <Dimension.Tournament.RoundRobin.Tournament>myDimension.createTournament(filesAndNames, {
+          type: Dimension.Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
+          rankSystem: Dimension.Tournament.RANK_SYSTEM.WINS,
+          name: 'Rock Paper Scissors',
+          loggingLevel: Dimension.Logger.LEVEL.NONE,
+          agentsPerMatch: [2],
+          consoleDisplay: false,
+          defaultMatchConfigs: {
+            bestOf: 3,
+            loggingLevel: Dimension.Logger.LEVEL.WARN
+          },
+          resultHandler: RockPaperScissorsDesign.winsResultHandler
+        });
+        testTournamentStopResume(t);
+
       });
     });
     it('should be able to validate tournament IDS', () => {
@@ -103,11 +140,41 @@ describe('Tournament Testing with RPS', () => {
       expect(RPSTournament.validateTournamentID(`t${RPSTournament.id}_3;ls -a`)).to.equal(false);
       expect(RPSTournament.validateTournamentID(`t${RPSTournament.id};ls_3`)).to.equal(false);
     });
-    it('Should remove matches from ladder tourney', async () => {
-
-    });
   });
 
+  describe('Elimination', () => {
+    let EliminationTourney: Tournament;
+    beforeEach(() => {
+      myDimension = Dimension.create(RPSDesign, {
+        name: 'RPS',
+        activateStation: false,
+        observe: false,
+        loggingLevel: Dimension.Logger.LEVEL.WARN
+      });
+      EliminationTourney = myDimension.createTournament(filesAndNames, {
+        type: Dimension.Tournament.TOURNAMENT_TYPE.ELIMINATION,
+        rankSystem: Dimension.Tournament.RANK_SYSTEM.WINS,
+        name: 'Rock Paper Scissors Elim Tourney',
+        loggingLevel: Dimension.Logger.LEVEL.NONE,
+        agentsPerMatch: [2],
+        consoleDisplay: false,
+        defaultMatchConfigs: {
+          bestOf: 329,
+          loggingLevel: Dimension.Logger.LEVEL.WARN
+        },
+        resultHandler: RockPaperScissorsDesign.winsResultHandler
+      });
+    });
+    describe('Running Tournament', async () => {
+      it('should run a tourney and output appropriate results', async () => {
+        let res = <Tournament.Elimination.State>(await EliminationTourney.run());
+        expect(res.playerStats.get('t0_0').rank).to.equal(1);
+      });
+      it('should stop and resume', async () => {
+        testTournamentStopResume(EliminationTourney);
+      });
+    });
+  });
   describe('Trueskill Ladder', () => {
     before(() => {
       RPSDesign = new RockPaperScissorsDesign('RPS!', {

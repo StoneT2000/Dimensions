@@ -342,10 +342,10 @@ export class Match {
       else {
         this.resolveStopPromise = resolve;
         this.log.info('Stopping match...');
-        this.shouldStop = true;
         this.resumePromise = new Promise((resolve) => {
           this.resumeResolve = resolve;
         });
+        this.shouldStop = true;
       }
     });
   }

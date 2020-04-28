@@ -6,7 +6,7 @@ import EliminationState = Tournament.Elimination.State;
 import EliminationConfigs = Tournament.Elimination.Configs;
 
 import RANK_SYSTEM = Tournament.RANK_SYSTEM;
-import { FatalError } from "../../../DimensionError";
+import { FatalError, TournamentError } from "../../../DimensionError";
 import { Agent } from "../../../Agent";
 
 export class EliminationTournament extends Tournament {
@@ -35,6 +35,12 @@ export class EliminationTournament extends Tournament {
     resultsMap: new Map()
   };
   matchHashes: Array<string> = [];
+
+  private shouldStop: boolean = false;
+  private resumePromise: Promise<void>;
+  private resumeResolver: Function;
+  private resolveStopPromise: Function;
+
   constructor(
     design: Design,
     files: Array<string> | Array<{file: string, name:string}>, 
@@ -77,17 +83,43 @@ export class EliminationTournament extends Tournament {
     let ranks = Array.from(this.state.playerStats).sort((a, b) => a[1].rank - b[1].rank);
     return ranks.map((a) => a[1]);
   }
-  public async stop() {
+  public stop(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (this.status !== Tournament.TournamentStatus.RUNNING) {
+        reject(new TournamentError(`Can't stop a tournament that isn't running`));
+      }
+      this.log.info('Stopping Tournament...');
+      this.status = Tournament.TournamentStatus.STOPPED;
+      this.resumePromise = new Promise((resumeResolve) => {
+        this.resumeResolver = resumeResolve;
+      });
+      this.shouldStop = true;
+      this.resolveStopPromise = resolve;
+    });
+  }
+  public async resume(): Promise<void> {
+    if (this.status !== Tournament.TournamentStatus.STOPPED) {
+      throw new TournamentError(`Can't resume a tournament that isn't stopped`);
+    }
+    this.log.info('Resuming Tournament...');
+    this.status = Tournament.TournamentStatus.RUNNING;
+    this.resumeResolver();
+  }
 
-  }
-  public async resume() {
-    
-  }
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<EliminationConfigs>>) {
+    this.status = Tournament.TournamentStatus.RUNNING;
     this.configs = deepMerge(this.configs, configs);
     this.initialize();
 
     while (this.matchQueue.length) {
+      // stop logic
+      if (this.shouldStop) {
+        this.log.info('Stopped Tournament');
+        this.resolveStopPromise();
+        await this.resumePromise;
+        this.log.info('Resumed Tournament');
+        this.shouldStop = false;
+      }
       let matchInfo = this.matchQueue.shift();
       let matchHash = this.matchHashes.shift();
       await this.handleMatch(matchInfo, matchHash);        
@@ -99,6 +131,7 @@ export class EliminationTournament extends Tournament {
         this.generateRound();
       }
     }
+    this.status = Tournament.TournamentStatus.FINISHED;
     return this.state;
   }
 

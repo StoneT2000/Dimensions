@@ -262,6 +262,8 @@ export module Tournament {
     RUNNING = 'running',
     /** Tournmanet crashed some how */
     CRASHED = 'crashed',
+    /** Tournament is done */
+    FINISHED = 'finished'
   }
 
   /**
