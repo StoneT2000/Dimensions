@@ -236,6 +236,8 @@ export abstract class Tournament {
     }
     return false;
   }
+
+  public abstract async destroy(): Promise<void>
 }
 
 /**

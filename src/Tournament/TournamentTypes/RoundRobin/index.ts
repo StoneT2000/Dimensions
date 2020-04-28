@@ -81,6 +81,21 @@ export class RoundRobinTournament extends Tournament {
     this.log.info('Initialized Round Robin Tournament');
   }
 
+  public destroy(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.stop();
+      let destroyPromises = [];
+      // now remove all match processes
+      this.matches.forEach((match) => {
+        destroyPromises.push(match.destroy());
+      });
+      Promise.all(destroyPromises).then(() => {
+        resolve();
+      }).catch((error) => {
+        reject(error);
+      });
+    });
+  }
   /**
    * Runs a round robin to completion using the configurations given and resolves with the {@link RoundRobin.State} at 
    * the end.

@@ -138,6 +138,22 @@ export class LadderTournament extends Tournament {
     }
     return rankings;
   }
+  public destroy(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.stop();
+      let destroyPromises = [];
+      // now remove all match processes
+      this.matches.forEach((match) => {
+        console.log('Destroying match: ' + match.name);
+        destroyPromises.push(match.destroy());
+      });
+      Promise.all(destroyPromises).then(() => {
+        resolve();
+      }).catch((error) => {
+        reject(error);
+      });
+    });
+  }
   public async stop() {
     this.log.info('Stopping Tournament...');
     this.status = Tournament.TournamentStatus.STOPPED;
@@ -197,7 +213,9 @@ export class LadderTournament extends Tournament {
       this.log.error(error);
       if (error instanceof MatchDestroyedError) {
         // keep running even if a match is destroyed
-        this.tourneyRunner();
+        if (this.status == Tournament.TournamentStatus.RUNNING) {
+          this.tourneyRunner();
+        }
       }
     });
   }

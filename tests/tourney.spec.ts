@@ -176,7 +176,7 @@ describe('Tournament Testing with RPS', () => {
     });
   });
   describe('Trueskill Ladder', () => {
-    before(() => {
+    beforeEach(() => {
       RPSDesign = new RockPaperScissorsDesign('RPS!', {
         engineOptions: {
           timeout: {
@@ -194,30 +194,36 @@ describe('Tournament Testing with RPS', () => {
         type: Dimension.Tournament.TOURNAMENT_TYPE.LADDER,
         rankSystem: Dimension.Tournament.RANK_SYSTEM.TRUESKILL,
         name: 'Rock Paper Scissors Trueskill ladder',
-        loggingLevel: Dimension.Logger.LEVEL.ERROR,
+        loggingLevel: Dimension.Logger.LEVEL.NONE,
         agentsPerMatch: [2],
         consoleDisplay: false,
         defaultMatchConfigs: {
-          bestOf: 3,
+          bestOf: 329,
           loggingLevel: Dimension.Logger.LEVEL.WARN
         },
         resultHandler: RockPaperScissorsDesign.trueskillResultHandler
       })
     });
+    it('should run normally', (done) => {
+      RPSTournament.run();
+      setTimeout(() => {
+        RPSTournament.destroy();
+        done();
+      }, 100);
+    });
     it('should be able to add/update competitors', () => {
-      // RPSTournament.run();
+
       RPSTournament.addplayer('./tests/js-kit/rps/smarter.js');
       expect(RPSTournament.competitors.length).to.equal(5);
       expect(RPSTournament.competitors[4].file).to.equal('./tests/js-kit/rps/smarter.js');
       expect(RPSTournament.competitors[4].tournamentID.id).to.equal(`t${RPSTournament.id}_4`);
       RPSTournament.addplayer('./test/js-kit/rps/rock.js', `t${RPSTournament.id}_0`);
       expect(RPSTournament.competitors[0].file).to.equal('./test/js-kit/rps/rock.js');
-
       RPSTournament.addplayer({file:'./test/js-kit/rps/rock.js', name:'newname'}, `t${RPSTournament.id}_1`);
       expect(RPSTournament.competitors[1].file).to.equal('./test/js-kit/rps/rock.js');
       expect(RPSTournament.competitors[1].tournamentID.name).to.equal('newname');
-
       expect(RPSTournament.addplayer({file:'./test/js-kit/rps/rock.js', name:'newname'}, `t_100_22_not_real_id`)).to.be.rejectedWith(TournamentError);
+      
     });
   });
   
