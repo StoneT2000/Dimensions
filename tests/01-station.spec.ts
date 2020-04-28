@@ -16,7 +16,7 @@ const importTest = (name:string, path: string) => {
 }
 
 let station: Station;
-describe.only('Testing Station Class', () => {
+describe('Testing Station Class', () => {
   it('should not activate a station when asked', () => {
     let dominationDesign = new DominationDesign('Domination');
     let d = Dimension.create(dominationDesign, {
@@ -36,8 +36,8 @@ describe.only('Testing Station Class', () => {
     });
     station = d.getStation();
     expect(station).to.not.equal(null);
-    let dimensions = <Array<Dimension.DimensionType>>station.app.get('dimensions');
-    expect(dimensions.length).to.equal(0);
+    let dimensions = <Map<number, Dimension.DimensionType>>station.app.get('dimensions');
+    expect(dimensions.size).to.equal(0);
   });
   it('should observe if asked', () => {
     let dominationDesign = new DominationDesign('Domination');
@@ -47,11 +47,12 @@ describe.only('Testing Station Class', () => {
     });
     station = d.getStation();
     expect(station).to.not.equal(null);
-    let dimensions = <Array<Dimension.DimensionType>>station.app.get('dimensions');
-    expect(dimensions[0].id).to.equal(d.id);
+    let dimensions = <Map<number, Dimension.DimensionType>>station.app.get('dimensions');
+    expect(dimensions.get(d.id).id).to.equal(d.id);
   });
   describe('Run imported', () => {
-    importTest('DimensionsAPI', './stationAPITests/dimension.subspec.ts');
+    importTest('API /dimensions', './stationAPITests/dimension/index.subspec.ts');
+    importTest('API /dimensions/match', './stationAPITests/dimension/match/index.subspec.ts');
   });
   after(() => {
     station.stop();

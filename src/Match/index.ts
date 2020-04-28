@@ -481,8 +481,8 @@ export class Match {
    * 
    */
   public async destroy() {
-    // reject the run promise first
-    this.runReject(new MatchDestroyedError('Match was destroyed'));
+    // reject the run promise first if it exists
+    if (this.runReject) this.runReject(new MatchDestroyedError('Match was destroyed'));
 
     // now actually stop and clean up
     await this.killAndCleanUp(); // Theoretically this line is not needed for custom matches, but in here in case

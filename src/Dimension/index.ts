@@ -95,7 +95,7 @@ export class Dimension {
     // open up a new station for the current node process if it hasn't been opened yet and there is a dimension that 
     // is asking for a station to be initiated
     if (this.configs.activateStation === true && Dimension.Station == null) {
-      Dimension.Station = new Station('Dimension Station', [], this.configs.loggingLevel);
+      Dimension.Station = new Station('Station', [], this.configs.loggingLevel);
     }
     this.log.info('Dimension Configs', this.configs);
     

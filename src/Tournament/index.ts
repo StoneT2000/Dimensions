@@ -237,7 +237,38 @@ export abstract class Tournament {
     return false;
   }
 
-  public abstract async destroy(): Promise<void>
+  public destroy(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.preInternalDestroy().then(() => {
+        // stop if running
+        if (this.status === Tournament.TournamentStatus.RUNNING) this.stop();
+        let destroyPromises = [];
+        // now remove all match processes
+        this.matches.forEach((match) => {
+          destroyPromises.push(match.destroy());
+        });
+        return Promise.all(destroyPromises).then(() => {
+          return this.postInternalDestroy();
+        });
+      }).catch((error) => {
+        reject(error);
+      });
+    });
+  }
+
+  /**
+   * Pre run function before generic destroy takes place
+   */
+  protected async preInternalDestroy() {
+
+  }
+
+  /**
+   * Post run function before generic destroy takes place
+   */
+  protected async postInternalDestroy() {
+
+  }
 }
 
 /**

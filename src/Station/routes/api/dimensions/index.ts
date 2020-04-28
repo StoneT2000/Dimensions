@@ -16,7 +16,12 @@ const router = express.Router();
  * Gets all observed dimensions
  */
 router.get('/', (req:Request, res: Response) => {
-  res.json({error: null, dimensions: req.app.get('dimensions')});
+  let dimMap = req.app.get('dimensions');
+  let data = {}
+  dimMap.forEach((dimension: Dimension) => {
+    data[dimension.id] = pickDimension(dimension);
+  });
+  res.json({error: null, dimensions: data});
 });
 
 /**
@@ -25,7 +30,7 @@ router.get('/', (req:Request, res: Response) => {
 const getDimension = (req: Request, res, next: express.NextFunction) => {
   let id = req.params.id;
   if (!id) return next(new error.BadRequest('ID must be provided'));
-  let dimension: Dimension = req.app.get('dimensions').filter((d: Dimension) => d.id == parseInt(id))[0];
+  let dimension: Dimension = req.app.get('dimensions').get(parseInt(id));
   if (!dimension) {
     
     return next(new error.BadRequest('No Dimension found'));

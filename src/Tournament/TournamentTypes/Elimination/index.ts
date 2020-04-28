@@ -83,21 +83,7 @@ export class EliminationTournament extends Tournament {
     let ranks = Array.from(this.state.playerStats).sort((a, b) => a[1].rank - b[1].rank);
     return ranks.map((a) => a[1]);
   }
-  public destroy(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.stop();
-      let destroyPromises = [];
-      // now remove all match processes
-      this.matches.forEach((match) => {
-        destroyPromises.push(match.destroy());
-      });
-      Promise.all(destroyPromises).then(() => {
-        resolve();
-      }).catch((error) => {
-        reject(error);
-      });
-    });
-  }
+
   public stop(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (this.status !== Tournament.TournamentStatus.RUNNING) {
