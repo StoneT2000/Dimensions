@@ -9,8 +9,14 @@ const expect = chai.expect;
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
 
+const importTest = (name:string, path: string) => {
+  describe(name, function () {
+      require(path);
+  });
+}
+
 let station: Station;
-describe('Testing Station Class', () => {
+describe.only('Testing Station Class', () => {
   it('should not activate a station when asked', () => {
     let dominationDesign = new DominationDesign('Domination');
     let d = Dimension.create(dominationDesign, {
@@ -44,7 +50,12 @@ describe('Testing Station Class', () => {
     let dimensions = <Array<Dimension.DimensionType>>station.app.get('dimensions');
     expect(dimensions[0].id).to.equal(d.id);
   });
+  describe('Run imported', () => {
+    importTest('DimensionsAPI', './stationAPITests/dimension.subspec.ts');
+  });
   after(() => {
     station.stop();
   });
+
+  
 });

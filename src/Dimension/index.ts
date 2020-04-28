@@ -101,7 +101,7 @@ export class Dimension {
     
     // default match log level and design log level is the same as passed into the dimension
     this.configs.defaultMatchConfigs.loggingLevel = this.configs.loggingLevel;
-    this.design._setLogLevel(this.configs.loggingLevel);
+    this.design.setLogLevel(this.configs.loggingLevel);
 
     // set name
     if (this.configs.name) {

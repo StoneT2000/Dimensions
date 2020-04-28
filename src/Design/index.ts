@@ -88,7 +88,7 @@ export abstract class Design {
    * Set log level of the design
    * @param level - level to set design logger to
    */
-  _setLogLevel(level: Logger.LEVEL) {
+  setLogLevel(level: Logger.LEVEL) {
     this.log.level = level;
   }
   
