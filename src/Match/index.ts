@@ -4,7 +4,7 @@ import { MatchEngine } from '../MatchEngine';
 import { Agent } from '../Agent';
 import { Logger } from '../Logger';
 import { Design } from '../Design';
-import { FatalError, MatchDestroyedError } from '../DimensionError';
+import { FatalError, MatchDestroyedError, MatchError, MatchWarn } from '../DimensionError';
 import { Tournament } from '../Tournament';
 import EngineOptions = MatchEngine.EngineOptions;
 import COMMAND_STREAM_TYPE = MatchEngine.COMMAND_STREAM_TYPE;
@@ -115,6 +115,9 @@ export class Match {
 
   /** Resolver for the above promise */
   private resumeResolve: Function;
+
+  /** Resolver for stop Promise */
+  private resolveStopPromise: Function;
 
   /** Rejecter for the run promise */
   private runReject: Function;
@@ -259,6 +262,7 @@ export class Match {
         this.matchStatus = Match.Status.STOPPED;
         this.matchEngine.stop(this);
         this.log.info('Stopped match');
+        this.resolveStopPromise();
         await this.resumePromise;
         this.matchEngine.resume(this);
         this.log.info('Resumed match');
@@ -325,22 +329,25 @@ export class Match {
    */
   public stop() {
     
-    if (this.matchStatus != Match.Status.RUNNING) {
-      this.log.error('You can\'t stop a match that is not running');
-      return false;
-    }
-    this.log.info('Stopping match...');
-    this.shouldStop = true;
-    this.resumePromise = new Promise((resolve) => {
-      this.resumeResolve = resolve;
+    return new Promise((resolve, reject) => {
+      if (this.matchStatus != Match.Status.RUNNING) {
+        this.log.warn('You can\'t stop a match that is not running');
+        reject(new MatchWarn('You can\t stop a match that is not running'));
+        return;
+      }  
+      // if override is on, we stop using the matchEngine stop function
+      if (this.design.getDesignOptions().override.active) {
+        return this.matchEngine.stopCustom(this);
+      }
+      else {
+        this.resolveStopPromise = resolve;
+        this.log.info('Stopping match...');
+        this.shouldStop = true;
+        this.resumePromise = new Promise((resolve) => {
+          this.resumeResolve = resolve;
+        });
+      }
     });
-
-    // if override is on, we stop using the matchEngine stop function
-    if (this.design.getDesignOptions().override.active) {
-      this.matchEngine.stopCustom(this);
-    }
-   
-    return true;
   }
 
   /**
@@ -348,23 +355,25 @@ export class Match {
    * @returns true if succesfully resumed
    */
   public resume() {
-    if (this.matchStatus != Match.Status.STOPPED) {
-      this.log.error('You can\'t resume a match that is not stopped');
-      return false;
-    }
-    this.log.info('Resuming match...');
-
-    // set back to running and resolve
-    this.matchStatus = Match.Status.RUNNING;
-    this.resumeResolve();
-
-    // if override is on, we resume using the matchEngine resume function
-    if (this.design.getDesignOptions().override.active) {
-      this.matchEngine.resumeCustom(this);
-    }
-    
-    return true;
-
+    return new Promise((resolve, reject) => {
+      if (this.matchStatus != Match.Status.STOPPED) {
+        this.log.warn('You can\'t resume a match that is not stopped');
+        reject(new MatchWarn('You can\'t resume a match that is not stopped'));
+        return;
+      }
+      this.log.info('Resuming match...');
+      
+      // if override is on, we resume using the matchEngine resume function
+      if (this.design.getDesignOptions().override.active) {
+        return this.matchEngine.resumeCustom(this);
+      }
+      else {
+        // set back to running and resolve
+        this.matchStatus = Match.Status.RUNNING;
+        this.resumeResolve();
+        resolve();
+      }
+    });
   }
 
   /**

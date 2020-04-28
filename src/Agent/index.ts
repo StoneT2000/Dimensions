@@ -11,6 +11,9 @@ import { Tournament } from "../Tournament";
  * process associated and if it is terminated or not.
  * 
  * Reads in a file source for the code and creates an `Agent` for use in the {@link MatchEngine} and {@link Match}
+ * 
+ * This is a class that should not be broken. If someting goes wrong, this should always throw a FatalError. It is 
+ * expected that agents are used knowing beforehand that the file given is validated
  */
 export class Agent {
   
@@ -71,6 +74,8 @@ export class Agent {
   
   // a promise that resolves when the Agent's current move in the `Match` is finished
   public currentMovePromise: Promise<void>;
+  
+  /* istanbul ignore next */
   public currentMoveResolve: Function = () => {}; // set as a dummy function
   public currentMoveReject: Function;
 
@@ -239,13 +244,8 @@ export class Agent {
           }).on('error', (err) => { reject(err) });
           resolve(p);
           break;
-        case '.php':
-          p = spawn(this.cmd, [this.src], {
-            cwd: this.cwd
-          }).on('error', (err) => { reject(err) });
-          resolve(p);
         default:
-          reject('Unrecognized file');
+          reject(new FatalError('Unrecognized file'));
       }
     });
   }
@@ -268,7 +268,7 @@ export class Agent {
   _allowCommands() {
     this.allowedToSendCommands = true;
   }
-  getAllowedToSendCommands() {
+  isAllowedToSendCommands() {
     return this.allowedToSendCommands;
   }
 

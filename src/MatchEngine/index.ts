@@ -108,7 +108,9 @@ export class MatchEngine {
       while (data = p.stdout.read()) {
         // split chunks into line by line and handle each line of commands
         let strs = `${data}`.split('\n');
+
         // first store data into a buffer and process later if no newline character is detected
+        // if final char in the strs array is not '', then \n is not at the end
         if (this.engineOptions.commandLines.waitForNewline && strs.length >= 1 && strs[strs.length - 1] != '') {
           // using split with \n should make any existing final \n character to be set as '' in strs array
           
@@ -120,7 +122,8 @@ export class MatchEngine {
             agent._buffer = [];
           }
           for (let i = 0; i < strs.length - 1; i++) {
-            if (agent.getAllowedToSendCommands()) {
+            if (strs[i] === '') continue;
+            if (agent.isAllowedToSendCommands()) {
               this.handleCommmand(agent, strs[i]);
             }
           }
@@ -135,7 +138,8 @@ export class MatchEngine {
           }
           // this.log.systemIO(`${agent.name} - stdout: ${strs}`);
           for (let i = 0; i < strs.length; i++) {
-            if (agent.getAllowedToSendCommands()) {
+            if (strs[i] === '') continue;
+            if (agent.isAllowedToSendCommands()) {
               this.handleCommmand(agent, strs[i]);
             }
           }
@@ -182,8 +186,13 @@ export class MatchEngine {
           }
           break;
         case MatchEngine.COMMAND_FINISH_POLICIES.LINE_COUNT:
+          
+          // if we receive the finish symbol, we mark agent as done with output (finishes their move prematurely)
+          if (`${str}` === this.engineOptions.commandFinishSymbol) { 
+            agent.finishMove();
+          }
           // only log command if max isnt reached
-          if (agent.currentMoveCommands.length < this.engineOptions.commandLines.max - 1) {
+          else if (agent.currentMoveCommands.length < this.engineOptions.commandLines.max - 1) {
             agent.currentMoveCommands.push(str);
           }
           // else if on final command before reaching max, push final command and resolve
@@ -362,7 +371,6 @@ export class MatchEngine {
 
   
       let processingStage = false;
-      let results: Array<string> = [];
       match.matchProcess.stdout.on('readable', () => {
         let data: string[];
         while (data = match.matchProcess.stdout.read()) {
@@ -419,7 +427,7 @@ export class MatchEngine {
 
   /**
    * Attempts to resume a {@link Match} based on a custom {@link Design}
-   * @param match - the match to stop
+   * @param match - the match to resume
    */
   public async resumeCustom(match: Match) {
     // attempt to resume the match
@@ -502,7 +510,8 @@ export module MatchEngine {
     FINISH_SYMBOL = 'finish_symbol',
     
     /**
-     * Agent's finish their commands after they send {@link EngineOptions.commandLines.max} lines
+     * Agent's finish their commands by either sending a finish symmbol or after they send 
+     * {@link EngineOptions.commandLines.max} lines
      */
     LINE_COUNT = 'line_count',
     /**

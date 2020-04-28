@@ -9,7 +9,7 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 
 
-describe('Testing with Domination Game', () => {
+describe('Testing Match Running with Domination Game', () => {
   let dominationDesign, myDimension;
   before(() => {
     dominationDesign = new DominationDesign('Domination');
@@ -20,7 +20,7 @@ describe('Testing with Domination Game', () => {
       activateStation: false
     });
   });
-  it('Test Run A match of Domination', async () => {
+  it('Run a match', async () => {
     // expect.assertions(2);
 
     let jsSource = "./tests/js-kit/domination/random.js";
@@ -47,6 +47,27 @@ describe('Testing with Domination Game', () => {
     );
     expect(results.finalMap).to.be.eql(expectedResultMap)
     expect(results.winningScore).to.equal(expectedScore);
+  });
+  it('Run match with names', () => {
+    let jsSource = "./tests/js-kit/domination/random.js";
+    let botSources = [];
+
+    // sets up a deterministic game where all bots will end up expanding down
+    for (let i = 0; i < 4; i++) {
+      botSources.push({file: jsSource, name:'bot_' + i});
+    }
+    myDimension.runMatch(
+      botSources,
+      {
+        name: 'test-domination-match',
+        initializeConfig:{
+          
+          size: 4,
+          maxRounds: 5
+        },
+        loggingLevel: Dimension.Logger.LEVEL.WARN,
+      }
+    );
   });
   it('Validate contents of objects', async () => {
     expect(myDimension.design.name).to.equal('Domination');
