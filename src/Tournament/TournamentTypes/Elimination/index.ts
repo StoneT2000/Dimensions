@@ -51,7 +51,7 @@ export class EliminationTournament extends Tournament {
     if (tournamentConfigs.consoleDisplay) {
       this.configs.consoleDisplay = tournamentConfigs.consoleDisplay;
     }
-    this.configs = deepMerge(this.configs, tournamentConfigs);
+    this.configs = deepMerge(this.configs, tournamentConfigs, true);
     switch(tournamentConfigs.rankSystem) {
       case RANK_SYSTEM.WINS:
         // set default rank system configs
@@ -86,7 +86,7 @@ export class EliminationTournament extends Tournament {
    * @param configs - new tournament configs to update with
    */
   public setConfigs(configs: DeepPartial<Tournament.TournamentConfigs<EliminationConfigs>> = {}) {
-    this.configs = deepMerge(this.configs, configs);
+    this.configs = deepMerge(this.configs, configs, true);
   }
 
   /**
@@ -133,7 +133,7 @@ export class EliminationTournament extends Tournament {
    */
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<EliminationConfigs>>) {
     
-    this.configs = deepMerge(this.configs, configs);
+    this.configs = deepMerge(this.configs, configs, true);
     this.initialize();
 
     this.status = Tournament.TournamentStatus.RUNNING;

@@ -233,7 +233,7 @@ describe('Tournament Testing with RPS', () => {
         resultHandler: RockPaperScissorsDesign.trueskillResultHandler
       });
     });
-    it.only('should have changed configs correctly', () => {
+    it('should have changed configs correctly', () => {
       let r = RPSTrueskillLadderConfigTests;
       console.log(r.configs.agentsPerMatch)
       expect(r.configs.agentsPerMatch).to.be.eql([2]);

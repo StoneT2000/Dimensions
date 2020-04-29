@@ -69,8 +69,8 @@ export class RoundRobinTournament extends Tournament {
 
     // TODO we need to type check the result handler and see if it is correct. Throw a error if handler is of wrong format at runtime somehow
 
-    // handle rest
-    this.configs = deepMerge(this.configs, tournamentConfigs);
+    // handle rest. pass true flag to make sure arrays are clobbered and not merged
+    this.configs = deepMerge(this.configs, tournamentConfigs, true);
 
     // add all players
     files.forEach((file) => {
@@ -88,7 +88,7 @@ export class RoundRobinTournament extends Tournament {
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<Tournament.RoundRobin.Configs>>) {
     this.status = Tournament.TournamentStatus.RUNNING;
     this.log.info('Running Tournament with competitors: ', this.competitors.map((player) => player.tournamentID.name));
-    this.configs = deepMerge(this.configs, configs);
+    this.configs = deepMerge(this.configs, configs, true);
     this.initialize();
     this.schedule();
     
@@ -259,7 +259,7 @@ export class RoundRobinTournament extends Tournament {
    * @param configs - configs to use
    */
   public setConfigs(configs: DeepPartial<Tournament.TournamentConfigs<Tournament.RoundRobin.Configs>> = {}) {
-    this.configs = deepMerge(this.configs, configs);
+    this.configs = deepMerge(this.configs, configs, true);
   }
 
 

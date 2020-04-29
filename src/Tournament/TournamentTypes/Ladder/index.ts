@@ -16,7 +16,7 @@ import { ELOSystem, ELORating } from "../../ELO";
 export class LadderTournament extends Tournament {
   configs: Tournament.TournamentConfigs<LadderConfigs> = {
     defaultMatchConfigs: {},
-    type: Tournament.TOURNAMENT_TYPE.ELIMINATION,
+    type: Tournament.TOURNAMENT_TYPE.LADDER,
     rankSystem: null,
     rankSystemConfigs: null,
     tournamentConfigs: {
@@ -50,10 +50,9 @@ export class LadderTournament extends Tournament {
     id: number
   ) {
     super(design, files, id, tournamentConfigs);
-    if (tournamentConfigs.consoleDisplay) {
-      this.configs.consoleDisplay = tournamentConfigs.consoleDisplay;
-    }
-    switch(tournamentConfigs.rankSystem) {
+    this.configs = deepMerge(this.configs, tournamentConfigs, true);
+
+    switch(this.configs.rankSystem) {
       case RANK_SYSTEM.TRUESKILL:
         
         if (this.configs.rankSystemConfigs === null) {
@@ -82,9 +81,6 @@ export class LadderTournament extends Tournament {
         throw new FatalError('We currently do not support this rank system for ladder tournaments');
     }
 
-
-    this.configs = deepMerge(this.configs, tournamentConfigs);
-
     // add all players
     files.forEach((file) => {
       this.addplayer(file);
@@ -97,7 +93,7 @@ export class LadderTournament extends Tournament {
     return this.configs;
   }
   public setConfigs(configs: DeepPartial<Tournament.TournamentConfigs<LadderConfigs>> = {}) {
-    this.configs = deepMerge(this.configs, configs);
+    this.configs = deepMerge(this.configs, configs, true);
   }
   public getRankings(): Array<{player: Player, name: string, id: number, matchesPlayed: number, rankState: any}> {
     let rankings = [];
@@ -161,7 +157,7 @@ export class LadderTournament extends Tournament {
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<LadderConfigs>>) {
     
     this.log.info('Running Tournament with competitors: ', this.competitors.map((player) => player.tournamentID.name));
-    this.configs = deepMerge(this.configs, configs);
+    this.configs = deepMerge(this.configs, configs, true);
     this.initialize();
     this.schedule();
     this.status = Tournament.TournamentStatus.RUNNING;
