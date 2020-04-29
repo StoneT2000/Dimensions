@@ -132,10 +132,12 @@ export class EliminationTournament extends Tournament {
    * @param configs - tournament configurations to use
    */
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<EliminationConfigs>>) {
-    this.status = Tournament.TournamentStatus.RUNNING;
+    
     this.configs = deepMerge(this.configs, configs);
     this.initialize();
 
+    this.status = Tournament.TournamentStatus.RUNNING;
+    
     while (this.matchQueue.length) {
       // stop logic
       if (this.shouldStop) {

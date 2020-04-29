@@ -55,27 +55,25 @@ export class LadderTournament extends Tournament {
     }
     switch(tournamentConfigs.rankSystem) {
       case RANK_SYSTEM.TRUESKILL:
-        // set default rank system configs
-        let trueskillConfigs: RANK_SYSTEM.TRUESKILL.Configs = {
-          initialMu: 25,
-          initialSigma: 25/3
-        }
+        
         if (this.configs.rankSystemConfigs === null) {
-          this.configs.rankSystemConfigs = trueskillConfigs
+          // set default rank system configs
+          let trueskillConfigs: RANK_SYSTEM.TRUESKILL.Configs = {
+            initialMu: 25,
+            initialSigma: 25/3
+          }
+          this.configs.rankSystemConfigs = trueskillConfigs;
+          
         }
         break;
       case RANK_SYSTEM.ELO:
-        // check if other settings are valid
-        if (!(this.configs.agentsPerMatch.length === 1 && this.configs.agentsPerMatch[0] === 2)) {
-          throw new FatalError('We currently only support ranking matches with 2 agents under the ELO system');
-        }
-
-        // set default rank system configs
-        let eloConfigs: RANK_SYSTEM.ELO.Configs = {
-          startingScore: 1000,
-          kFactor: 32
-        }
+        
         if (this.configs.rankSystemConfigs === null) {
+          // set default rank system configs
+          let eloConfigs: RANK_SYSTEM.ELO.Configs = {
+            startingScore: 1000,
+            kFactor: 32
+          }
           this.configs.rankSystemConfigs = eloConfigs
         }
         this.elo = new ELOSystem(this.configs.rankSystemConfigs.kFactor, this.configs.rankSystemConfigs.startingScore)

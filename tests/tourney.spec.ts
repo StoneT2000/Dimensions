@@ -6,7 +6,8 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import 'mocha';
 import { Tournament, Logger, TournamentError } from '../src';
-import { fail } from 'assert';
+import { DeepPartial } from '../src/utils/DeepPartial';
+
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
@@ -31,7 +32,7 @@ const testTournamentStopResume = async (t: Tournament) => {
 
 }
 
-describe.only('Tournament Testing with RPS', () => {
+describe('Tournament Testing with RPS', () => {
   let RPSDesign, RPSTournament: Dimension.Tournament.RoundRobin.Tournament;
   let DefaultRPSTournament: Dimension.Tournament.RoundRobin.Tournament;
   let myDimension: Dimension.DimensionType;
@@ -57,18 +58,20 @@ describe.only('Tournament Testing with RPS', () => {
         observe: false,
         loggingLevel: Dimension.Logger.LEVEL.WARN
       });
+    });
+    beforeEach(() => {
+      
       DefaultRPSTournament = <Dimension.Tournament.RoundRobin.Tournament>myDimension.createTournament(players, {
         type: Dimension.Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
         rankSystem: Dimension.Tournament.RANK_SYSTEM.WINS,
         resultHandler: RockPaperScissorsDesign.winsResultHandler,
         agentsPerMatch: [2],
-        consoleDisplay: false
       });
       RPSTournament = <Dimension.Tournament.RoundRobin.Tournament>myDimension.createTournament(filesAndNames, {
         type: Dimension.Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
         rankSystem: Dimension.Tournament.RANK_SYSTEM.WINS,
         name: 'Rock Paper Scissors',
-        loggingLevel: Dimension.Logger.LEVEL.ERROR,
+        loggingLevel: Dimension.Logger.LEVEL.NONE,
         agentsPerMatch: [2],
         consoleDisplay: false,
         defaultMatchConfigs: {
@@ -86,31 +89,33 @@ describe.only('Tournament Testing with RPS', () => {
     });
     describe('Initializing a tournament', () => {
       it('should have correct default parameters', async () => {
-        expect(DefaultRPSTournament.name).to.equal('tournament_0');
+        expect(DefaultRPSTournament.name).to.equal(`tournament_${DefaultRPSTournament.id}`);
         expect(DefaultRPSTournament.competitors.length).to.equal(4);
-        expect(DefaultRPSTournament.competitors[0].tournamentID.name).to.equal('player-t0_0');
+        expect(DefaultRPSTournament.competitors[0].tournamentID.name).to.equal(`player-t${DefaultRPSTournament.id}_0`);
         // should be same as dimension
         expect(DefaultRPSTournament.log.level).to.equal(Logger.LEVEL.WARN);
+        expect(DefaultRPSTournament.configs.consoleDisplay).to.equal(true);
       });
       it('should have correct overriden parameters', async () => {
         expect(RPSTournament.name).to.equal('Rock Paper Scissors');
         expect(RPSTournament.competitors.length).to.equal(4);
         expect(RPSTournament.competitors[0].tournamentID.name).to.equal('smarter');
-        expect(RPSTournament.log.level).to.equal(Logger.LEVEL.ERROR);
+        expect(RPSTournament.log.level).to.equal(Logger.LEVEL.NONE);
       });
     })
     describe('Running Tournament', async () => {
       it('should run a tourney and output appropriate results', async () => {
         let res: Tournament.RoundRobin.State = <Tournament.RoundRobin.State>(await RPSTournament.run());
-        expect(res.playerStats.get('t1_0')).to.contain({wins: 6, ties: 0, losses: 0, matchesPlayed: 6});
-        expect(res.playerStats.get('t1_1')).to.contain({wins: 4, ties: 0, losses: 2, matchesPlayed: 6});
-        expect(res.playerStats.get('t1_2')).to.contain({wins: 0, ties: 0, losses: 6, matchesPlayed: 6});
-        expect(res.playerStats.get('t1_3')).to.contain({wins: 2, ties: 0, losses: 4, matchesPlayed: 6});
+        let id = RPSTournament.id;
+        expect(res.playerStats.get(`t${id}_0`)).to.contain({wins: 6, ties: 0, losses: 0, matchesPlayed: 6});
+        expect(res.playerStats.get(`t${id}_1`)).to.contain({wins: 4, ties: 0, losses: 2, matchesPlayed: 6});
+        expect(res.playerStats.get(`t${id}_2`)).to.contain({wins: 0, ties: 0, losses: 6, matchesPlayed: 6});
+        expect(res.playerStats.get(`t${id}_3`)).to.contain({wins: 2, ties: 0, losses: 4, matchesPlayed: 6});
         let ranks = RPSTournament.getRankings();
-        expect(ranks[0]).to.contain({name:'errorplayer', id:'t1_2', score: 0});
-        expect(ranks[1]).to.contain({name:'rock', id:'t1_3', score: 4});
-        expect(ranks[2]).to.contain({name:'paper', id:'t1_1', score: 8});
-        expect(ranks[3]).to.contain({name:'smarter', id:'t1_0', score: 12});
+        expect(ranks[0]).to.contain({name:'errorplayer', id:`t${id}_2`, score: 0});
+        expect(ranks[1]).to.contain({name:'rock', id:`t${id}_3`, score: 4});
+        expect(ranks[2]).to.contain({name:'paper', id:`t${id}_1`, score: 8});
+        expect(ranks[3]).to.contain({name:'smarter', id:`t${id}_0`, score: 12});
       });
       it('should run be able to stop and resume a tourney and handle errors', async () => {
         let t = <Dimension.Tournament.RoundRobin.Tournament>myDimension.createTournament(filesAndNames, {
@@ -176,8 +181,14 @@ describe.only('Tournament Testing with RPS', () => {
     });
   });
   describe('Trueskill Ladder', () => {
-    let RPSTrueskillLadder;
-    beforeEach(() => {
+    let RPSTrueskillLadder: Dimension.Tournament.Ladder.Tournament;
+    let RPSTrueskillLadderConfigTests: Dimension.Tournament.Ladder.Tournament;
+    let trueskillConfigs: DeepPartial<Tournament.RANK_SYSTEM.TRUESKILL.Configs> = {};
+    let defaultMatchConfigsTests = {
+      bestOf: 1000,
+      loggingLevel: Dimension.Logger.LEVEL.WARN
+    }
+    before(() => {
       RPSDesign = new RockPaperScissorsDesign('RPS!', {
         engineOptions: {
           timeout: {
@@ -191,6 +202,23 @@ describe.only('Tournament Testing with RPS', () => {
         observe: false,
         loggingLevel: Dimension.Logger.LEVEL.WARN
       });
+      
+      trueskillConfigs.initialMu = 100;
+      trueskillConfigs.initialSigma = 15;
+      RPSTrueskillLadderConfigTests = <Dimension.Tournament.Ladder.Tournament>myDimension.createTournament(filesAndNames, {
+        type: Dimension.Tournament.TOURNAMENT_TYPE.LADDER,
+        rankSystem: Dimension.Tournament.RANK_SYSTEM.TRUESKILL,
+        rankSystemConfigs: trueskillConfigs,
+        name: 'Rock Paper Scissors Trueskill ladder',
+        loggingLevel: Dimension.Logger.LEVEL.NONE,
+        agentsPerMatch: [2],
+        consoleDisplay: false,
+        defaultMatchConfigs: defaultMatchConfigsTests,
+        resultHandler: RockPaperScissorsDesign.trueskillResultHandler
+      });
+    });
+    beforeEach(() => {
+      
       RPSTrueskillLadder = <Dimension.Tournament.Ladder.Tournament>myDimension.createTournament(filesAndNames, {
         type: Dimension.Tournament.TOURNAMENT_TYPE.LADDER,
         rankSystem: Dimension.Tournament.RANK_SYSTEM.TRUESKILL,
@@ -203,7 +231,14 @@ describe.only('Tournament Testing with RPS', () => {
           loggingLevel: Dimension.Logger.LEVEL.WARN
         },
         resultHandler: RockPaperScissorsDesign.trueskillResultHandler
-      })
+      });
+    });
+    it.only('should have changed configs correctly', () => {
+      let r = RPSTrueskillLadderConfigTests;
+      console.log(r.configs.agentsPerMatch)
+      expect(r.configs.agentsPerMatch).to.be.eql([2]);
+      expect(r.configs.rankSystemConfigs).to.be.eql(trueskillConfigs);
+      expect(r.configs.defaultMatchConfigs).to.be.eql(defaultMatchConfigsTests);
     });
     it('should run normally', (done) => {
       RPSTrueskillLadder.run();
@@ -213,7 +248,6 @@ describe.only('Tournament Testing with RPS', () => {
       }, 100);
     });
     it('should be able to add/update competitors', () => {
-      console.log(RPSTournament.getConfigs());
       RPSTrueskillLadder.addplayer('./tests/js-kit/rps/smarter.js');
       expect(RPSTrueskillLadder.competitors.length).to.equal(5);
       expect(RPSTrueskillLadder.competitors[4].file).to.equal('./tests/js-kit/rps/smarter.js');
@@ -224,7 +258,6 @@ describe.only('Tournament Testing with RPS', () => {
       expect(RPSTrueskillLadder.competitors[1].file).to.equal('./test/js-kit/rps/rock.js');
       expect(RPSTrueskillLadder.competitors[1].tournamentID.name).to.equal('newname');
       expect(RPSTrueskillLadder.addplayer({file:'./test/js-kit/rps/rock.js', name:'newname'}, `t_100_22_not_real_id`)).to.be.rejectedWith(TournamentError);
-      
     });
     it('should be able to remove active matches', (done) => {
       RPSTrueskillLadder.run();
