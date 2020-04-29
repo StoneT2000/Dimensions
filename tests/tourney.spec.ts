@@ -34,7 +34,7 @@ const testTournamentStopResume = async (t: Tournament, done: Function) => {
 
 }
 
-describe.only('Tournament Testing with RPS', () => {
+describe('Tournament Testing with RPS', () => {
   let RPSDesign, RPSTournament: Dimension.Tournament.RoundRobin.Tournament;
   let DefaultRPSTournament: Dimension.Tournament.RoundRobin.Tournament;
   let myDimension: Dimension.DimensionType;
