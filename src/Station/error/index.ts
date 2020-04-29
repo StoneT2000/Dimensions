@@ -12,6 +12,7 @@ import { Logger } from '../../Logger';
  * Base error class.
  *
  * Supports HTTP status codes and a custom message.
+ * From the ACM Membership Portal Backend repository
  */
 export class HttpError extends Error {
   public status;
@@ -31,49 +32,49 @@ export class HttpError extends Error {
 }
 
 export class UserError extends HttpError {
-  constructor(message) {
+  constructor(message: string) {
     super(200, message || 'User Error');
   }
 }
 
 export class BadRequest extends HttpError {
-  constructor(message) {
+  constructor(message: string) {
     super(400, message || 'Bad Request');
   }
 }
 
 export class Unauthorized extends HttpError {
-  constructor(message) {
+  constructor(message: string) {
     super(401, message || 'Unauthorized');
   }
 }
 
 export class Forbidden extends HttpError {
-  constructor(message) {
+  constructor(message: string) {
     super(403, message || 'Permission denied');
   }
 }
 
 export class NotFound extends HttpError {
-  constructor(message) {
+  constructor(message: string) {
     super(404, message || 'Resource not found');
   }
 }
 
 export class Unprocessable extends HttpError {
-  constructor(message) {
+  constructor(message: string) {
     super(422, message || 'Unprocessable request');
   }
 }
 
 export class InternalServerError extends HttpError {
-  constructor(message) {
+  constructor(message: string) {
     super(500, message || 'Internal server error');
   }
 }
 
 export class NotImplemented extends HttpError {
-  constructor(message) {
+  constructor(message: string) {
     super(501, message || 'Not Implemented');
   }
 }
@@ -92,8 +93,8 @@ export const errorHandler = (log: Logger) => (err: HttpError, req: Request, res:
     log.error(err);
   }
   else {
-    // otherwise just error log the
-    log.error(`${err.status}: ${err.message}`);
+    // otherwise just log the error message at the warning level
+    log.warn(`${err.status}: ${err.message}`);
   }
   res.status(err.status).json({
     error: {
