@@ -40,8 +40,7 @@ export class LadderTournament extends Tournament {
 
   private elo: ELOSystem;
 
-  // queue of the results to process. Use of queue avoids asynchronous editing of player stats such as 
-  // sigma and mu for trueskill
+  // queue of the results to process
   resultProcessingQueue: Array<{result: any, mapAgentIDtoTournamentID: Map<Agent.ID, Tournament.ID>}> = [];
 
   constructor(
@@ -139,21 +138,35 @@ export class LadderTournament extends Tournament {
     return rankings;
   }
 
+  /**
+   * Stops the tournament if it was running.
+   */
   public async stop() {
     this.log.info('Stopping Tournament...');
     this.status = Tournament.TournamentStatus.STOPPED;
   }
+  
+  /**
+   * Resumes the tournament if it was stopped.
+   */
   public async resume() {
+    // TODO: Add error check for when tournament is already running
     this.log.info('Resuming Tournament...');
     this.status = Tournament.TournamentStatus.RUNNING;
     this.tourneyRunner();
   }
+
+  /**
+   * Begin the tournament. Resolves once the tournament is started
+   * @param configs - tournament configurations to use
+   */
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<LadderConfigs>>) {
-    this.status = Tournament.TournamentStatus.RUNNING;
+    
     this.log.info('Running Tournament with competitors: ', this.competitors.map((player) => player.tournamentID.name));
     this.configs = deepMerge(this.configs, configs);
     this.initialize();
     this.schedule();
+    this.status = Tournament.TournamentStatus.RUNNING;
     this.tourneyRunner();
   }
 
@@ -197,13 +210,14 @@ export class LadderTournament extends Tournament {
     }).catch((error) => {
       this.log.error(error);
       if (error instanceof MatchDestroyedError) {
-        // keep running even if a match is destroyed
+        // keep running even if a match is destroyed and the tournament is marked as to keep running
         if (this.status == Tournament.TournamentStatus.RUNNING) {
           this.tourneyRunner();
         }
       }
     });
   }
+  
   private initializeTrueskillPlayerStats(player: Player) {
     let trueskillConfigs: RANK_SYSTEM.TRUESKILL.Configs = this.configs.rankSystemConfigs;
     this.state.playerStats.set(player.tournamentID.id, {

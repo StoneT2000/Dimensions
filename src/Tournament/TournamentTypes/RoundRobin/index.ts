@@ -82,8 +82,7 @@ export class RoundRobinTournament extends Tournament {
   }
 
   /**
-   * Runs a round robin to completion using the configurations given and resolves with the {@link RoundRobin.State} at 
-   * the end.
+   * Runs a round robin to completion. Resolves with the {@link RoundRobin.State} once the tournament is finished
    * @param configs - the configs to use for this run
    */
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<Tournament.RoundRobin.Configs>>) {
