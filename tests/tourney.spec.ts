@@ -31,7 +31,7 @@ const testTournamentStopResume = async (t: Tournament) => {
 
 }
 
-describe('Tournament Testing with RPS', () => {
+describe.only('Tournament Testing with RPS', () => {
   let RPSDesign, RPSTournament: Dimension.Tournament.RoundRobin.Tournament;
   let DefaultRPSTournament: Dimension.Tournament.RoundRobin.Tournament;
   let myDimension: Dimension.DimensionType;
@@ -176,6 +176,7 @@ describe('Tournament Testing with RPS', () => {
     });
   });
   describe('Trueskill Ladder', () => {
+    let RPSTrueskillLadder;
     beforeEach(() => {
       RPSDesign = new RockPaperScissorsDesign('RPS!', {
         engineOptions: {
@@ -190,7 +191,7 @@ describe('Tournament Testing with RPS', () => {
         observe: false,
         loggingLevel: Dimension.Logger.LEVEL.WARN
       });
-      RPSTournament = <Dimension.Tournament.RoundRobin.Tournament>myDimension.createTournament(filesAndNames, {
+      RPSTrueskillLadder = <Dimension.Tournament.Ladder.Tournament>myDimension.createTournament(filesAndNames, {
         type: Dimension.Tournament.TOURNAMENT_TYPE.LADDER,
         rankSystem: Dimension.Tournament.RANK_SYSTEM.TRUESKILL,
         name: 'Rock Paper Scissors Trueskill ladder',
@@ -205,38 +206,38 @@ describe('Tournament Testing with RPS', () => {
       })
     });
     it('should run normally', (done) => {
-      RPSTournament.run();
+      RPSTrueskillLadder.run();
       setTimeout(() => {
-        RPSTournament.destroy();
+        RPSTrueskillLadder.destroy();
         done();
       }, 100);
     });
     it('should be able to add/update competitors', () => {
-
-      RPSTournament.addplayer('./tests/js-kit/rps/smarter.js');
-      expect(RPSTournament.competitors.length).to.equal(5);
-      expect(RPSTournament.competitors[4].file).to.equal('./tests/js-kit/rps/smarter.js');
-      expect(RPSTournament.competitors[4].tournamentID.id).to.equal(`t${RPSTournament.id}_4`);
-      RPSTournament.addplayer('./test/js-kit/rps/rock.js', `t${RPSTournament.id}_0`);
-      expect(RPSTournament.competitors[0].file).to.equal('./test/js-kit/rps/rock.js');
-      RPSTournament.addplayer({file:'./test/js-kit/rps/rock.js', name:'newname'}, `t${RPSTournament.id}_1`);
-      expect(RPSTournament.competitors[1].file).to.equal('./test/js-kit/rps/rock.js');
-      expect(RPSTournament.competitors[1].tournamentID.name).to.equal('newname');
-      expect(RPSTournament.addplayer({file:'./test/js-kit/rps/rock.js', name:'newname'}, `t_100_22_not_real_id`)).to.be.rejectedWith(TournamentError);
+      console.log(RPSTournament.getConfigs());
+      RPSTrueskillLadder.addplayer('./tests/js-kit/rps/smarter.js');
+      expect(RPSTrueskillLadder.competitors.length).to.equal(5);
+      expect(RPSTrueskillLadder.competitors[4].file).to.equal('./tests/js-kit/rps/smarter.js');
+      expect(RPSTrueskillLadder.competitors[4].tournamentID.id).to.equal(`t${RPSTrueskillLadder.id}_4`);
+      RPSTrueskillLadder.addplayer('./test/js-kit/rps/rock.js', `t${RPSTrueskillLadder.id}_0`);
+      expect(RPSTrueskillLadder.competitors[0].file).to.equal('./test/js-kit/rps/rock.js');
+      RPSTrueskillLadder.addplayer({file:'./test/js-kit/rps/rock.js', name:'newname'}, `t${RPSTrueskillLadder.id}_1`);
+      expect(RPSTrueskillLadder.competitors[1].file).to.equal('./test/js-kit/rps/rock.js');
+      expect(RPSTrueskillLadder.competitors[1].tournamentID.name).to.equal('newname');
+      expect(RPSTrueskillLadder.addplayer({file:'./test/js-kit/rps/rock.js', name:'newname'}, `t_100_22_not_real_id`)).to.be.rejectedWith(TournamentError);
       
     });
     it('should be able to remove active matches', (done) => {
-      RPSTournament.run();
+      RPSTrueskillLadder.run();
       setTimeout(() => {
         let removePromises = [];
-        expect(RPSTournament.matches.size).to.not.be.equal(0);
+        expect(RPSTrueskillLadder.matches.size).to.not.be.equal(0);
         // stop the tournament and remove all matches
-        RPSTournament.stop();
-        RPSTournament.matches.forEach((match) => {
-          removePromises.push(RPSTournament.removeMatch(match.id));
+        RPSTrueskillLadder.stop();
+        RPSTrueskillLadder.matches.forEach((match) => {
+          removePromises.push(RPSTrueskillLadder.removeMatch(match.id));
         });
         Promise.all(removePromises).then(() => {
-          expect(RPSTournament.matches.size).to.be.equal(0);
+          expect(RPSTrueskillLadder.matches.size).to.be.equal(0);
           done();
         });
       }, 200);

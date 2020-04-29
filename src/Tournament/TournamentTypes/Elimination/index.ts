@@ -293,6 +293,7 @@ export class EliminationTournament extends Tournament {
     this.state.currentRound = round;
     // generate rounds to play
     this.generateFirstRounds();
+    this.status = Tournament.TournamentStatus.INITIALIZED;
   }
 
   private generateFirstRounds() {
@@ -361,8 +362,9 @@ export class EliminationTournament extends Tournament {
   }
 
   internalAddPlayer(player: Player) {
+    if (this.status === Tournament.TournamentStatus.INITIALIZED || this.status === Tournament.TournamentStatus.RUNNING)
     throw new 
-      FatalError('You are not allowed to add a player during the middle or after creation of elimination tournaments');
+      FatalError('You are not allowed to add a player during the middle or after initialization of elimination tournaments');
   }
   updatePlayer(player: Player, oldname: string, oldfile: string) {
     throw new FatalError('You are not allowed to update a player during elimination tournaments');
