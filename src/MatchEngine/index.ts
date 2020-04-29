@@ -31,6 +31,15 @@ export class MatchEngine {
 
   /** Logger */
   private log = new Logger();
+
+  /** 
+   * A coordination signal to ensure that all processes are indeed killed due to asynchronous initialization of agents
+   * There is a race condition when a tournament/match is being destroyed and while every match is being destroyed, some
+   * matches are in the initialization stage where they call the engine's initialize function. As a result, when we 
+   * send a match destroy signal, we spawn some processes and haven't spawned some others for the agents. As a result, 
+   * all processes eventually get spawned but not all are cleaned up and killed.
+   */
+  private killOffSignal = false;
   
   // approx extra buffer time given to agents due to engine processing for timeout mechanism
   static timeoutBuffer: number = 25; 
@@ -160,6 +169,10 @@ export class MatchEngine {
 
     // store process
     agent.process = p;
+    // this is for handling a race condition explained in the comments of this.killOffSignal
+    if (this.killOffSignal) {
+      this.kill(agent);
+    }
   }
 
   /**
@@ -246,9 +259,13 @@ export class MatchEngine {
    * @param match - the match to kill all agents in and clean up
    */
   public async killAndClean(match: Match) {
+    // set to true to ensure no more processes are being spawned.
+    this.killOffSignal = true; 
     match.agents.forEach((agent) => {
-      agent.process.kill('SIGKILL')
-      agent.status = Agent.Status.KILLED;
+      // kill the process if it is not null
+      if (agent.process) {
+        this.kill(agent);
+      }
     });
   }
 
@@ -313,7 +330,7 @@ export class MatchEngine {
   public send(match: Match, message: string, agentID: Agent.ID): Promise<boolean> {
     return new Promise((resolve, reject) => {
       let agent = match.idToAgentsMap.get(agentID);
-      if (!agent.process.stdin.destroyed) {
+      if (!agent.process.stdin.destroyed && !agent.isTerminated()) {
         agent.process.stdin.write(`${message}\n`, (error: Error) => {
           if (error) reject(error);
           resolve(true);

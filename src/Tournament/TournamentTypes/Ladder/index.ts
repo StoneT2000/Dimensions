@@ -2,7 +2,7 @@ import { Tournament, Player } from "../../";
 import { DeepPartial } from "../../../utils/DeepPartial";
 import { Design } from '../../../Design';
 import { deepMerge } from "../../../utils/DeepMerge";
-import { FatalError, MatchDestroyedError } from "../../../DimensionError";
+import { FatalError, MatchDestroyedError, TournamentError } from "../../../DimensionError";
 import { Agent } from "../../../Agent";
 import { Rating, rate, quality } from "ts-trueskill";
 import LadderState = Tournament.Ladder.State;
@@ -136,6 +136,9 @@ export class LadderTournament extends Tournament {
    * Stops the tournament if it was running.
    */
   public async stop() {
+    if (this.status !== Tournament.TournamentStatus.RUNNING) {
+      throw new TournamentError(`Can't stop a tournament that isn't running`);
+    }
     this.log.info('Stopping Tournament...');
     this.status = Tournament.TournamentStatus.STOPPED;
   }
@@ -144,7 +147,9 @@ export class LadderTournament extends Tournament {
    * Resumes the tournament if it was stopped.
    */
   public async resume() {
-    // TODO: Add error check for when tournament is already running
+    if (this.status !== Tournament.TournamentStatus.STOPPED) {
+      throw new TournamentError(`Can't resume a tournament that isn't stopped`);
+    }
     this.log.info('Resuming Tournament...');
     this.status = Tournament.TournamentStatus.RUNNING;
     this.tourneyRunner();

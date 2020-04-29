@@ -239,7 +239,7 @@ export abstract class Tournament {
 
   public destroy(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.preInternalDestroy().then(() => {
+      this.preInternalDestroy().then(async () => {
         // stop if running
         if (this.status === Tournament.TournamentStatus.RUNNING) this.stop();
         let destroyPromises = [];
@@ -247,9 +247,8 @@ export abstract class Tournament {
         this.matches.forEach((match) => {
           destroyPromises.push(match.destroy());
         });
-        return Promise.all(destroyPromises).then(() => {
-          return this.postInternalDestroy();
-        });
+        await Promise.all(destroyPromises);
+        return this.postInternalDestroy();
       }).catch((error) => {
         reject(error);
       });

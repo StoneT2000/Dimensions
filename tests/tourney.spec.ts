@@ -11,28 +11,30 @@ import { DeepPartial } from '../src/utils/DeepPartial';
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
-const testTournamentStopResume = async (t: Tournament) => {
+const testTournamentStopResume = async (t: Tournament, done: Function) => {
   let res = t.run();
-  expect(res).to.eventually.not.be.equal(undefined);
-  const testResume = async () => {
-    expect(t.stop()).to.eventually.be.rejectedWith(TournamentError);
-    expect(t.status).to.equal(Dimension.Tournament.TournamentStatus.STOPPED);
-    await t.resume();
-    expect(t.status).to.equal(Dimension.Tournament.TournamentStatus.RUNNING);
-  }
+  
   setTimeout(() => {
     expect(t.resume()).to.eventually.be.rejectedWith(TournamentError);
     expect(t.status).to.equal(Dimension.Tournament.TournamentStatus.RUNNING);
     t.stop();
     
-  }, 400);
+  }, 100);
+  const testResume = async () => {
+    expect(t.stop()).to.eventually.be.rejectedWith(TournamentError);
+    expect(t.status).to.equal(Dimension.Tournament.TournamentStatus.STOPPED);
+    await t.resume();
+    expect(t.status).to.equal(Dimension.Tournament.TournamentStatus.RUNNING);
+    t.destroy();
+    done();
+  }
   setTimeout(() => {
     testResume();
   }, 1500);
 
 }
 
-describe('Tournament Testing with RPS', () => {
+describe.only('Tournament Testing with RPS', () => {
   let RPSDesign, RPSTournament: Dimension.Tournament.RoundRobin.Tournament;
   let DefaultRPSTournament: Dimension.Tournament.RoundRobin.Tournament;
   let myDimension: Dimension.DimensionType;
@@ -117,7 +119,7 @@ describe('Tournament Testing with RPS', () => {
         expect(ranks[2]).to.contain({name:'paper', id:`t${id}_1`, score: 8});
         expect(ranks[3]).to.contain({name:'smarter', id:`t${id}_0`, score: 12});
       });
-      it('should run be able to stop and resume a tourney and handle errors', async () => {
+      it('should run be able to stop and resume a tourney and handle errors', (done) => {
         let t = <Dimension.Tournament.RoundRobin.Tournament>myDimension.createTournament(filesAndNames, {
           type: Dimension.Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
           rankSystem: Dimension.Tournament.RANK_SYSTEM.WINS,
@@ -131,7 +133,7 @@ describe('Tournament Testing with RPS', () => {
           },
           resultHandler: RockPaperScissorsDesign.winsResultHandler
         });
-        testTournamentStopResume(t);
+        testTournamentStopResume(t, done);
 
       });
     });
@@ -175,8 +177,8 @@ describe('Tournament Testing with RPS', () => {
         let res = <Tournament.Elimination.State>(await EliminationTourney.run());
         expect(res.playerStats.get('t0_0').rank).to.equal(1);
       });
-      it('should stop and resume', async () => {
-        testTournamentStopResume(EliminationTourney);
+      it('should stop and resume', (done) => {
+        testTournamentStopResume(EliminationTourney, done);
       });
     });
   });
@@ -235,7 +237,6 @@ describe('Tournament Testing with RPS', () => {
     });
     it('should have changed configs correctly', () => {
       let r = RPSTrueskillLadderConfigTests;
-      console.log(r.configs.agentsPerMatch)
       expect(r.configs.agentsPerMatch).to.be.eql([2]);
       expect(r.configs.rankSystemConfigs).to.be.eql(trueskillConfigs);
       expect(r.configs.defaultMatchConfigs).to.be.eql(defaultMatchConfigsTests);
@@ -245,7 +246,7 @@ describe('Tournament Testing with RPS', () => {
       setTimeout(() => {
         RPSTrueskillLadder.destroy();
         done();
-      }, 100);
+      }, 2000);
     });
     it('should be able to add/update competitors', () => {
       RPSTrueskillLadder.addplayer('./tests/js-kit/rps/smarter.js');
@@ -273,7 +274,10 @@ describe('Tournament Testing with RPS', () => {
           expect(RPSTrueskillLadder.matches.size).to.be.equal(0);
           done();
         });
-      }, 200);
+      }, 2000);
+    });
+    it('should stop and resume normally', (done) => {
+      testTournamentStopResume(RPSTrueskillLadder, done);
     });
   });
   
