@@ -247,12 +247,13 @@ export class EliminationTournament extends Tournament {
         // set up the seeding array and fill it up with null to fill up all empty spots
         let seeding = this.configs.tournamentConfigs.seeding;
         if (seeding == null) seeding = [];
+        if (seeding.length > this.competitors.length) {
+          throw new FatalError(`Seeds provided cannot be greater than the number of competitors`);
+        }
         for (let i = 0; i < this.competitors.length - seeding.length; i++) {
           seeding.push(null);
         }
-        if (seeding.length != this.competitors.length) {
-          throw new FatalError(`Seeds provided mismatch the number of competitors`);
-        }
+        
 
         // find the leftover seeds that are not used
         let leftOverSeeds: Set<number> = new Set();
