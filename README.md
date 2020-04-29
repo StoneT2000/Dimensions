@@ -6,7 +6,7 @@ All you need to do?
 
 Code a competition design and code a bot
 
-Dimensions handles the rest, including match running, tournament running, TrueSkill rankings, and a local API and website through which you can watch this all happen at once. Dimensions allows you to design virtually any kind of AI competition you want in any language with its vast array of configuration options and choices.
+Dimensions handles the rest, including match running, tournament running, TrueSkill rankings, and a local API and website through which you can watch this all happen at once. Dimensions allows you to **design virtually any kind of AI competition** you want in **any language** with its vast array of flexible configuration options and choices.
 
 Moreover, Dimensions utilizes an I/O based model to run competitions and pit AI agents against each other, allowing it to be generic and language agnostic so anyone from any background can compete in your competition design.
 
@@ -38,8 +38,9 @@ Also checkout the blog post introducing the motivation for Dimensions and though
 
 ## Features
 
-- Easy to build an AI competition that is language agnostic, allowing any kind of bot in any language to compete in your competition
+- Easy to build an AI competition that is language agnostic, allowing any kind of bot in any language to compete in your competitio
 - Can run many kinds of AI competitions and run different kinds of competition formats like round robin or using Trueskill in a ladder tournament.
+- Can wrap your own AI competition built without the dimensions framework to make use of its competition running features such as Trueskill leaderboards
 - Comes with an API served locally that gives access to data on ongoing matches and tournaments and allows for direct control of matches and tournaments through the API. See this page for details on this API: https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API
   - Check out https://github.com/StoneT2000/Dimensions-web if you want a website to view the API from.
 
