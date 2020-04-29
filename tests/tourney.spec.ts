@@ -225,6 +225,22 @@ describe('Tournament Testing with RPS', () => {
       expect(RPSTournament.addplayer({file:'./test/js-kit/rps/rock.js', name:'newname'}, `t_100_22_not_real_id`)).to.be.rejectedWith(TournamentError);
       
     });
+    it('should be able to remove active matches', (done) => {
+      RPSTournament.run();
+      setTimeout(() => {
+        let removePromises = [];
+        expect(RPSTournament.matches.size).to.not.be.equal(0);
+        // stop the tournament and remove all matches
+        RPSTournament.stop();
+        RPSTournament.matches.forEach((match) => {
+          removePromises.push(RPSTournament.removeMatch(match.id));
+        });
+        Promise.all(removePromises).then(() => {
+          expect(RPSTournament.matches.size).to.be.equal(0);
+          done();
+        });
+      }, 200);
+    });
   });
   
 
