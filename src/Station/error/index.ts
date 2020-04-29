@@ -32,49 +32,49 @@ export class HttpError extends Error {
 }
 
 export class UserError extends HttpError {
-  constructor(message: string) {
+  constructor(message: string | Error) {
     super(200, message || 'User Error');
   }
 }
 
 export class BadRequest extends HttpError {
-  constructor(message: string) {
+  constructor(message: string | Error) {
     super(400, message || 'Bad Request');
   }
 }
 
 export class Unauthorized extends HttpError {
-  constructor(message: string) {
+  constructor(message: string | Error) {
     super(401, message || 'Unauthorized');
   }
 }
 
 export class Forbidden extends HttpError {
-  constructor(message: string) {
+  constructor(message: string | Error) {
     super(403, message || 'Permission denied');
   }
 }
 
 export class NotFound extends HttpError {
-  constructor(message: string) {
+  constructor(message: string | Error) {
     super(404, message || 'Resource not found');
   }
 }
 
 export class Unprocessable extends HttpError {
-  constructor(message: string) {
+  constructor(message: string | Error) {
     super(422, message || 'Unprocessable request');
   }
 }
 
 export class InternalServerError extends HttpError {
-  constructor(message: string) {
+  constructor(message: string | Error) {
     super(500, message || 'Internal server error');
   }
 }
 
 export class NotImplemented extends HttpError {
-  constructor(message: string) {
+  constructor(message: string | Error) {
     super(501, message || 'Not Implemented');
   }
 }

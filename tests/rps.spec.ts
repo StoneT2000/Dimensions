@@ -3,7 +3,7 @@ let MatchStatus = Dimension.Match.Status;
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import 'mocha';
-import { Logger, MatchWarn, Design } from '../src';
+import { Logger, MatchWarn, Design, Match } from '../src';
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
@@ -115,11 +115,11 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
       )
       expect(results.scores).to.eql({'0': 3, '1': 1});
     });
-    it('should support java (run 5 times)', async () => {
+    it('should support java (run 3 times)', async () => {
       // TODO: look into why sometimes the java bot doesn't respond with any commands
       // It doesn't time out but does send the D_FINISH signal, so not sure why we don't receive the rock signal 
       // sometimes
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 3; i++) {
         let results = await myDimension.runMatch(
           ['./tests/js-kit/rps/smarter.js', './tests/java-kit/rps/Rock.java'],
           {
@@ -181,17 +181,6 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
       )
       expect(results.scores).to.eql({'0': 3, '1': 1});
     });
-  }).timeout(5000);
-
-  it('should log match errors', async () => {
-    await myDimension.runMatch(
-      ['./tests/js-kit/rps/errorBot.js', './tests/js-kit/rps/paper.js'],
-      {
-        name: 'log match errors (4)',
-        bestOf: 5,
-        loggingLevel: Dimension.Logger.LEVEL.WARN
-      }
-    );
   });
 
   describe('Test match stopping and running on dimensions based design', () => {
@@ -201,7 +190,7 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
         {
           name: 'stop and resume (5)',
           bestOf: 1000,
-          loggingLevel: Dimension.Logger.LEVEL.WARN,
+          loggingLevel: Dimension.Logger.LEVEL.NONE,
           engineOptions: {
             timeout: {
               max: 1000
@@ -210,15 +199,12 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
         }
       )
       let results = match.run();
-      async function startStop(match, count = 0, originalResolve = undefined) {
+
+      // should stop and resume after a delay
+      function startStop(match: Match, count = 0, originalResolve = undefined) {
         return new Promise((resolve, reject) => {
           setTimeout(async () => {
-            if (match.stop()) {
-              
-            } else {
-
-            }
-            
+            await match.stop();
             setTimeout(async () => {
               expect(match.matchStatus).to.equal(MatchStatus.STOPPED);
               if (match.resume()) {
@@ -227,8 +213,8 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
               else {
                 reject();
               }
-            }, 500)
-          }, 100)
+            }, 500);
+          }, 100);
         });
       }
       
@@ -292,7 +278,7 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
       expect(res.terminated[1]).to.equal('terminated');
       expect(res.winner).to.equal('agent_0');
     });
-    it('should handle all timeouts, give a tie', async () => {
+    it('should handle when all agents timeout, give a tie', async () => {
       let res = await myDimension.runMatch(
         ['./tests/js-kit/rps/delaybotrock.js', './tests/js-kit/rps/delaybotrock.js'],
         {
@@ -322,6 +308,7 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
               timeoutCallback: (agent, match, engineOptions) => {
                 match.kill(agent.id);
                 match.log.error(`custom message! - agent ${agent.id} - '${agent.name}' timed out after ${engineOptions.timeout.max} ms`);
+                expect(match.matchEngine.getEngineOptions()).to.be.equal(engineOptions);
               }
             }
           }
@@ -332,7 +319,7 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
     });
     it('should be allowed to override the timeout and turn it off', async () => {
       let res = await myDimension.runMatch(
-        ['./tests/js-kit/rps/delaybotpaper.js', './tests/js-kit/rps/delaybotrock.js'],
+        ['./tests/js-kit/rps/delaybotpaper.js', './tests/js-kit/rps/rock.js'],
         {
           bestOf: 2,
           loggingLevel: Dimension.Logger.LEVEL.ERROR,
@@ -362,9 +349,6 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
       );
       expect(match.run()).to.eventually.be.rejectedWith('Match was destroyed');
       await myDimension.removeMatch(match.id);
-
-    });
-    it('should remove active and queued matches from tournament', () => {
 
     });
   })
