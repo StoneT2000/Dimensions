@@ -27,6 +27,14 @@ export class Logger {
   bar(type: string = '') {
      return `\n-=-=-=-=-=-=-=-=-=-=-=-| ${type} ${this.getIdentifier()} |-=-=-=-=-=-=-=-=-=-=-=-\n`;
   }
+
+  // important are messages that cannot be removed, they will always display
+  importantBar() {
+    console.log(this.bar(colors.red('[IMPORTANT]')));
+  }
+  important(...message: any[]) {
+    console.log(`${colors.red('[IMPORTANT]')} (${this.identifier}) -`, ...message);
+  }
   systemIObar() {
     if (this.level >= Logger.LEVEL.SYSTEM_IO) console.log(this.bar(colors.red('[SYSTEM I/O]')));
   }
