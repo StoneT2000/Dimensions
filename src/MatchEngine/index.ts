@@ -31,6 +31,15 @@ export class MatchEngine {
 
   /** Logger */
   private log = new Logger();
+
+  /** 
+   * A coordination signal to ensure that all processes are indeed killed due to asynchronous initialization of agents
+   * There is a race condition when a tournament/match is being destroyed and while every match is being destroyed, some
+   * matches are in the initialization stage where they call the engine's initialize function. As a result, when we 
+   * send a match destroy signal, we spawn some processes and haven't spawned some others for the agents. As a result, 
+   * all processes eventually get spawned but not all are cleaned up and killed.
+   */
+  private killOffSignal = false;
   
   // approx extra buffer time given to agents due to engine processing for timeout mechanism
   static timeoutBuffer: number = 25; 
@@ -108,7 +117,9 @@ export class MatchEngine {
       while (data = p.stdout.read()) {
         // split chunks into line by line and handle each line of commands
         let strs = `${data}`.split('\n');
+
         // first store data into a buffer and process later if no newline character is detected
+        // if final char in the strs array is not '', then \n is not at the end
         if (this.engineOptions.commandLines.waitForNewline && strs.length >= 1 && strs[strs.length - 1] != '') {
           // using split with \n should make any existing final \n character to be set as '' in strs array
           
@@ -120,7 +131,8 @@ export class MatchEngine {
             agent._buffer = [];
           }
           for (let i = 0; i < strs.length - 1; i++) {
-            if (agent.getAllowedToSendCommands()) {
+            if (strs[i] === '') continue;
+            if (agent.isAllowedToSendCommands()) {
               this.handleCommmand(agent, strs[i]);
             }
           }
@@ -135,7 +147,8 @@ export class MatchEngine {
           }
           // this.log.systemIO(`${agent.name} - stdout: ${strs}`);
           for (let i = 0; i < strs.length; i++) {
-            if (agent.getAllowedToSendCommands()) {
+            if (strs[i] === '') continue;
+            if (agent.isAllowedToSendCommands()) {
               this.handleCommmand(agent, strs[i]);
             }
           }
@@ -156,6 +169,10 @@ export class MatchEngine {
 
     // store process
     agent.process = p;
+    // this is for handling a race condition explained in the comments of this.killOffSignal
+    if (this.killOffSignal) {
+      this.kill(agent);
+    }
   }
 
   /**
@@ -182,8 +199,13 @@ export class MatchEngine {
           }
           break;
         case MatchEngine.COMMAND_FINISH_POLICIES.LINE_COUNT:
+          
+          // if we receive the finish symbol, we mark agent as done with output (finishes their move prematurely)
+          if (`${str}` === this.engineOptions.commandFinishSymbol) { 
+            agent.finishMove();
+          }
           // only log command if max isnt reached
-          if (agent.currentMoveCommands.length < this.engineOptions.commandLines.max - 1) {
+          else if (agent.currentMoveCommands.length < this.engineOptions.commandLines.max - 1) {
             agent.currentMoveCommands.push(str);
           }
           // else if on final command before reaching max, push final command and resolve
@@ -237,9 +259,13 @@ export class MatchEngine {
    * @param match - the match to kill all agents in and clean up
    */
   public async killAndClean(match: Match) {
+    // set to true to ensure no more processes are being spawned.
+    this.killOffSignal = true; 
     match.agents.forEach((agent) => {
-      agent.process.kill('SIGKILL')
-      agent.status = Agent.Status.KILLED;
+      // kill the process if it is not null
+      if (agent.process) {
+        this.kill(agent);
+      }
     });
   }
 
@@ -304,7 +330,7 @@ export class MatchEngine {
   public send(match: Match, message: string, agentID: Agent.ID): Promise<boolean> {
     return new Promise((resolve, reject) => {
       let agent = match.idToAgentsMap.get(agentID);
-      if (!agent.process.stdin.destroyed) {
+      if (!agent.process.stdin.destroyed && !agent.isTerminated()) {
         agent.process.stdin.write(`${message}\n`, (error: Error) => {
           if (error) reject(error);
           resolve(true);
@@ -362,7 +388,6 @@ export class MatchEngine {
 
   
       let processingStage = false;
-      let results: Array<string> = [];
       match.matchProcess.stdout.on('readable', () => {
         let data: string[];
         while (data = match.matchProcess.stdout.read()) {
@@ -419,7 +444,7 @@ export class MatchEngine {
 
   /**
    * Attempts to resume a {@link Match} based on a custom {@link Design}
-   * @param match - the match to stop
+   * @param match - the match to resume
    */
   public async resumeCustom(match: Match) {
     // attempt to resume the match
@@ -502,7 +527,8 @@ export module MatchEngine {
     FINISH_SYMBOL = 'finish_symbol',
     
     /**
-     * Agent's finish their commands after they send {@link EngineOptions.commandLines.max} lines
+     * Agent's finish their commands by either sending a finish symmbol or after they send 
+     * {@link EngineOptions.commandLines.max} lines
      */
     LINE_COUNT = 'line_count',
     /**

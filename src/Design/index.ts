@@ -55,7 +55,7 @@ export abstract class Design {
       conclude_command: 'D_MATCH_FINISHED',
       arguments: [],
       timeout: 600000, // 10 minutes
-      resultHandler: () => {}
+      resultHandler: null
     }
   }
 
@@ -88,7 +88,7 @@ export abstract class Design {
    * Set log level of the design
    * @param level - level to set design logger to
    */
-  _setLogLevel(level: Logger.LEVEL) {
+  setLogLevel(level: Logger.LEVEL) {
     this.log.level = level;
   }
   
@@ -180,6 +180,7 @@ class CustomDesign extends Design {
   /**
    * Empty function, not used
    */
+  /* istanbul ignore next */
   async update(): Promise<Match.Status> {
     return;
   }

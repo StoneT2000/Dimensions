@@ -14,7 +14,7 @@ import { LadderTournament } from '../Tournament/TournamentTypes/Ladder';
 /**
  * Dimension configurations
  */
-export type DimensionConfigs = {
+export interface DimensionConfigs {
   /** Name of the dimension */
   name: string
   /** Whether or not to activate the Station */
@@ -94,14 +94,14 @@ export class Dimension {
 
     // open up a new station for the current node process if it hasn't been opened yet and there is a dimension that 
     // is asking for a station to be initiated
-    if ((this.configs.activateStation === true && this.configs.observe === true) && Dimension.Station == null) {
-      Dimension.Station = new Station('Dimension Station', [], this.configs.loggingLevel);
+    if (this.configs.activateStation === true && Dimension.Station == null) {
+      Dimension.Station = new Station('Station', [], this.configs.loggingLevel);
     }
     this.log.info('Dimension Configs', this.configs);
     
     // default match log level and design log level is the same as passed into the dimension
     this.configs.defaultMatchConfigs.loggingLevel = this.configs.loggingLevel;
-    this.design._setLogLevel(this.configs.loggingLevel);
+    this.design.setLogLevel(this.configs.loggingLevel);
 
     // set name
     if (this.configs.name) {

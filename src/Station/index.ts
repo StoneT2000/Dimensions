@@ -71,10 +71,16 @@ export class Station {
 
     // store all observed dimensions
     if (observedDimensions instanceof Array) {
-      this.app.set('dimensions', observedDimensions);
+      let dimensionsMap = new Map();
+      observedDimensions.forEach((dim) => {
+        dimensionsMap.set(dim.id, dim);
+      });
+      this.app.set('dimensions', dimensionsMap);
     }
     else {
-      this.app.set('dimensions', [observedDimensions]);
+      let m = new Map();
+      m.set(observedDimensions.id, observedDimensions);
+      this.app.set('dimensions', m);
     }
 
     // store in each request a data object
@@ -93,7 +99,7 @@ export class Station {
     this.app.use('/api/dimensions', dimensionsAPI);
 
     // Set up error handler
-    this.app.use(error.errorHandler);
+    this.app.use(error.errorHandler(this.log));
 
     this.log.system(`All middleware setup`);
 
@@ -143,6 +149,10 @@ export class Station {
     })
   }
 
+  public setLogLevel(level: Logger.LEVEL) {
+    this.log.level = level;
+  }
+
   /**
    * Restart Station server / API
    * Resolves with the port number used
@@ -171,6 +181,8 @@ export class Station {
   }
 
   public observe(dimension: Dimension) {
-    this.app.set('dimensions', [...this.app.get('dimensions'), dimension]);
+    let dimMap = this.app.get('dimensions');
+    dimMap.set(dimension.id, dimension);
+    this.app.set('dimensions', dimMap);
   }
 }

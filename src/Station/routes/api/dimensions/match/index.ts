@@ -58,7 +58,7 @@ router.get('/:matchID/results', (req, res) => {
  * Gets whatever is stored in the match state
  */
 router.get('/:matchID/state', (req, res) => {
-  res.json({error: null, results: req.data.match.state || null});
+  res.json({error: null, state: req.data.match.state || null});
 });
 
 /**
@@ -79,7 +79,8 @@ router.post('/:matchID/run', async (req: Request, res: Response, next: NextFunct
       req.data.match.resume();
     }
     else {
-      req.data.match.run();
+      // run and do nothing with the error
+      req.data.match.run().catch(() => {});
     }
     res.json({error: null, msg:'Running Match'})
   }
@@ -99,16 +100,18 @@ router.post('/:matchID/stop', async (req: Request, res: Response, next: NextFunc
   if (req.data.match.matchStatus === Match.Status.FINISHED) {
     return next(new error.BadRequest('Match is already finished'));
   }
+  if (req.data.match.matchStatus === Match.Status.READY) {
+    return next(new error.BadRequest('Match hasn\'t started and can\'t be stopped as a result'));
+  }
   if (req.data.match.matchStatus === Match.Status.UNINITIALIZED) {
     return next(new error.BadRequest('Can\'t stop an uninitialized match'));
   }
   
-  if (req.data.match.stop()) {
+  return req.data.match.stop().then(() => {
     res.json({error: null, msg:'Stopped Match'})
-  }
-  else {
+  }).catch(() => {
     return next(new error.InternalServerError('Couldn\'t stop the match'));
-  }
+  });
 });
 
 router.use('/:matchID/agent', agentRouter);

@@ -3,6 +3,7 @@ const MATCH_ERROR = 'MatchError';
 const MATCH_WARN = 'MatchWarn';
 const DIMENSION_ERROR = 'DimensionError';
 const FATAL_ERROR = 'FatalError';
+const TOURNAMENT_ERROR = 'TournamentError'
 /**
  * @class MatchError
  * Standard Match Errors that do not stop a game, but signal to user of some kind of warning or error that
@@ -43,6 +44,20 @@ export class MatchWarn extends Error {
     super(m);
     this.name = MATCH_WARN
     Object.setPrototypeOf(this, MatchWarn.prototype);
+  }
+}
+
+
+/**
+ * @class MatchWarn
+ * Standard Tournament errors that won't halt a tournament, but indicate something was uncompleted as a result of an 
+ * error
+ */
+export class TournamentError extends Error {
+  constructor(m: string) {
+    super(m);
+    this.name = TOURNAMENT_ERROR
+    Object.setPrototypeOf(this, TournamentError.prototype);
   }
 }
 

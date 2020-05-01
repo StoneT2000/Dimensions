@@ -172,8 +172,6 @@ router.post('/:tournamentID/upload/', async (req: Request, res: Response, next: 
     if (!req.data.tournament.validateTournamentID(id)) {
       return next(new error.BadRequest('Invalid ID'));
     }
-
-    
     
     let botdirtemp = BOT_DIR_TEMP + '/' + id;
     

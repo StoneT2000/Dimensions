@@ -1,6 +1,6 @@
 import { Match } from '../Match';
 import { Design } from '../Design';
-import { FatalError } from '../DimensionError';
+import { FatalError, MatchError, TournamentError } from '../DimensionError';
 import { RoundRobinTournament } from './TournamentTypes/RoundRobin';
 import { EliminationTournament } from './TournamentTypes/Elimination';
 import { DeepPartial } from '../utils/DeepPartial';
@@ -69,12 +69,15 @@ export abstract class Tournament {
 
   /**
    * Add a player to the tournament. Can specify an ID to use. If that ID exists already, this will update the file for 
-   * that player instead 
+   * that player instead
    * @param file - The file to the bot or an object with the file and a name for the player specified
    */
-  public addplayer(file: string | {file: string, name: string}, existingID?: string) {
+  public async addplayer(file: string | {file: string, name: string}, existingID?: string) {
     let id: string;
     if (existingID) {
+      if(!this.validateTournamentID(existingID)) {
+        throw new TournamentError(`existing ID provided is an invalid tournament ID for this tournament`);
+      }
       let content = existingID.split('_');
       let existingPlayerID = parseInt(content[1]);
       if (existingPlayerID < this.competitors.length) {
@@ -134,14 +137,17 @@ export abstract class Tournament {
       return false;
     }
     let playerID = content[1];
-    if (isNaN(parseInt(playerID))) {
+    // may not be the safest way to determine
+    // @ts-ignore
+    if (isNaN(parseInt(playerID)) || !(parseInt(playerID) == playerID)) {
       return false;
     }
     if (content[0][0] !== 't') {
       return false;
     }
     let tourneyID = content[0].slice(1);
-    if (isNaN(parseInt(tourneyID)) || parseInt(tourneyID) !== this.id) {
+    // @ts-ignore
+    if (isNaN(parseInt(tourneyID)) || parseInt(tourneyID) !== this.id || !(parseInt(tourneyID) == tourneyID)) {
       return false;
     }
     return true;
@@ -230,6 +236,38 @@ export abstract class Tournament {
     }
     return false;
   }
+
+  public destroy(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.preInternalDestroy().then(async () => {
+        // stop if running
+        if (this.status === Tournament.TournamentStatus.RUNNING) this.stop();
+        let destroyPromises = [];
+        // now remove all match processes
+        this.matches.forEach((match) => {
+          destroyPromises.push(match.destroy());
+        });
+        await Promise.all(destroyPromises);
+        return this.postInternalDestroy();
+      }).catch((error) => {
+        reject(error);
+      });
+    });
+  }
+
+  /**
+   * Pre run function before generic destroy takes place
+   */
+  protected async preInternalDestroy() {
+
+  }
+
+  /**
+   * Post run function before generic destroy takes place
+   */
+  protected async postInternalDestroy() {
+
+  }
 }
 
 /**
@@ -256,6 +294,8 @@ export module Tournament {
     RUNNING = 'running',
     /** Tournmanet crashed some how */
     CRASHED = 'crashed',
+    /** Tournament is done */
+    FINISHED = 'finished'
   }
 
   /**

@@ -2,7 +2,7 @@ import { Tournament, Player } from "../../";
 import { DeepPartial } from "../../../utils/DeepPartial";
 import { Design } from '../../../Design';
 import { deepMerge } from "../../../utils/DeepMerge";
-import { FatalError, MatchDestroyedError } from "../../../DimensionError";
+import { FatalError, MatchDestroyedError, TournamentError } from "../../../DimensionError";
 import { Agent } from "../../../Agent";
 import { Rating, rate, quality } from "ts-trueskill";
 import LadderState = Tournament.Ladder.State;
@@ -16,7 +16,7 @@ import { ELOSystem, ELORating } from "../../ELO";
 export class LadderTournament extends Tournament {
   configs: Tournament.TournamentConfigs<LadderConfigs> = {
     defaultMatchConfigs: {},
-    type: Tournament.TOURNAMENT_TYPE.ELIMINATION,
+    type: Tournament.TOURNAMENT_TYPE.LADDER,
     rankSystem: null,
     rankSystemConfigs: null,
     tournamentConfigs: {
@@ -40,8 +40,7 @@ export class LadderTournament extends Tournament {
 
   private elo: ELOSystem;
 
-  // queue of the results to process. Use of queue avoids asynchronous editing of player stats such as 
-  // sigma and mu for trueskill
+  // queue of the results to process
   resultProcessingQueue: Array<{result: any, mapAgentIDtoTournamentID: Map<Agent.ID, Tournament.ID>}> = [];
 
   constructor(
@@ -51,32 +50,29 @@ export class LadderTournament extends Tournament {
     id: number
   ) {
     super(design, files, id, tournamentConfigs);
-    if (tournamentConfigs.consoleDisplay) {
-      this.configs.consoleDisplay = tournamentConfigs.consoleDisplay;
-    }
-    switch(tournamentConfigs.rankSystem) {
+    this.configs = deepMerge(this.configs, tournamentConfigs, true);
+
+    switch(this.configs.rankSystem) {
       case RANK_SYSTEM.TRUESKILL:
-        // set default rank system configs
-        let trueskillConfigs: RANK_SYSTEM.TRUESKILL.Configs = {
-          initialMu: 25,
-          initialSigma: 25/3
-        }
+        
         if (this.configs.rankSystemConfigs === null) {
-          this.configs.rankSystemConfigs = trueskillConfigs
+          // set default rank system configs
+          let trueskillConfigs: RANK_SYSTEM.TRUESKILL.Configs = {
+            initialMu: 25,
+            initialSigma: 25/3
+          }
+          this.configs.rankSystemConfigs = trueskillConfigs;
+          
         }
         break;
       case RANK_SYSTEM.ELO:
-        // check if other settings are valid
-        if (!(this.configs.agentsPerMatch.length === 1 && this.configs.agentsPerMatch[0] === 2)) {
-          throw new FatalError('We currently only support ranking matches with 2 agents under the ELO system');
-        }
-
-        // set default rank system configs
-        let eloConfigs: RANK_SYSTEM.ELO.Configs = {
-          startingScore: 1000,
-          kFactor: 32
-        }
+        
         if (this.configs.rankSystemConfigs === null) {
+          // set default rank system configs
+          let eloConfigs: RANK_SYSTEM.ELO.Configs = {
+            startingScore: 1000,
+            kFactor: 32
+          }
           this.configs.rankSystemConfigs = eloConfigs
         }
         this.elo = new ELOSystem(this.configs.rankSystemConfigs.kFactor, this.configs.rankSystemConfigs.startingScore)
@@ -84,9 +80,6 @@ export class LadderTournament extends Tournament {
       default:
         throw new FatalError('We currently do not support this rank system for ladder tournaments');
     }
-
-
-    this.configs = deepMerge(this.configs, tournamentConfigs);
 
     // add all players
     files.forEach((file) => {
@@ -100,7 +93,7 @@ export class LadderTournament extends Tournament {
     return this.configs;
   }
   public setConfigs(configs: DeepPartial<Tournament.TournamentConfigs<LadderConfigs>> = {}) {
-    this.configs = deepMerge(this.configs, configs);
+    this.configs = deepMerge(this.configs, configs, true);
   }
   public getRankings(): Array<{player: Player, name: string, id: number, matchesPlayed: number, rankState: any}> {
     let rankings = [];
@@ -138,21 +131,41 @@ export class LadderTournament extends Tournament {
     }
     return rankings;
   }
+
+  /**
+   * Stops the tournament if it was running.
+   */
   public async stop() {
+    if (this.status !== Tournament.TournamentStatus.RUNNING) {
+      throw new TournamentError(`Can't stop a tournament that isn't running`);
+    }
     this.log.info('Stopping Tournament...');
     this.status = Tournament.TournamentStatus.STOPPED;
   }
+  
+  /**
+   * Resumes the tournament if it was stopped.
+   */
   public async resume() {
+    if (this.status !== Tournament.TournamentStatus.STOPPED) {
+      throw new TournamentError(`Can't resume a tournament that isn't stopped`);
+    }
     this.log.info('Resuming Tournament...');
     this.status = Tournament.TournamentStatus.RUNNING;
     this.tourneyRunner();
   }
+
+  /**
+   * Begin the tournament. Resolves once the tournament is started
+   * @param configs - tournament configurations to use
+   */
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<LadderConfigs>>) {
-    this.status = Tournament.TournamentStatus.RUNNING;
+    
     this.log.info('Running Tournament with competitors: ', this.competitors.map((player) => player.tournamentID.name));
-    this.configs = deepMerge(this.configs, configs);
+    this.configs = deepMerge(this.configs, configs, true);
     this.initialize();
     this.schedule();
+    this.status = Tournament.TournamentStatus.RUNNING;
     this.tourneyRunner();
   }
 
@@ -196,11 +209,14 @@ export class LadderTournament extends Tournament {
     }).catch((error) => {
       this.log.error(error);
       if (error instanceof MatchDestroyedError) {
-        // keep running even if a match is destroyed
-        this.tourneyRunner();
+        // keep running even if a match is destroyed and the tournament is marked as to keep running
+        if (this.status == Tournament.TournamentStatus.RUNNING) {
+          this.tourneyRunner();
+        }
       }
     });
   }
+  
   private initializeTrueskillPlayerStats(player: Player) {
     let trueskillConfigs: RANK_SYSTEM.TRUESKILL.Configs = this.configs.rankSystemConfigs;
     this.state.playerStats.set(player.tournamentID.id, {
