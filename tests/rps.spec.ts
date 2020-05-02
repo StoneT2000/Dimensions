@@ -115,7 +115,7 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
       )
       expect(results.scores).to.eql({'0': 3, '1': 1});
     });
-    it.only('should support java (run 3 times)', async () => {
+    it('should support java (run 3 times)', async () => {
       // TODO: look into why sometimes the java bot doesn't respond with any commands
       // It doesn't time out but does send the D_FINISH signal, so not sure why we don't receive the rock signal 
       // sometimes
@@ -124,8 +124,8 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
           ['./tests/js-kit/rps/smarter.js', './tests/java-kit/rps/Rock.java'],
           {
             name: 'mult-lang (java)',
-            bestOf: 4,
-            loggingLevel: Logger.LEVEL.ALL,
+            bestOf: 10,
+            loggingLevel: Logger.LEVEL.ERROR,
           }
         )
         expect(results.scores).to.eql({'0': 9, '1': 1});

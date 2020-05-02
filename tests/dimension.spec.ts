@@ -71,7 +71,8 @@ describe('Testing Dimension Class', () => {
       secureMode: true,
       defaultMatchConfigs: {
         dimensionID: d.id,
-        loggingLevel: Logger.LEVEL.INFO
+        loggingLevel: Logger.LEVEL.INFO,
+        secureMode: true,
       }
     });
   });

@@ -21,8 +21,6 @@ public class Agent {
       String result = input.getString();
       input = Input.readInput();
       String lastOpponentMove = input.getString();
-      System.err.print(result);
-      System.err.print(lastOpponentMove);
     }
 
     public void endTurn() {

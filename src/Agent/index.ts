@@ -159,7 +159,7 @@ export class Agent {
       let stats = fs.statSync(this.cwd);
       if (stats.isDirectory()) {
         execSync(`sudo cp -R ${this.cwd}/* ${tempDir}`);
-        execSync(`chown -R dimensions_bot ${tempDir}`);
+        execSync(`sudo chown -R ${BOT_USER} ${tempDir}`);
         this.cwd = tempDir;
         this.file = `${path.join(tempDir, this.src)}`;
       }
@@ -322,19 +322,18 @@ export class Agent {
    */
   spawnProcess(command: string, args: Array<string>): Promise<ChildProcess> {
     return new Promise((resolve, reject) => {
-      // let p = spawn(command, args, {
-      //   cwd: this.cwd
-      // }).on('error', (err) => { reject(err) });
-      // resolve(p);
       if (this.options.secureMode) {
         let p = spawn('sudo', ['-H', '-u', BOT_USER, command, ...args], {
-          cwd: this.cwd
+          cwd: this.cwd,
+          detached: true,
         }).on('error', (err) => { reject(err) });
         resolve(p);
+        
       }
       else {
         let p = spawn(command, args, {
-          cwd: this.cwd
+          cwd: this.cwd,
+          detached: true
         }).on('error', (err) => { reject(err) });
         resolve(p);
       }
@@ -349,7 +348,24 @@ export class Agent {
   }
 
   _terminate() {
-    this.process.kill('SIGKILL');
+    // first try to kill the process and all its child processes it spawned
+    // trick from https://azimi.me/2014/12/31/kill-child_process-node-js.html
+    try {
+      process.kill(-this.process.pid, 'SIGKILL');
+    }
+    catch (err) {
+      this.log.detail(`couldn't kill group of processes`, err);
+      
+      try {
+        // then just kill the original process
+        process.kill(this.process.pid, 'SIGKILL');
+      }
+      catch (err) {
+        // TODO: This lines occurs sometimes but we don't get any orphans or anything still. Not sure why
+        this.log.detail(`couldn't kill original process nor the group`, err);
+      }
+    }
+    
     this.status = Agent.Status.KILLED;
   }
 
