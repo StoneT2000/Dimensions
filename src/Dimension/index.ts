@@ -89,7 +89,8 @@ export class Dimension {
     observe: true,
     loggingLevel: Logger.LEVEL.INFO,
     defaultMatchConfigs: {
-      dimensionID: this.id
+      dimensionID: this.id,
+      secureMode: true
     },
     secureMode: true
   }
@@ -103,15 +104,11 @@ export class Dimension {
 
     // log important messages regarding security
     if (this.configs.secureMode) {
-      this.log.importantBar();
-      this.log.important(`Running in secure mode`);
       this.setupSecurity();
-      this.log.importantBar();
     }
     else {
       this.log.importantBar();
-      this.log.important(`WARNING: Running in non secure mode. You will not be protected against malicious bots`);
-      
+      this.log.important(`WARNING: Running in non-secure mode. You will not be protected against malicious bots`);
       this.log.importantBar();
     }
 
@@ -198,9 +195,9 @@ export class Dimension {
     if (!files.length) throw new FatalError('No files provided for match');
 
     // override dimension defaults with provided configs
-    let matchConfigs = deepCopy(this.configs.defaultMatchConfigs);
+    let matchConfigs: Match.Configs = deepCopy(this.configs.defaultMatchConfigs);
     matchConfigs = deepMerge(matchConfigs, configs);
-    
+
     let match: Match;
     if (typeof files[0] === 'string') {
       match = new Match(this.design, <Array<string>> files, matchConfigs);

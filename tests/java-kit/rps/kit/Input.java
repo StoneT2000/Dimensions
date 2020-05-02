@@ -30,6 +30,7 @@ public class Input {
               if (buffer == '\n') {
                   break;
               }
+              
               builder.append((char)buffer);
           }
 

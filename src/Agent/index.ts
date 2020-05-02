@@ -6,6 +6,7 @@ import { Logger } from "../Logger";
 import { FatalError } from "../DimensionError";
 import { Tournament } from "../Tournament";
 import { BOT_USER } from "../MatchEngine";
+import { deepMerge } from "../utils/DeepMerge";
 
 /**
  * @class Agent
@@ -105,8 +106,11 @@ export class Agent {
   private allowedToSendCommands = true;
   
   constructor(file: string, options: Partial<Agent.Options>) {
-    this.creationDate = new Date();
+
     
+    this.creationDate = new Date();
+    this.options = deepMerge(this.options, options);
+
     this.ext = path.extname(file);
     let pathparts = file.split('/');
     this.cwd = pathparts.slice(0, -1).join('/');
@@ -150,16 +154,18 @@ export class Agent {
     
 
     // if we are running in secure mode, we copy the agent over to a temporary directory
-    let tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dbot-'));
-    let stats = fs.statSync(this.cwd);
-    if (stats.isDirectory()) {
-      execSync(`sudo cp -R ${this.cwd}/* ${tempDir}`);
-      execSync(`chown -R dimensions_bot ${tempDir}`);
-      this.cwd = tempDir;
-      this.file = `${path.join(tempDir, this.src)}`;
-    }
-    else {
-      throw new FatalError(`${this.cwd} is not a directory`);
+    if (this.options.secureMode) {
+      let tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dbot-'));
+      let stats = fs.statSync(this.cwd);
+      if (stats.isDirectory()) {
+        execSync(`sudo cp -R ${this.cwd}/* ${tempDir}`);
+        execSync(`chown -R dimensions_bot ${tempDir}`);
+        this.cwd = tempDir;
+        this.file = `${path.join(tempDir, this.src)}`;
+      }
+      else {
+        throw new FatalError(`${this.cwd} is not a directory`);
+      }
     }
     
 
