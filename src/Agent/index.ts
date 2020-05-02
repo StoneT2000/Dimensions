@@ -149,7 +149,6 @@ export class Agent {
         this.cmd = ''
         break;
       default:
-        // throw new DimensionError(`${ext} is not a valid file type`);
     }
     
 
@@ -204,7 +203,7 @@ export class Agent {
          // run in restricted bash if in secureMode
         let p: ChildProcess;
         let installTimer = setTimeout(() => {
-          reject(new FatalError('Agent went over install time during install stage'));
+          reject(new FatalError('Agent went over install time during the install stage'));
         }, this.options.maxInstallTime);
         if (this.options.secureMode) {
           p = spawn('sudo', ['-H' ,'-u',BOT_USER, 'rbash' ,'install.sh'], {
@@ -296,7 +295,6 @@ export class Agent {
    */
   async _spawn(): Promise<ChildProcess> {
 
-      let p: ChildProcess;
       switch(this.ext) {
         case '.py':
         case '.js':
