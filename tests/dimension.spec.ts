@@ -23,7 +23,8 @@ describe('Testing Dimension Class', () => {
     let dominationDesign = new DominationDesign('Domination');
     let d = Dimension.create(dominationDesign, {
       activateStation: false,
-      observe: false
+      observe: false,
+      loggingLevel: Logger.LEVEL.NONE
     });
     let tourney = d.createTournament(['abc', 'def'], {
       type: Tournament.TOURNAMENT_TYPE.LADDER,
@@ -56,7 +57,8 @@ describe('Testing Dimension Class', () => {
     let dominationDesign = new DominationDesign('Domination');
     let d = Dimension.create(dominationDesign, {
       activateStation: false,
-      observe: false
+      observe: false,
+      loggingLevel: Logger.LEVEL.NONE
     });
     expect(d.removeMatch(123)).to.eventually.equal(false);
   });

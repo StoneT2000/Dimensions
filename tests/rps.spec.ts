@@ -114,6 +114,17 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
         }
       )
       expect(results.scores).to.eql({'0': 3, '1': 1});
+
+      // randomly test not secure mode
+      results = await myDimension.runMatch(
+        ['./tests/js-kit/rps/smarter.js', './tests/python-kit/rps/rock.py'],
+        {
+          name: 'mult-lang (py)',
+          bestOf: 4,
+          secureMode: false
+        }
+      )
+      expect(results.scores).to.eql({'0': 3, '1': 1});
     });
     it('should support java (run 3 times)', async () => {
       // TODO: look into why sometimes the java bot doesn't respond with any commands

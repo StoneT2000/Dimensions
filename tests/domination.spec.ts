@@ -21,7 +21,6 @@ describe('Testing Match Running with Domination Game', () => {
     });
   });
   it('Run a match', async () => {
-    // expect.assertions(2);
 
     let jsSource = "./tests/js-kit/domination/random.js";
     let botSources = [];
@@ -43,6 +42,34 @@ describe('Testing Match Running with Domination Game', () => {
           maxRounds: 5
         },
         loggingLevel: Dimension.Logger.LEVEL.WARN,
+      }
+    );
+    expect(results.finalMap).to.be.eql(expectedResultMap)
+    expect(results.winningScore).to.equal(expectedScore);
+  });
+  it('Run a match (non-secure mode)', async () => {
+
+    let jsSource = "./tests/js-kit/domination/random.js";
+    let botSources = [];
+
+    // sets up a deterministic game where all bots will end up expanding down
+    for (let i = 0; i < 4; i++) {
+      botSources.push(jsSource);
+    }
+    let expectedResultMap = [ [ 0, 1, 2, 3 ], [ 0, 1, 2, 3 ], [ 0, 1, 2, 3 ], [ 0, 1, 2, 3 ] ];
+    let expectedScore = 4; 
+
+    let results: any = await myDimension.runMatch(
+      botSources,
+      {
+        name: 'test-domination-match',
+        initializeConfig:{
+          
+          size: 4,
+          maxRounds: 5
+        },
+        loggingLevel: Dimension.Logger.LEVEL.WARN,
+        secureMode: false
       }
     );
     expect(results.finalMap).to.be.eql(expectedResultMap)

@@ -50,6 +50,9 @@ describe('Testing Station Class', () => {
     let dimensions = <Map<number, Dimension.DimensionType>>station.app.get('dimensions');
     expect(dimensions.get(d.id).id).to.equal(d.id);
   });
+  it('should restart', () => {
+    return expect(station.restart()).to.be.fulfilled;
+  });
   describe('Run imported', () => {
     importTest('API /dimensions', './stationAPITests/dimension/index.subspec.ts');
     importTest('API /dimensions/match', './stationAPITests/dimension/match/index.subspec.ts');
