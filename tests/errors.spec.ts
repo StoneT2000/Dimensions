@@ -28,7 +28,7 @@ describe('Testing Errors', () => {
       expect(shouldThrow).to.throw(FatalError);
     });
     it('should throw fatal if unrecognizeed file provided for agent to spawn', () => {
-      let agent = new Agent('./tests/testingfiles/fakebot.fakeext', {name: 'fake', id: 'fake-0'});
+      let agent = new Agent('./tests/testingfiles/fakebot.fakeext', {name: 'fake', id: 2});
       expect(agent._spawn()).to.be.rejectedWith(FatalError, 'Unrecognized file');
     });
     it('show throw fatal if no files given to static agent generator', () => {

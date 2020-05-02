@@ -98,7 +98,8 @@ export class Match {
     name: '',
     loggingLevel: Logger.LEVEL.INFO,
     dimensionID: null,
-    engineOptions: {}
+    engineOptions: {},
+    secureMode: true
   };
 
   /** Match process used to store the process governing a match running on a custom design */
@@ -174,7 +175,7 @@ export class Match {
     this.timeStep = 0;
     
     // Initialize agents with agent files
-    this.agents = Agent.generateAgents(this.agentFiles, this.log.level);
+    this.agents = Agent.generateAgents(this.agentFiles, this.log.level, this.configs.secureMode);
     this.agents.forEach((agent) => {
       this.idToAgentsMap.set(agent.id, agent);
       if (agent.tournamentID !== null) {
@@ -236,7 +237,6 @@ export class Match {
             agent.clearTimer();
           });
           this.results = await this.getResults();
-
           // TODO: Perhaps add a cleanup status if cleaning up processes takes a long time
           await this.killAndCleanUp();
         
@@ -512,6 +512,11 @@ export module Match {
      * The engine options to use in this match.
      */
     engineOptions: DeepPartial<EngineOptions>
+    /**
+     * Whether to run match in secure mode or not
+     * @default true
+     */
+    secureMode: boolean
     [key: string]: any
   }
   export enum Status {

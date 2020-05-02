@@ -7,7 +7,6 @@ const router = express.Router();
 router.get('/test', (req:Request, res: Response) => res.send('API online!'));
 
 router.get('/dimensions', (req, res) => {
-  // console.log(req.app.get('dimensions'));
   res.json(req.app.get('dimensions'));
   res.send(JSON.stringify(res.app));
 });

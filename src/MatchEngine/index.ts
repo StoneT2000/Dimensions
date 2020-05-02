@@ -98,13 +98,17 @@ export class MatchEngine {
    */
   private async initializeAgent(agent: Agent, match: Match): Promise<void> {
     this.log.system("Setting up and spawning " + agent.name + ` | Command: ${agent.cmd} ${agent.src}`);
-    // wait for compilation step
-    
+
+    // wait for install step
+    await agent._install();
+
+    // wait for compilation ste
     await agent._compile();
     this.log.system('Succesfully ran compile step for agent ' + agent.id);
 
     // spawn the agent process
     let p = await agent._spawn();
+    this.log.system('Spawned agent ' + agent.id);
 
     match.idToAgentsMap.set(agent.id, agent);
 
@@ -274,7 +278,6 @@ export class MatchEngine {
    * @param agent - the agent to kill off
    */
   public async kill(agent: Agent) {
-    agent.process.kill('SIGKILL');
     agent._terminate();
     agent.currentMoveResolve();
     this.log.system(`Killed off agent ${agent.id} - ${agent.name}`);
@@ -622,3 +625,6 @@ export module MatchEngine {
     agentID: Agent.ID
   }
 }
+
+export const COMPILATION_USER = 'dimensions_bot_compilation';
+export const BOT_USER = 'dimensions_bot';
