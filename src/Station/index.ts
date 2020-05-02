@@ -107,7 +107,9 @@ export class Station {
     const successStart = () => {
       this.log.infobar();
       this.log.info(`Running '${this.name}' API at port ${this.port}`);
-      this.log.info(`Observing dimensions: ${this.app.get('dimensions').map((dim: Dimension) => dim.name)}`);
+      let dims = [];
+      this.app.get('dimensions').forEach((dim: Dimension) => dims.push(dim.name));
+      this.log.info(`Observing dimensions: ${dims}`);
     }
     this.tryToListen(this.app, this.port).then((port: number) => {
       this.port = port;

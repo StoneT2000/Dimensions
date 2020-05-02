@@ -5,8 +5,8 @@ public class Rock {
         
         while(true) {
             System.out.println("R");
-            System.out.println("R");
-            System.out.println("R");
+            // System.out.println("R");
+            // System.out.println("R");
             agent.endTurn();
             agent.update();
         }

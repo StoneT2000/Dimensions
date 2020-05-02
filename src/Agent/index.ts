@@ -1,16 +1,19 @@
-import { ChildProcess, exec, spawn } from "child_process";
+import { ChildProcess, exec, spawn, execSync } from "child_process";
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 import { Logger } from "../Logger";
 import { FatalError } from "../DimensionError";
 import { Tournament } from "../Tournament";
+import { BOT_USER } from "../MatchEngine";
 
 /**
  * @class Agent
  * @classdesc The agent is what participates in a match and contains details on the files powering the agent, the
  * process associated and if it is terminated or not.
  * 
- * Reads in a file source for the code and creates an `Agent` for use in the {@link MatchEngine} and {@link Match}
+ * Reads in a file source for the code and copies the bot folder to a temporary directory in secure modes
+ * and creates an `Agent` for use in the {@link MatchEngine} and {@link Match}
  * 
  * This is a class that should not be broken. If someting goes wrong, this should always throw a FatalError. It is 
  * expected that agents are used knowing beforehand that the file given is validated
@@ -51,6 +54,19 @@ export class Agent {
   public file: string;
 
   /**
+   * The agent's options
+   */
+  public options: Agent.Options = {
+    secureMode: true,
+    loggingLevel: Logger.LEVEL.INFO,
+    id: -1,
+    tournamentID: null,
+    name: null,
+    maxInstallTime: 300000,
+    maxCompileTime: 60000
+  };
+
+  /**
    * Creation date of the agent
    */
   public creationDate: Date;
@@ -88,12 +104,27 @@ export class Agent {
   /** whether agent is allowed to send commands. Used to help ignore extra output from agents */
   private allowedToSendCommands = true;
   
-  constructor(file: string, options: any) {
+  constructor(file: string, options: Partial<Agent.Options>) {
     this.creationDate = new Date();
+    
+    this.ext = path.extname(file);
+    let pathparts = file.split('/');
+    this.cwd = pathparts.slice(0, -1).join('/');
+    this.src = pathparts.slice(-1).join('/');
+    this.srcNoExt = this.src.slice(0, -this.ext.length);
+
+    // check if file exists
+    if(!fs.existsSync(file)) {
+      throw new FatalError(`${file} does not exist, check if file path provided is correct`);
+    }
+
+    // check if folder is valid
+    if(!fs.existsSync(this.cwd)) {
+      throw new FatalError(`${this.cwd} directory does not exist, check if directory provided is correct`);
+    }
+
     this.file = file;
     
-    // get extension
-    this.ext = path.extname(file);
     switch(this.ext) {
       case '.py':
         this.cmd = 'python';
@@ -116,15 +147,21 @@ export class Agent {
       default:
         // throw new DimensionError(`${ext} is not a valid file type`);
     }
-    let pathparts = file.split('/');
-    this.cwd = pathparts.slice(0, -1).join('/');
-    this.src = pathparts.slice(-1).join('/');
-    this.srcNoExt = this.src.slice(0, -this.ext.length);
+    
 
-    // check if file exists
-    if(!fs.existsSync(file)) {
-      throw new FatalError(`${file} does not exist, check if file path provided is correct`);
+    // if we are running in secure mode, we copy the agent over to a temporary directory
+    let tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dbot-'));
+    let stats = fs.statSync(this.cwd);
+    if (stats.isDirectory()) {
+      execSync(`sudo cp -R ${this.cwd}/* ${tempDir}`);
+      execSync(`chown -R dimensions_bot ${tempDir}`);
+      this.cwd = tempDir;
+      this.file = `${path.join(tempDir, this.src)}`;
     }
+    else {
+      throw new FatalError(`${this.cwd} is not a directory`);
+    }
+    
 
     if (options.id !== undefined) {
       this.id = options.id;
@@ -152,6 +189,43 @@ export class Agent {
 
   }
 
+  /**
+   * Install whatever is needed through a install.sh file in the root of the bot folder
+   */
+  _install(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (fs.existsSync(path.join(this.cwd, 'install.sh'))) {
+         // run in restricted bash if in secureMode
+        let p: ChildProcess;
+        let installTimer = setTimeout(() => {
+          reject(new FatalError('Agent went over install time during install stage'));
+        }, this.options.maxInstallTime);
+        if (this.options.secureMode) {
+          p = spawn('sudo', ['-H' ,'-u',BOT_USER, 'rbash' ,'install.sh'], {
+            cwd: this.cwd,
+            stdio: 'ignore'
+          });
+        }
+        else {
+          p = spawn('bash' ,['install.sh'], {
+            cwd: this.cwd,
+            stdio: 'ignore'
+          });
+        }
+        p.on('error', (err) => {
+          clearTimeout(installTimer);
+          reject(err)
+        });
+        p.on('close', () => {
+          clearTimeout(installTimer);
+          resolve();
+        });
+      }
+      else {
+        resolve();
+      }
+    });
+  }
 
   /**
    * Compile whatever is needed
@@ -164,9 +238,10 @@ export class Agent {
         case '.php':
           resolve();
           break;
+          // TODO: change all exec's to spawns
         case '.ts':
           //tsc --esModuleInterop --allowJs -m commonjs --lib es5
-          exec(`tsc --esModuleInterop --allowJs -m commonjs --lib es5 ${this.src}`, {
+          exec(`sudo tsc --esModuleInterop --allowJs -m commonjs --lib es5 ${this.src}`, {
             cwd: this.cwd
           }, (err) => {
             if (err) reject(err);
@@ -174,7 +249,7 @@ export class Agent {
           });
           break;
         case '.go':
-          exec(`go build -o ${this.srcNoExt}.out ${this.src}`, {
+          exec(`sudo go build -o ${this.srcNoExt}.out ${this.src}`, {
             cwd: this.cwd
           }, (err) => {
             if (err) reject(err);
@@ -182,7 +257,7 @@ export class Agent {
           });
           break;
         case '.cpp':
-          exec(`g++ -O3  -o ${this.srcNoExt}.out ${this.src}`, {
+          exec(`sudo g++ -O3  -o ${this.srcNoExt}.out ${this.src}`, {
             cwd: this.cwd
           }, (err) => {
             if (err) reject(err);
@@ -190,7 +265,7 @@ export class Agent {
           });
           break;
         case '.c':
-          exec(`gcc -O3 -o ${this.srcNoExt}.out ${this.src}`, {
+          exec(`sudo gcc -O3 -o ${this.srcNoExt}.out ${this.src}`, {
             cwd: this.cwd
           }, (err) => {
             if (err) reject(err);
@@ -198,7 +273,8 @@ export class Agent {
           });
           break;
         case '.java':
-          exec("javac " + this.src, {
+          console.log(this.cwd);
+          exec("sudo javac " + this.src, {
             cwd: this.cwd
           }, (err) => {
             if (err) reject(err);
@@ -212,44 +288,52 @@ export class Agent {
   /**
    * Spawn the process and return the process
    */
-  _spawn(): Promise<ChildProcess> {
-    return new Promise((resolve, reject) => {
+  async _spawn(): Promise<ChildProcess> {
+
       let p: ChildProcess;
       switch(this.ext) {
         case '.py':
         case '.js':
         case '.php':
-          p = spawn(this.cmd, [this.src], {
-            cwd: this.cwd
-          }).on('error', (err) => { reject(err) });
-          resolve(p);
-          break;
+          return this.spawnProcess(this.cmd, [this.src]);
         case '.ts':
-          p = spawn(this.cmd, [this.srcNoExt + '.js'], {
-            cwd: this.cwd
-          }).on('error', (err) => { reject(err) });
-          resolve(p);
-          break;
+          return this.spawnProcess(this.cmd, [this.srcNoExt + '.js']);
         case '.java':
-          p = spawn(this.cmd, [this.srcNoExt], {
-            cwd: this.cwd
-          }).on('error', (err) => { reject(err) });
-          resolve(p);
-          break;
+          return this.spawnProcess(this.cmd, [this.srcNoExt]);
         case '.c':
         case '.cpp':
         case '.go':
-          p = spawn('./' + this.srcNoExt + '.out', {
-            cwd: this.cwd
-          }).on('error', (err) => { reject(err) });
-          resolve(p);
-          break;
+          return this.spawnProcess('./' + this.srcNoExt + '.out', [])
         default:
-          reject(new FatalError('Unrecognized file'));
+          throw new FatalError('Unrecognized file');
+      }
+  }
+
+
+  /**
+   * Spawns process accordingly and uses the configs accordingly
+   * Resolves with the process if spawned succesfully
+   */
+  spawnProcess(command: string, args: Array<string>): Promise<ChildProcess> {
+    return new Promise((resolve, reject) => {
+      // let p = spawn(command, args, {
+      //   cwd: this.cwd
+      // }).on('error', (err) => { reject(err) });
+      // resolve(p);
+      if (this.options.secureMode) {
+        let p = spawn('sudo', ['-H', '-u', BOT_USER, command, ...args], {
+          cwd: this.cwd
+        }).on('error', (err) => { reject(err) });
+        resolve(p);
+      }
+      else {
+        let p = spawn(command, args, {
+          cwd: this.cwd
+        }).on('error', (err) => { reject(err) });
+        resolve(p);
       }
     });
   }
-
 
   /**
    * Returns true if this agent was terminated and no longer send or receive emssages
@@ -259,6 +343,7 @@ export class Agent {
   }
 
   _terminate() {
+    this.process.kill('SIGKILL');
     this.status = Agent.Status.KILLED;
   }
 
@@ -311,8 +396,9 @@ export class Agent {
    * @param files List of files to use to make agents or a list of objects with a file key for the file path to the bot 
    *              and a name key for the name of the agent
    * @param loggingLevel - the logging level for all these agents
+   * @param secureMode - whether to generate the agent securely. @default `true`
    */
-  static generateAgents(files: Array<String> | Array<{file: string, name: string}> | Array<{file: string, tournamentID: Tournament.ID}>, loggingLevel: Logger.LEVEL): Array<Agent> {
+  static generateAgents(files: Array<String> | Array<{file: string, name: string}> | Array<{file: string, tournamentID: Tournament.ID}>, loggingLevel: Logger.LEVEL, secureMode: boolean = true): Array<Agent> {
     if (files.length === 0) {
       throw new FatalError('No files provided to generate agents with!');
     }
@@ -320,18 +406,18 @@ export class Agent {
 
     if (typeof files[0] === 'string') {
       files.forEach((file, index) => {
-        agents.push(new Agent(file, {id: index, name: null, loggingLevel: loggingLevel}))
+        agents.push(new Agent(file, {id: index, name: null, loggingLevel: loggingLevel, secureMode: secureMode}))
       })
     }
     //@ts-ignore
     else if (files[0].name !== undefined) {
       files.forEach((info, index) => {
-        agents.push(new Agent(info.file, {id: index, name: info.name, loggingLevel: loggingLevel}))
+        agents.push(new Agent(info.file, {id: index, name: info.name, loggingLevel: loggingLevel, secureMode: secureMode}))
       })
     }
     else {
       files.forEach((info, index) => {
-        agents.push(new Agent(info.file, {id: index, tournamentID: info.tournamentID, loggingLevel: loggingLevel}))
+        agents.push(new Agent(info.file, {id: index, tournamentID: info.tournamentID, loggingLevel: loggingLevel, secureMode: secureMode}))
       })
     }
     return agents;
@@ -359,4 +445,39 @@ export module Agent {
    * Agent ID
    */
   export type ID = number;
+
+  /**
+   * Agent options interface
+   */
+  export interface Options {
+    /** Name of agent */
+    name: string,
+
+    /** 
+     * Whether or not to spawn agent securely and avoid malicious activity 
+     * @default `true`
+     */
+    secureMode: boolean
+
+    /** A specified ID to use for the agent */
+    id: ID,
+
+    /** A specified tournament ID linking an agent to the tournament it belongs to */
+    tournamentID: Tournament.ID,
+
+    /** Logging level of this agent */
+    loggingLevel: Logger.LEVEL,
+
+    /**  
+     * Maximium time allowed for an agent to spend on the installing step
+     * @default 5 minutes (300,000 ms)
+     */
+    maxInstallTime: number
+
+    /**
+     * Maximum time allowed to be spent compiling
+     * @default 1 minute (60,000 ms)
+     */
+    maxCompileTime: number
+  }
 }

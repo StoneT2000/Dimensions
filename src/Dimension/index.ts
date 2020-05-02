@@ -10,7 +10,8 @@ import { EliminationTournament } from '../Tournament/TournamentTypes/Elimination
 import { Tournament } from '../Tournament';
 import { deepCopy } from '../utils/DeepCopy';
 import { LadderTournament } from '../Tournament/TournamentTypes/Ladder';
-
+import { exec, ChildProcess } from 'child_process';
+import { BOT_USER, COMPILATION_USER } from '../MatchEngine';
 /**
  * Dimension configurations
  */
@@ -24,7 +25,14 @@ export interface DimensionConfigs {
   /** The logging level for this Dimension */
   loggingLevel: Logger.LEVEL,
   /** The default match configurations to use when creating matches using this Dimension */
-  defaultMatchConfigs: DeepPartial<Match.Configs>
+  defaultMatchConfigs: DeepPartial<Match.Configs>,
+
+  /**
+   * Whether to run Dimension in a more secure environment.
+   * Requires rbash and setting up users and groups beforehand and running dimensions in sudo mode
+   * @default `true`
+   */
+  secureMode: boolean
 }
 /**
  * @class Dimension
@@ -82,7 +90,8 @@ export class Dimension {
     loggingLevel: Logger.LEVEL.INFO,
     defaultMatchConfigs: {
       dimensionID: this.id
-    }
+    },
+    secureMode: true
   }
 
   constructor(public design: Design, configs: DeepPartial<DimensionConfigs> = {}) {
@@ -91,6 +100,21 @@ export class Dimension {
     this.configs = deepMerge(this.configs, configs);
 
     this.log.level = this.configs.loggingLevel;
+
+    // log important messages regarding security
+    if (this.configs.secureMode) {
+      this.log.importantBar();
+      this.log.important(`Running in secure mode`);
+      this.setupSecurity();
+      this.log.importantBar();
+    }
+    else {
+      this.log.importantBar();
+      this.log.important(`WARNING: Running in non secure mode. You will not be protected against malicious bots`);
+      
+      this.log.importantBar();
+    }
+
 
     // open up a new station for the current node process if it hasn't been opened yet and there is a dimension that 
     // is asking for a station to be initiated
@@ -119,6 +143,7 @@ export class Dimension {
 
     // by default link all matches created by this dimension to this dimension
     this.configs.defaultMatchConfigs.dimensionID = this.id;
+
   }
   /**
    * Create a match with the given files with the given unique name. It rejects if a fatal error occurs and resolves 
@@ -248,7 +273,65 @@ export class Dimension {
     return false;
   }
 
+  /**
+   * Sets up necessary security and checks if everything is in place
+   */
+  private async setupSecurity() {
+
+    // perform checks
+    this.checkForUsers([BOT_USER, COMPILATION_USER]);
+  }
+
+  /**
+   * Checks if the provided usernames exist in this system or not.
+   * @param usernames 
+   */
+  private checkForUsers(usernames: Array<string>) {
+    return new Promise((resolve, reject) => {
+      // exec('')
+      let userset = new Set();
+      switch(process.platform) {
+        case 'darwin': {
+          let p = exec(`dscacheutil -q user`, (err) => {
+            if (err) throw err;
+          });
+          p.stdout.on('data', (chunk) => {
+            `${chunk}`.split('\n').forEach((line) => {
+              if (line.slice(0, 4) === 'name') {
+                userset.add(line.slice(6));
+              }
+            });
+          });
+          p.on('close', (code) => {
+            for (let i = 0; i < usernames.length; i++) {
+              let name = usernames[i];
+              if (!userset.has(name)) {
+                reject(new FatalError(`Missing user: ${name}`));
+                return;
+              }
+            }
+            resolve();
+          });
+          break;
+        }
+        case 'win32': {
+
+        }
+        case 'linux': {
+          let p = exec(``, (err) => {
+            if (err) throw err;
+          });
+          break;
+        }
+        default:
+          throw new FatalError(`The platform ${process.platform} is not supported yet for secureMode`);
+      }
+      
+    });
+  }
+
 }
+
 
 /**
  * Creates a dimension for use to start matches, run tournaments, etc.

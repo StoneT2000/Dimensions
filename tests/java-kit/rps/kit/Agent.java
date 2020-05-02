@@ -1,5 +1,6 @@
 package kit;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Agent {
@@ -7,7 +8,7 @@ public class Agent {
     public int id;
     public int maxRounds;
     public Agent() {
-      scanner = new Scanner(System.in);
+      scanner = new Scanner(System.in, "UTF-8");
     }
 
     public void initialize() {
@@ -16,8 +17,12 @@ public class Agent {
     }
 
     public void update() {
-      String result = scanner.nextLine();
-      String lastOpponentMove = scanner.nextLine();
+      Input input = Input.readInput();
+      String result = input.getString();
+      input = Input.readInput();
+      String lastOpponentMove = input.getString();
+      System.err.print(result);
+      System.err.print(lastOpponentMove);
     }
 
     public void endTurn() {
