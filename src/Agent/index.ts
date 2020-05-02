@@ -278,7 +278,6 @@ export class Agent {
           });
           break;
         case '.java':
-          console.log(this.cwd);
           exec("sudo javac " + this.src, {
             cwd: this.cwd
           }, (err) => {
