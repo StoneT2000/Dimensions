@@ -13,7 +13,8 @@ export class RockPaperScissorsDesign extends Dimension.Design {
 
     // let's create a state that persists through the entire match and can be updated in the update function
     let state = {
-      maxRounds: match.configs.bestOf, // we will store the max rounds of rock paper scissors this game will run
+      // we will store the max rounds of rock paper scissors this game will run
+      maxRounds: match.configs.bestOf ? match.configs.bestOf : 3, 
       results: [], // we will also store the winner of each of those rounds by each agent's ID
       rounds: 0, // rounds passed so far
       failedAgent: null, // the id of the agent that failed to play correctly
