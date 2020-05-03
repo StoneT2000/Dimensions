@@ -6,7 +6,7 @@ All you need to do?
 
 Code a competition design and code a bot
 
-Dimensions handles the rest, including match running, tournament running, TrueSkill rankings, and a local API and website through which you can watch this all happen at once. Dimensions allows you to **design virtually any kind of AI competition** you want in **any language** with its vast array of flexible configuration options and choices. It also provides the infrastructure required to run the same thing as [Open AI's Gym](https://gym.openai.com/), but now it is language agnostic (so all you JS Machine Learning enthuthiasts can train your reinforcement learning AI in Dimensions like a Gym now)
+Dimensions handles the rest, including match running, tournament running, TrueSkill rankings, and a local API and website through which you can watch this all happen at once. Dimensions allows you to **design virtually any kind of AI competition** you want in **any language** with its vast array of flexible configuration options and choices. It also provides the infrastructure required to run the same thing as [Open AI's Gym](https://gym.openai.com/), but as a language agnostic platform (so all you JS Machine Learning enthuthiasts can train your reinforcement learning AI in Dimensions like a Gym now)
 
 Dimensions utilizes an I/O based model to run competitions and pit AI agents against each other, allowing it to be generic and language agnostic so anyone from any background can compete in your competition design and any machine learning in any language can be done in Dimensions.
 
