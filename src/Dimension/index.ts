@@ -12,6 +12,14 @@ import { deepCopy } from '../utils/DeepCopy';
 import { LadderTournament } from '../Tournament/TournamentTypes/Ladder';
 import { exec, ChildProcess } from 'child_process';
 import { BOT_USER, COMPILATION_USER } from '../MatchEngine';
+import { Plugin, DatabasePlugin } from '../Plugin';
+
+
+export enum DatabaseType {
+  NONE = 'none',
+  MONGO = 'mongo'
+}
+
 /**
  * Dimension configurations
  */
@@ -32,7 +40,9 @@ export interface DimensionConfigs {
    * Requires rbash and setting up users and groups beforehand and running dimensions in sudo mode
    * @default `true`
    */
-  secureMode: boolean
+  secureMode: boolean,
+
+  backingDatabase: DatabaseType
 }
 /**
  * @class Dimension
@@ -68,6 +78,11 @@ export class Dimension {
   public log = new Logger();
 
   /**
+   * The database plugin being used
+   */
+  public databasePlugin: DatabasePlugin;
+
+  /**
    * The Station associated with this Dimension and current node instance
    */
   public static Station: Station = null;
@@ -92,7 +107,8 @@ export class Dimension {
       dimensionID: this.id,
       secureMode: false
     },
-    secureMode: false
+    secureMode: false,
+    backingDatabase: DatabaseType.NONE
   }
 
   constructor(public design: Design, configs: DeepPartial<DimensionConfigs> = {}) {
@@ -209,7 +225,7 @@ export class Dimension {
     }
     this.statistics.matchesCreated++;
 
-    // store match into dimension
+    // store match into dimension (caching)
     this.matches.set(match.id, match);
 
     // Initialize match with initialization configuration
@@ -217,6 +233,11 @@ export class Dimension {
 
     // Get results
     let results = await match.run();
+
+    // store results in backing database if it's supported
+    if (this.configs.backingDatabase === DatabaseType.MONGO) {
+
+    }
 
     // Return the results
     return results
@@ -328,6 +349,21 @@ export class Dimension {
       }
       
     });
+  }
+
+  /**
+   * Uses a particular plugin in the dimensions framework.
+   * 
+   * @param plugin - the plugin
+   */
+  public use(plugin: Plugin) {
+    plugin.manipulate(this);
+    switch(plugin.type) {
+      case Plugin.Type.DATABASE:
+        break;
+      case Plugin.Type.FILE_STORE:
+        throw new FatalError('FILE_STORE Not supported yet');
+    }
   }
 
 }
