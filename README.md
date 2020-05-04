@@ -286,7 +286,13 @@ Note that different tournament types have different tournament configurations an
 
 ### More Stuff!
 
-The [wiki](https://github.com/StoneT2000/Dimensions/wiki) will soon be populated with more basic and advanced example usages of this framework. This ranges from how to configure the match engine, configuring various tournaments and rank systems, to tips on designing a successful competition.
+The [wiki](https://github.com/StoneT2000/Dimensions/wiki) will soon be populated with more basic and advanced example usages of this framework. This ranges from how to configure the match engine, configuring various tournaments and rank systems, writing a wrapper around a competition design built without Dimensions, to tips on designing a successful competition.
+
+### Strong Recommendations
+
+In a production setting, it is strongly recommended to create a Dimension in `secureMode` to decrease the likelihood of user uploaded bot code of causing any significant harm to a server. By default, `secureMode` is set to false, but you will always get a warning about it. Setting it to true also requires you to run the code as root user.
+
+Agents for each match are spawned in a new child process of the main node process running the match or tournament. To help make it more fair, it is recommended not to simultaneously spawn more agents than the number the number of cores your computer has. Namely, if your matches each allow for 4 agents and your device has 16 cores, then it is recommended to run no more than 4 matches at a time.
 
 ## Contributing
 
