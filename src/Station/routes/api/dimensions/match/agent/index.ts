@@ -15,8 +15,13 @@ const router = express.Router();
  * Gets agent by agentID in request. Requires a match to be stored
  */
 export const getAgent = (req: Request, res: Response, next: NextFunction) => {
-  let agent = 
-    req.data.match.idToAgentsMap.get(parseInt(req.params.agentID));
+  let agent: Agent;
+  if (req.data.match.idToAgentsMap) {
+    agent = req.data.match.idToAgentsMap.get(parseInt(req.params.agentID));
+  }
+  else {
+    agent = req.data.match.agents[parseInt(req.params.agentID)];
+  }
   if (!agent) {
     return next(new error.BadRequest(`No match found with name or id of '${req.params.matchID}' in dimension ${req.data.dimension.id} - '${req.data.dimension.name}'`));
   }

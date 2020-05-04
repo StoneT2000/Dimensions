@@ -104,8 +104,8 @@ router.post('/:tournamentID/run', async (req: Request, res: Response, next: Next
  * Stops a tournament if it isn't stopped
  */
 router.post('/:tournamentID/stop', async (req: Request, res: Response, next: NextFunction) => {
-  if (req.data.tournament.status === Tournament.TournamentStatus.STOPPED) {
-    return next(new error.BadRequest('Tournament is already stopped'));
+  if (req.data.tournament.status !== Tournament.TournamentStatus.RUNNING) {
+    return next(new error.BadRequest(`Can't stop a tournament that isn't running`));
   }
   // stop the tournament
   if (req.data.tournament.stop()) {
