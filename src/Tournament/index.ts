@@ -10,7 +10,8 @@ import { Agent } from '../Agent';
 import { deepCopy } from '../utils/DeepCopy';
 import { Rating } from 'ts-trueskill';
 import { ELORating } from './ELO';
-import { Dimension, DatabaseType } from '../Dimension';
+import { Dimension, DatabaseType, NanoID } from '../Dimension';
+import { genID } from '../utils';
 
 /**
  * Player class that persists data for the same ephemereal agent across multiple matches
@@ -18,6 +19,13 @@ import { Dimension, DatabaseType } from '../Dimension';
 export class Player {
   constructor(public tournamentID: Tournament.ID, public file: string) {
 
+  }
+
+  /**
+   * Generates a 12 character player id string
+   */
+  public static generatePlayerID() {
+    return genID(12);
   }
 }
 
@@ -33,7 +41,7 @@ export abstract class Tournament {
   abstract configs: Tournament.TournamentConfigsBase;
 
   /** Mapping match ids to active ongoing matches */
-  public matches: Map<Match.ID, Match> = new Map();
+  public matches: Map<NanoID, Match> = new Map();
 
   /** A queue whose elements are each arrays of player that are to compete against each other */
   public matchQueue: Array<Array<Player>> = [];
@@ -48,12 +56,15 @@ export abstract class Tournament {
   public log = new Logger();
 
   /** Registered competitors in this tournament */
-  public competitors: Array<Player> = [];
+  public competitors: Map<NanoID, Player> = new Map();
 
   private playerID = 0;
 
   /** A reference to the dimension this tournament was spawned from */
   public dimension: Dimension;
+
+  /** This tournament's ID */
+  public id: NanoID;
 
   /**
    * This Tournament's name
@@ -63,32 +74,37 @@ export abstract class Tournament {
   constructor(
     protected design: Design,
     files: Array<string> | Array<{file: string, name:string}>, 
-    public id: number,
+    id: NanoID,
     tournamentConfigs: Tournament.TournamentConfigsBase,
     dimension: Dimension
   ) {
+    this.id = id;
     this.log.level = (tournamentConfigs.loggingLevel !== undefined) ? tournamentConfigs.loggingLevel : Logger.LEVEL.INFO;
     this.name = tournamentConfigs.name ? tournamentConfigs.name : `tournament_${this.id}`;
     this.log.identifier = this.name;
     this.dimension = dimension;
+
+    this.log.info(`Created Tournament - ID: ${this.id}, Name: ${this.name}`);
   }
 
   /**
    * Add a player to the tournament. Can specify an ID to use. If that ID exists already, this will update the file for 
    * that player instead
+   * 
+   * If the player is to exist beyond the tournament, an existingID must always be provided and generated somewhere else
+   * 
    * @param file - The file to the bot or an object with the file and a name for the player specified
+   * @param existingID - The optional id of the player 
+   * 
+   * Resolves with the new player or updated player
    */
-  public async addplayer(file: string | {file: string, name: string}, existingID?: string) {
-    let id: string;
+  public async addplayer(file: string | {file: string, name: string}, existingID?: NanoID): Promise<Player> {
+    let id: NanoID;
     if (existingID) {
-      if(!this.validateTournamentID(existingID)) {
-        throw new TournamentError(`existing ID provided is an invalid tournament ID for this tournament`);
-      }
-      let content = existingID.split('_');
-      let existingPlayerID = parseInt(content[1]);
-      if (existingPlayerID < this.competitors.length) {
+    
+      if (this.competitors.has(existingID)) {
         // bot exists already
-        let player = this.competitors[existingPlayerID];
+        let player = this.competitors.get(existingID);
         let oldname = player.tournamentID.name;
         let oldfile = player.file;
         if (typeof file === 'string') {
@@ -101,9 +117,10 @@ export abstract class Tournament {
         // update bot instead and call a tournament's updateBot function
         this.updatePlayer(player, oldname, oldfile)
         id = existingID;
-        return;
+        return player;
       }
       else {
+        // otherwise bot doesn't exist, and we use this id as our id to generate a new player
         id = existingID;
       }
     }
@@ -111,27 +128,31 @@ export abstract class Tournament {
       id = this.generateNextTournamentIDString();
     }
     
-    // push new competitor and call internal add so tournaments can internall sort out the addition of a new player
+    // add new competitor and call internal add so tournaments can perform any internal operations for the
+    // addition of a new player
     if (typeof file === 'string') {
       let name = `player-${id}`;
       let newPlayer = new Player({id: id, name: name}, file);
-      this.competitors.push(newPlayer);
+      this.competitors.set(id, newPlayer);
       this.internalAddPlayer(newPlayer);
+      return newPlayer;
     }
     else {
       let newPlayer = new Player({id: id, name: file.name}, file.file);
-      this.competitors.push(newPlayer);
+      this.competitors.set(id, newPlayer);
       this.internalAddPlayer(newPlayer);
+      return newPlayer;
     }
   }
 
   abstract internalAddPlayer(player: Player): void;
 
   /**
-   * Returns a new and unique id
+   * Returns a new id for identifying a player in a tournament
+   * Only used when adding a plyaer to a tournament is done without specifying an id to use.
    */
   public generateNextTournamentIDString() {
-    return `t${this.id}_${this.playerID++}`;
+    return Player.generatePlayerID();
   }
 
   /**
@@ -242,7 +263,7 @@ export abstract class Tournament {
   /**
    * Removes a match by id. Returns true if deleted, false if nothing was deleted
    */
-  public async removeMatch(matchID: number) {
+  public async removeMatch(matchID: NanoID) {
     if (this.matches.has(matchID)) {
       let match = this.matches.get(matchID);
       await match.destroy();
@@ -281,6 +302,14 @@ export abstract class Tournament {
    */
   protected async postInternalDestroy() {
 
+  }
+
+  /**
+   * Generates a 6 character tournament ID identifying this tournament class instance. Not to be confused with
+   * {@link Tournament.ID} which is the ID for competitors in the tournament
+   */
+  public static genTournamentClassID() {
+    return genID(6);
   }
 }
 
@@ -399,7 +428,7 @@ export module Tournament {
    */
   export interface ID {
     /** A string id. This should never change */
-    readonly id: string
+    readonly id: NanoID
     /** A display name */
     name: string
   }

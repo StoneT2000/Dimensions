@@ -8,7 +8,7 @@ import EliminationConfigs = Tournament.Elimination.Configs;
 import RANK_SYSTEM = Tournament.RANK_SYSTEM;
 import { FatalError, TournamentError } from "../../../DimensionError";
 import { Agent } from "../../../Agent";
-import { Dimension } from "../../../Dimension";
+import { Dimension, NanoID } from "../../../Dimension";
 
 export class EliminationTournament extends Tournament {
   configs: Tournament.TournamentConfigs<EliminationConfigs> = {
@@ -46,7 +46,7 @@ export class EliminationTournament extends Tournament {
     design: Design,
     files: Array<string> | Array<{file: string, name:string}>, 
     tournamentConfigs: Tournament.TournamentConfigsBase,
-    id: number,
+    id: NanoID,
     dimension: Dimension
   ) {
     super(design, files, id, tournamentConfigs, dimension);
@@ -257,17 +257,17 @@ export class EliminationTournament extends Tournament {
         // set up the seeding array and fill it up with null to fill up all empty spots
         let seeding = this.configs.tournamentConfigs.seeding;
         if (seeding == null) seeding = [];
-        if (seeding.length > this.competitors.length) {
+        if (seeding.length > this.competitors.size) {
           throw new FatalError(`Seeds provided cannot be greater than the number of competitors`);
         }
-        for (let i = 0; i < this.competitors.length - seeding.length; i++) {
+        for (let i = 0; i < this.competitors.size - seeding.length; i++) {
           seeding.push(null);
         }
         
 
         // find the leftover seeds that are not used
         let leftOverSeeds: Set<number> = new Set();
-        for (let i = 0; i < this.competitors.length; i++) {
+        for (let i = 0; i < this.competitors.size; i++) {
           leftOverSeeds.add(i + 1);
         }
         for (let i = 0; i < seeding.length; i++) {
@@ -298,7 +298,7 @@ export class EliminationTournament extends Tournament {
         });
         break;
     }
-    let pow = Math.ceil(Math.log2(this.competitors.length));
+    let pow = Math.ceil(Math.log2(this.competitors.size));
     let round = Math.pow(2, pow);
     this.state.currentRound = round;
     // generate rounds to play

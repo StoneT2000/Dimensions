@@ -1,4 +1,4 @@
-import { Dimension } from "../Dimension";
+import { Dimension, NanoID } from "../Dimension";
 import { Match } from "../Match";
 import { DeepPartial } from "../utils/DeepPartial";
 import { deepMerge } from "../utils/DeepMerge";
@@ -53,10 +53,10 @@ export abstract class DatabasePlugin extends Plugin {
   abstract storeMatch(match: Match): Promise<any>;
 
   /**
-   * Retrieves a match through its match ID or some string identifier
-   * @param id - some identifier
+   * Retrieves a match through its match ID
+   * @param id - a NanoID
    */
-  abstract getMatch(id: Match.ID | string): Promise<any>;
+  abstract getMatch(id: NanoID): Promise<any>;
 
   /**
    * TODO: Add user CRUD

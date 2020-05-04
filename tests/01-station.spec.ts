@@ -5,6 +5,7 @@ import chaiAsPromised from 'chai-as-promised';
 import sinonChai from "sinon-chai";
 import 'mocha';
 import { Station, Logger } from '../src';
+import { NanoID } from '../src/Dimension';
 const expect = chai.expect;
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
@@ -36,7 +37,7 @@ describe('Testing Station Class', () => {
     });
     station = d.getStation();
     expect(station).to.not.equal(null);
-    let dimensions = <Map<number, Dimension.DimensionType>>station.app.get('dimensions');
+    let dimensions = <Map<NanoID, Dimension.DimensionType>>station.app.get('dimensions');
     expect(dimensions.size).to.equal(0);
   });
   it('should observe if asked', () => {
@@ -47,7 +48,7 @@ describe('Testing Station Class', () => {
     });
     station = d.getStation();
     expect(station).to.not.equal(null);
-    let dimensions = <Map<number, Dimension.DimensionType>>station.app.get('dimensions');
+    let dimensions = <Map<NanoID, Dimension.DimensionType>>station.app.get('dimensions');
     expect(dimensions.get(d.id).id).to.equal(d.id);
   });
   it('should restart', () => {

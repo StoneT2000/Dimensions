@@ -12,7 +12,7 @@ import RANK_SYSTEM = Tournament.RANK_SYSTEM;
 import { sprintf } from 'sprintf-js';
 import { Logger } from "../../../Logger";
 import { ELOSystem, ELORating } from "../../ELO";
-import { Dimension } from "../../../Dimension";
+import { Dimension, NanoID } from "../../../Dimension";
 
 export class LadderTournament extends Tournament {
   configs: Tournament.TournamentConfigs<LadderConfigs> = {
@@ -46,9 +46,9 @@ export class LadderTournament extends Tournament {
 
   constructor(
     design: Design,
-    files: Array<string> | Array<{file: string, name:string}>, 
+    files: Array<string> | Array<{file: string, name:string, existingID?: string}>, 
     tournamentConfigs: Tournament.TournamentConfigsBase,
-    id: number,
+    id: NanoID,
     dimension: Dimension
   ) {
     super(design, files, id, tournamentConfigs, dimension);
@@ -85,7 +85,12 @@ export class LadderTournament extends Tournament {
 
     // add all players
     files.forEach((file) => {
-      this.addplayer(file);
+      if (typeof file === 'string') {
+        this.addplayer(file);
+      }
+      else {
+        this.addplayer(file, file.existingID);
+      }
     });
 
     this.status = Tournament.TournamentStatus.INITIALIZED;
@@ -163,7 +168,7 @@ export class LadderTournament extends Tournament {
    */
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<LadderConfigs>>) {
     
-    this.log.info('Running Tournament with competitors: ', this.competitors.map((player) => player.tournamentID.name));
+    this.log.info('Running Tournament');
     this.configs = deepMerge(this.configs, configs, true);
     this.initialize();
     this.schedule();
@@ -284,9 +289,10 @@ export class LadderTournament extends Tournament {
     // runs a round of scheduling
     // for every player, we schedule some m matches (TODO: configurable)
     // let rankings = this.getRankings();
+    let compArray = Array.from(this.competitors.values());
     for (let i = 0; i < matchCount; i++) {
       let competitorCount = this.selectRandomAgentAmountForMatch();
-      let random = this.selectRandomplayersFromArray(this.competitors, competitorCount);
+      let random = this.selectRandomplayersFromArray(compArray, competitorCount);
       this.matchQueue.push([...random]);
     }
   }
@@ -296,7 +302,7 @@ export class LadderTournament extends Tournament {
   }
 
   // using resovoir sampling to select num distinct randomly
-  private selectRandomplayersFromArray(arr, num: number, excludedSet: Set<number> = new Set()) {
+  private selectRandomplayersFromArray(arr: Array<any>, num: number, excludedSet: Set<number> = new Set()) {
     let reservoir = [];
     // put the first num into reservoir
     for (let i = 0; i < num; i++) {
@@ -354,17 +360,17 @@ export class LadderTournament extends Tournament {
     if (this.log.level > Logger.LEVEL.NONE) {
       console.clear();
       console.log(this.log.bar())
-      console.log(`Tournament: ${this.name} \nStatus: ${this.status} | Competitors: ${this.competitors.length} | Rank System: ${this.configs.rankSystem}\n`);
+      console.log(`Tournament - ID: ${this.id}, Name: ${this.name} | Dimension - ID: ${this.dimension.id}, Name: ${this.dimension.name}\nStatus: ${this.status} | Competitors: ${this.competitors.size} | Rank System: ${this.configs.rankSystem}\n`);
       console.log('Total Matches: ' + this.state.statistics.totalMatches + ' | Matches Queued: '  + this.matchQueue.length);
       let ranks;
       switch(this.configs.rankSystem) {
         case RANK_SYSTEM.TRUESKILL:
           ranks = this.getRankings();
           console.log(sprintf(
-            `%-30s | %-8s | %-15s | %-18s | %-8s`.underline, 'Name', 'ID', 'Score=(μ - 3σ)', 'Mu: μ, Sigma: σ', 'Matches'));
+            `%-30s | %-14s | %-15s | %-18s | %-8s`.underline, 'Name', 'ID', 'Score=(μ - 3σ)', 'Mu: μ, Sigma: σ', 'Matches'));
           ranks.forEach((info) => {
             console.log(sprintf(
-              `%-30s`.blue+ ` | %-8s | ` + `%-15s`.green + ` | ` + `μ=%-6s, σ=%-6s`.yellow +` | %-8s`, info.player.tournamentID.name, info.player.tournamentID.id, info.rankState.score.toFixed(7), info.rankState.rating.mu.toFixed(3), info.rankState.rating.sigma.toFixed(3), info.matchesPlayed));
+              `%-30s`.blue+ ` | %-14s | ` + `%-15s`.green + ` | ` + `μ=%-6s, σ=%-6s`.yellow +` | %-8s`, info.player.tournamentID.name, info.player.tournamentID.id, info.rankState.score.toFixed(7), info.rankState.rating.mu.toFixed(3), info.rankState.rating.sigma.toFixed(3), info.matchesPlayed));
           });
           break;
         case RANK_SYSTEM.ELO:

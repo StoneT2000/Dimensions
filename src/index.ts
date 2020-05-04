@@ -3,7 +3,8 @@
  */
 
 export * from './Station';
-export { create, Dimension as DimensionType } from './Dimension';
+export { create, Dimension as DimensionType, DatabaseType } from './Dimension';
+export type { NanoID as nanoid } from './Dimension';
 export * from './Logger';
 export * from './Design';
 export * from './Agent';

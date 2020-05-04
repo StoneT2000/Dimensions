@@ -77,8 +77,18 @@ describe('Testing with custom Battlehack2020 design', () => {
     });
     it('should run a tourney fine', async () => {
       let res = await tourney.run();
-      expect(res.playerStats.get('t0_0')).to.contain({wins: 2, ties: 0, losses: 0, matchesPlayed: 2});
-      expect(res.playerStats.get('t0_1')).to.contain({wins: 0, ties: 0, losses: 2, matchesPlayed: 2});
+      tourney.competitors.forEach((player) => {
+        switch (player.tournamentID.name) {
+          case 'example_1':
+            expect(res.playerStats.get(player.tournamentID.id)).to.contain({wins: 2, ties: 0, losses: 0, matchesPlayed: 2});
+            break;
+          case 'empty_1':
+            expect(res.playerStats.get(player.tournamentID.id)).to.contain({wins: 0, ties: 0, losses: 2, matchesPlayed: 2});
+            break;
+        }
+      })
+      
+      
     });
   });
 });

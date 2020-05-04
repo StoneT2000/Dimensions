@@ -30,7 +30,7 @@ router.get('/', (req:Request, res: Response) => {
 const getDimension = (req: Request, res, next: express.NextFunction) => {
   let id = req.params.id;
   if (!id) return next(new error.BadRequest('ID must be provided'));
-  let dimension: Dimension = req.app.get('dimensions').get(parseInt(id));
+  let dimension: Dimension = req.app.get('dimensions').get(id);
   if (!dimension) {
     
     return next(new error.BadRequest('No Dimension found'));
@@ -47,7 +47,10 @@ const pickDimension = (d: Dimension) => {
   let picked = {...pick(d, 'configs', 'id', 'log', 'name', 'statistics')};
   let pickedDesign = pickDesign(d.design);
   picked.design = pickedDesign;
-  let pickedTournaments = d.tournaments.map((t) => pickTournament(t));
+  let pickedTournaments = {}
+  d.tournaments.forEach((t) => {
+    pickedTournaments[t.id] = pickTournament(t);
+  });
   picked.tournaments = pickedTournaments;
   return picked;
 }
@@ -80,12 +83,14 @@ router.get('/:id/match', (req: Request, res: Response) => {
 /**
  * Deletes a match
  */
-router.delete('/:id/match/:matchID', (req, res, next) => {
-  return req.data.dimension.removeMatch(parseInt(req.params.matchID)).then(() => {
-    res.json({error: null});
-  }).catch((error) => {
+router.delete('/:id/match/:matchID', async (req, res, next) => {
+  try {
+    await req.data.dimension.removeMatch(req.params.matchID);
+    res.json({ error: null });
+  }
+  catch (error) {
     return next(new error.InternalServerError('Something went wrong'));
-  });
+  }
   // TODO: There should be a better way to abstract this so we don't need to store something related to the match API
   // in the dimensions API.
   // I also don't want to store a removeMatch function in the match itself as that doesn't make sense.
@@ -96,8 +101,11 @@ router.delete('/:id/match/:matchID', (req, res, next) => {
  * Gets all tournaments in a dimension
  */
 router.get('/:id/tournament', (req: Request, res: Response) => {
-  let tourneyData = req.data.dimension.tournaments.map((t) => pickTournament(t));
-  res.json({error: null, tournaments: tourneyData});
+  let pickedTournaments = {}
+  req.data.dimension.tournaments.forEach((t) => {
+    pickedTournaments[t.id] = pickTournament(t);
+  });
+  res.json({error: null, tournaments: pickedTournaments});
 });
 
 /**

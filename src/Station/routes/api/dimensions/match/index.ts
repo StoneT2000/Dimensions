@@ -20,10 +20,10 @@ const router = express.Router();
 export const getMatch = async (req: Request, res: Response, next: NextFunction) => {
   let match: Match;
   if (req.data.tournament) {
-    match = req.data.tournament.matches.get(parseInt(req.params.matchID));
+    match = req.data.tournament.matches.get(req.params.matchID);
   }
   else if (req.data.dimension) {
-    match = req.data.dimension.matches.get(parseInt(req.params.matchID));
+    match = req.data.dimension.matches.get(req.params.matchID);
   }
   else {
     return next(new error.BadRequest(`System error. match API route was added out of order`));
@@ -31,7 +31,7 @@ export const getMatch = async (req: Request, res: Response, next: NextFunction) 
   if (!match) {
     if (req.data.dimension.hasDatabase()) {
       try {
-        match = await req.data.dimension.databasePlugin.getMatch(parseInt(req.params.matchID));
+        match = await req.data.dimension.databasePlugin.getMatch(req.params.matchID);
       } catch (error) {
         return next(error);
       }

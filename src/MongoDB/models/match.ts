@@ -51,7 +51,6 @@ const MatchSchemaCreator = (options: DeepPartial<MongoDB.MatchSchemaOptions> = {
 
 const MatchSchema = new Schema({
   name: String,
-  id: ObjectId,
   creationDate: { type: Schema.Types.Date, default: Date.now },
   results: Schema.Types.Mixed,
   state: Schema.Types.Mixed

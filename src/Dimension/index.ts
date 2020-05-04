@@ -13,6 +13,7 @@ import { LadderTournament } from '../Tournament/TournamentTypes/Ladder';
 import { exec, ChildProcess } from 'child_process';
 import { BOT_USER, COMPILATION_USER } from '../MatchEngine';
 import { Plugin, DatabasePlugin } from '../Plugin';
+import { genID } from '../utils';
 
 
 /**
@@ -22,6 +23,11 @@ export enum DatabaseType {
   NONE = 'none',
   MONGO = 'mongo'
 }
+
+/**
+ * An id generated using nanoid
+ */
+export type NanoID = string;
 
 /**
  * Dimension configurations
@@ -59,14 +65,12 @@ export class Dimension {
   /**
    * The matches running in this Dimension
    */
-  public matches: Map<Match.ID, Match> = new Map();
+  public matches: Map<NanoID, Match> = new Map();
 
   /**
    * Tounraments in this Dimension.
    */
-  public tournaments: Array<Tournament> = [];
-
-  static id: number = 0;
+  public tournaments: Map<NanoID, Tournament> = new Map();
 
   /**
    * This Dimension's name
@@ -76,7 +80,7 @@ export class Dimension {
   /**
    * This dimension's ID
    */
-  public id: number = 0;
+  public id: NanoID;
 
   /**
    * Logger
@@ -110,7 +114,6 @@ export class Dimension {
     observe: true,
     loggingLevel: Logger.LEVEL.INFO,
     defaultMatchConfigs: {
-      dimensionID: this.id,
       secureMode: false
     },
     secureMode: false,
@@ -121,8 +124,32 @@ export class Dimension {
 
     // override configs with user provided configs
     this.configs = deepMerge(this.configs, configs);
-
+    // generate ID
+    this.id = Dimension.genDimensionID();
+    
     this.log.level = this.configs.loggingLevel;
+    
+
+    // open up a new station for the current node process if it hasn't been opened yet and there is a dimension that 
+    // is asking for a station to be initiated
+    if (this.configs.activateStation === true && Dimension.Station == null) {
+      Dimension.Station = new Station('Station', [], this.configs.loggingLevel);
+    }
+
+    
+    
+    // default match log level and design log level is the same as passed into the dimension
+    this.configs.defaultMatchConfigs.loggingLevel = this.configs.loggingLevel;
+    this.design.setLogLevel(this.configs.loggingLevel);
+    
+    // set name
+    if (this.configs.name) {
+      this.name = this.configs.name;
+    }
+    else {
+      this.name = `dimension_${this.id}`;
+    }
+    this.log.identifier = `${this.name} Log`
 
     // log important messages regarding security
     if (this.configs.secureMode) {
@@ -131,39 +158,14 @@ export class Dimension {
     else {
       this.log.error(`WARNING: Running in non-secure mode. You will not be protected against malicious bots`);
     }
-
     // setting securemode in dimension config also sets it for default match configs
     this.configs.defaultMatchConfigs.secureMode = this.configs.secureMode;
-
-
-    // open up a new station for the current node process if it hasn't been opened yet and there is a dimension that 
-    // is asking for a station to be initiated
-    if (this.configs.activateStation === true && Dimension.Station == null) {
-      Dimension.Station = new Station('Station', [], this.configs.loggingLevel);
-    }
-    this.log.info('Dimension Configs', this.configs);
     
-    // default match log level and design log level is the same as passed into the dimension
-    this.configs.defaultMatchConfigs.loggingLevel = this.configs.loggingLevel;
-    this.design.setLogLevel(this.configs.loggingLevel);
-
-    // set name
-    if (this.configs.name) {
-      this.name = this.configs.name;
-    }
-    else {
-      this.name = `dimension_${Dimension.id}`;
-    }
-    this.id = Dimension.id;
-    this.log.detail(`Created Dimension: ` + this.name);
-    Dimension.id++;
-
     // make the station observe this dimension when this dimension is created
     if (this.configs.observe === true) Dimension.Station.observe(this);
 
-    // by default link all matches created by this dimension to this dimension
-    this.configs.defaultMatchConfigs.dimensionID = this.id;
-
+    this.log.info(`Created Dimension - ID: ${this.id}, Name: ${this.name}`);
+    this.log.detail('Dimension Configs', this.configs);
   }
   /**
    * Create a match with the given files with the given unique name. It rejects if a fatal error occurs and resolves 
@@ -258,7 +260,7 @@ export class Dimension {
    * @returns a Tournament of the specified type
    */
   public createTournament(files: Array<string> | Array<{file: string, name:string}>, configs: Tournament.TournamentConfigsBase): Tournament {
-      let id = this.statistics.tournamentsCreated;
+      let id = Tournament.genTournamentClassID();
       let newTourney: Tournament;
       if (configs.loggingLevel === undefined) {
         // set default logging level to that of the dimension
@@ -281,7 +283,7 @@ export class Dimension {
           break;
       }
       this.statistics.tournamentsCreated++;
-      this.tournaments.push(newTourney);
+      this.tournaments.set(id, newTourney);
       return newTourney;
   }
   // TODO give option to directly create a Ladder/RoundRobin ... tourney with createLadderTournament etc.
@@ -296,7 +298,7 @@ export class Dimension {
   /**
    * Removes a match by id. Returns true if deleted, false if nothing was deleted
    */
-  public async removeMatch(matchID: number) {
+  public async removeMatch(matchID: NanoID) {
     if (this.matches.has(matchID)) {
       let match = this.matches.get(matchID);
       await match.destroy();
@@ -360,6 +362,13 @@ export class Dimension {
       }
       
     });
+  }
+
+  /**
+   * Generates a 6 character nanoID string for identifying dimensions
+   */
+  public static genDimensionID() {
+    return genID(6);
   }
 
   /**

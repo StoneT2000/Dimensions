@@ -4,12 +4,15 @@ import { MatchEngine } from '../MatchEngine';
 import { Agent } from '../Agent';
 import { Logger } from '../Logger';
 import { Design } from '../Design';
-import { FatalError, MatchDestroyedError, MatchError, MatchWarn } from '../DimensionError';
+import { FatalError, MatchDestroyedError, MatchWarn } from '../DimensionError';
 import { Tournament } from '../Tournament';
+
 import EngineOptions = MatchEngine.EngineOptions;
 import COMMAND_STREAM_TYPE = MatchEngine.COMMAND_STREAM_TYPE;
 import Command = MatchEngine.Command;
 import { ChildProcess } from 'child_process';
+import { NanoID } from '../Dimension';
+import { genID } from '../utils';
 
 /**
  * @class Match
@@ -39,9 +42,9 @@ export class Match {
   public name: string;
   
   /**
-   * A unique ID for the match, unique to the current node process
+   * Match ID
    */
-  public id: Match.ID;
+  public id: NanoID;
 
   /**
    * The state field. This can be used to store anything by the user when this `match` is passed to the {@link Design} 
@@ -102,7 +105,6 @@ export class Match {
   public configs: Match.Configs = {
     name: '',
     loggingLevel: Logger.LEVEL.INFO,
-    dimensionID: null,
     engineOptions: {},
     secureMode: false
   };
@@ -128,8 +130,6 @@ export class Match {
   /** Rejecter for the run promise */
   private runReject: Function;
 
-  private static _id: number = 0;
-
   /**
    * Match Constructor
    * @param design - The {@link Design} used
@@ -145,13 +145,15 @@ export class Match {
 
     // override configs with provided configs argument
     this.configs = deepMerge(this.configs, configs);
+    
+    this.id = Match.genMatchID();
 
     this.creationDate = new Date();
     if (this.configs.name) {
       this.name = this.configs.name;
     }
     else {
-      this.name = `match_${Match._id}`;
+      this.name = `match_${this.id}`;
     }
 
     // set logging level to what was given
@@ -161,8 +163,7 @@ export class Match {
     // store reference to the matchEngine used and override any options
     this.matchEngine = new MatchEngine(this.design, this.log.level);
     this.matchEngine.setEngineOptions(configs.engineOptions);
-    this.id = Match._id;
-    Match._id++;
+    
   }
 
   /**
@@ -171,7 +172,7 @@ export class Match {
    */
   public async initialize(): Promise<boolean> {
     this.log.infobar();
-    this.log.info(`Design: ${this.design.name} | Initializing match: ${this.name}`);
+    this.log.info(`Design: ${this.design.name} | Initializing match - ID: ${this.id}, Name: ${this.name}`);
 
     let overrideOptions = this.design.getDesignOptions().override;
 
@@ -203,7 +204,6 @@ export class Match {
     await this.design.initialize(this);
 
     // remove initialized status and set as READY
-    // TODO: add more security checks etc. before marking match as ready to run
     this.matchStatus = Match.Status.READY;
 
     return true;
@@ -414,14 +414,6 @@ export class Match {
     return await this.design.getResults(this);
   }
 
-  /* TODO
-   * Set the move resolve policy
-   * @param config - The configuration to use for the next update. Specifically set conditions for when MatchEngine 
-   * should call agent.currentMoveResolve() and thus return commands and move to next update
-   */
-  // public async setAgentResolvePolicy(config = {}) {
-
-  // }
 
   /**
    * Sends a message to the standard input of all agents in this match
@@ -497,6 +489,13 @@ export class Match {
     await this.killAndCleanUp(); // Theoretically this line is not needed for custom matches, but in here in case
     await this.matchEngine.killAndCleanCustom(this);
   }
+
+  /**
+   * Generates a 12 character nanoID string for identifying matches
+   */
+  public static genMatchID() {
+    return genID(12);
+  }
 }
 
 export module Match {
@@ -513,10 +512,7 @@ export module Match {
      * @see {@link Logger}
      */
     loggingLevel: Logger.LEVEL,
-    /**
-     * The id of the dimension this match was generated from if there is one
-     */
-    dimensionID: number,
+
     /**
      * The engine options to use in this match.
      */
@@ -552,6 +548,4 @@ export module Match {
      */
     ERROR = 'error'
   }
-
-  export type ID = number
 }

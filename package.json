@@ -27,6 +27,7 @@
     "extract-zip": "^2.0.0",
     "formidable": "^1.2.2",
     "mongoose": "^5.9.11",
+    "nanoid": "^3.1.4",
     "ncp": "^2.0.0",
     "pidusage": "^2.0.18",
     "sprintf-js": "^1.1.2",

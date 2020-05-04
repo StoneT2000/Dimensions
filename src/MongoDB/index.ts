@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { Plugin, DatabasePlugin } from '../Plugin';
-import { Dimension, DatabaseType } from '../Dimension';
+import { Dimension, DatabaseType, NanoID } from '../Dimension';
 import MatchSchemaCreator from './models/match';
 import { Match } from '../Match';
 import { DeepPartial } from '../utils/DeepPartial';
@@ -43,10 +43,11 @@ export class MongoDB extends DatabasePlugin {
 
   public async storeMatch(match: Match): Promise<any> {
     let data = pickMatch(match);
-    return this.models.match.create(data);
+    // store all relevant data and store the id using the NanoID we generate
+    return this.models.match.create({...data, _id: data.id});
   }
-  public async getMatch(id: Match.ID) {
-    return this.models.match.findOne({id: id});
+  public async getMatch(id: NanoID) {
+    return this.models.match.findById(id);
   }
 
 
