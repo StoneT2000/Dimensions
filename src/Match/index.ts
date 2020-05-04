@@ -225,6 +225,11 @@ export class Match {
           this.log.system('Running custom');
           await this.matchEngine.runCustom(this);
           this.results = await this.getResults();
+
+          // process results with result handler if necessary
+          if (overrideOptions.resultHandler) {
+            this.results = overrideOptions.resultHandler(this.results);
+          }
           resolve(this.results);
         }
         else {
