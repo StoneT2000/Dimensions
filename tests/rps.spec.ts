@@ -24,7 +24,8 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
       name: 'RPS',
       activateStation: false,
       observe: false,
-      loggingLevel: Dimension.Logger.LEVEL.NONE
+      loggingLevel: Dimension.Logger.LEVEL.NONE,
+      secureMode: true
     });
     
     

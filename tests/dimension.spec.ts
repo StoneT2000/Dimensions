@@ -70,11 +70,11 @@ describe('Testing Dimension Class', () => {
       activateStation: true,
       observe: true,
       loggingLevel: Logger.LEVEL.INFO,
-      secureMode: true,
+      secureMode: false,
       defaultMatchConfigs: {
         dimensionID: d.id,
         loggingLevel: Logger.LEVEL.INFO,
-        secureMode: true,
+        secureMode: false,
       }
     });
   });

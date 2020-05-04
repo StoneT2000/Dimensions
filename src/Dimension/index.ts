@@ -90,9 +90,9 @@ export class Dimension {
     loggingLevel: Logger.LEVEL.INFO,
     defaultMatchConfigs: {
       dimensionID: this.id,
-      secureMode: true
+      secureMode: false
     },
-    secureMode: true
+    secureMode: false
   }
 
   constructor(public design: Design, configs: DeepPartial<DimensionConfigs> = {}) {
@@ -111,6 +111,9 @@ export class Dimension {
       this.log.important(`WARNING: Running in non-secure mode. You will not be protected against malicious bots`);
       this.log.importantBar();
     }
+
+    // setting securemode in dimension config also sets it for default match configs
+    this.configs.defaultMatchConfigs.secureMode = this.configs.secureMode;
 
 
     // open up a new station for the current node process if it hasn't been opened yet and there is a dimension that 

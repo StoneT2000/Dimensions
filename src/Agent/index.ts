@@ -58,7 +58,7 @@ export class Agent {
    * The agent's options
    */
   public options: Agent.Options = {
-    secureMode: true,
+    secureMode: false,
     loggingLevel: Logger.LEVEL.INFO,
     id: -1,
     tournamentID: null,
@@ -417,7 +417,7 @@ export class Agent {
    * @param loggingLevel - the logging level for all these agents
    * @param secureMode - whether to generate the agent securely. @default `true`
    */
-  static generateAgents(files: Array<String> | Array<{file: string, name: string}> | Array<{file: string, tournamentID: Tournament.ID}>, loggingLevel: Logger.LEVEL, secureMode: boolean = true): Array<Agent> {
+  static generateAgents(files: Array<String> | Array<{file: string, name: string}> | Array<{file: string, tournamentID: Tournament.ID}>, loggingLevel: Logger.LEVEL, secureMode: boolean = false): Array<Agent> {
     if (files.length === 0) {
       throw new FatalError('No files provided to generate agents with!');
     }

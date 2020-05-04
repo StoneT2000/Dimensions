@@ -99,7 +99,7 @@ export class Match {
     loggingLevel: Logger.LEVEL.INFO,
     dimensionID: null,
     engineOptions: {},
-    secureMode: true
+    secureMode: false
   };
 
   /** Match process used to store the process governing a match running on a custom design */
