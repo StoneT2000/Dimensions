@@ -5,7 +5,7 @@ import MatchSchemaCreator from './models/match';
 import { Match } from '../Match';
 import { DeepPartial } from '../utils/DeepPartial';
 import { pickMatch } from '../Station/routes/api/dimensions/match';
-let ObjectId = mongoose.Schema.Types.ObjectId;
+
 export class MongoDB extends DatabasePlugin {
   public name = 'MongoDB';
   public type = Plugin.Type.DATABASE;
