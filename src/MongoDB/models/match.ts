@@ -10,6 +10,7 @@ const defaultMatchSchemaOptions: MongoDB.MatchSchemaOptions = {
   results: true,
   creationDate: true,
   finishDate: true,
+  agents: true
 }
 const MatchSchemaCreator = (options: DeepPartial<MongoDB.MatchSchemaOptions> = {}) => {
   let schemaOptions: MongoDB.MatchSchemaOptions = 
@@ -38,6 +39,11 @@ const MatchSchemaCreator = (options: DeepPartial<MongoDB.MatchSchemaOptions> = {
   if (schemaOptions.state) {
     schema.add({
       state: Schema.Types.Mixed
+    });
+  }
+  if (schemaOptions.agents) {
+    schema.add({
+      agents: Schema.Types.Mixed
     });
   }
   return schema;

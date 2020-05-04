@@ -150,7 +150,6 @@ export class Agent {
         break;
       default:
     }
-    
 
     // if we are running in secure mode, we copy the agent over to a temporary directory
     if (this.options.secureMode) {
@@ -458,7 +457,7 @@ export module Agent {
     /** Agent is finished and no longer in use after {@link Match} ended or was prematurely killed */
     KILLED = 'killed',
     /** Agent is currently not running */
-    STOPPED = 'stpped'
+    STOPPED = 'stopped'
   }
   /**
    * Agent ID

@@ -3,9 +3,9 @@ import { Plugin, DatabasePlugin } from '../Plugin';
 import { Dimension, DatabaseType } from '../Dimension';
 import MatchSchemaCreator from './models/match';
 import { Match } from '../Match';
-import { pick } from '../utils';
 import { DeepPartial } from '../utils/DeepPartial';
-
+import { pickMatch } from '../Station/routes/api/dimensions/match';
+let ObjectId = mongoose.Schema.Types.ObjectId;
 export class MongoDB extends DatabasePlugin {
   public name = 'MongoDB';
   public type = Plugin.Type.DATABASE;
@@ -43,7 +43,12 @@ export class MongoDB extends DatabasePlugin {
   }
 
   public async storeMatch(match: Match): Promise<any> {
-    return this.models.match.create({...pick(match, 'results', 'state', 'creationDate', 'name', 'id', 'finishDate', 'matchStatus')});
+    let data = pickMatch(match);
+    console.log('create', data);
+    return this.models.match.create(data);
+  }
+  public async getMatch(id: Match.ID) {
+    return this.models.match.findOne({id: id});
   }
 
 
@@ -61,7 +66,8 @@ export module MongoDB {
     state: boolean,
     results: boolean
     creationDate: boolean,
-    finishDate: boolean
+    finishDate: boolean,
+    agents: boolean
   }
   export interface Models {
     user: mongoose.Model<mongoose.Document, {}>,

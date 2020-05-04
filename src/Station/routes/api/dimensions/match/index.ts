@@ -9,11 +9,17 @@ import agentRouter, { pickAgent } from './agent';
 const router = express.Router();
 
 /**
- * Get match by matchID. Requires a tournament or dimension to be stored
+ * Get match by matchID. Requires a tournament or dimension to be stored. 
+ * 
+ * For tournaments, it will get a match only if it's active. Otherwise a database plugin is needed in order to retrieve
+ * the match. NOTE that the database plugin will not recover all of the same match data as usually returned from active
+ * matches
+ * 
+ * For dimension run match (via {@link Dimension.runMatch}), it is retrievable as long as it has not been destroyed
  */
-export const getMatch = (req: Request, res: Response, next: NextFunction) => {
+export const getMatch = async (req: Request, res: Response, next: NextFunction) => {
   let match: Match;
-  if (req.data.tournament){
+  if (req.data.tournament) {
     match = req.data.tournament.matches.get(parseInt(req.params.matchID));
   }
   else if (req.data.dimension) {
@@ -23,6 +29,18 @@ export const getMatch = (req: Request, res: Response, next: NextFunction) => {
     return next(new error.BadRequest(`System error. match API route was added out of order`));
   }
   if (!match) {
+    if (req.data.dimension.hasDatabase()) {
+      try {
+        match = await req.data.dimension.databasePlugin.getMatch(parseInt(req.params.matchID));
+        console.log(match);
+      } catch (error) {
+        return next(error);
+      }
+    }
+  }
+
+  if (!match) {
+    
     return next(new error.BadRequest(`No match found with name or id of '${req.params.matchID}' in dimension ${req.data.dimension.id} - '${req.data.dimension.name}'`));
   }
   req.data.match = match;
@@ -33,8 +51,10 @@ export const getMatch = (req: Request, res: Response, next: NextFunction) => {
  * Pick relevant fields of a match
  */
 export const pickMatch = (match: Match) => {
-  let picked = pick(match, 'agentFiles','configs', 'creationDate','id', 'idToAgentsMap','log', 'mapAgentIDtoTournamentID', 'matchStatus','name');
-  picked.agents = match.agents.map((agent) => pickAgent(agent));
+  let picked = pick(match,'configs', 'creationDate', 'id','log', 'mapAgentIDtoTournamentID', 'matchStatus','name', 'finishDate', 'results');
+  if (match.agents) {
+    picked.agents = match.agents.map((agent) => pickAgent(agent));
+  }
   return picked;
 };
 

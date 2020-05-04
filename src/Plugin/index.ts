@@ -2,6 +2,7 @@ import { Dimension } from "../Dimension";
 import { Match } from "../Match";
 import { DeepPartial } from "../utils/DeepPartial";
 import { deepMerge } from "../utils/DeepMerge";
+import mongoose from 'mongoose';
 
 export abstract class Plugin {
 
@@ -50,6 +51,12 @@ export abstract class DatabasePlugin extends Plugin {
    * Resolves when done
    */
   abstract storeMatch(match: Match): Promise<any>;
+
+  /**
+   * Retrieves a match through its match ID or some string identifier
+   * @param id - some identifier
+   */
+  abstract getMatch(id: Match.ID | string): Promise<any>;
 
   /**
    * TODO: Add user CRUD

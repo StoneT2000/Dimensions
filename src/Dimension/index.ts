@@ -266,6 +266,11 @@ export class Dimension {
         // set default logging level to that of the dimension
         configs.loggingLevel = this.log.level;
       }
+
+      // merge default match configs from dimension
+      let dimensionDefaultMatchConfigs = deepCopy(this.configs.defaultMatchConfigs);
+      configs = deepMerge({defaultMatchConfigs: dimensionDefaultMatchConfigs}, configs);
+      
       switch(configs.type) {
         case Tournament.TOURNAMENT_TYPE.ROUND_ROBIN:
           newTourney = new RoundRobinTournament(this.design, files, configs, id, this);

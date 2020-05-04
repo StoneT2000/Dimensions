@@ -71,6 +71,7 @@ describe('Testing Dimension Class', () => {
       observe: true,
       loggingLevel: Logger.LEVEL.INFO,
       secureMode: false,
+      backingDatabase: "none",
       defaultMatchConfigs: {
         dimensionID: d.id,
         loggingLevel: Logger.LEVEL.INFO,
