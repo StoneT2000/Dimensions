@@ -8,6 +8,7 @@ import EliminationConfigs = Tournament.Elimination.Configs;
 import RANK_SYSTEM = Tournament.RANK_SYSTEM;
 import { FatalError, TournamentError } from "../../../DimensionError";
 import { Agent } from "../../../Agent";
+import { Dimension } from "../../../Dimension";
 
 export class EliminationTournament extends Tournament {
   configs: Tournament.TournamentConfigs<EliminationConfigs> = {
@@ -45,9 +46,10 @@ export class EliminationTournament extends Tournament {
     design: Design,
     files: Array<string> | Array<{file: string, name:string}>, 
     tournamentConfigs: Tournament.TournamentConfigsBase,
-    id: number
+    id: number,
+    dimension: Dimension
   ) {
-    super(design, files, id, tournamentConfigs);
+    super(design, files, id, tournamentConfigs, dimension);
     if (tournamentConfigs.consoleDisplay) {
       this.configs.consoleDisplay = tournamentConfigs.consoleDisplay;
     }
@@ -191,7 +193,13 @@ export class EliminationTournament extends Tournament {
     let matchRes = await this.runMatch(matchInfo);
     let res: RANK_SYSTEM.WINS.Results = this.configs.resultHandler(matchRes.results);
 
-    if (this.configs.tournamentConfigs.storePastResults) this.state.results.push(res);
+    // store past results
+    if (this.configs.tournamentConfigs.storePastResults) {
+      if (!(this.dimension.hasDatabase() && this.dimension.databasePlugin.configs.saveTournamentMatches)) {
+        // if we have don't have a database that is set to actively store tournament matches we store locally
+        this.state.results.push(res);
+      }
+    }
     this.state.statistics.totalMatches++;
 
     let rankSystemConfigs: RANK_SYSTEM.WINS.Configs = this.configs.rankSystemConfigs;

@@ -29,6 +29,11 @@ export class Match {
   public creationDate: Date;
 
   /**
+   * When the match finished
+   */
+  public finishDate: Date;
+
+  /**
    * Name of the match
    */
   public name: string;
@@ -36,7 +41,7 @@ export class Match {
   /**
    * A unique ID for the match, unique to the current node process
    */
-  public id: number;
+  public id: Match.ID;
 
   /**
    * The state field. This can be used to store anything by the user when this `match` is passed to the {@link Design} 
@@ -225,7 +230,8 @@ export class Match {
           this.log.system('Running custom');
           await this.matchEngine.runCustom(this);
           this.results = await this.getResults();
-          resolve(this.results);
+          // we don't perform a kill and clean up here because we expect a custom design to do it itself
+
         }
         else {
           // otherwise run the match using the design with calls to this.next()
@@ -237,11 +243,14 @@ export class Match {
             agent.clearTimer();
           });
           this.results = await this.getResults();
+
+          // kill processes and clean up
           // TODO: Perhaps add a cleanup status if cleaning up processes takes a long time
           await this.killAndCleanUp();
         
-          resolve(this.results);
         }
+        this.finishDate = new Date();
+        resolve(this.results);
       }
       catch (error) {
         reject(error);
@@ -543,4 +552,6 @@ export module Match {
      */
     ERROR = 'error'
   }
+
+  export type ID = number
 }

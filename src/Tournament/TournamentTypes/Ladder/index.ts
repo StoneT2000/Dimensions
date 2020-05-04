@@ -12,6 +12,7 @@ import RANK_SYSTEM = Tournament.RANK_SYSTEM;
 import { sprintf } from 'sprintf-js';
 import { Logger } from "../../../Logger";
 import { ELOSystem, ELORating } from "../../ELO";
+import { Dimension } from "../../../Dimension";
 
 export class LadderTournament extends Tournament {
   configs: Tournament.TournamentConfigs<LadderConfigs> = {
@@ -47,9 +48,10 @@ export class LadderTournament extends Tournament {
     design: Design,
     files: Array<string> | Array<{file: string, name:string}>, 
     tournamentConfigs: Tournament.TournamentConfigsBase,
-    id: number
+    id: number,
+    dimension: Dimension
   ) {
-    super(design, files, id, tournamentConfigs);
+    super(design, files, id, tournamentConfigs, dimension);
     this.configs = deepMerge(this.configs, tournamentConfigs, true);
 
     switch(this.configs.rankSystem) {
@@ -431,8 +433,13 @@ export class LadderTournament extends Tournament {
         this.handleMatchWithELO();
         break;
     }
+
+    // store past results
     if (this.configs.tournamentConfigs.storePastResults) {
-      this.state.results.push(matchRes.results);
+      if (!(this.dimension.hasDatabase() && this.dimension.databasePlugin.configs.saveTournamentMatches)) {
+        // if we have don't have a database that is set to actively store tournament matches we store locally
+        this.state.results.push(matchRes.results);
+      }
     }
   }
 

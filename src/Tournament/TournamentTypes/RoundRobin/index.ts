@@ -7,6 +7,7 @@ import { Agent } from "../../../Agent";
 import { Logger } from "../../../Logger";
 import RANK_SYSTEM = Tournament.RANK_SYSTEM;
 import { sprintf } from 'sprintf-js';
+import { Dimension } from "../../../Dimension";
 
 /**
  * The Round Robin Tournament Class
@@ -43,9 +44,10 @@ export class RoundRobinTournament extends Tournament {
     design: Design,
     files: Array<string> | Array<{file: string, name:string}>, 
     tournamentConfigs: Tournament.TournamentConfigsBase,
-    id: number
+    id: number,
+    dimension: Dimension
   ) {
-    super(design, files, id, tournamentConfigs);
+    super(design, files, id, tournamentConfigs, dimension);
     if (tournamentConfigs.consoleDisplay) {
       this.configs.consoleDisplay = tournamentConfigs.consoleDisplay;
     }
@@ -136,7 +138,13 @@ export class RoundRobinTournament extends Tournament {
     let matchRes = await this.runMatch(matchInfo);
     let resInfo = <Tournament.RANK_SYSTEM.WINS.Results>this.configs.resultHandler(matchRes.results);
     
-    if (this.configs.tournamentConfigs.storePastResults) this.state.results.push(matchRes.results);
+    // store past results
+    if (this.configs.tournamentConfigs.storePastResults) {
+      if (!(this.dimension.hasDatabase() && this.dimension.databasePlugin.configs.saveTournamentMatches)) {
+        // if we have don't have a database that is set to actively store tournament matches we store locally
+        this.state.results.push(matchRes.results);
+      }
+    }
     
     // update total matches
     this.state.statistics.totalMatches++;

@@ -10,6 +10,7 @@ import { Agent } from '../Agent';
 import { deepCopy } from '../utils/DeepCopy';
 import { Rating } from 'ts-trueskill';
 import { ELORating } from './ELO';
+import { Dimension, DatabaseType } from '../Dimension';
 
 /**
  * Player class that persists data for the same ephemereal agent across multiple matches
@@ -32,7 +33,7 @@ export abstract class Tournament {
   abstract configs: Tournament.TournamentConfigsBase;
 
   /** Mapping match ids to active ongoing matches */
-  public matches: Map<number, Match> = new Map();
+  public matches: Map<Match.ID, Match> = new Map();
 
   /** A queue whose elements are each arrays of player that are to compete against each other */
   public matchQueue: Array<Array<Player>> = [];
@@ -51,6 +52,9 @@ export abstract class Tournament {
 
   private playerID = 0;
 
+  /** A reference to the dimension this tournament was spawned from */
+  public dimension: Dimension;
+
   /**
    * This Tournament's name
    */
@@ -60,11 +64,13 @@ export abstract class Tournament {
     protected design: Design,
     files: Array<string> | Array<{file: string, name:string}>, 
     public id: number,
-    tournamentConfigs: Tournament.TournamentConfigsBase
+    tournamentConfigs: Tournament.TournamentConfigsBase,
+    dimension: Dimension
   ) {
     this.log.level = (tournamentConfigs.loggingLevel !== undefined) ? tournamentConfigs.loggingLevel : Logger.LEVEL.INFO;
     this.name = tournamentConfigs.name ? tournamentConfigs.name : `tournament_${this.id}`;
     this.log.identifier = this.name;
+    this.dimension = dimension;
   }
 
   /**
@@ -218,6 +224,14 @@ export abstract class Tournament {
 
     // Get results
     let results = await match.run();
+
+    // if database plugin is active and saveTournamentMatches is set to true, store match
+    if (this.dimension.hasDatabase()) {
+      if (this.dimension.databasePlugin.configs.saveTournamentMatches) {
+        this.dimension.databasePlugin.storeMatch(match);
+      }
+    }
+
     // remove the match from the active matches list
     this.matches.delete(match.id);
     // TODO: Add option to just archive matches instead
@@ -523,8 +537,9 @@ export module Tournament {
        * A map from a {@link Player} Tournament ID string to statistics
        */
       playerStats: Map<string, {player: Player, wins: number, ties: number, losses: number, matchesPlayed: number}>
+      
       /**
-       * Stats for this Tournament
+       * Stats for this Tournament in this instance. Intended to be constant memory usage
        */
       statistics: {
         totalMatches: number
@@ -566,8 +581,9 @@ export module Tournament {
        * A map from a {@link Player} Tournament ID string to statistics
        */
       playerStats: Map<string, {player: Player, wins: number, ties: number, losses: number, matchesPlayed: number, rankState: any}>
+      
       /**
-       * Stats for this Tournament
+       * Stats for this Tournament in this instance. Intended to be constant memory usage
        */
       statistics: {
         totalMatches: number
@@ -616,8 +632,9 @@ export module Tournament {
        * A map from a {@link Player} Tournament ID string to statistics
        */
       playerStats: Map<string, {player: Player, wins: number, losses: number, matchesPlayed: number, seed: number, rank: number}>
+      
       /**
-       * Stats for this Tournament
+       * Stats for this Tournament in this instance. Intended to be constant memory usage
        */
       statistics: {
         totalMatches: number

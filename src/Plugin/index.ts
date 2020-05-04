@@ -1,14 +1,26 @@
 import { Dimension } from "../Dimension";
 import { Match } from "../Match";
+import { DeepPartial } from "../utils/DeepPartial";
+import { deepMerge } from "../utils/DeepMerge";
 
 export abstract class Plugin {
 
-  abstract type: Plugin.Type
+  /**
+   * Name of the plugin
+   */
+  abstract name: string;
+
+  /**
+   * Type of the plugin. Required in order for Dimensions to know how to use it
+   */
+  abstract type: Plugin.Type;
+
   /**
    * Manipulates the dimension as necessary for this plugin
    * @param dimension - the dimension the plugin is being applied on
+   * Should resolve when done
    */
-  abstract manipulate(dimension: Dimension): void;
+  abstract async manipulate(dimension: Dimension): Promise<void>;
 }
 
 /**
@@ -17,13 +29,25 @@ export abstract class Plugin {
  */
 export abstract class DatabasePlugin extends Plugin {
 
+  constructor(configs: DeepPartial<DatabasePlugin.Configs>) {
+    super();
+    deepMerge(this.configs, configs);
+  }
+
+  /** Default configs */
+  public configs: DatabasePlugin.Configs = {
+    saveMatches: true,
+    saveTournamentMatches: true
+  }
   /**
    * Performs any intialization tasks
+   * Resolves when done
    */
-  abstract initialize(): Promise<any>
+  abstract async initialize(): Promise<any>
 
   /**
    * Stores any match related data. Typically will just store match results
+   * Resolves when done
    */
   abstract storeMatch(match: Match): Promise<any>;
 
@@ -34,7 +58,26 @@ export abstract class DatabasePlugin extends Plugin {
 
 }
 
+export module DatabasePlugin {
+
+  /**
+   * Configuration interface for the {@link DatabasePlugin}
+   */
+  export interface Configs {
+
+    /** Whether or not to save matches into the database when we run {@link Dimension.runMatch} */
+    saveMatches: boolean,
+
+    /** Whether or not to save matches into the database when the tournament runs a match */
+    saveTournamentMatches: boolean
+  }
+}
+
 export module Plugin {
+
+  /**
+   * Enumeration for plugin types
+   */
   export enum Type {
 
     /** 

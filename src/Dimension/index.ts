@@ -15,6 +15,9 @@ import { BOT_USER, COMPILATION_USER } from '../MatchEngine';
 import { Plugin, DatabasePlugin } from '../Plugin';
 
 
+/**
+ * Some standard database type strings
+ */
 export enum DatabaseType {
   NONE = 'none',
   MONGO = 'mongo'
@@ -42,7 +45,10 @@ export interface DimensionConfigs {
    */
   secureMode: boolean,
 
-  backingDatabase: DatabaseType
+  /**
+   * String denoting what kind of backing database is being used
+   */
+  backingDatabase: string | DatabaseType
 }
 /**
  * @class Dimension
@@ -53,7 +59,7 @@ export class Dimension {
   /**
    * The matches running in this Dimension
    */
-  public matches: Map<number, Match> = new Map();
+  public matches: Map<Match.ID, Match> = new Map();
 
   /**
    * Tounraments in this Dimension.
@@ -234,9 +240,11 @@ export class Dimension {
     // Get results
     let results = await match.run();
 
-    // store results in backing database if it's supported
-    if (this.configs.backingDatabase === DatabaseType.MONGO) {
-
+    // if database plugin is active and saveMatches is set to true, store match
+    if (this.hasDatabase()) {
+      if (this.databasePlugin.configs.saveMatches) {
+        this.databasePlugin.storeMatch(match);
+      }
     }
 
     // Return the results
@@ -253,20 +261,20 @@ export class Dimension {
    */
   public createTournament(files: Array<string> | Array<{file: string, name:string}>, configs: Tournament.TournamentConfigsBase): Tournament {
       let id = this.statistics.tournamentsCreated;
-      let newTourney;
+      let newTourney: Tournament;
       if (configs.loggingLevel === undefined) {
         // set default logging level to that of the dimension
         configs.loggingLevel = this.log.level;
       }
       switch(configs.type) {
         case Tournament.TOURNAMENT_TYPE.ROUND_ROBIN:
-          newTourney = new RoundRobinTournament(this.design, files, configs, id);
+          newTourney = new RoundRobinTournament(this.design, files, configs, id, this);
           break;
         case Tournament.TOURNAMENT_TYPE.LADDER:
-          newTourney = new LadderTournament(this.design, files, configs, id);
+          newTourney = new LadderTournament(this.design, files, configs, id, this);
           break;
         case Tournament.TOURNAMENT_TYPE.ELIMINATION:
-          newTourney = new EliminationTournament(this.design, files, configs, id);
+          newTourney = new EliminationTournament(this.design, files, configs, id, this);
           break;
       }
       this.statistics.tournamentsCreated++;
@@ -356,14 +364,28 @@ export class Dimension {
    * 
    * @param plugin - the plugin
    */
-  public use(plugin: Plugin) {
-    plugin.manipulate(this);
+  public async use(plugin: Plugin) {
     switch(plugin.type) {
       case Plugin.Type.DATABASE:
+        this.log.info('Attaching Database Plugin ' + plugin.name);
+        // set to unknown to tell dimensions that there is some kind of database, we dont what it is yet
+        this.configs.backingDatabase = 'unknown';
+        this.databasePlugin = <DatabasePlugin>plugin;
+        await this.databasePlugin.initialize();
         break;
       case Plugin.Type.FILE_STORE:
         throw new FatalError('FILE_STORE Not supported yet');
+      default:
+        break;
     }
+    await plugin.manipulate(this);
+  }
+
+  /**
+   * Returns true if dimension has a database backing it
+   */
+  public hasDatabase() {
+    return this.databasePlugin && this.configs.backingDatabase !== DatabaseType.NONE;
   }
 
 }
