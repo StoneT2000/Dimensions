@@ -44,10 +44,10 @@ export class MongoDB extends DatabasePlugin {
   public async storeMatch(match: Match): Promise<any> {
     let data = pickMatch(match);
     // store all relevant data and store the id using the NanoID we generate
-    return this.models.match.create({...data, _id: data.id});
+    return this.models.match.create(data);
   }
   public async getMatch(id: NanoID) {
-    return this.models.match.findById(id);
+    return this.models.match.findOne({id: id});
   }
 
 
