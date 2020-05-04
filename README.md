@@ -336,7 +336,6 @@ to build the entire library, including any frontend code.
   - Give some guidelines
   - Add some options and default values for certain configurations, e.g.
     - Max command limit per `timeStep` (for a game of rock paper scissors, this would be 1, it wouldn't make sense to flood the `MatchEngine` with several commands, which could break the `Match`)
-- Distribute through `cluster` module and run tournaments in a distributed framework.
 - Add visualizers for rock paper scissors example and domination example (and others if possible)
 - Generalize a match visualizer
 - Add more example `Designs` and starter kits for other popular ai games
