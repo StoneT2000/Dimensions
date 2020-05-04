@@ -24,7 +24,6 @@ export class MongoDB extends DatabasePlugin {
     this.connectionString = connectionString;
     let matchSchema = MatchSchemaCreator();
     this.models.match = mongoose.model('Match', matchSchema);
-    // new this.models.match() 
   }
 
   /**
@@ -44,7 +43,6 @@ export class MongoDB extends DatabasePlugin {
 
   public async storeMatch(match: Match): Promise<any> {
     let data = pickMatch(match);
-    console.log('create', data);
     return this.models.match.create(data);
   }
   public async getMatch(id: Match.ID) {

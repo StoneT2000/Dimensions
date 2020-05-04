@@ -34,7 +34,11 @@ describe('Test dimensions/match', () => {
         expect(data.error).to.be.equal(null);
         
         let match0: Match = <Match>data.matches['0'];
-        expect(match.agentFiles).to.be.containSubset(match0.agentFiles);
+        match.agents.forEach((agent, i) => {
+          expect(agent.id).to.be.equal(match0.agents[i].id);
+          expect(agent.src).to.be.equal(match0.agents[i].src);
+          expect(agent.tournamentID).to.be.equal(match0.agents[i].tournamentID);
+        });
         expect(match.id).to.be.equal(match0.id);
         match.destroy();
         done();
@@ -50,7 +54,11 @@ describe('Test dimensions/match', () => {
         expect(data.error).to.be.equal(null);
         
         let match0: Match = <Match>data.match;
-        expect(match.agentFiles).to.be.containSubset(match0.agentFiles);
+        match.agents.forEach((agent, i) => {
+          expect(agent.id).to.be.equal(match0.agents[i].id);
+          expect(agent.src).to.be.equal(match0.agents[i].src);
+          expect(agent.tournamentID).to.be.equal(match0.agents[i].tournamentID);
+        });
         expect(match.id).to.be.equal(match0.id);
         match.destroy();
         done();

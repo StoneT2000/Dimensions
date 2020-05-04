@@ -28,7 +28,7 @@ export const getAgent = (req: Request, res: Response, next: NextFunction) => {
  * Picks out relevant fields of the agent
  */
 export const pickAgent = (agent: Agent) => {
-  let picked = pick(agent, 'creationDate', 'file', 'id', 'name', 'src', 'status', 'tournamentID');
+  let picked = pick(agent, 'creationDate', 'id', 'name', 'src', 'status', 'tournamentID');
   return picked;
 };
 

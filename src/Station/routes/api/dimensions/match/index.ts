@@ -32,7 +32,6 @@ export const getMatch = async (req: Request, res: Response, next: NextFunction) 
     if (req.data.dimension.hasDatabase()) {
       try {
         match = await req.data.dimension.databasePlugin.getMatch(parseInt(req.params.matchID));
-        console.log(match);
       } catch (error) {
         return next(error);
       }

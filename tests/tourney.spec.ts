@@ -129,7 +129,9 @@ describe('Tournament Testing with RPS', () => {
           consoleDisplay: false,
           defaultMatchConfigs: {
             bestOf: 3,
-            loggingLevel: Dimension.Logger.LEVEL.WARN
+            dimensionID: myDimension.id,
+            loggingLevel: Dimension.Logger.LEVEL.WARN,
+            secureMode: false
           },
           resultHandler: RockPaperScissorsDesign.winsResultHandler
         });
@@ -239,7 +241,7 @@ describe('Tournament Testing with RPS', () => {
       let r = RPSTrueskillLadderConfigTests;
       expect(r.configs.agentsPerMatch).to.be.eql([2]);
       expect(r.configs.rankSystemConfigs).to.be.eql(trueskillConfigs);
-      expect(r.configs.defaultMatchConfigs).to.be.eql(defaultMatchConfigsTests);
+      expect(r.configs.defaultMatchConfigs).to.be.eql({...defaultMatchConfigsTests, dimensionID: RPSTrueskillLadder.dimension.id, secureMode: false});
     });
     it('should run normally', (done) => {
       RPSTrueskillLadder.run();
