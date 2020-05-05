@@ -628,3 +628,4 @@ export module MatchEngine {
 }
 
 export const BOT_USER = 'dimensions_bot';
+export const ROOT_USER = 'root';

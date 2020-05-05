@@ -319,22 +319,20 @@ export abstract class Tournament {
     return false;
   }
 
-  public destroy(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.preInternalDestroy().then(async () => {
-        // stop if running
-        if (this.status === Tournament.TournamentStatus.RUNNING) this.stop();
-        let destroyPromises = [];
-        // now remove all match processes
-        this.matches.forEach((match) => {
-          destroyPromises.push(match.destroy());
-        });
-        await Promise.all(destroyPromises);
-        return this.postInternalDestroy();
-      }).catch((error) => {
-        reject(error);
-      });
+  public async destroy(): Promise<void> {
+    await this.preInternalDestroy();
+    
+    // stop if running
+    if (this.status === Tournament.TournamentStatus.RUNNING) this.stop();
+    
+    let destroyPromises = [];
+    
+    // now remove all match processes
+    this.matches.forEach((match) => {
+      destroyPromises.push(match.destroy());
     });
+    await Promise.all(destroyPromises);
+    await this.postInternalDestroy();
   }
 
   /**

@@ -5,7 +5,7 @@ import os from 'os';
 import { Logger } from "../Logger";
 import { FatalError, AgentFileError, AgentDirectoryError, AgentMissingIDError, AgentInstallTimeoutError, AgentCompileTimeoutError, NotSupportedError, AgentCompileError } from "../DimensionError";
 import { Tournament } from "../Tournament";
-import { BOT_USER } from "../MatchEngine";
+import { BOT_USER, ROOT_USER } from "../MatchEngine";
 import { deepMerge } from "../utils/DeepMerge";
 
 /**
@@ -47,7 +47,10 @@ export class Agent {
   /** file without extension */
   public srcNoExt: string
 
-  /** The current working directory of the source file */
+  /** 
+   * The current working directory of the source file. If in insecure mode, this is always a temporary directory that 
+   * will get deleted later.
+   */
   public cwd: string;
 
   /** The command used to run the file */
@@ -103,6 +106,7 @@ export class Agent {
   /** A number that counts the number of times the agent has essentially interacted with the {@link MatchEngine} */
   public agentTimeStep = 0;
 
+  /** Clears out the timer associated with the agent during a match */
   public clearTimer: Function = () => {};
 
   private log = new Logger();
@@ -215,7 +219,7 @@ export class Agent {
           reject(new AgentInstallTimeoutError('Agent went over install time during the install stage'));
         }, this.options.maxInstallTime);
         if (this.options.secureMode) {
-          p = spawn('sudo', ['-H' ,'-u',BOT_USER, 'rbash' ,'install.sh'], {
+          p = spawn('sudo', ['-H' ,'-u', BOT_USER, 'rbash' ,'install.sh'], {
             cwd: this.cwd,
             stdio: 'ignore'
           });
@@ -317,7 +321,11 @@ export class Agent {
         case '.py':
         case '.js':
         case '.php':
-          return this.spawnProcess(this.cmd, [this.src]);
+          let p = this.spawnProcess(this.cmd, [this.src]);
+          // set root as the owner again
+        
+          // execSync(`sudo chown -R ${ROOT_USER} ${this.cwd}`);
+          return p;
         case '.ts':
           return this.spawnProcess(this.cmd, [this.srcNoExt + '.js']);
         case '.java':
@@ -333,10 +341,11 @@ export class Agent {
 
 
   /**
-   * Spawns process accordingly and uses the configs accordingly
+   * Spawns process in this.cwd accordingly and uses the configs accordingly.
    * Resolves with the process if spawned succesfully
    * 
-   * Note, we are spawning detached so we can kill off all sub processes if they are made
+   * Note, we are spawning detached so we can kill off all sub processes if they are made. See {@link _terminate} for 
+   * explanation
    */
   spawnProcess(command: string, args: Array<string>): Promise<ChildProcess> {
     return new Promise((resolve, reject) => {
@@ -365,6 +374,9 @@ export class Agent {
     return this.status === Agent.Status.KILLED;
   }
 
+  /**
+   * Terminates this agent by stopping all related processes and remove any temporary directory
+   */
   _terminate() {
     // first try to kill the process and all its child processes it spawned
     // trick copied from https://azimi.me/2014/12/31/kill-child_process-node-js.html

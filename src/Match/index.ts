@@ -189,7 +189,7 @@ export class Match {
       }
     });
 
-    // if overriding wiith custom design, log some other info and use a different engine initialization function
+    // if overriding with custom design, log some other info and use a different engine initialization function
     if (overrideOptions.active) {
       this.log.detail('Match Arguments', overrideOptions.arguments);
       await this.matchEngine.initializeCustom(this);

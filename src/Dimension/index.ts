@@ -242,7 +242,8 @@ export class Dimension {
    */
   public async runMatch(
     files: Array<string> | Array<{file: string, name: string}>, 
-    configs?: DeepPartial<Match.Configs>): Promise<any> {
+    configs?: DeepPartial<Match.Configs>
+  ): Promise<any> {
     if (!files.length) throw new MissingFilesError('No files provided for match');
 
     // override dimension defaults with provided configs
@@ -437,6 +438,21 @@ export class Dimension {
    */
   public hasDatabase() {
     return this.databasePlugin && this.configs.backingDatabase !== DatabaseType.NONE;
+  }
+
+  /**
+   * Cleanup function to run right before process exits
+   */
+  private async cleanup() {
+    let cleanUpPromises: Array<Promise<void>> = [];
+    this.matches.forEach((match) => {
+      cleanUpPromises.push(match.destroy());
+    });
+    this.tournaments.forEach((tournament) => {
+      cleanUpPromises.push(tournament.destroy());
+    });
+    cleanUpPromises.push(this.getStation().stop());
+    await Promise.all(cleanUpPromises);
   }
 
 }
