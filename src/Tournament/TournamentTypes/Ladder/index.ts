@@ -41,8 +41,14 @@ export class LadderTournament extends Tournament {
     }
   };
 
-  private files: Array<any>;
+  /**
+   * Promise array of which all resolves once every player added through constructor is finished adding
+   */
+  public initialAddPlayerPromises: Array<Promise<any>> = [];
 
+  /**
+   * ELO System used in this tournament
+   */
   private elo: ELOSystem;
 
   // queue of the results to process
@@ -87,7 +93,14 @@ export class LadderTournament extends Tournament {
         throw new FatalError('We currently do not support this rank system for ladder tournaments');
     }
 
-    this.files = files;
+    files.forEach((file) => {
+      if (typeof file === 'string') {
+        this.initialAddPlayerPromises.push(this.addplayer(file));
+      }
+      else {
+        this.initialAddPlayerPromises.push(this.addplayer(file, file.existingID));
+      }
+    });
 
     this.status = Tournament.TournamentStatus.INITIALIZED;
     this.log.info('Initialized Ladder Tournament');
@@ -367,17 +380,9 @@ export class LadderTournament extends Tournament {
     this.state.playerStats.set(player.tournamentID.id, playerStat);
   }
   async initialize() {
-    let addPlayerPromises: Array<Promise<any>> = [];
-    this.files.forEach((file) => {
-      if (typeof file === 'string') {
-        addPlayerPromises.push(this.addplayer(file));
-      }
-      else {
-        addPlayerPromises.push(this.addplayer(file, file.existingID));
-      }
-    });
+    
     // wait for all players to add in.
-    await Promise.all(addPlayerPromises);
+    await Promise.all(this.initialAddPlayerPromises);
 
     this.state.playerStats = new Map();
     this.state.results = [];

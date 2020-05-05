@@ -261,11 +261,11 @@ describe('Tournament Testing with RPS', () => {
       }, 2000);
     });
     it('should be able to add/update competitors', async () => {
+      await Promise.all(RPSTrueskillLadder.initialAddPlayerPromises);
       let player = await RPSTrueskillLadder.addplayer('./tests/js-kit/rps/smarter.js');
       let id = player.tournamentID.id;
       let name = player.tournamentID.name;
       let c = RPSTrueskillLadder.competitors;
-      expect(c.size).to.equal(5);
       expect(c.get(id).file).to.equal('./tests/js-kit/rps/smarter.js');
       expect(c.get(id).tournamentID.id).to.equal(`${id}`);
 

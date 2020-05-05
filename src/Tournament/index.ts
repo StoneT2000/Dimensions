@@ -185,7 +185,6 @@ export abstract class Tournament {
         }
       }
 
-      console.log(id, newPlayer);
       this.competitors.set(id, newPlayer);
 
       this.internalAddPlayer(newPlayer);

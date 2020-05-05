@@ -72,6 +72,7 @@ describe('Testing Dimension Class', () => {
       loggingLevel: Logger.LEVEL.INFO,
       secureMode: false,
       backingDatabase: "none",
+      id: "oLBptg",
       defaultMatchConfigs: {
         loggingLevel: Logger.LEVEL.INFO,
         secureMode: false,
