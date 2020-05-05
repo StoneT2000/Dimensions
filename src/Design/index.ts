@@ -9,6 +9,7 @@ import EngineOptions = MatchEngine.EngineOptions;
 import COMMAND_FINISH_POLICIES = MatchEngine.COMMAND_FINISH_POLICIES;
 import COMMAND_STREAM_TYPE = MatchEngine.COMMAND_STREAM_TYPE;
 import Command = MatchEngine.Command;
+import { deepCopy } from "../utils/DeepCopy";
 
 /**
  * @class Design
@@ -54,7 +55,7 @@ export abstract class Design {
       command: 'echo NO COMMAND PROVIDED',
       conclude_command: 'D_MATCH_FINISHED',
       arguments: [],
-      timeout: 600000, // 10 minutes
+      timeout: 1000 * 60 * 10, // 10 minutes
       resultHandler: null
     }
   }
@@ -73,11 +74,11 @@ export abstract class Design {
   constructor(public name: String, designOptions: DeepPartial<DesignOptions> = {}) {
 
     // Set defaults from the abstract class
-    this.designOptions = {... this._ABSTRACT_DEFAULT_DESIGN_OPTIONS};
+    this.designOptions = deepCopy(this._ABSTRACT_DEFAULT_DESIGN_OPTIONS);
 
     // Override with user provided params
     deepMerge(this.designOptions, designOptions);
-    // Object.assign(this.designOptions, designOptions);
+
     this.log.detail(`Design + MatchEngine Options`, this.designOptions);
     // Set log level to default
     this.log.level = Logger.LEVEL.INFO;
@@ -134,6 +135,9 @@ export abstract class Design {
    * @see {@link Match} - This function is used by the match to update the results stored in the match and return
    * results
    * 
+   * @see {@link Tournament} - This function is used to return results from a match and then is fed into a resultHandler
+   * for a particular rankingSystem and tournament type.
+   * 
    * @param match - The `Match` used to process results
    * @param config - Any user configurations that can be added as parameters
    * @returns A promise that resolves with results (can be an object, number, anything). Can also directly just return 
@@ -152,8 +156,9 @@ export abstract class Design {
 
 /**
  * This class is meant for wrapping around existing designs built without the use of Dimensions framework
+ * 
  * This is created so a user provided non-dimension framework based design can be used within the Dimensions framework
- * and leverage other features such as tournament running, an API for viewing relevant data, and automatic, full blown
+ * and leverage other features such as tournament running, an API for viewing relevant data, and automatic, scalable
  * competition running
  */
 class CustomDesign extends Design {
@@ -186,7 +191,8 @@ class CustomDesign extends Design {
   }
 
   /**
-   * Returns the results stored
+   * Returns the results stored. {@link MatchEngine.runCustom} should automatically populate match.results for us and so
+   * we just return itt.
    * @param match - Match to get results of
    */
   async getResults(match: Match) {
@@ -196,15 +202,21 @@ class CustomDesign extends Design {
 }
 
 /**
- * Design options
+ * Design options. Allows for the setting of engine options and override options.
  */
 export interface DesignOptions {
-  /** The default engine options to use for all matches created using this design */
+
+  /** 
+   * The default engine options to use for all matches created using this design. Engine options impact how the engine
+   * works at the I/O level and dictates how your engine prohibits and enables an {@link Agent} in a {@link Match} to
+   * communicate and send commands and receive commands
+   */
   engineOptions: EngineOptions,
 
   /** 
-   * Override configurations if user wants to run matches with a non-dimensions based design and run their own design
-   * in another language
+   * Override configurations if a user wants to run matches with a non-dimensions based design and run their own design
+   * This is what allows users to write competition designs in their own programming language and utilize Dimensions
+   * features such as tournament running, database plugins, scalability, and much more automation.
    */
   override: DesignTypes.OverrideOptions
 };

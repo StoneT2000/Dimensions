@@ -11,12 +11,12 @@ import { deepMerge } from "../utils/DeepMerge";
 /**
  * @class Agent
  * @classdesc The agent is what participates in a match and contains details on the files powering the agent, the
- * process associated and if it is terminated or not.
+ * process associated and many other details.
  * 
  * Reads in a file source for the code and copies the bot folder to a temporary directory in secure modes
  * and creates an `Agent` for use in the {@link MatchEngine} and {@link Match}
  * 
- * This is a class that should not be broken. If someting goes wrong, this should always throw a FatalError. It is 
+ * This is a class that should not be broken. If someting goes wrong, this should always throw a error. It is 
  * expected that agents are used knowing beforehand that the file given is validated
  */
 export class Agent {
