@@ -277,16 +277,22 @@ export class LadderTournament extends Tournament {
     if (!player.anonymous && this.dimension.hasDatabase()) {
       user = await this.dimension.databasePlugin.getUser(player.tournamentID.id);
       if (user) {
+
+        // if there are stats
         if (user.statistics) {
           playerStat = user.statistics[safeName];
-          playerStat.rankState = {
-            rating: new Rating(playerStat.rankState.rating.mu, playerStat.rankState.rating.sigma),
-            toJSON: () => {
-              let rating = this.state.playerStats.get(player.tournamentID.id).rankState.rating
-              return {
-                rating: {...rating,
-                  mu: rating.mu,
-                  sigma: rating.sigma
+
+          // if there was a player stat stored before, fix up rankState to have the toJSON function
+          if (playerStat) {
+            playerStat.rankState = {
+              rating: new Rating(playerStat.rankState.rating.mu, playerStat.rankState.rating.sigma),
+              toJSON: () => {
+                let rating = this.state.playerStats.get(player.tournamentID.id).rankState.rating
+                return {
+                  rating: {...rating,
+                    mu: rating.mu,
+                    sigma: rating.sigma
+                  }
                 }
               }
             }
@@ -332,7 +338,6 @@ export class LadderTournament extends Tournament {
       if (user) {
         if (user.statistics) {
           playerStat = user.statistics[`${this.getSafeName()}`];
-          console.log(playerStat);
         }
       }
     }
