@@ -12,6 +12,24 @@ import { deepCopy } from '../utils/DeepCopy';
 import { LadderTournament } from '../Tournament/TournamentTypes/Ladder';
 import { exec, ChildProcess } from 'child_process';
 import { BOT_USER, COMPILATION_USER } from '../MatchEngine';
+import { Plugin } from '../Plugin';
+import { Database } from '../Plugin/Database';
+import { genID } from '../utils';
+
+
+/**
+ * Some standard database type strings
+ */
+export enum DatabaseType {
+  NONE = 'none',
+  MONGO = 'mongo'
+}
+
+/**
+ * An id generated using nanoid
+ */
+export type NanoID = string;
+
 /**
  * Dimension configurations
  */
@@ -27,12 +45,20 @@ export interface DimensionConfigs {
   /** The default match configurations to use when creating matches using this Dimension */
   defaultMatchConfigs: DeepPartial<Match.Configs>,
 
+  /** A overriding ID to use for the dimension instead of generating a new one */
+  id: NanoID,
+
   /**
    * Whether to run Dimension in a more secure environment.
    * Requires rbash and setting up users and groups beforehand and running dimensions in sudo mode
    * @default `true`
    */
-  secureMode: boolean
+  secureMode: boolean,
+
+  /**
+   * String denoting what kind of backing database is being used
+   */
+  backingDatabase: string | DatabaseType
 }
 /**
  * @class Dimension
@@ -43,14 +69,12 @@ export class Dimension {
   /**
    * The matches running in this Dimension
    */
-  public matches: Map<number, Match> = new Map();
+  public matches: Map<NanoID, Match> = new Map();
 
   /**
    * Tounraments in this Dimension.
    */
-  public tournaments: Array<Tournament> = [];
-
-  static id: number = 0;
+  public tournaments: Map<NanoID, Tournament> = new Map();
 
   /**
    * This Dimension's name
@@ -60,12 +84,17 @@ export class Dimension {
   /**
    * This dimension's ID
    */
-  public id: number = 0;
+  public id: NanoID;
 
   /**
    * Logger
    */
   public log = new Logger();
+
+  /**
+   * The database plugin being used
+   */
+  public databasePlugin: Database;
 
   /**
    * The Station associated with this Dimension and current node instance
@@ -89,61 +118,70 @@ export class Dimension {
     observe: true,
     loggingLevel: Logger.LEVEL.INFO,
     defaultMatchConfigs: {
-      dimensionID: this.id,
       secureMode: false
     },
-    secureMode: false
+    secureMode: false,
+    backingDatabase: DatabaseType.NONE,
+    id: 'oLBptg'
   }
 
   constructor(public design: Design, configs: DeepPartial<DimensionConfigs> = {}) {
 
     // override configs with user provided configs
     this.configs = deepMerge(this.configs, configs);
-
-    this.log.level = this.configs.loggingLevel;
-
-    // log important messages regarding security
-    if (this.configs.secureMode) {
-      this.setupSecurity();
+    
+    // generate ID if not provided
+    if (!configs.id) {
+      this.id = Dimension.genDimensionID();
     }
     else {
-      this.log.importantBar();
-      this.log.important(`WARNING: Running in non-secure mode. You will not be protected against malicious bots`);
-      this.log.importantBar();
+      this.id = configs.id;
     }
-
-    // setting securemode in dimension config also sets it for default match configs
-    this.configs.defaultMatchConfigs.secureMode = this.configs.secureMode;
-
+    
+    this.log.level = this.configs.loggingLevel;
+    
 
     // open up a new station for the current node process if it hasn't been opened yet and there is a dimension that 
     // is asking for a station to be initiated
     if (this.configs.activateStation === true && Dimension.Station == null) {
       Dimension.Station = new Station('Station', [], this.configs.loggingLevel);
     }
-    this.log.info('Dimension Configs', this.configs);
+
+    
     
     // default match log level and design log level is the same as passed into the dimension
     this.configs.defaultMatchConfigs.loggingLevel = this.configs.loggingLevel;
     this.design.setLogLevel(this.configs.loggingLevel);
-
+    
     // set name
     if (this.configs.name) {
       this.name = this.configs.name;
     }
     else {
-      this.name = `dimension_${Dimension.id}`;
+      this.name = `dimension_${this.id}`;
     }
-    this.id = Dimension.id;
-    this.log.detail(`Created Dimension: ` + this.name);
-    Dimension.id++;
+    this.log.identifier = `${this.name} Log`
 
+    // log important messages regarding security
+    if (this.configs.secureMode) {
+      try {
+        this.setupSecurity();
+      }
+      catch(error) {
+        throw error;
+      }
+    }
+    else {
+      this.log.error(`WARNING: Running in non-secure mode. You will not be protected against malicious bots`);
+    }
+    // setting securemode in dimension config also sets it for default match configs
+    this.configs.defaultMatchConfigs.secureMode = this.configs.secureMode;
+    
     // make the station observe this dimension when this dimension is created
     if (this.configs.observe === true) Dimension.Station.observe(this);
 
-    // by default link all matches created by this dimension to this dimension
-    this.configs.defaultMatchConfigs.dimensionID = this.id;
-
+    this.log.info(`Created Dimension - ID: ${this.id}, Name: ${this.name}`);
+    this.log.detail('Dimension Configs', this.configs);
   }
   /**
    * Create a match with the given files with the given unique name. It rejects if a fatal error occurs and resolves 
@@ -209,7 +247,7 @@ export class Dimension {
     }
     this.statistics.matchesCreated++;
 
-    // store match into dimension
+    // store match into dimension (caching)
     this.matches.set(match.id, match);
 
     // Initialize match with initialization configuration
@@ -217,6 +255,13 @@ export class Dimension {
 
     // Get results
     let results = await match.run();
+
+    // if database plugin is active and saveMatches is set to true, store match
+    if (this.hasDatabase()) {
+      if (this.databasePlugin.configs.saveMatches) {
+        this.databasePlugin.storeMatch(match);
+      }
+    }
 
     // Return the results
     return results
@@ -231,25 +276,30 @@ export class Dimension {
    * @returns a Tournament of the specified type
    */
   public createTournament(files: Array<string> | Array<{file: string, name:string}>, configs: Tournament.TournamentConfigsBase): Tournament {
-      let id = this.statistics.tournamentsCreated;
-      let newTourney;
+      let id = Tournament.genTournamentClassID();
+      let newTourney: Tournament;
       if (configs.loggingLevel === undefined) {
         // set default logging level to that of the dimension
         configs.loggingLevel = this.log.level;
       }
+
+      // merge default match configs from dimension
+      let dimensionDefaultMatchConfigs = deepCopy(this.configs.defaultMatchConfigs);
+      configs = deepMerge({defaultMatchConfigs: dimensionDefaultMatchConfigs}, configs);
+      
       switch(configs.type) {
         case Tournament.TOURNAMENT_TYPE.ROUND_ROBIN:
-          newTourney = new RoundRobinTournament(this.design, files, configs, id);
+          newTourney = new RoundRobinTournament(this.design, files, configs, id, this);
           break;
         case Tournament.TOURNAMENT_TYPE.LADDER:
-          newTourney = new LadderTournament(this.design, files, configs, id);
+          newTourney = new LadderTournament(this.design, files, configs, id, this);
           break;
         case Tournament.TOURNAMENT_TYPE.ELIMINATION:
-          newTourney = new EliminationTournament(this.design, files, configs, id);
+          newTourney = new EliminationTournament(this.design, files, configs, id, this);
           break;
       }
       this.statistics.tournamentsCreated++;
-      this.tournaments.push(newTourney);
+      this.tournaments.set(newTourney.id, newTourney);
       return newTourney;
   }
   // TODO give option to directly create a Ladder/RoundRobin ... tourney with createLadderTournament etc.
@@ -264,7 +314,7 @@ export class Dimension {
   /**
    * Removes a match by id. Returns true if deleted, false if nothing was deleted
    */
-  public async removeMatch(matchID: number) {
+  public async removeMatch(matchID: NanoID) {
     if (this.matches.has(matchID)) {
       let match = this.matches.get(matchID);
       await match.destroy();
@@ -279,7 +329,12 @@ export class Dimension {
   private async setupSecurity() {
 
     // perform checks
-    this.checkForUsers([BOT_USER, COMPILATION_USER]);
+    try {
+      this.checkForUsers([BOT_USER, COMPILATION_USER]);
+    }
+    catch (error) {
+      throw error;
+    }
   }
 
   /**
@@ -288,7 +343,7 @@ export class Dimension {
    */
   private checkForUsers(usernames: Array<string>) {
     return new Promise((resolve, reject) => {
-      // exec('')
+
       let userset = new Set();
       switch(process.platform) {
         case 'darwin': {
@@ -306,7 +361,7 @@ export class Dimension {
             for (let i = 0; i < usernames.length; i++) {
               let name = usernames[i];
               if (!userset.has(name)) {
-                reject(new FatalError(`Missing user: ${name}`));
+                reject(new FatalError(`Missing user: ${name} \nPlease add that user to your system (do not make it admin)`));
                 return;
               }
             }
@@ -328,6 +383,42 @@ export class Dimension {
       }
       
     });
+  }
+
+  /**
+   * Generates a 6 character nanoID string for identifying dimensions
+   */
+  public static genDimensionID() {
+    return genID(6);
+  }
+
+  /**
+   * Uses a particular plugin in the dimensions framework.
+   * 
+   * @param plugin - the plugin
+   */
+  public async use(plugin: Plugin) {
+    switch(plugin.type) {
+      case Plugin.Type.DATABASE:
+        this.log.info('Attaching Database Plugin ' + plugin.name);
+        // set to unknown to tell dimensions that there is some kind of database, we dont what it is yet
+        this.configs.backingDatabase = 'unknown';
+        this.databasePlugin = <Database>plugin;
+        await this.databasePlugin.initialize();
+        break;
+      case Plugin.Type.FILE_STORE:
+        throw new FatalError('FILE_STORE Not supported yet');
+      default:
+        break;
+    }
+    await plugin.manipulate(this);
+  }
+
+  /**
+   * Returns true if dimension has a database backing it
+   */
+  public hasDatabase() {
+    return this.databasePlugin && this.configs.backingDatabase !== DatabaseType.NONE;
   }
 
 }

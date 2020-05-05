@@ -10,6 +10,7 @@ import { Match } from '../Match';
 import * as error from './error';
 
 import cors from 'cors';
+import bodyParser from 'body-parser';
 import { Server } from 'http';
 import { Tournament } from '../Tournament';
 import { existsSync, mkdirSync } from 'fs';
@@ -68,6 +69,10 @@ export class Station {
 
     // CORS
     this.app.use(cors());
+    this.app.use(bodyParser.json());    
+    this.app.use(bodyParser.urlencoded({
+      extended: true
+    })); 
 
     // store all observed dimensions
     if (observedDimensions instanceof Array) {

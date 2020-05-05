@@ -7,6 +7,7 @@ import { Agent } from "../../../Agent";
 import { Logger } from "../../../Logger";
 import RANK_SYSTEM = Tournament.RANK_SYSTEM;
 import { sprintf } from 'sprintf-js';
+import { Dimension, NanoID } from "../../../Dimension";
 
 /**
  * The Round Robin Tournament Class
@@ -25,7 +26,8 @@ export class RoundRobinTournament extends Tournament {
     },
     agentsPerMatch: [2],
     resultHandler: null,
-    consoleDisplay: true
+    consoleDisplay: true,
+    id: 'aa2qlM'
   }
   private shouldStop: boolean = false;
   private resumePromise: Promise<void>;
@@ -43,9 +45,10 @@ export class RoundRobinTournament extends Tournament {
     design: Design,
     files: Array<string> | Array<{file: string, name:string}>, 
     tournamentConfigs: Tournament.TournamentConfigsBase,
-    id: number
+    id: NanoID,
+    dimension: Dimension
   ) {
-    super(design, files, id, tournamentConfigs);
+    super(design, files, id, tournamentConfigs, dimension);
     if (tournamentConfigs.consoleDisplay) {
       this.configs.consoleDisplay = tournamentConfigs.consoleDisplay;
     }
@@ -87,7 +90,7 @@ export class RoundRobinTournament extends Tournament {
    */
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<Tournament.RoundRobin.Configs>>) {
     this.status = Tournament.TournamentStatus.RUNNING;
-    this.log.info('Running Tournament with competitors: ', this.competitors.map((player) => player.tournamentID.name));
+    this.log.info('Running Tournament');
     this.configs = deepMerge(this.configs, configs, true);
     this.initialize();
     this.schedule();
@@ -136,7 +139,13 @@ export class RoundRobinTournament extends Tournament {
     let matchRes = await this.runMatch(matchInfo);
     let resInfo = <Tournament.RANK_SYSTEM.WINS.Results>this.configs.resultHandler(matchRes.results);
     
-    if (this.configs.tournamentConfigs.storePastResults) this.state.results.push(matchRes.results);
+    // store past results
+    if (this.configs.tournamentConfigs.storePastResults) {
+      if (!(this.dimension.hasDatabase() && this.dimension.databasePlugin.configs.saveTournamentMatches)) {
+        // if we have don't have a database that is set to actively store tournament matches we store locally
+        this.state.results.push(matchRes.results);
+      }
+    }
     
     // update total matches
     this.state.statistics.totalMatches++;
@@ -293,10 +302,12 @@ export class RoundRobinTournament extends Tournament {
   }
   private generateARound() {
     let roundQueue: Array<Array<Player>> = [];
-    for (let i = 0; i < this.competitors.length; i++) {
-      for (let j = i + 1; j < this.competitors.length; j++) {
-        let player1 = this.competitors[i];
-        let player2 = this.competitors[j];
+
+    let comp = Array.from(this.competitors.values());
+    for (let i = 0; i < this.competitors.size; i++) {
+      for (let j = i + 1; j < this.competitors.size; j++) {
+        let player1 = comp[i];
+        let player2 = comp[j];
         roundQueue.push([player1, player2]);
       }
     }
@@ -314,7 +325,7 @@ export class RoundRobinTournament extends Tournament {
     if (this.log.level > Logger.LEVEL.NONE) {
       console.clear();
       console.log(this.log.bar())
-      console.log(`Tournament: ${this.name} | Status: ${this.status} | Competitors: ${this.competitors.length} | Rank System: ${this.configs.rankSystem}\n`);
+      console.log(`Tournament - ID: ${this.id}, Name: ${this.name} | Dimension - ID: ${this.dimension.id}, Name: ${this.dimension.name}\nStatus: ${this.status} | Competitors: ${this.competitors.size} | Rank System: ${this.configs.rankSystem}\n`);
       console.log('Total Matches: ' + this.state.statistics.totalMatches);
       let ranks = this.getRankings();
       switch(this.configs.rankSystem) {
