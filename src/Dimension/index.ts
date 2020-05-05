@@ -10,8 +10,8 @@ import { EliminationTournament } from '../Tournament/TournamentTypes/Elimination
 import { Tournament } from '../Tournament';
 import { deepCopy } from '../utils/DeepCopy';
 import { LadderTournament } from '../Tournament/TournamentTypes/Ladder';
-import { exec, ChildProcess } from 'child_process';
-import { BOT_USER, COMPILATION_USER } from '../MatchEngine';
+import { exec } from 'child_process';
+import { BOT_USER } from '../MatchEngine';
 import { Plugin } from '../Plugin';
 import { Database } from '../Plugin/Database';
 import { genID } from '../utils';
@@ -347,7 +347,7 @@ export class Dimension {
 
     // perform checks
     try {
-      this.checkForUsers([BOT_USER, COMPILATION_USER]);
+      this.checkForUsers([BOT_USER]);
     }
     catch (error) {
       throw error;

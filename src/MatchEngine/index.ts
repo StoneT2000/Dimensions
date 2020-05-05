@@ -626,5 +626,4 @@ export module MatchEngine {
   }
 }
 
-export const COMPILATION_USER = 'dimensions_bot_compilation';
 export const BOT_USER = 'dimensions_bot';
