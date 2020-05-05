@@ -1,0 +1,56 @@
+/**
+ * API for dimension's matches
+ */
+import express, { Request, Response, NextFunction } from 'express';
+import * as error from '../../../../error';
+import { requiresDatabase } from '..';
+const router = express.Router();
+
+/**
+ * POST
+ * Registers a user. Requires username, password in body
+ */
+router.post('/register', (req, res, next) => {
+  if (!req.body.username) return next(new error.BadRequest('Missing username'));
+  if (!req.body.password) return next(new error.BadRequest('Missing password'));
+
+  let dimension = req.data.dimension;
+  dimension.databasePlugin.registerUser(req.body.username, req.body.password).then((user) => {
+    res.json({error: null, msg: 'success'});
+  }).catch(next);
+});
+
+/**
+ * POST
+ * Logins a user. Requires username, password in body
+ * Returns a jwt
+ */
+router.post('/login', (req, res, next) => {
+  if (!req.body.username) return next(new error.BadRequest('Missing username'));
+  if (!req.body.password) return next(new error.BadRequest('Missing password'));
+
+  let dimension = req.data.dimension;
+  dimension.databasePlugin.loginUser(req.body.username, req.body.password).then((jwt) => {
+    res.json({error: null, token: jwt});
+  }).catch(next);
+});
+
+/**
+ * POST
+ * Verifies a user's token
+ */
+router.post('/verify', (req, res, next) => {
+  const authHeader = req.get('Authorization');
+  if (!authHeader) return res.json({ error: 'Auth token must be specified', authenticated: false });
+
+  const authHead = authHeader.split(' ');
+  const invalidAuthFormat = authHead.length !== 2 || authHead[0] !== 'Bearer' || authHead[1].length === 0;
+  if (invalidAuthFormat) return res.json({ error: 'Invalid auth token format', authenticated: false })
+
+  let dimension = req.data.dimension;
+  dimension.databasePlugin.verifyToken(authHead[1]).then(() => {
+    res.json({error: null});
+  }).catch(next);
+});
+
+export default router;

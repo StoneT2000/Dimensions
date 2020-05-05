@@ -1,13 +1,15 @@
 /**
  * API for Dimensions. Primarily returns all data there is to return
  */
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import { Dimension } from '../../../../Dimension';
 import matchAPI, { pickMatch } from './match';
 import tournamentAPI, { pickTournament } from './tournament';
 import * as error from '../../../error'
 import { pick } from '../../../../utils';
 import { Design } from '../../../../Design';
+import userAPI from './user';
+import authAPI from './auth';
 
 const router = express.Router();
 
@@ -113,6 +115,32 @@ router.get('/:id/tournament', (req: Request, res: Response) => {
  */
 router.use('/:id/tournament', tournamentAPI);
 
+export const requiresDatabase = (req: Request, res: Response, next: NextFunction) => {
+  // throw a error if no database detected
+  let dimension = req.data.dimension;
+  if(dimension.hasDatabase()) {
+    next();
+  }
+  else {
+    next(new error.InternalServerError(
+      `No database setup for dimension - ID: ${dimension.id}, name: ${dimension.name}`
+      ));
+  }
+}
+
+/** Require that user and auth routes need database setup */
+router.use('/:id/user', requiresDatabase);
+router.use('/:id/auth', requiresDatabase);
+
+/**
+ * Use the user API
+ */
+router.use('/:id/user', userAPI);
+
+/**
+ * Use the auth API
+ */
+router.use('/:id/auth', authAPI);
 
 
 export default router

@@ -57,7 +57,7 @@ export class MongoDB extends Database {
     return this.models.match.findOne({id: id});
   }
 
-  public async registerUser(username: string, password: string) {
+  public async registerUser(username: string, password: string, userData?: any) {
     const hash = bcrypt.hashSync(password, salt);
     return this.models.user.create({
       username: username,
@@ -65,6 +65,21 @@ export class MongoDB extends Database {
       statistics: {}
     });
   }
+
+  /**
+   * Gets user information. If public is false, will retrieve all information other than password
+   * @param usernameOrID 
+   */
+  public async getUser(usernameOrID: string, publicView: boolean = true) {
+    return this.models.user.findOne( {$or: [ { username: usernameOrID }, { playerID: usernameOrID } ]} ).then((user) => {
+      if (user) {
+        return user.toObject();
+      }
+      else {
+        throw new Error('not a valid user');
+      }
+    });
+  } 
 
   public async loginUser(username: string, password: string) {
     return this.models.user.findOne({ username: username}).then((user: mongoose.Document & Database.User) => {
@@ -89,7 +104,8 @@ export class MongoDB extends Database {
       }
     });
   }
-  public async authUser(jwt: string) {
+
+  public async verifyToken(jwt: string) {
     return verify(jwt);
   }
 

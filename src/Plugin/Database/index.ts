@@ -43,34 +43,39 @@ export abstract class Database extends Plugin {
    * Add loginUser, authUser, registerUser, deleteUser, updateUser
    */
 
-   /**
-    * Logs in a user, resolves with a JWT (JSON Web Token), rejects otherwise
-    * @param username - unique username to login with
-    * @param password - the password for the user with that username
-    */
-   abstract loginUser(username: string, password: string): Promise<any>
+  /**
+   * Logs in a user, resolves with a JWT (JSON Web Token), rejects otherwise
+   * @param username - unique username to login with
+   * @param password - the password for the user with that username
+   */
+  abstract loginUser(username: string, password: string): Promise<any>
 
-   /**
-    * Registers a user, resolves when succesful, rejects otherwise
-    * @param username - username to register with
-    * @param password - the password for the user
-    * @param userData - any other kind of user data (not used)
-    */
-   abstract registerUser(username: string, password: string, userData: any): Promise<any>
+  /**
+   * Registers a user, resolves when succesful, rejects otherwise
+   * @param username - username to register with
+   * @param password - the password for the user
+   * @param userData - any other kind of user data (not used)
+   */
+  abstract registerUser(username: string, password: string, userData?: any): Promise<any>
 
-   /**
-    * Authenticates a user by a JWT, resolves if succesful, rejects otherwise
-    * @param username - username to login with
-    * @param password - the password for the user with that username
-    */
-   abstract authUser(jwt: string): Promise<any>
+  /**
+   * Authenticates a user by a JWT, resolves if succesful, rejects otherwise
+   * @param jwt - the token
+   */
+  abstract verifyToken(jwt: string): Promise<any>
 
-   /**
-    * Deletes the user with this username or ID (generated nanoID)
-    * @param usernameOrID
-    */
-   abstract deleteUser(usernameOrID: string): Promise<any>
+  /**
+   * Deletes the user with this username or ID (generated nanoID)
+   * @param usernameOrID
+   */
+  abstract deleteUser(usernameOrID: string): Promise<any>
 
+  /**
+   * Gets user information. If publicView is `false`, will retrieve all information other than password
+   * @param usernameOrID 
+   * @param publicView
+   */
+  abstract getUser(usernameOrID: string, publicView?: boolean): Promise<Database.User>
 }
 
 export module Database {

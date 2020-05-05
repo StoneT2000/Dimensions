@@ -45,6 +45,9 @@ export interface DimensionConfigs {
   /** The default match configurations to use when creating matches using this Dimension */
   defaultMatchConfigs: DeepPartial<Match.Configs>,
 
+  /** A overriding ID to use for the dimension instead of generating a new one */
+  id: NanoID,
+
   /**
    * Whether to run Dimension in a more secure environment.
    * Requires rbash and setting up users and groups beforehand and running dimensions in sudo mode
@@ -118,15 +121,22 @@ export class Dimension {
       secureMode: false
     },
     secureMode: false,
-    backingDatabase: DatabaseType.NONE
+    backingDatabase: DatabaseType.NONE,
+    id: 'oLBptg'
   }
 
   constructor(public design: Design, configs: DeepPartial<DimensionConfigs> = {}) {
 
     // override configs with user provided configs
     this.configs = deepMerge(this.configs, configs);
-    // generate ID
-    this.id = Dimension.genDimensionID();
+    
+    // generate ID if not provided
+    if (!configs.id) {
+      this.id = Dimension.genDimensionID();
+    }
+    else {
+      this.id = configs.id;
+    }
     
     this.log.level = this.configs.loggingLevel;
     
