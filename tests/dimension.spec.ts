@@ -60,7 +60,7 @@ describe('Testing Dimension Class', () => {
       observe: false,
       loggingLevel: Logger.LEVEL.NONE
     });
-    expect(d.removeMatch(123)).to.eventually.equal(false);
+    expect(d.removeMatch('j13k2m')).to.eventually.equal(false);
   });
   it('should initialize a dimension with default params correctly', () => {
     let dominationDesign = new DominationDesign('Domination');
@@ -71,8 +71,9 @@ describe('Testing Dimension Class', () => {
       observe: true,
       loggingLevel: Logger.LEVEL.INFO,
       secureMode: false,
+      backingDatabase: "none",
+      id: "oLBptg",
       defaultMatchConfigs: {
-        dimensionID: d.id,
         loggingLevel: Logger.LEVEL.INFO,
         secureMode: false,
       }

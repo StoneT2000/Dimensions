@@ -12,7 +12,7 @@ chai.use(sinonChai);
 chai.use(chaiSubset);
 chai.use(chaiAsPromised);
 
-const origin = 'http://localhost:9000';
+let origin = 'http://localhost:9000';
 const RockPaperScissorsDesign = require('../../../rps').RockPaperScissorsDesign;
 let rps = new RockPaperScissorsDesign('rps');
 let dim: Dimension.DimensionType;
@@ -33,8 +33,13 @@ describe('Test dimensions/match', () => {
         let data = res.data;
         expect(data.error).to.be.equal(null);
         
-        let match0: Match = <Match>data.matches['0'];
-        expect(match.agentFiles).to.be.containSubset(match0.agentFiles);
+        let match0: Match = <Match>data.matches[match.id];
+
+        match.agents.forEach((agent, i) => {
+          expect(agent.id).to.be.equal(match0.agents[i].id);
+          expect(agent.src).to.be.equal(match0.agents[i].src);
+          expect(agent.tournamentID).to.be.equal(match0.agents[i].tournamentID);
+        });
         expect(match.id).to.be.equal(match0.id);
         match.destroy();
         done();
@@ -50,7 +55,11 @@ describe('Test dimensions/match', () => {
         expect(data.error).to.be.equal(null);
         
         let match0: Match = <Match>data.match;
-        expect(match.agentFiles).to.be.containSubset(match0.agentFiles);
+        match.agents.forEach((agent, i) => {
+          expect(agent.id).to.be.equal(match0.agents[i].id);
+          expect(agent.src).to.be.equal(match0.agents[i].src);
+          expect(agent.tournamentID).to.be.equal(match0.agents[i].tournamentID);
+        });
         expect(match.id).to.be.equal(match0.id);
         match.destroy();
         done();

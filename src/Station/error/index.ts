@@ -88,14 +88,9 @@ export const errorHandler = (log: Logger) => (err: HttpError, req: Request, res:
   if (!err) err = new InternalServerError('An unknown error occurred in the errorHandler');
   if (!err.status) err = new InternalServerError(err.message);
 
-  // fully error log only the internal server errors
-  if (err.status === 500) {
-    log.error(err);
-  }
-  else {
-    // otherwise just log the error message at the warning level
-    log.warn(`${err.status}: ${err.message}`);
-  }
+  // otherwise just log the error message at the warning level
+  log.warn(`${err.status}: ${err.message}`);
+  
   res.status(err.status).json({
     error: {
       status: err.status,
