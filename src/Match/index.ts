@@ -230,8 +230,12 @@ export class Match {
           this.log.system('Running custom');
           await this.matchEngine.runCustom(this);
           this.results = await this.getResults();
-          // we don't perform a kill and clean up here because we expect a custom design to do it itself
 
+          // process results with result handler if necessary
+          if (overrideOptions.resultHandler) {
+            this.results = overrideOptions.resultHandler(this.results);
+          }
+          resolve(this.results);
         }
         else {
           // otherwise run the match using the design with calls to this.next()
