@@ -2,7 +2,7 @@ import { Tournament, Player } from "../../";
 import { DeepPartial } from "../../../utils/DeepPartial";
 import { Design } from '../../../Design';
 import { deepMerge } from "../../../utils/DeepMerge";
-import { FatalError, MatchDestroyedError, TournamentError } from "../../../DimensionError";
+import { FatalError, MatchDestroyedError, TournamentError, NotSupportedError } from "../../../DimensionError";
 import { Agent } from "../../../Agent";
 import { Rating, rate, quality, TrueSkill } from "ts-trueskill";
 import LadderState = Tournament.Ladder.State;
@@ -90,7 +90,7 @@ export class LadderTournament extends Tournament {
         this.elo = new ELOSystem(this.configs.rankSystemConfigs.kFactor, this.configs.rankSystemConfigs.startingScore)
         break;
       default:
-        throw new FatalError('We currently do not support this rank system for ladder tournaments');
+        throw new NotSupportedError('We currently do not support this rank system for ladder tournaments');
     }
 
     files.forEach((file) => {

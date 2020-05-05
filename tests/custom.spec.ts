@@ -7,7 +7,7 @@ import 'mocha';
 const expect = chai.expect;
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
-let Match = Dimension.Match;
+
 let pathtorunner = './tests/bh20files/run_game.sh'
 
 let bh2020 = Dimension.Design.createCustom('bh2020trueskill', {

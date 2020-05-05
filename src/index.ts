@@ -14,4 +14,5 @@ export * from './Agent';
 export * from './Tournament';
 export * from './Match';
 export * from './MatchEngine';
-export * from './DimensionError';
+export * as DError from './DimensionError';
+export { MatchError, FatalError, MatchWarn } from './DimensionError/'

@@ -2,7 +2,7 @@ import { Tournament, Player, } from "../../";
 import { DeepPartial } from "../../../utils/DeepPartial";
 import { Design } from '../../../Design';
 import { deepMerge } from "../../../utils/DeepMerge";
-import { FatalError, TournamentError } from "../../../DimensionError";
+import { FatalError, TournamentError, NotSupportedError } from "../../../DimensionError";
 import { Agent } from "../../../Agent";
 import { Logger } from "../../../Logger";
 import RANK_SYSTEM = Tournament.RANK_SYSTEM;
@@ -55,11 +55,11 @@ export class RoundRobinTournament extends Tournament {
 
     // handle config defaults
     if (tournamentConfigs.rankSystem !== Tournament.RANK_SYSTEM.WINS) {
-      throw new FatalError('We currently do not support Round Robin tournaments with ranking system other than wins system');
+      throw new NotSupportedError('We currently do not support Round Robin tournaments with ranking system other than wins system');
     }
     for (let i = 0; i < tournamentConfigs.agentsPerMatch.length; i++) {
       if (tournamentConfigs.agentsPerMatch[i] != 2)
-        throw new FatalError('We currently only support 2 agents per match for Round Robin ');
+        throw new NotSupportedError('We currently only support 2 agents per match for Round Robin ');
     }
     if (!tournamentConfigs.rankSystemConfigs) {
       this.configs.rankSystemConfigs = {
@@ -318,7 +318,7 @@ export class RoundRobinTournament extends Tournament {
     return;
   }
   updatePlayer(player: Player, oldname: string, oldfile: string) {
-    throw new FatalError('You are not allowed to update a player during elimination tournaments');
+    throw new TournamentError('You are not allowed to update a player during elimination tournaments');
   }
 
   private printTournamentStatus() {

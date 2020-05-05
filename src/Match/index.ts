@@ -4,7 +4,7 @@ import { MatchEngine } from '../MatchEngine';
 import { Agent } from '../Agent';
 import { Logger } from '../Logger';
 import { Design } from '../Design';
-import { FatalError, MatchDestroyedError, MatchWarn } from '../DimensionError';
+import { FatalError, MatchDestroyedError, MatchWarn, MatchError, NotSupportedError } from '../DimensionError';
 import { Tournament } from '../Tournament';
 
 import EngineOptions = MatchEngine.EngineOptions;
@@ -326,7 +326,7 @@ export class Match {
       // this means agents end up sending commands using out of sync state information, so the `Design` would need to 
       // adhere to this. Possibilities include stateless designs, or heavily localized designs where out of 
       // sync states wouldn't matter much
-      throw new FatalError('PARALLEL command streaming has not been implemented yet');
+      throw new NotSupportedError('PARALLEL command streaming has not been implemented yet');
     }
   }
 
@@ -464,20 +464,20 @@ export class Match {
    */
   public async throw(agentID: Agent.ID, error: Error) {
 
-    // Fatal errors are logged and end the whole match
-    // TODO: Try to use `instanceof`
-    if (error.name === 'Dimension.FatalError') {
-      console.log('FATAL')
-      this.killAndCleanUp().then(() => {
-        throw new FatalError(`${this.idToAgentsMap.get(agentID).name} | ${error.message}`); 
-      });
+    // Fatal errors are logged and should end the whole match
+    if (error instanceof FatalError) {
+      await this.destroy();
+      this.log.error(`FatalError: ${this.idToAgentsMap.get(agentID).name} | ${error.message}`); 
     }
-    if (error.name === 'Dimension.MatchWarning') {
-      this.log.warn(`ID: ${agentID}, ${this.idToAgentsMap.get(agentID).name} | ${error}`);
+    else if (error instanceof MatchWarn) {
+      this.log.warn(`ID: ${agentID}, ${this.idToAgentsMap.get(agentID).name} | ${error.message}`);
     }
-    if (error.name === 'Dimension.MatchError') {
-      this.log.error(`ID: ${agentID}, ${this.idToAgentsMap.get(agentID).name} | ${error}`);
+    else if (error instanceof MatchError) {
+      this.log.error(`ID: ${agentID}, ${this.idToAgentsMap.get(agentID).name} | ${error.message}`);
       // TODO, if match is set to store an error log, this should be logged!
+    }
+    else {
+      this.log.error('User tried throwing an error of type other than FatalError, MatchWarn, or MatchError');
     }
   }
 

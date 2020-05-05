@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import os from 'os';
 import { Logger } from "../Logger";
-import { FatalError } from "../DimensionError";
+import { FatalError, AgentFileError, AgentDirectoryError, AgentMissingIDError, AgentInstallTimeoutError, AgentCompileTimeoutError, NotSupportedError, AgentCompileError } from "../DimensionError";
 import { Tournament } from "../Tournament";
 import { BOT_USER } from "../MatchEngine";
 import { deepMerge } from "../utils/DeepMerge";
@@ -123,12 +123,12 @@ export class Agent {
 
     // check if file exists
     if(!fs.existsSync(file)) {
-      throw new FatalError(`${file} does not exist, check if file path provided is correct`);
+      throw new AgentFileError(`${file} does not exist, check if file path provided is correct`);
     }
 
     // check if folder is valid
     if(!fs.existsSync(this.cwd)) {
-      throw new FatalError(`${this.cwd} directory does not exist, check if directory provided is correct`);
+      throw new AgentDirectoryError(`${this.cwd} directory does not exist, check if directory provided through the file is correct`);
     }
 
     this.file = file;
@@ -172,7 +172,7 @@ export class Agent {
         this.file = path.join(tempDir, this.src);
       }
       else {
-        throw new FatalError(`${this.cwd} is not a directory`);
+        throw new AgentDirectoryError(`${this.cwd} is not a directory`);
       }
     }
     
@@ -180,7 +180,7 @@ export class Agent {
     if (options.id !== undefined) {
       this.id = options.id;
     } else {
-      throw new FatalError(`No id provided for agent using ${file}`);
+      throw new AgentMissingIDError(`No id provided for agent using ${file}`);
     }
     if (options.name) {
       this.name = options.name;
@@ -212,7 +212,7 @@ export class Agent {
          // run in restricted bash if in secureMode
         let p: ChildProcess;
         let installTimer = setTimeout(() => {
-          reject(new FatalError('Agent went over install time during the install stage'));
+          reject(new AgentInstallTimeoutError('Agent went over install time during the install stage'));
         }, this.options.maxInstallTime);
         if (this.options.secureMode) {
           p = spawn('sudo', ['-H' ,'-u',BOT_USER, 'rbash' ,'install.sh'], {
@@ -249,7 +249,7 @@ export class Agent {
     return new Promise((resolve, reject) => {
       let p: ChildProcess;
       let compileTimer = setTimeout(() => {
-        reject(new FatalError('Agent went over compile time during the compile stage'));
+        reject(new AgentCompileTimeoutError('Agent went over compile time during the compile stage'));
       }, this.options.maxCompileTime);
       switch(this.ext) {
         case '.py':
@@ -284,7 +284,7 @@ export class Agent {
           });
           break;
         default:
-          reject(new FatalError(`Language with extension ${this.ext} is not supported yet`));
+          reject(new NotSupportedError(`Language with extension ${this.ext} is not supported yet`));
           break;
       }
       if (p) {
@@ -298,7 +298,7 @@ export class Agent {
             resolve();
           }
           else {
-            reject(new FatalError(`A compile time error occured. Compile step for agent ${this.id} exited with code: ${code}; Compiling ${this.file}`));
+            reject(new AgentCompileError(`A compile time error occured. Compile step for agent ${this.id} exited with code: ${code}; Compiling ${this.file}`));
           }
         });
       }
@@ -327,7 +327,7 @@ export class Agent {
         case '.go':
           return this.spawnProcess('./' + this.srcNoExt + '.out', [])
         default:
-          throw new FatalError('Unrecognized file');
+          throw new NotSupportedError(`Language with extension ${this.ext} is not supported yet`)
       }
   }
 
@@ -455,7 +455,7 @@ export class Agent {
    */
   static generateAgents(files: Array<String> | Array<{file: string, name: string}> | Array<{file: string, tournamentID: Tournament.ID}>, loggingLevel: Logger.LEVEL, secureMode: boolean = false): Array<Agent> {
     if (files.length === 0) {
-      throw new FatalError('No files provided to generate agents with!');
+      throw new AgentFileError('No files provided to generate agents with!');
     }
     let agents: Array<Agent> = [];
 
