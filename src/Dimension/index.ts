@@ -3,7 +3,7 @@ import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
 import { Match } from '../Match';
 import { Station } from '../Station';
-import { FatalError } from '../DimensionError';
+import { FatalError, MatchDestroyedError } from '../DimensionError';
 import { Design } from '../Design';
 import { RoundRobinTournament } from '../Tournament/TournamentTypes/RoundRobin';
 import { EliminationTournament } from '../Tournament/TournamentTypes/Elimination';
@@ -21,7 +21,13 @@ import { genID } from '../utils';
  * Some standard database type strings
  */
 export enum DatabaseType {
+  /**
+   * Represents no database used
+   */
   NONE = 'none',
+  /**
+   * Represents mongodb database used
+   */
   MONGO = 'mongo'
 }
 
@@ -45,7 +51,7 @@ export interface DimensionConfigs {
   /** The default match configurations to use when creating matches using this Dimension */
   defaultMatchConfigs: DeepPartial<Match.Configs>,
 
-  /** A overriding ID to use for the dimension instead of generating a new one */
+  /** An overriding ID to use for the dimension instead of generating a new one */
   id: NanoID,
 
   /**
@@ -148,8 +154,6 @@ export class Dimension {
       Dimension.Station = new Station('Station', [], this.configs.loggingLevel);
     }
 
-    
-    
     // default match log level and design log level is the same as passed into the dimension
     this.configs.defaultMatchConfigs.loggingLevel = this.configs.loggingLevel;
     this.design.setLogLevel(this.configs.loggingLevel);
@@ -184,11 +188,14 @@ export class Dimension {
     this.log.info(`Created Dimension - ID: ${this.id}, Name: ${this.name}`);
     this.log.detail('Dimension Configs', this.configs);
   }
+
   /**
-   * Create a match with the given files with the given unique name. It rejects if a fatal error occurs and resolves 
-   * with the initialized `match` object as specified by the `Design` of this `Dimension`
+   * Create a match with the given files and any optional {@link Match.Configs}. Resolves with the initialized 
+   * {@link Match} object as specified by the {@link Design} of this {@link Dimension}
    * 
-   * @param files - List of files to use to generate agents and use for a new match
+   * Rejects if an error occurs.
+   * 
+   * @param files - List of files or objects to use to generate agents and use for a new match
    * @param matchOptions - Options for the created match
    * @param configs - Configurations that are `Design` dependent
    */
@@ -200,7 +207,6 @@ export class Dimension {
     }
 
     // override dimension defaults with provided configs
-    // TOOD: change to deep copy
     let matchConfigs = deepCopy(this.configs.defaultMatchConfigs);
     matchConfigs = deepMerge(matchConfigs, configs);
 
@@ -216,17 +222,20 @@ export class Dimension {
     // store match into dimension
     this.matches.set(match.id, match);
 
-    // Initialize match with initialization configuration
-    
+    // Initialize match and return it
     await match.initialize();
     return match;
   }
 
   /**
-   * Runs a match with the given files with the given unique name. It rejects if a fatal error occurs and resolves 
-   * with the results of the match as specified by the `Design` of this `Dimension`
+   * Runs a match with the given files and any optional {@link Match.Configs}. It rejects if an error occurs. Some 
+   * errors include {@link MatchDestroyedError} which happens when {@link Match.destroy} is called.
    * 
-   * @param files - List of files to use to generate agents and use for a new match
+   * This also automatically stores matches into the {@link Database} if database is active and configured to save
+   * 
+   * Resolves with the results of the match as specified by the {@link Design} of this {@link Dimension}
+   * 
+   * @param files - List of files or objects to use to generate agents and use for a new match
    * @param matchOptions - Options for the created match
    * @param configs - Configurations that are `Design` dependent. These configs are passed into `Design.initialize`
    * `Design.update` and `Design.storeResults`
@@ -270,13 +279,20 @@ export class Dimension {
 
   /**
    * Create a tournament
-   * @param files - The initial files to make competitors in this tournament
+   * 
+   * @param files - The initial files to make competitors in this tournament. Can also specify the name and an 
+   * existingID, which is the playerID. If database is used, this existingID is used to find the assocciated user with
+   * this ID.
+   * 
    * @param configs - Configuration for the tournament
    * 
    * @see {@link Tournament} for the different tournament types
    * @returns a Tournament of the specified type
    */
-  public createTournament(files: Array<string> | Array<{file: string, name:string}>, configs: Tournament.TournamentConfigsBase): Tournament {
+  public createTournament(
+    files: Array<string> | Array<{file: string, name: string, existingId?: string}>,
+    configs: Tournament.TournamentConfigsBase
+  ): Tournament {
       let id = Tournament.genTournamentClassID();
       let newTourney: Tournament;
       if (configs.loggingLevel === undefined) {
@@ -308,12 +324,12 @@ export class Dimension {
   /**
    * Get the station
    */
-  getStation() {
+  getStation(): Station {
     return Dimension.Station;
   }
 
   /**
-   * Removes a match by id. Returns true if deleted, false if nothing was deleted
+   * Removes a match by id. Returns true if removed, false if nothing was removed
    */
   public async removeMatch(matchID: NanoID) {
     if (this.matches.has(matchID)) {
@@ -339,8 +355,8 @@ export class Dimension {
   }
 
   /**
-   * Checks if the provided usernames exist in this system or not.
-   * @param usernames 
+   * Checks if the provided users exist in this system or not.
+   * @param usernames - usernames of the users to check for
    */
   private checkForUsers(usernames: Array<string>) {
     return new Promise((resolve, reject) => {
@@ -371,9 +387,10 @@ export class Dimension {
           break;
         }
         case 'win32': {
-
+          // TODO Add this
         }
         case 'linux': {
+          // TODO add this
           let p = exec(``, (err) => {
             if (err) throw err;
           });
@@ -423,7 +440,6 @@ export class Dimension {
   }
 
 }
-
 
 /**
  * Creates a dimension for use to start matches, run tournaments, etc.
