@@ -49,7 +49,7 @@ export class MatchWarn extends Error {
 
 
 /**
- * @class MatchWarn
+ * @class TournamentError
  * Standard Tournament errors that won't halt a tournament, but indicate something was uncompleted as a result of an 
  * error
  */
@@ -75,7 +75,8 @@ export class DimensionError extends Error {
 
 /**
  * @class FatalError
- * @classdesc A fatal error that caused the Dimension framework to break. When thrown, this should stop the process
+ * @classdesc A generic fatal error that caused the Dimension framework to break. When thrown, this should stop the 
+ * process
  */
 export class FatalError extends Error {
   constructor(m: string) {

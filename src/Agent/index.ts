@@ -16,15 +16,17 @@ import { deepMerge } from "../utils/DeepMerge";
  * Reads in a file source for the code and copies the bot folder to a temporary directory in secure modes
  * and creates an `Agent` for use in the {@link MatchEngine} and {@link Match}
  * 
- * This is a class that should not be broken. If someting goes wrong, this should always throw a error. It is 
+ * This is a class that should not be broken. If something goes wrong, this should always throw a error. It is 
  * expected that agents are used knowing beforehand that the file given is validated
  */
 export class Agent {
   
   /**
-   * This agent's ID in a match. Is a number
+   * This agent's ID in a match. It is always a non-negative integer and agents in a match are always numbered 
+   * `0, 1, 2, ...n` where there are `n` agents.
    */
   public id: Agent.ID = 0;
+
   /**
    * A tournmanet ID if Agent is generated from within a {@link Tournament}
    */
@@ -32,12 +34,13 @@ export class Agent {
 
   /**
    * Name of the agent
-   * @default agent_[id]
+   * @default `agent_[agent.id]``
    */
   public name: string;
 
   /** The source path to the file that runs the agent */
   public src: string;
+
   /** The extension of the file */
   public ext: string;
 
@@ -46,6 +49,7 @@ export class Agent {
 
   /** The current working directory of the source file */
   public cwd: string;
+
   /** The command used to run the file */
   public cmd: string = null;
 
@@ -89,13 +93,14 @@ export class Agent {
   public currentMoveCommands: Array<string> = [];
 
   
-  // a promise that resolves when the Agent's current move in the `Match` is finished
+  /** a promise that resolves when the Agent's current move in the {@link Match} is finished */
   public currentMovePromise: Promise<void>;
   
   /* istanbul ignore next */
   public currentMoveResolve: Function = () => {}; // set as a dummy function
   public currentMoveReject: Function;
 
+  /** A number that counts the number of times the agent has essentially interacted with the {@link MatchEngine} */
   public agentTimeStep = 0;
 
   public clearTimer: Function = () => {};
@@ -107,7 +112,6 @@ export class Agent {
   
   constructor(file: string, options: Partial<Agent.Options>) {
 
-    
     this.creationDate = new Date();
     this.options = deepMerge(this.options, options);
 
@@ -156,10 +160,16 @@ export class Agent {
       let tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dbot-'));
       let stats = fs.statSync(this.cwd);
       if (stats.isDirectory()) {
+
+        // copy all files in the bot directory to the temporary one
         execSync(`sudo cp -R ${this.cwd}/* ${tempDir}`);
+
+        // set BOT_USER as the owner
         execSync(`sudo chown -R ${BOT_USER} ${tempDir}`);
+
+        // update the current working directory and file fields.
         this.cwd = tempDir;
-        this.file = `${path.join(tempDir, this.src)}`;
+        this.file = path.join(tempDir, this.src);
       }
       else {
         throw new FatalError(`${this.cwd} is not a directory`);
@@ -194,7 +204,7 @@ export class Agent {
   }
 
   /**
-   * Install whatever is needed through a install.sh file in the root of the bot folder
+   * Install whatever is needed through a `install.sh` file in the root of the bot folder
    */
   _install(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -232,58 +242,68 @@ export class Agent {
   }
 
   /**
-   * Compile whatever is needed
+   * Compile whatever is needed. Called by {@link MatchEngine} and has a timer set by the maxCompileTime option in
+   * {@link Agent.Options}
    */
   _compile(): Promise<void> {
     return new Promise((resolve, reject) => {
+      let p: ChildProcess;
+      let compileTimer = setTimeout(() => {
+        reject(new FatalError('Agent went over compile time during the compile stage'));
+      }, this.options.maxCompileTime);
       switch(this.ext) {
         case '.py':
         case '.js':
         case '.php':
           resolve();
           break;
-          // TODO: change all exec's to spawns
+          // TODO: Make these compile options configurable
         case '.ts':
-          //tsc --esModuleInterop --allowJs -m commonjs --lib es5
-          exec(`sudo tsc --esModuleInterop --allowJs -m commonjs --lib es5 ${this.src}`, {
+          p = spawn(`sudo`, [...`sudo tsc --esModuleInterop --allowJs -m commonjs --lib es5`.split(' '), this.src], {
             cwd: this.cwd
-          }, (err) => {
-            if (err) reject(err);
-            resolve();
           });
           break;
         case '.go':
-          exec(`sudo go build -o ${this.srcNoExt}.out ${this.src}`, {
+          p = spawn(`sudo`, ['go', 'build', '-o', `${this.srcNoExt}.out`, this.src], {
             cwd: this.cwd
-          }, (err) => {
-            if (err) reject(err);
-            resolve();
           });
           break;
         case '.cpp':
-          exec(`sudo g++ -O3  -o ${this.srcNoExt}.out ${this.src}`, {
+          p = spawn(`sudo`, ['g++', '-O3', '-o', `${this.srcNoExt}.out`, this.src], {
             cwd: this.cwd
-          }, (err) => {
-            if (err) reject(err);
-            resolve();
-          });
+          })
           break;
         case '.c':
-          exec(`sudo gcc -O3 -o ${this.srcNoExt}.out ${this.src}`, {
+          p = spawn(`sudo`, ['gcc', '-O3', '-o', `${this.srcNoExt}.out`, this.src], {
             cwd: this.cwd
-          }, (err) => {
-            if (err) reject(err);
-            resolve();
           });
           break;
         case '.java':
-          exec("sudo javac " + this.src, {
+          p = spawn(`sudo`, ['javac', this.src], {
             cwd: this.cwd
-          }, (err) => {
-            if (err) reject(err);
-            resolve();
           });
           break;
+        default:
+          reject(new FatalError(`Language with extension ${this.ext} is not supported yet`));
+          break;
+      }
+      if (p) {
+        p.on('error', (err) => {
+          clearTimeout(compileTimer);
+          reject(err);
+        });
+        p.on('close', (code) => {
+          if (code === 0) {
+            clearTimeout(compileTimer);
+            resolve();
+          }
+          else {
+            reject(new FatalError(`A compile time error occured. Compile step for agent ${this.id} exited with code: ${code}; Compiling ${this.file}`));
+          }
+        });
+      }
+      else {
+        clearTimeout(compileTimer);
       }
     });
   }
@@ -315,6 +335,8 @@ export class Agent {
   /**
    * Spawns process accordingly and uses the configs accordingly
    * Resolves with the process if spawned succesfully
+   * 
+   * Note, we are spawning detached so we can kill off all sub processes if they are made
    */
   spawnProcess(command: string, args: Array<string>): Promise<ChildProcess> {
     return new Promise((resolve, reject) => {
@@ -345,7 +367,7 @@ export class Agent {
 
   _terminate() {
     // first try to kill the process and all its child processes it spawned
-    // trick from https://azimi.me/2014/12/31/kill-child_process-node-js.html
+    // trick copied from https://azimi.me/2014/12/31/kill-child_process-node-js.html
     try {
       process.kill(-this.process.pid, 'SIGKILL');
     }
@@ -365,17 +387,31 @@ export class Agent {
     this.status = Agent.Status.KILLED;
   }
 
+  /**
+   * Disallow an agent from sending more commands
+   */
   _disallowCommands() {
     this.allowedToSendCommands = false;
   }
+
+  /**
+   * Allow agent to send commands again
+   */
   _allowCommands() {
     this.allowedToSendCommands = true;
   }
+
+  /**
+   * Check if agent is set to be allowed to send commands. The {@link EngineOptions} affect when this is flipped
+   */
   isAllowedToSendCommands() {
     return this.allowedToSendCommands;
   }
 
-  setTimeout(fn, delay, ...args) {
+  /**
+   * Setup the agent timer clear out method
+   */
+  setTimeout(fn: Function, delay: number, ...args: any[]) {
     let timer = setTimeout(() => {
       fn(...args);
     }, delay);
@@ -389,6 +425,7 @@ export class Agent {
    */
   finishMove() {
     this.clearTimer();
+
     // Resolve move and tell engine in `getCommands` this agent is done outputting commands and awaits input
     this.currentMoveResolve();
             
@@ -399,7 +436,7 @@ export class Agent {
 
   // Start an Agent's move and setup the promise structures
   _setupMove() {
-    // allow agent to send commands, increment time, clear past commands, and reset the promise
+    // allows agent to send commands; increment time; clear past commands; reset the promise structure
     this.allowedToSendCommands = true;
     this.agentTimeStep++;
     this.currentMoveCommands = [];
@@ -441,6 +478,7 @@ export class Agent {
     return agents;
   }
 }
+
 export module Agent {
   /**
    * Status enums for an Agent
@@ -459,8 +497,11 @@ export module Agent {
     /** Agent is currently not running */
     STOPPED = 'stopped'
   }
+
   /**
-   * Agent ID
+   * Agent ID. Always a non-negative integer and all agents in a match have IDs that are strictly increasing from `0`
+   * 
+   * For example, in a 4 agent match, the ids are `0, 1, 2, 3`.
    */
   export type ID = number;
 
@@ -473,6 +514,9 @@ export module Agent {
 
     /** 
      * Whether or not to spawn agent securely and avoid malicious activity 
+     * When set to true, the agent's file and the directory containing the file are copied over to a temporary directory
+     * of which there is restricted access.
+     * 
      * @default `true`
      */
     secureMode: boolean

@@ -101,8 +101,9 @@ export class MatchEngine {
 
     // wait for install step
     await agent._install();
+    this.log.system('Succesfully ran install step for agent ' + agent.id);
 
-    // wait for compilation ste
+    // wait for compilation step
     await agent._compile();
     this.log.system('Succesfully ran compile step for agent ' + agent.id);
 
