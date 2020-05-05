@@ -8,32 +8,23 @@ import { deepCopy } from '../../utils/DeepCopy';
 import { Player } from '../../Tournament';
 
 const defaultUserSchemaOptions: MongoDB.UserSchemaOptions = {
-  statistics: true,
-  creationDate: true,
-  playerID: true
+  creationDate: true
 }
 const UserSchemaCreator = (options: DeepPartial<MongoDB.UserSchemaOptions> = {}) => {
   let schemaOptions: MongoDB.UserSchemaOptions = 
     deepMerge(deepCopy(defaultUserSchemaOptions), options);
-  let schema = new Schema({
+  
+    let schema = new Schema({
     username: { type: String, index: true, required: true, unique: true },
-    passwordHash: { type: String, required: true }
+    passwordHash: { type: String, required: true },
+    playerID: { type: String, default: Player.generatePlayerID, index: true, unique: true },
+    statistics: { type: Schema.Types.Mixed, default: () => { return new Map(); } }
   });
 
   // TODO: This can be more streamlined. Perhaps in the MatchSchemaCreator we also store the kind of type they should be
   if (schemaOptions.creationDate) {
     schema.add({
       creationDate: { type: Schema.Types.Date, default: Date.now }
-    });
-  }
-  if (schemaOptions.statistics) {
-    schema.add({
-      statistics: { type: Schema.Types.Mixed }
-    });
-  }
-  if (schemaOptions.playerID) {
-    schema.add({
-      playerID: { type: String, default: Player.generatePlayerID, index: true, unique: true }
     });
   }
 

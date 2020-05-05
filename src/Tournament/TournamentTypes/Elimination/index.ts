@@ -24,7 +24,8 @@ export class EliminationTournament extends Tournament {
     },
     resultHandler: null,
     agentsPerMatch: [2],
-    consoleDisplay: true
+    consoleDisplay: true,
+    id: 'z3Ap49'
   }
   state: EliminationState = {
     playerStats: new Map(),

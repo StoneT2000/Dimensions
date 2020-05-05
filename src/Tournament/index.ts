@@ -17,6 +17,15 @@ import { genID } from '../utils';
  * Player class that persists data for the same ephemereal agent across multiple matches
  */
 export class Player {
+  
+  /** 
+   * Whether this player is anonymous and not tied to a user on the back end 
+   * If this is ever false, then that means 1. we have a backend setup 2. there is an actual user entry
+   */
+  public anonymous: boolean = true;
+
+  /** Associated username if there is one */
+  public username: string = undefined;
   constructor(public tournamentID: Tournament.ID, public file: string) {
 
   }
@@ -79,12 +88,26 @@ export abstract class Tournament {
     dimension: Dimension
   ) {
     this.id = id;
+
+    // use overriden id if provided
+    if (tournamentConfigs.id) {
+      this.id = tournamentConfigs.id;
+    }
+
     this.log.level = (tournamentConfigs.loggingLevel !== undefined) ? tournamentConfigs.loggingLevel : Logger.LEVEL.INFO;
     this.name = tournamentConfigs.name ? tournamentConfigs.name : `tournament_${this.id}`;
+
+    
     this.log.identifier = this.name;
     this.dimension = dimension;
 
     this.log.info(`Created Tournament - ID: ${this.id}, Name: ${this.name}`);
+    
+    // if no name is provided but database is being used, log a warning
+    if (!tournamentConfigs.name && dimension.hasDatabase()) {
+      this.log.warn(`A name has to be specified for a tournament otherwise tournament player data will not be reused across runs of the tournament`)
+    }
+
   }
 
   /**
@@ -103,7 +126,7 @@ export abstract class Tournament {
     if (existingID) {
     
       if (this.competitors.has(existingID)) {
-        // bot exists already
+        // bot exists in tournament already
         let player = this.competitors.get(existingID);
         let oldname = player.tournamentID.name;
         let oldfile = player.file;
@@ -123,6 +146,8 @@ export abstract class Tournament {
         // otherwise bot doesn't exist, and we use this id as our id to generate a new player
         id = existingID;
       }
+
+
     }
     else {
       id = this.generateNextTournamentIDString();
@@ -133,13 +158,36 @@ export abstract class Tournament {
     if (typeof file === 'string') {
       let name = `player-${id}`;
       let newPlayer = new Player({id: id, name: name}, file);
+
+      // check database
+      if (this.dimension.hasDatabase()) {
+        let user = await this.dimension.databasePlugin.getUser(newPlayer.tournamentID.id);
+        if (user) {
+          newPlayer.anonymous = false;
+          newPlayer.username = user.username;
+        }
+      }
       this.competitors.set(id, newPlayer);
+  
       this.internalAddPlayer(newPlayer);
       return newPlayer;
     }
     else {
       let newPlayer = new Player({id: id, name: file.name}, file.file);
+
+      // check database
+      if (this.dimension.hasDatabase()) {
+        
+        let user = await this.dimension.databasePlugin.getUser(newPlayer.tournamentID.id);
+        if (user) {
+          newPlayer.anonymous = false;
+          newPlayer.username = user.username;
+        }
+      }
+
+      console.log(id, newPlayer);
       this.competitors.set(id, newPlayer);
+
       this.internalAddPlayer(newPlayer);
       return newPlayer;
     }
@@ -311,6 +359,13 @@ export abstract class Tournament {
   public static genTournamentClassID() {
     return genID(6);
   }
+
+  /**
+   * Returns the name of the tournament but formatted (no spaces)
+   */
+  public getSafeName() {
+    return this.name.replace(/ /g, '_');
+  }
 }
 
 /**
@@ -405,6 +460,11 @@ export module Tournament {
      * @default true
      */
     consoleDisplay?: boolean
+
+    /**
+     * Set this ID to override the generated ID 
+     */
+    id?: string
   }
 
   export interface TournamentConfigs<ConfigType> extends TournamentConfigsBase {
@@ -609,7 +669,7 @@ export module Tournament {
       /**
        * A map from a {@link Player} Tournament ID string to statistics
        */
-      playerStats: Map<string, {player: Player, wins: number, ties: number, losses: number, matchesPlayed: number, rankState: any}>
+      playerStats: Map<NanoID, PlayerStat>
       
       /**
        * Stats for this Tournament in this instance. Intended to be constant memory usage
@@ -622,6 +682,17 @@ export module Tournament {
        * Past results stored. Each element is what is returned by {@link Design.getResults}
        */
       results: Array<any>
+    }
+    /**
+     * Player stat interface for ladder tournaments
+     */
+    export interface PlayerStat {
+      player: Player, 
+      wins: number, 
+      ties: number, 
+      losses: number, 
+      matchesPlayed: number, 
+      rankState: any
     }
   }
   

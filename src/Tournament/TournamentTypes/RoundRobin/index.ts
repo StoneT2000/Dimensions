@@ -26,7 +26,8 @@ export class RoundRobinTournament extends Tournament {
     },
     agentsPerMatch: [2],
     resultHandler: null,
-    consoleDisplay: true
+    consoleDisplay: true,
+    id: 'aa2qlM'
   }
   private shouldStop: boolean = false;
   private resumePromise: Promise<void>;

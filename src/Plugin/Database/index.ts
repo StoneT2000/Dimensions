@@ -71,7 +71,15 @@ export abstract class Database extends Plugin {
   abstract deleteUser(usernameOrID: string): Promise<any>
 
   /**
-   * Gets user information. If publicView is `false`, will retrieve all information other than password
+   * Updates the user with this username or ID (generated nanoID) with the provided data
+   * @param usernameOrID
+   * @param update
+   */
+  abstract updateUser(usernameOrID: string, update: Partial<Database.User>): Promise<any>
+
+  /**
+   * Gets user information. If publicView is `false`, will retrieve all information other than password. Resolves with
+   * null if no user found
    * @param usernameOrID 
    * @param publicView
    */

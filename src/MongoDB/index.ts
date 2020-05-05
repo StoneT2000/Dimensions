@@ -72,12 +72,8 @@ export class MongoDB extends Database {
    */
   public async getUser(usernameOrID: string, publicView: boolean = true) {
     return this.models.user.findOne( {$or: [ { username: usernameOrID }, { playerID: usernameOrID } ]} ).then((user) => {
-      if (user) {
-        return user.toObject();
-      }
-      else {
-        throw new Error('not a valid user');
-      }
+      if (user) return user.toObject();
+      return null;
     });
   } 
 
@@ -90,6 +86,17 @@ export class MongoDB extends Database {
         else {
           throw new Error('Invalid password');
         }
+      }
+      else {
+        throw new Error('Not a valid user');
+      }
+    });
+  }
+
+  public async updateUser(usernameOrID: string, update: Partial<Database.User>) {
+    return this.models.user.findOneAndUpdate({$or: [ { username: usernameOrID }, { playerID: usernameOrID } ]}, update).then((user) => {
+      if (user) {
+        return user.toObject();
       }
       else {
         throw new Error('Not a valid user');
@@ -132,15 +139,11 @@ export module MongoDB {
   }
 
   /**
-   * User Schema
+   * User Schema Options. If set to true, that field will be included into the database.
    */
   export interface UserSchemaOptions {
-    /** Related Statistics */
-    statistics: boolean,
     /** Creation date of the user */
     creationDate: boolean,
-    /** A Player ID generated using {@link Player.generatePlayerID}, returning a 12 char nanoid */
-    playerID: boolean
   }
 
   export interface Models {

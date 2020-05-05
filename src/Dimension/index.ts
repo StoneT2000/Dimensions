@@ -299,7 +299,7 @@ export class Dimension {
           break;
       }
       this.statistics.tournamentsCreated++;
-      this.tournaments.set(id, newTourney);
+      this.tournaments.set(newTourney.id, newTourney);
       return newTourney;
   }
   // TODO give option to directly create a Ladder/RoundRobin ... tourney with createLadderTournament etc.
