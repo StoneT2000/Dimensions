@@ -12,7 +12,8 @@ import { deepCopy } from '../utils/DeepCopy';
 import { LadderTournament } from '../Tournament/TournamentTypes/Ladder';
 import { exec, ChildProcess } from 'child_process';
 import { BOT_USER, COMPILATION_USER } from '../MatchEngine';
-import { Plugin, DatabasePlugin } from '../Plugin';
+import { Plugin } from '../Plugin';
+import { Database } from '../Plugin/Database';
 import { genID } from '../utils';
 
 
@@ -90,7 +91,7 @@ export class Dimension {
   /**
    * The database plugin being used
    */
-  public databasePlugin: DatabasePlugin;
+  public databasePlugin: Database;
 
   /**
    * The Station associated with this Dimension and current node instance
@@ -153,7 +154,12 @@ export class Dimension {
 
     // log important messages regarding security
     if (this.configs.secureMode) {
-      this.setupSecurity();
+      try {
+        this.setupSecurity();
+      }
+      catch(error) {
+        throw error;
+      }
     }
     else {
       this.log.error(`WARNING: Running in non-secure mode. You will not be protected against malicious bots`);
@@ -313,7 +319,12 @@ export class Dimension {
   private async setupSecurity() {
 
     // perform checks
-    this.checkForUsers([BOT_USER, COMPILATION_USER]);
+    try {
+      this.checkForUsers([BOT_USER, COMPILATION_USER]);
+    }
+    catch (error) {
+      throw error;
+    }
   }
 
   /**
@@ -322,7 +333,7 @@ export class Dimension {
    */
   private checkForUsers(usernames: Array<string>) {
     return new Promise((resolve, reject) => {
-      // exec('')
+
       let userset = new Set();
       switch(process.platform) {
         case 'darwin': {
@@ -340,7 +351,7 @@ export class Dimension {
             for (let i = 0; i < usernames.length; i++) {
               let name = usernames[i];
               if (!userset.has(name)) {
-                reject(new FatalError(`Missing user: ${name}`));
+                reject(new FatalError(`Missing user: ${name} \nPlease add that user to your system (do not make it admin)`));
                 return;
               }
             }
@@ -382,7 +393,7 @@ export class Dimension {
         this.log.info('Attaching Database Plugin ' + plugin.name);
         // set to unknown to tell dimensions that there is some kind of database, we dont what it is yet
         this.configs.backingDatabase = 'unknown';
-        this.databasePlugin = <DatabasePlugin>plugin;
+        this.databasePlugin = <Database>plugin;
         await this.databasePlugin.initialize();
         break;
       case Plugin.Type.FILE_STORE:

@@ -1,8 +1,4 @@
-import { Dimension, NanoID } from "../Dimension";
-import { Match } from "../Match";
-import { DeepPartial } from "../utils/DeepPartial";
-import { deepMerge } from "../utils/DeepMerge";
-import mongoose from 'mongoose';
+import { Dimension } from "../Dimension";
 
 export abstract class Plugin {
 
@@ -24,64 +20,7 @@ export abstract class Plugin {
   abstract async manipulate(dimension: Dimension): Promise<void>;
 }
 
-/**
- * The database plugin class, of which Dimensions uses internally to store data onto the database
- * Must be extended in order to be used as a database plugin
- */
-export abstract class DatabasePlugin extends Plugin {
-
-  constructor(configs: DeepPartial<DatabasePlugin.Configs>) {
-    super();
-    deepMerge(this.configs, configs);
-  }
-
-  /** Default configs */
-  public configs: DatabasePlugin.Configs = {
-    saveMatches: true,
-    saveTournamentMatches: true
-  }
-  /**
-   * Performs any intialization tasks
-   * Resolves when done
-   */
-  abstract async initialize(): Promise<any>
-
-  /**
-   * Stores any match related data. Typically will just store match results
-   * Resolves when done
-   */
-  abstract storeMatch(match: Match): Promise<any>;
-
-  /**
-   * Retrieves a match through its match ID
-   * @param id - a NanoID
-   */
-  abstract getMatch(id: NanoID): Promise<any>;
-
-  /**
-   * TODO: Add user CRUD
-   * Add loginUser, authUser, registerUser, deleteUser, updateUser
-   */
-
-}
-
-export module DatabasePlugin {
-
-  /**
-   * Configuration interface for the {@link DatabasePlugin}
-   */
-  export interface Configs {
-
-    /** Whether or not to save matches into the database when we run {@link Dimension.runMatch} */
-    saveMatches: boolean,
-
-    /** Whether or not to save matches into the database when the tournament runs a match */
-    saveTournamentMatches: boolean
-  }
-}
-
 export module Plugin {
-
   /**
    * Enumeration for plugin types
    */

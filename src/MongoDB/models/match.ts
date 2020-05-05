@@ -17,7 +17,7 @@ const MatchSchemaCreator = (options: DeepPartial<MongoDB.MatchSchemaOptions> = {
     deepMerge(deepCopy(defaultMatchSchemaOptions), options);
   let schema = new Schema({
     name: String,
-    id: Schema.Types.Mixed
+    id: {type: Schema.Types.Mixed, index: true, unique: true, required: true }
   });
 
   // TODO: This can be more streamlined. Perhaps in the MatchSchemaCreator we also store the kind of type they should be
