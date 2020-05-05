@@ -34,7 +34,7 @@ export class Match {
   public name: string;
   
   /**
-   * A unique ID for the match, unique to the current node process
+   * Match ID. It's always a 12 character NanoID
    */
   public id: number;
 

@@ -58,7 +58,7 @@ export class Dimension {
   public name: string;
 
   /**
-   * This dimension's ID
+   * This dimension's ID. It is always a 6 character NanoID unless overrided through the {@link DimensionConfigs}
    */
   public id: number = 0;
 
@@ -66,6 +66,12 @@ export class Dimension {
    * Logger
    */
   public log = new Logger();
+
+  /**
+   * The database plugin being used. Allows Dimensions to interact with a database and store match, tournament, and 
+   * user data, allowing for data persistance across instances.
+   */
+  public databasePlugin: Database;
 
   /**
    * The Station associated with this Dimension and current node instance
