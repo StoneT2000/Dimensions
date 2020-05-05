@@ -1,38 +1,31 @@
-const MATCH_DESTROYED_ERROR = 'MatchDestroyedError';
-const MATCH_ERROR = 'MatchError';
+/**
+ * This file exports all error classes related to Dimensions
+ */
 const MATCH_WARN = 'MatchWarn';
 const DIMENSION_ERROR = 'DimensionError';
 const FATAL_ERROR = 'FatalError';
-const TOURNAMENT_ERROR = 'TournamentError'
+const NOT_SUPPORTED_ERROR = 'NotSupportedError';
+const SECURITY_ERROR = 'SecurityError';
+const MISSING_FILES_ERROR = 'MissingFilesError';
+
 /**
- * @class MatchError
- * Standard Match Errors that do not stop a game, but signal to user of some kind of warning or error that
- * occured as a result
+ * @class DimensionError
+ * Simple, standard errors reported by the Dimension framework that don't stop the process
  */
-export class MatchError extends Error {
+export class DimensionError extends Error {
   constructor(m: string) {
     super(m);
-    this.name = MATCH_ERROR;
-    
+    this.name = DIMENSION_ERROR;
+
     /**
      * See https://github.com/Microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
      * for why we use this setPrototypeOf workaround. 
-     * This is so we can nicer instanceof syntax instead of user defined type guards
+     * This is so we can use the `instanceof` syntax instead of user defined type guards
      */
-    Object.setPrototypeOf(this, MatchError.prototype);
+    Object.setPrototypeOf(this, DimensionError.prototype);
   }
 }
-/**
- * @class MatchDestroyedError
- * Error thrown when a match is explicitly destroyed (by the user generally)
- */
-export class MatchDestroyedError extends MatchError {
-  constructor(m: string) {
-    super(m);
-    this.name = MATCH_DESTROYED_ERROR;
-    Object.setPrototypeOf(this, MatchDestroyedError.prototype);
-  }
-}
+
 
 /**
  * @class MatchWarn
@@ -44,32 +37,6 @@ export class MatchWarn extends Error {
     super(m);
     this.name = MATCH_WARN
     Object.setPrototypeOf(this, MatchWarn.prototype);
-  }
-}
-
-
-/**
- * @class TournamentError
- * Standard Tournament errors that won't halt a tournament, but indicate something was uncompleted as a result of an 
- * error
- */
-export class TournamentError extends Error {
-  constructor(m: string) {
-    super(m);
-    this.name = TOURNAMENT_ERROR
-    Object.setPrototypeOf(this, TournamentError.prototype);
-  }
-}
-
-/**
- * @class DimensionError
- * Simple, standard errors reported by the Dimension framework that don't stop the process
- */
-export class DimensionError extends Error {
-  constructor(m: string) {
-    super(m);
-    this.name = DIMENSION_ERROR;
-    Object.setPrototypeOf(this, DimensionError.prototype);
   }
 }
 
@@ -85,3 +52,40 @@ export class FatalError extends Error {
     Object.setPrototypeOf(this, FatalError.prototype);
   }
 }
+
+/**
+ * Error thrown whenever a set of files is required but is found to be missing
+ */
+export class MissingFilesError extends FatalError {
+  constructor(m: string) {
+    super(m);
+    this.name = MISSING_FILES_ERROR;
+    Object.setPrototypeOf(this, MissingFilesError.prototype);
+  }
+}
+
+/**
+ * An error thrown whenever something being used is not supported at the moment;
+ */
+export class NotSupportedError extends FatalError {
+  constructor(m: string) {
+    super(m);
+    this.name = NOT_SUPPORTED_ERROR;
+    Object.setPrototypeOf(this, NotSupportedError.prototype);
+  }
+}
+
+/**
+ * Errors thrown that are related to the security of the dimension
+ */
+export class SecurityError extends Error {
+  constructor(m: string) {
+    super(m);
+    this.name = SECURITY_ERROR;
+    Object.setPrototypeOf(this, SecurityError.prototype);
+  }
+}
+
+export * from './AgentError';
+export * from './MatchError';
+export * from './TournamentError';

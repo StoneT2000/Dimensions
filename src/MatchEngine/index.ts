@@ -1,4 +1,4 @@
-import { FatalError, MatchError } from "../DimensionError";
+import { FatalError, MatchError, NotSupportedError } from "../DimensionError";
 import { DeepPartial } from "../utils/DeepPartial";
 import { deepMerge } from "../utils/DeepMerge";
 import { Design } from '../Design';
@@ -221,7 +221,7 @@ export class MatchEngine {
           break;
         case MatchEngine.COMMAND_FINISH_POLICIES.CUSTOM:
           // TODO: Not implemented yet
-          throw new FatalError('Custom command finish policies are not allowed yet');
+          throw new NotSupportedError('Custom command finish policies are not allowed yet');
           break;
       }
 

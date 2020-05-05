@@ -3,7 +3,7 @@ import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
 import { Match } from '../Match';
 import { Station } from '../Station';
-import { FatalError, MatchDestroyedError } from '../DimensionError';
+import { FatalError, MatchDestroyedError, MissingFilesError, NotSupportedError } from '../DimensionError';
 import { Design } from '../Design';
 import { RoundRobinTournament } from '../Tournament/TournamentTypes/RoundRobin';
 import { EliminationTournament } from '../Tournament/TournamentTypes/Elimination';
@@ -203,7 +203,7 @@ export class Dimension {
     configs?: DeepPartial<Match.Configs>): Promise<Match> {
 
     if (!files.length) {
-      throw new FatalError('No files provided for match');
+      throw new MissingFilesError('No files provided for match');
     }
 
     // override dimension defaults with provided configs
@@ -243,7 +243,7 @@ export class Dimension {
   public async runMatch(
     files: Array<string> | Array<{file: string, name: string}>, 
     configs?: DeepPartial<Match.Configs>): Promise<any> {
-    if (!files.length) throw new FatalError('No files provided for match');
+    if (!files.length) throw new MissingFilesError('No files provided for match');
 
     // override dimension defaults with provided configs
     let matchConfigs: Match.Configs = deepCopy(this.configs.defaultMatchConfigs);
@@ -391,13 +391,13 @@ export class Dimension {
         }
         case 'linux': {
           // TODO add this
-          let p = exec(``, (err) => {
-            if (err) throw err;
-          });
-          break;
+          // let p = exec(``, (err) => {
+          //   if (err) throw err;
+          // });
+          // break;
         }
         default:
-          throw new FatalError(`The platform ${process.platform} is not supported yet for secureMode`);
+          throw new NotSupportedError(`The platform ${process.platform} is not supported yet for secureMode`);
       }
       
     });
@@ -425,7 +425,7 @@ export class Dimension {
         await this.databasePlugin.initialize();
         break;
       case Plugin.Type.FILE_STORE:
-        throw new FatalError('FILE_STORE Not supported yet');
+        throw new NotSupportedError('FILE_STORE Not supported yet');
       default:
         break;
     }

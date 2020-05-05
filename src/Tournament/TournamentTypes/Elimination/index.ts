@@ -6,7 +6,7 @@ import EliminationState = Tournament.Elimination.State;
 import EliminationConfigs = Tournament.Elimination.Configs;
 
 import RANK_SYSTEM = Tournament.RANK_SYSTEM;
-import { FatalError, TournamentError } from "../../../DimensionError";
+import { FatalError, TournamentError, NotSupportedError } from "../../../DimensionError";
 import { Agent } from "../../../Agent";
 import { Dimension, NanoID } from "../../../Dimension";
 
@@ -69,7 +69,7 @@ export class EliminationTournament extends Tournament {
         }
         break;
       default:
-        throw new FatalError('We currently do not support this rank system for ladder tournaments');
+        throw new NotSupportedError('We currently do not support this rank system for ladder tournaments');
     }
     // add all players
     files.forEach((file) => {
@@ -259,7 +259,7 @@ export class EliminationTournament extends Tournament {
         let seeding = this.configs.tournamentConfigs.seeding;
         if (seeding == null) seeding = [];
         if (seeding.length > this.competitors.size) {
-          throw new FatalError(`Seeds provided cannot be greater than the number of competitors`);
+          throw new TournamentError(`Seeds provided cannot be greater than the number of competitors`);
         }
         for (let i = 0; i < this.competitors.size - seeding.length; i++) {
           seeding.push(null);
@@ -277,7 +277,7 @@ export class EliminationTournament extends Tournament {
               leftOverSeeds.delete(seeding[i]);
             }
             else {
-              throw new FatalError(`Duplicate seeds are not allowed. There are duplicate seeds of ${seeding[i]}`);
+              throw new TournamentError(`Duplicate seeds are not allowed. There are duplicate seeds of ${seeding[i]}`);
             }
           }
         }
@@ -375,9 +375,9 @@ export class EliminationTournament extends Tournament {
   internalAddPlayer(player: Player) {
     if (this.status === Tournament.TournamentStatus.INITIALIZED || this.status === Tournament.TournamentStatus.RUNNING)
     throw new 
-      FatalError('You are not allowed to add a player during the middle or after initialization of elimination tournaments');
+      TournamentError('You are not allowed to add a player during the middle or after initialization of elimination tournaments');
   }
   updatePlayer(player: Player, oldname: string, oldfile: string) {
-    throw new FatalError('You are not allowed to update a player during elimination tournaments');
+    throw new TournamentError('You are not allowed to update a player during elimination tournaments');
   }
 }
