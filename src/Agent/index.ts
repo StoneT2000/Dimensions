@@ -284,7 +284,7 @@ export class Agent {
           });
           break;
         default:
-          reject(new NotSupportedError(`Language with extension ${this.ext} is not supported yet`));
+          reject(new NotSupportedError(`Language with extension ${this.ext} is not supported at the moment`));
           break;
       }
       if (p) {
