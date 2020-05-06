@@ -40,7 +40,7 @@ describe('Tournament Testing with RPS', () => {
   let DefaultRPSTournament: Dimension.Tournament.RoundRobin.Tournament;
   let myDimension: Dimension.DimensionType;
   
-  let players = ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/paper.js', './tests/js-kit/rps/errorbot.js', './tests/js-kit/rps/rock.js'];
+  let players = ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/paper.js', './tests/js-kit/rps/errorBot.js', './tests/js-kit/rps/rock.js'];
   let names = ['smarter', 'paper', 'errorplayer', 'rock'];
   let filesAndNames = [];
   for (let i = 0; i < players.length; i++) {

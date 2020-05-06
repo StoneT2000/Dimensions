@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import os from 'os';
 import { Logger } from "../Logger";
-import { FatalError, AgentFileError, AgentDirectoryError, AgentMissingIDError, AgentInstallTimeoutError, AgentCompileTimeoutError, NotSupportedError, AgentCompileError } from "../DimensionError";
+import { FatalError, AgentFileError, AgentDirectoryError, AgentMissingIDError, AgentInstallTimeoutError, AgentCompileTimeoutError, NotSupportedError, AgentCompileError, AgentInstallError } from "../DimensionError";
 import { Tournament } from "../Tournament";
 import { BOT_USER, ROOT_USER } from "../MatchEngine";
 import { deepMerge } from "../utils/DeepMerge";
@@ -223,16 +223,18 @@ export class Agent {
    */
   _install(): Promise<void> {
     return new Promise((resolve, reject) => {
+
+      // if there is a install.sh file, use it
       if (fs.existsSync(path.join(this.cwd, 'install.sh'))) {
-         // run in restricted bash if in secureMode
+
+        // run in restricted bash if in secureMode
         let p: ChildProcess;
         let installTimer = setTimeout(() => {
           reject(new AgentInstallTimeoutError('Agent went over install time during the install stage'));
         }, this.options.maxInstallTime);
         if (this.options.secureMode) {
           p = spawn('sudo', ['-H' ,'-u', BOT_USER, 'rbash' ,'install.sh'], {
-            cwd: this.cwd,
-            stdio: 'ignore'
+            cwd: this.cwd
           });
         }
         else {
@@ -241,13 +243,26 @@ export class Agent {
             stdio: 'ignore'
           });
         }
+        let chunks = [];
+        p.stdout.on('data', (chunk) => {
+          chunks.push(chunk);
+        });
+        p.stderr.on('data', (chunk) => {
+          chunks.push(chunk);
+        });
+
         p.on('error', (err) => {
           clearTimeout(installTimer);
           reject(err)
         });
-        p.on('close', () => {
+        p.on('close', (code) => {
           clearTimeout(installTimer);
-          resolve();
+          if (code === 0) {
+            resolve();
+          }
+          else {
+            reject(new AgentInstallError(`A install time error occured. Install step for agent ${this.id} exited with code: ${code}; Installing ${path.join(this.cwd, 'install.sh')}; Install Output:\n${chunks.join('')}`))
+          }
         });
       }
       else {
@@ -274,7 +289,7 @@ export class Agent {
           break;
           // TODO: Make these compile options configurable
         case '.ts':
-          p = spawn(`sudo`, [...`sudo tsc --esModuleInterop --allowJs -m commonjs --lib es5`.split(' '), this.src], {
+          p = spawn(`sudo`, [...`tsc --esModuleInterop --allowJs -m commonjs --lib es5`.split(' '), this.src], {
             cwd: this.cwd
           });
           break;
@@ -307,13 +322,20 @@ export class Agent {
           clearTimeout(compileTimer);
           reject(err);
         });
+        let chunks = [];
+        p.stdout.on('data', (chunk) => {
+          chunks.push(chunk);
+        });
+        p.stderr.on('data', (chunk) => {
+          chunks.push(chunk);
+        });
         p.on('close', (code) => {
+          clearTimeout(compileTimer);
           if (code === 0) {
-            clearTimeout(compileTimer);
             resolve();
           }
           else {
-            reject(new AgentCompileError(`A compile time error occured. Compile step for agent ${this.id} exited with code: ${code}; Compiling ${this.file}`));
+            reject(new AgentCompileError(`A compile time error occured. Compile step for agent ${this.id} exited with code: ${code}; Compiling ${this.file}; Compile Output:\n${chunks.join('')}`));
           }
         });
       }
