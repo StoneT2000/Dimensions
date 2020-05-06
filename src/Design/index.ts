@@ -24,42 +24,6 @@ import { deepCopy } from "../utils/DeepCopy";
  */
 export abstract class Design {
   
-  // The standard defaults
-  private _ABSTRACT_DEFAULT_DESIGN_OPTIONS: DesignOptions = {
-    engineOptions: {
-      commandStreamType: COMMAND_STREAM_TYPE.SEQUENTIAL,
-      commandDelimiter: ',',
-      commandFinishSymbol: 'D_FINISH',
-      commandFinishPolicy: COMMAND_FINISH_POLICIES.FINISH_SYMBOL,
-      commandLines: {
-        max: 1,
-        // min: 1
-        waitForNewline: true
-      },
-      timeout: {
-        max: 1000,
-        active: true,
-        timeoutCallback: (agent: Agent, match: Match, engineOptions: EngineOptions) => {
-          match.kill(agent.id);
-          match.log.error(`agent ${agent.id} - '${agent.name}' timed out after ${engineOptions.timeout.max} ms`);
-        }
-        /**
-         * (agent: Agent, match: Match) => {
-         *   agent.finish();
-         * }
-         */
-      }
-    },
-    override: {
-      active: false,
-      command: 'echo NO COMMAND PROVIDED',
-      conclude_command: 'D_MATCH_FINISHED',
-      arguments: [],
-      timeout: 1000 * 60 * 10, // 10 minutes
-      resultHandler: null
-    }
-  }
-
   /** The current design options */
   protected designOptions: DesignOptions;
 
@@ -73,8 +37,8 @@ export abstract class Design {
    */
   constructor(public name: String, designOptions: DeepPartial<DesignOptions> = {}) {
 
-    // Set defaults from the abstract class
-    this.designOptions = deepCopy(this._ABSTRACT_DEFAULT_DESIGN_OPTIONS);
+    // Copy defaults 
+    this.designOptions = deepCopy(DefaultDesignOptions);
 
     // Override with user provided params
     deepMerge(this.designOptions, designOptions);
@@ -220,3 +184,41 @@ export interface DesignOptions {
    */
   override: DesignTypes.OverrideOptions
 };
+
+/**
+ * Default Design Options
+ */
+export const DefaultDesignOptions = {
+  engineOptions: {
+    commandStreamType: COMMAND_STREAM_TYPE.SEQUENTIAL,
+    commandDelimiter: ',',
+    commandFinishSymbol: 'D_FINISH',
+    commandFinishPolicy: COMMAND_FINISH_POLICIES.FINISH_SYMBOL,
+    commandLines: {
+      max: 1,
+      // min: 1
+      waitForNewline: true
+    },
+    timeout: {
+      max: 1000,
+      active: true,
+      timeoutCallback: (agent: Agent, match: Match, engineOptions: EngineOptions) => {
+        match.kill(agent.id);
+        match.log.error(`agent ${agent.id} - '${agent.name}' timed out after ${engineOptions.timeout.max} ms`);
+      }
+      /**
+       * (agent: Agent, match: Match) => {
+       *   agent.finish();
+       * }
+       */
+    }
+  },
+  override: {
+    active: false,
+    command: 'echo NO COMMAND PROVIDED',
+    conclude_command: 'D_MATCH_FINISHED',
+    arguments: [],
+    timeout: 1000 * 60 * 10, // 10 minutes
+    resultHandler: null
+  }
+}

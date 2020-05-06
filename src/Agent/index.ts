@@ -589,6 +589,9 @@ export module Agent {
     maxCompileTime: number
   }
 
+  /**
+   * Default Agent options
+   */
   export const OptionDefaults = {
     secureMode: false,
     loggingLevel: Logger.LEVEL.INFO,
