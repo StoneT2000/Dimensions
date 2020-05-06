@@ -379,7 +379,7 @@ export class Dimension {
             for (let i = 0; i < usernames.length; i++) {
               let name = usernames[i];
               if (!userset.has(name)) {
-                reject(new FatalError(`Missing user: ${name} \nPlease add that user to your system (do not make it admin)`));
+                throw new FatalError(`Missing user: ${name} \nPlease add that user to your system (do not make it admin)`);
                 return;
               }
             }
@@ -388,14 +388,21 @@ export class Dimension {
           break;
         }
         case 'linux': {
-          // TODO add this
-          // let p = exec(``, (err) => {
-          //   if (err) throw err;
-          // });
-          // break;
-        }
-        case 'win32': {
-          // TODO Add this
+          exec(`awk -F: '{ print $1}' /etc/passwd`, (err, stdout) => {
+            if (err) throw err;
+            `${stdout}`.split('\n').forEach((line) => {
+              userset.add(line);
+            });
+            for (let i = 0; i < usernames.length; i++) {
+              let name = usernames[i];
+              if (!userset.has(name)) {
+                throw new FatalError(`Missing user: ${name}. Please add that user to your system (do not make it admin)`);
+                return;
+              }
+            }
+            resolve();
+          });
+          break;
         }
         default:
           throw new NotSupportedError(`The platform ${process.platform} is not supported yet for secureMode`);
