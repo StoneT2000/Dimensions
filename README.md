@@ -44,6 +44,10 @@ Also checkout the blog post introducing the motivation for Dimensions and though
 - Comes with an API served locally that gives access to data on ongoing matches and tournaments and allows for direct control of matches and tournaments through the API. See this page for details on this API: https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API
   - Check out https://github.com/StoneT2000/Dimensions-web if you want a website to view the API from.
 
+## Requirements
+
+At the moment, MacOS and Linux are 100% supported. Windows platforms work but `secureMode` is disabled for now. It's suggested to use Node 12.x or aboove. Lower versions are untested.
+
 ## Getting Started
 
 This guide will take you through how to start and run a competition built with Javascript/Typescript. To see how to use this framework to run a custom competition built without the dimensions framework, see this wiki on setting override options.
