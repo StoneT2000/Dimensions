@@ -380,7 +380,6 @@ export class Dimension {
               let name = usernames[i];
               if (!userset.has(name)) {
                 throw new FatalError(`Missing user: ${name} \nPlease add that user to your system (do not make it admin)`);
-                return;
               }
             }
             resolve();
@@ -397,7 +396,6 @@ export class Dimension {
               let name = usernames[i];
               if (!userset.has(name)) {
                 throw new FatalError(`Missing user: ${name}. Please add that user to your system (do not make it admin)`);
-                return;
               }
             }
             resolve();
