@@ -188,7 +188,7 @@ export interface DesignOptions {
 /**
  * Default Design Options
  */
-export const DefaultDesignOptions = {
+export const DefaultDesignOptions: DesignOptions = {
   engineOptions: {
     commandStreamType: COMMAND_STREAM_TYPE.SEQUENTIAL,
     commandDelimiter: ',',
@@ -211,6 +211,16 @@ export const DefaultDesignOptions = {
        *   agent.finish();
        * }
        */
+    },
+    memory: {
+      limit: 1000000000,
+      active: true,
+      memoryCallback: (agent: Agent, match: Match, engineOptions: EngineOptions) => {
+        match.kill(agent.id);
+        match.log.error
+          (`agent ${agent.id} - '${agent.name}' reached the memory limit of ${engineOptions.memory.limit / 1000000} MB`);
+      },
+      checkRate: 100
     }
   },
   override: {

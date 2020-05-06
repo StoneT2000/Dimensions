@@ -50,6 +50,7 @@
     "@types/mocha": "^7.0.2",
     "@types/mongoose": "^5.7.14",
     "@types/node": "^12.12.37",
+    "@types/pidusage": "^2.0.1",
     "@types/sinon": "^9.0.0",
     "@types/sinon-chai": "^3.2.4",
     "axios": "^0.19.2",
