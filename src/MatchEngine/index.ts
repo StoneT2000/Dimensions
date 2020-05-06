@@ -4,10 +4,11 @@ import { deepMerge } from "../utils/DeepMerge";
 import { Design } from '../Design';
 import { Design as DesignTypes } from '../Design/types';
 import { Logger } from '../Logger';
+import os from 'os';
 import { Agent } from '../Agent';
 import { Match } from '../Match';
 import { deepCopy } from '../utils/DeepCopy';
-import { spawn, ChildProcess } from 'child_process';
+import { spawn, ChildProcess, exec } from 'child_process';
 import EngineOptions = MatchEngine.EngineOptions;
 import DDS = DesignTypes.DynamicDataStrings;
 /**
@@ -91,6 +92,39 @@ export class MatchEngine {
     return;
   }
 
+
+  /**
+   * Returns a promise that resolves once the process succesfully spawned and rejects if error occurs
+   * @param pid - process id to check
+   */
+  private async spawnedPromise(pid: number) {
+    const refreshRate = 10;
+    const checkSpawn = () => {
+      return new Promise((resolve, reject) => {
+        exec(`ps -p ${pid}`, (err, stdout) => {
+          if (err) reject(err);
+          if (stdout.split('\n').length > 2) {
+            resolve();
+          }
+          reject();
+        });
+      })
+    }
+    const setSpawnCheckTimer = (resolve, reject) => {
+      setTimeout(() => {
+        checkSpawn().then(() => {
+          resolve();
+        }).catch((err) => {
+          if (err) reject(err);
+          setSpawnCheckTimer(resolve, reject);
+        })
+      }, refreshRate);
+    }
+    return new Promise((resolve, reject) => {
+      setSpawnCheckTimer(resolve, reject);
+    });
+  }
+
   /**
    * Initializes a single agent, called by {@link initialize}
    * @param agent - agent to initialize
@@ -111,6 +145,7 @@ export class MatchEngine {
     let p = await agent._spawn();
     this.log.system('Spawned agent ' + agent.id);
 
+
     match.idToAgentsMap.set(agent.id, agent);
 
     // set agent status as running
@@ -118,6 +153,7 @@ export class MatchEngine {
 
     // handler for stdout of Agent processes. Stores their output commands and resolves move promises
     p.stdout.on('readable', () => {
+
       let data: string[];
       while (data = p.stdout.read()) {
         // split chunks into line by line and handle each line of commands
@@ -170,11 +206,25 @@ export class MatchEngine {
     // when process closes, print message
     p.on('close', (code) => {
       this.log.system(`${agent.name} | id: ${agent.id} - exited with code ${code}`);
+
+      // remove the agent files if on secureMode and double check it is the temporary directory
+      if (agent.options.secureMode) {
+        let tmpdir = os.tmpdir();
+        if (agent.cwd.slice(0, tmpdir.length) === tmpdir) {
+          exec(`sudo rm -rf ${agent.cwd}`);
+        }
+        else {
+          this.log.error('couldn\'t remove agent files while in secure mode');
+        }
+      }
+      
     });
 
     // store process
     agent.process = p;
+
     // this is for handling a race condition explained in the comments of this.killOffSignal
+    // Briefly, sometimes agent process isn't stored yet during initialization and doesn't get killed as a result
     if (this.killOffSignal) {
       this.kill(agent);
     }

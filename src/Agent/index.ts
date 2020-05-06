@@ -1,4 +1,4 @@
-import { ChildProcess, exec, spawn, execSync } from "child_process";
+import { ChildProcess, spawn, execSync } from "child_process";
 import path from 'path';
 import fs from 'fs';
 import os from 'os';
@@ -7,6 +7,7 @@ import { FatalError, AgentFileError, AgentDirectoryError, AgentMissingIDError, A
 import { Tournament } from "../Tournament";
 import { BOT_USER, ROOT_USER } from "../MatchEngine";
 import { deepMerge } from "../utils/DeepMerge";
+import { genID } from "../utils";
 
 /**
  * @class Agent
@@ -161,10 +162,20 @@ export class Agent {
 
     // if we are running in secure mode, we copy the agent over to a temporary directory
     if (this.options.secureMode) {
-      let tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'dbot-'));
+      let botDir = path.join(os.tmpdir(), '/dbot');
+      if (!fs.existsSync(botDir)) {
+        // create the temporary bot directory and change perms so that other users cannot read it
+        fs.mkdirSync(botDir);
+        execSync(`sudo chown ${ROOT_USER} ${botDir}`);
+        execSync(`sudo chmod o-r ${botDir}`);
+        // This makes it hard for bots to try to look for other bots and copy code
+        // without access to reading the directory
+      }
+      // create a temporary directory generated as bot-<12 char nanoID>-<6 random chars.
+      let tempDir = fs.mkdtempSync(path.join(botDir, `/bot-${genID(12)}-`));
       let stats = fs.statSync(this.cwd);
-      if (stats.isDirectory()) {
 
+      if (stats.isDirectory()) {
         // copy all files in the bot directory to the temporary one
         execSync(`sudo cp -R ${this.cwd}/* ${tempDir}`);
 

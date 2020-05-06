@@ -387,15 +387,15 @@ export class Dimension {
           });
           break;
         }
-        case 'win32': {
-          // TODO Add this
-        }
         case 'linux': {
           // TODO add this
           // let p = exec(``, (err) => {
           //   if (err) throw err;
           // });
           // break;
+        }
+        case 'win32': {
+          // TODO Add this
         }
         default:
           throw new NotSupportedError(`The platform ${process.platform} is not supported yet for secureMode`);
