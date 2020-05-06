@@ -46,7 +46,7 @@ Also checkout the blog post introducing the motivation for Dimensions and though
 
 ## Requirements
 
-At the moment, MacOS and Linux are 100% supported. Windows platforms work but `secureMode` is disabled for now. It's suggested to use Node 12.x or aboove. Lower versions are untested.
+At the moment, MacOS and Linux are 100% supported. Windows platforms work but `secureMode` is disabled for now. It's suggested to use Node 12.x or above. Lower versions are untested.
 
 ## Getting Started
 
