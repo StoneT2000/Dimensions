@@ -8,6 +8,8 @@ import { Tournament } from "../Tournament";
 import { BOT_USER, ROOT_USER } from "../MatchEngine";
 import { deepMerge } from "../utils/DeepMerge";
 import { genID } from "../utils";
+import { deepCopy } from "../utils/DeepCopy";
+import { DeepPartial } from "../utils/DeepPartial";
 
 /**
  * @class Agent
@@ -65,15 +67,7 @@ export class Agent {
   /**
    * The agent's options
    */
-  public options: Agent.Options = {
-    secureMode: false,
-    loggingLevel: Logger.LEVEL.INFO,
-    id: -1,
-    tournamentID: null,
-    name: null,
-    maxInstallTime: 300000,
-    maxCompileTime: 60000
-  };
+  public options: Agent.Options = deepCopy(Agent.OptionDefaults);
 
   /**
    * Creation date of the agent
@@ -118,7 +112,9 @@ export class Agent {
   constructor(file: string, options: Partial<Agent.Options>) {
 
     this.creationDate = new Date();
-    this.options = deepMerge(this.options, options);
+    this.options = deepMerge(this.options, deepCopy(options));
+    
+    this.log.level = this.options.loggingLevel;
 
     this.ext = path.extname(file);
     let pathparts = file.split('/');
@@ -192,24 +188,21 @@ export class Agent {
     }
     
 
-    if (options.id !== undefined) {
+    if (this.options.id !== null) {
       this.id = options.id;
     } else {
       throw new AgentMissingIDError(`No id provided for agent using ${file}`);
     }
-    if (options.name) {
-      this.name = options.name;
+    if (this.options.name) {
+      this.name = this.options.name;
     }
     else {
       this.name = `agent_${this.id}`;
     }
-    if (options.tournamentID) {
+    if (this.options.tournamentID) {
       this.tournamentID = options.tournamentID;
       this.name = this.tournamentID.name;
     }
-    
-
-    this.log.level = options.loggingLevel;
 
     this.log.system(`Created agent: ${this.name}`);
 
@@ -498,26 +491,34 @@ export class Agent {
    * @param loggingLevel - the logging level for all these agents
    * @param secureMode - whether to generate the agent securely. @default `true`
    */
-  static generateAgents(files: Array<String> | Array<{file: string, name: string}> | Array<{file: string, tournamentID: Tournament.ID}>, loggingLevel: Logger.LEVEL, secureMode: boolean = false): Array<Agent> {
+  static generateAgents(files: Array<String> | Array<{file: string, name: string}> | Array<{file: string, tournamentID: Tournament.ID}>, options: DeepPartial<Agent.Options>): Array<Agent> {
     if (files.length === 0) {
       throw new AgentFileError('No files provided to generate agents with!');
     }
     let agents: Array<Agent> = [];
 
     if (typeof files[0] === 'string') {
-      files.forEach((file, index) => {
-        agents.push(new Agent(file, {id: index, name: null, loggingLevel: loggingLevel, secureMode: secureMode}))
+      files.forEach((file, index: number) => {
+        let configs = deepCopy(options);
+        configs.id = index;
+        agents.push(new Agent(file, configs))
       })
     }
     //@ts-ignore
     else if (files[0].name !== undefined) {
-      files.forEach((info, index) => {
-        agents.push(new Agent(info.file, {id: index, name: info.name, loggingLevel: loggingLevel, secureMode: secureMode}))
-      })
+      files.forEach((info, index: number) => {
+        let configs = deepCopy(options);
+        configs.id = index;
+        configs.name = info.name;
+        agents.push(new Agent(info.file, configs))
+      });
     }
     else {
-      files.forEach((info, index) => {
-        agents.push(new Agent(info.file, {id: index, tournamentID: info.tournamentID, loggingLevel: loggingLevel, secureMode: secureMode}))
+      files.forEach((info, index: number) => {
+        let configs = deepCopy(options);
+        configs.id = index;
+        configs.tournamentID = info.tournamentID;
+        agents.push(new Agent(info.file, configs))
       })
     }
     return agents;
@@ -587,4 +588,14 @@ export module Agent {
      */
     maxCompileTime: number
   }
+
+  export const OptionDefaults = {
+    secureMode: false,
+    loggingLevel: Logger.LEVEL.INFO,
+    id: null,
+    tournamentID: null,
+    name: null,
+    maxInstallTime: 300000,
+    maxCompileTime: 60000
+  };
 }

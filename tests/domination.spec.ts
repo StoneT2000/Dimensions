@@ -10,7 +10,7 @@ chai.use(chaiAsPromised);
 
 
 describe('Testing Match Running with Domination Game', () => {
-  let dominationDesign, myDimension;
+  let dominationDesign, myDimension: Dimension.DimensionType;
   before(() => {
     dominationDesign = new DominationDesign('Domination');
     myDimension = Dimension.create(dominationDesign, {
@@ -178,7 +178,7 @@ describe('Testing Match Running with Domination Game', () => {
   
     it('Validate Agents', async () => {
       const agentCount = 4;
-    let match: Dimension.Match;
+      let match: Dimension.Match;
       let jsSource = "./tests/js-kit/domination/deterministic.js";
       let botSources = [];
 
@@ -194,7 +194,12 @@ describe('Testing Match Running with Domination Game', () => {
             size: agentCount,
             maxRounds: agentCount + 1
           },
-          loggingLevel: Dimension.Logger.LEVEL.NONE
+          loggingLevel: Dimension.Logger.LEVEL.NONE,
+          agentOptions: {
+            maxCompileTime: 1000,
+            maxInstallTime: 300
+          },
+          secureMode: true
         }
       );
       expect(match.agents.length).to.equal(agentCount);
@@ -205,6 +210,11 @@ describe('Testing Match Running with Domination Game', () => {
         expect(agent.name).to.equal('bob ' + i); // ensure naming worked
         expect(agent.process).not.to.equal(null); // ensure processes were made
         expect(agent.process.killed).to.equal(false); // ensure processes are alive after initiation
+        expect(agent.options.id).to.equal(i);
+        expect(agent.options.loggingLevel).to.equal(Dimension.Logger.LEVEL.NONE);
+        expect(agent.options.maxCompileTime).to.equal(1000);
+        expect(agent.options.maxInstallTime).to.equal(300);
+        expect(agent.options.secureMode).to.equal(true);
       }
       match.run();
     });

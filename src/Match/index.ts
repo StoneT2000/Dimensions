@@ -13,6 +13,7 @@ import Command = MatchEngine.Command;
 import { ChildProcess } from 'child_process';
 import { NanoID } from '../Dimension';
 import { genID } from '../utils';
+import { deepCopy } from '../utils/DeepCopy';
 
 /**
  * @class Match
@@ -106,7 +107,8 @@ export class Match {
     name: '',
     loggingLevel: Logger.LEVEL.INFO,
     engineOptions: {},
-    secureMode: false
+    secureMode: false,
+    agentOptions: Agent.OptionDefaults
   };
 
   /** Match process used to store the process governing a match running on a custom design */
@@ -144,7 +146,12 @@ export class Match {
   ) {
 
     // override configs with provided configs argument
-    this.configs = deepMerge(this.configs, configs);
+    this.configs = deepMerge(deepCopy(this.configs), deepCopy(configs));
+
+    // agent runs in securemode if parent match is in securemode
+    this.configs.agentOptions.secureMode = this.configs.secureMode;
+    // agent logging level is inherited from parent match.
+    this.configs.agentOptions.loggingLevel = this.configs.loggingLevel;
     
     this.id = Match.genMatchID();
 
@@ -181,7 +188,7 @@ export class Match {
     this.timeStep = 0;
     
     // Initialize agents with agent files
-    this.agents = Agent.generateAgents(this.agentFiles, this.log.level, this.configs.secureMode);
+    this.agents = Agent.generateAgents(this.agentFiles, this.configs.agentOptions);
     this.agents.forEach((agent) => {
       this.idToAgentsMap.set(agent.id, agent);
       if (agent.tournamentID !== null) {
@@ -511,6 +518,7 @@ export module Match {
      * Name of the match
      */
     name: string
+
     /**
      * Logging level for this match.
      * @see {@link Logger}
@@ -521,11 +529,18 @@ export module Match {
      * The engine options to use in this match.
      */
     engineOptions: DeepPartial<EngineOptions>
+
     /**
      * Whether to run match in secure mode or not
      * @default true
      */
-    secureMode: boolean
+    secureMode: boolean,
+
+    /**
+     * Default Agent options to use for all agents in a match. Commonly used for setting resource use boundaries
+     */
+    agentOptions: DeepPartial<Agent.Options>
+
     [key: string]: any
   }
   export enum Status {

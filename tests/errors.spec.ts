@@ -34,7 +34,7 @@ describe('Testing Errors', () => {
     });
     it('show throw fatal if no files given to static agent generator', () => {
       let shouldThrow = () => {
-        Agent.generateAgents([], Logger.LEVEL.ALL)
+        Agent.generateAgents([], {})
       };
       return expect(shouldThrow).to.throw(DError.AgentFileError);
     });
