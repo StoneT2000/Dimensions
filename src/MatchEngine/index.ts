@@ -16,8 +16,8 @@ import { Match } from '../Match';
 
 /** @internal */
 type EngineOptions = MatchEngine.EngineOptions;
-/** @internal */
-import DDS = Design.DynamicDataStrings;
+
+
 
 /**
  * @class MatchEngine
@@ -626,8 +626,8 @@ export module MatchEngine {
   }
 
   /**
- * Engine Options that specify how the {@link MatchEngine} should operate on a {@link Match}
- */
+   * Engine Options that specify how the {@link MatchEngine} should operate on a {@link Match}
+   */
   export interface EngineOptions {
     /** The command streaming type */
     commandStreamType: MatchEngine.COMMAND_STREAM_TYPE,
@@ -758,7 +758,68 @@ export module MatchEngine {
     EXCEED_MEMORY_LIMIT = 'exceedMemoryLimit',
     TIMEOUT = 'timeout'
   }
+
+  /**
+   * Dynammic Data strings are strings in the {@link OverrideOptions} arguments array that are automatically replaced
+   * with dynamic data as defined in the documentation of these enums
+   */
+  export enum DynamicDataStrings {
+    /**
+     * D_FILES is automatically populated by a space seperated string list of the file paths provided for each of the 
+     * agents competing in a match. 
+     * NOTE, these paths don't actually need to be files, they can be directories or anything that works with 
+     * your own command and design
+     * 
+     * @example Suppose the paths to the sources the agents operate on are `path1, path2, path3`. Then `D_FILES` will 
+     * be passed into your command as `path1 path2 path3`
+     */
+    D_FILES = 'D_FILES',
+
+    /**
+     * D_AGENT_IDS is automatically populated by a space seperated string list of the agent IDs of every agent being
+     * loaded into a match in the same order as D_FILES. This should always be sorted by default as agents are loaded
+     * in order from agent ID `0` to agent ID `n`
+     * 
+     * @example Suppose a match is running with agents with IDs `0, 1, 2, 3`. Then `D_AGENT_IDS` will be passed into 
+     * your command as `0 1 2 3`
+     */
+    D_AGENT_IDS = 'D_AGENT_IDS',
+
+    /**
+     * D_TOURNAMENT_IDS is automatically populated by a space seperated string list of the tournament ID numbers of
+     * the agents being loaded into the match in the same order. If no tournament is being run all the ID numbers will 
+     * default to 0 but still be passed in to the command you give for the override configurations
+     * 
+     * @example Suppose a match in a tournament with ID 0 is running 4 agents with tournament IDs t0_1, t0_9, t0_11, 
+     * t0_15. Then `D_TOURNAMENT_IDS` will be passed into your command as `t0_1 t0_0 t0_11 t0_15`
+     */
+    D_TOURNAMENT_IDS = 'D_TOURNAMENT_IDS',
+
+    /**
+     * D_MATCH_ID is automatically replaced with the id of the match being run
+     * 
+     * @example Suppose the match has ID 12, then `D_MATCH_ID` is passed into your command as `12`
+     */
+    D_MATCH_ID = 'D_MATCH_ID',
+
+    /**
+     * D_MATCH_NAME is automatically replaced with the name of the match being run
+     * 
+     * @example Suppose the match has name 'my_match'. Then `D_MATCH_NAME` is passed into your commnad as `my_match`
+     */
+    D_MATCH_NAME = 'D_MATCH_NAME',
+
+    /**
+     * D_NAMES is automatically replaced with the names of the agents
+     * 
+     * @example Suppose the agents 0 and 1 had names `bob, richard`. Then `D_NAMES` is passed into your commnad as 
+     * `bob richard`
+     */
+    D_NAMES = 'D_NAMES'
+  }
 }
 
 export const BOT_USER = 'dimensions_bot';
 export const ROOT_USER = 'root';
+/** @internal */
+import DDS = MatchEngine.DynamicDataStrings;
