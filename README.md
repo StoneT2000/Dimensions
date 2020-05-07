@@ -6,7 +6,7 @@ All you need to do?
 
 Code a competition design and code a bot
 
-Dimensions handles the rest, including match running, tournament running, TrueSkill rankings, and a local API and website through which you can watch this all happen at once. Dimensions allows you to **design virtually any kind of AI competition** you want in **any language** with its vast array of flexible configuration options and choices.
+Dimensions handles the rest, including match and tournament running, security, scalability and a local API and website through which you can watch this all happen at once. Dimensions allows you to **design virtually any kind of AI competition** you want in **any language** with its vast array of flexible configuration options and choices.
 
 Moreover, Dimensions utilizes an I/O based model to run competitions and pit AI agents against each other, allowing it to be generic and language agnostic so anyone from any background can compete in your competition design.
 
@@ -39,14 +39,18 @@ Also checkout the blog post introducing the motivation for Dimensions and though
 ## Features
 
 - Easy to build an AI competition that is language agnostic, allowing any kind of bot in any language to compete in your competitio
-- Can run many kinds of AI competitions and run different kinds of competition formats like round robin or using Trueskill in a ladder tournament.
+- Can run many kinds of AI competitions and run different kinds of competition formats like round robin or using Trueskill in a ladder tournament (like a leaderboard).
 - Can wrap your own AI competition built without the dimensions framework to make use of its competition running features such as Trueskill leaderboards
 - Comes with an API served locally that gives access to data on ongoing matches and tournaments and allows for direct control of matches and tournaments through the API. See this page for details on this API: https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API
   - Check out https://github.com/StoneT2000/Dimensions-web if you want a website to view the API from.
+- Can use plugins like the [MongoDB]() plugin in three lines of code to automatically integrate and scale up your tournament.
+- Ensures malicious bots cannot cause harm to your servers through `secureMode`. See [this wiki page](https://github.com/StoneT2000/Dimensions/wiki/Security) for details and best practices
 
 ## Getting Started
 
-This guide will take you through how to start and run a competition built with Javascript/Typescript. To see how to use this framework to run a custom competition built without the dimensions framework, see this wiki on setting override options.
+This guide will take you through how to start and run a competition built with Javascript/Typescript. To see how to use this framework to run a custom competition built without the dimensions framework, see [this wiki page](https://github.com/StoneT2000/Dimensions/wiki/Custom-Competition-Design) on setting override options.
+
+If you already have a design, feel free to skip to the section on running a [match](#run-a-match) and a [tournament](#run-a-tournament)
 
 First, install the `dimensions-ai` package
 
@@ -163,11 +167,11 @@ AI Starter kits are suggested to contain at least two files, `agent.js` (or whic
 
 [`kit.js`](https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/kit.js) should have a `Agent` class with some kind of asynchronous  `initialize, update` functions and a `endTurn` function.
 
-`initialize` should have the agent wait for a line input from `stdin` (standard input) if anything is being sent to the agent through `match.send` in the `design` in `initialize(match)`.
+`initialize` should have the agent wait for input from `stdin` (standard input) if anything is being sent to the agent through `match.send` in the `design` in `initialize(match)`.
 
 `update` should do the same thing as `initialize` but is used to update the agent with new information from the match. Updates are sent to this agent through `match.send` in the `design` in `update(match, commands)`.  The agent should typically wait for some signal from the match to tell it to proceed in processing. This can either be a explicit message like `match.sendAll('START')` or just the next set of update commands from the `match`.
 
-`endTurn` should always just print to `stdout` (standard out) `'D_FINISH`
+`endTurn` should always just print to `stdout` (standard out) `'D_FINISH\n'`
 
 Then in `myBot.js`, a new `kit.Agent` should be initialized as `agent` and should run `agent.initialize`
 
@@ -242,7 +246,7 @@ If you want to view the API from a website, see this repo: https://github.com/St
 
 ### Run a Tournament
 
-This framework also provides tournament running features, including [Round Robin](https://stonet2000.github.io/Dimensions/classes/_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.html), and [Ladder](https://stonet2000.github.io/Dimensions/classes/_tournament_tournamenttypes_ladder_index_.laddertournament.html) type tournaments. Additionally, there are various ranking systems used, such as Win/Tie/Loss and Trueskill.
+This framework also provides tournament running features, which currently include [Round Robin](https://stonet2000.github.io/Dimensions/classes/_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.html), [Elimination]() TODO Add link, and [Ladder](https://stonet2000.github.io/Dimensions/classes/_tournament_tournamenttypes_ladder_index_.laddertournament.html) type tournaments. Additionally, there are various ranking systems used, such as Win/Tie/Loss and Trueskill. This section takes your through a really brief rundown of how to run a tournament. See [this wiki page](https://github.com/StoneT2000/Dimensions/wiki/Running-Tournaments) for more in depth details on setting up the various kinds of tournaments
 
 Here is how you run a tournament. First, you will need a `resultHandler` function. This function must given to the tournament to indicate how the results of a `match` should be interpreted. Recall that these results are returned by the `getResult` command in your design. It is suggested to provide these result handlers in your `Design`. 
 
@@ -286,7 +290,7 @@ Note that different tournament types have different tournament configurations an
 
 ### More Stuff!
 
-The [wiki](https://github.com/StoneT2000/Dimensions/wiki) will soon be populated with more basic and advanced example usages of this framework. This ranges from how to configure the match engine, configuring various tournaments and rank systems, to tips on designing a successful competition.
+The [wiki](https://github.com/StoneT2000/Dimensions/wiki) is populated with more basic and advanced example usages of this framework. This ranges from how to [configure the match engine](https://github.com/StoneT2000/Dimensions/wiki/Configuration#engine-options), [configuring various tournaments and rank systems](https://github.com/StoneT2000/Dimensions/wiki/Running-Tournaments), to tips on designing a successful competition.
 
 ## Contributing
 
@@ -315,8 +319,10 @@ to watch for code changes in the `src` folder and reload the build folder. Note 
 Tests are built with [Mocha](https://mochajs.org/) and [Chai](https://www.chaijs.com/). Run them with
 
 ```
-npm run test
+sudo npm run test
 ```
+
+Note that sudo is required because of tests being performed on `secureMode` which requires sudo in order to switch users and limit access to possibly malicious bots.
 
 Run
 
@@ -324,7 +330,7 @@ Run
 npm run build
 ```
 
-to build the entire library, including any frontend code.
+to build the entire library.
 
 ## Plans
 - Make it easier to create a `Design` (design a competition)
@@ -336,7 +342,6 @@ to build the entire library, including any frontend code.
   - Give some guidelines
   - Add some options and default values for certain configurations, e.g.
     - Max command limit per `timeStep` (for a game of rock paper scissors, this would be 1, it wouldn't make sense to flood the `MatchEngine` with several commands, which could break the `Match`)
-- Distribute through `cluster` module and run tournaments in a distributed framework.
 - Add visualizers for rock paper scissors example and domination example (and others if possible)
 - Generalize a match visualizer
 - Add more example `Designs` and starter kits for other popular ai games
