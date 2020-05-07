@@ -119,17 +119,17 @@
 					<div class="tsd-signature tsd-kind-icon">current<wbr>Ranks<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>player<span class="tsd-signature-symbol">: </span><a href="../classes/_tournament_index_.player.html" class="tsd-signature-type">Player</a><span class="tsd-signature-symbol">; </span>rankState<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/Tournament/index.ts#L535">https://github.com/StoneT2000/Dimensions/blob/0124128/src/Tournament/index.ts#L535</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Tournament/index.ts#L677">https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Tournament/index.ts#L677</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="playerstats" class="tsd-anchor"></a>
 					<h3>player<wbr>Stats</h3>
-					<div class="tsd-signature tsd-kind-icon">player<wbr>Stats<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">{ </span>losses<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>matchesPlayed<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>player<span class="tsd-signature-symbol">: </span><a href="../classes/_tournament_index_.player.html" class="tsd-signature-type">Player</a><span class="tsd-signature-symbol">; </span>rankState<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>ties<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>wins<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<div class="tsd-signature tsd-kind-icon">player<wbr>Stats<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_dimension_index_.html#nanoid" class="tsd-signature-type">NanoID</a><span class="tsd-signature-symbol">, </span><a href="_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.ladder.playerstat.html" class="tsd-signature-type">PlayerStat</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/Tournament/index.ts#L528">https://github.com/StoneT2000/Dimensions/blob/0124128/src/Tournament/index.ts#L528</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Tournament/index.ts#L669">https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Tournament/index.ts#L669</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -144,7 +144,7 @@
 					<div class="tsd-signature tsd-kind-icon">results<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/Tournament/index.ts#L539">https://github.com/StoneT2000/Dimensions/blob/0124128/src/Tournament/index.ts#L539</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Tournament/index.ts#L681">https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Tournament/index.ts#L681</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -159,12 +159,12 @@
 					<div class="tsd-signature tsd-kind-icon">statistics<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>totalMatches<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/Tournament/index.ts#L532">https://github.com/StoneT2000/Dimensions/blob/0124128/src/Tournament/index.ts#L532</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Tournament/index.ts#L674">https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Tournament/index.ts#L674</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Stats for this Tournament</p>
+							<p>Stats for this Tournament in this instance. Intended to be constant memory usage</p>
 						</div>
 					</div>
 					<div class="tsd-type-declaration">
@@ -190,6 +190,9 @@
 				<ul class="before-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
 						<a href="_tournament_index_.tournament.ladder.configs.html" class="tsd-kind-icon">Configs</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
+						<a href="_tournament_index_.tournament.ladder.playerstat.html" class="tsd-kind-icon">Player<wbr>Stat</a>
 					</li>
 				</ul>
 				<ul class="current">
@@ -226,6 +229,7 @@
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
 				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
@@ -235,6 +239,9 @@
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>

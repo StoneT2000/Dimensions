@@ -8,7 +8,7 @@
     "prepare": "npm run build",
     "prepublishOnly": "npm run test",
     "test": "npm run clean && nyc --reporter=html --reporter=text mocha",
-    "docs": "typedoc --theme ./theme/dimensions/ --mode modules --exclude ./src/Station/ --out docs ./src",
+    "docs": "typedoc --theme ./theme/dimensions/ --mode modules --exclude ./src/Station/ --out docs ./src && touch ./docs/.nojekyll ",
     "watch": "tsc -w",
     "build": "tsc",
     "clean": "./cleanup.sh"

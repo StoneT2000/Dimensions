@@ -72,7 +72,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Design options</p>
+						<p>Design options. Allows for the setting of engine options and override options.</p>
 					</div>
 				</div>
 			</section>
@@ -103,15 +103,17 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="engineoptions" class="tsd-anchor"></a>
 					<h3>engine<wbr>Options</h3>
-					<div class="tsd-signature tsd-kind-icon">engine<wbr>Options<span class="tsd-signature-symbol">:</span> <a href="_matchengine_index_.matchengine.engineoptions.html" class="tsd-signature-type">EngineOptions</a></div>
+					<div class="tsd-signature tsd-kind-icon">engine<wbr>Options<span class="tsd-signature-symbol">:</span> <a href="_matchengine_engineoptions_.engineoptions.html" class="tsd-signature-type">EngineOptions</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/Design/index.ts#L202">https://github.com/StoneT2000/Dimensions/blob/0124128/src/Design/index.ts#L202</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Design/index.ts#L178">https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Design/index.ts#L178</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The default engine options to use for all matches created using this design</p>
+							<p>The default engine options to use for all matches created using this design. Engine options impact how the engine
+								works at the I/O level and dictates how your engine prohibits and enables an <a href="../classes/_agent_index_.agent.html">Agent</a> in a <a href="../classes/_match_index_.match.html">Match</a> to
+							communicate and send commands and receive commands</p>
 						</div>
 					</div>
 				</section>
@@ -121,13 +123,14 @@
 					<div class="tsd-signature tsd-kind-icon">override<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">DesignTypes.OverrideOptions</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/Design/index.ts#L208">https://github.com/StoneT2000/Dimensions/blob/0124128/src/Design/index.ts#L208</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Design/index.ts#L185">https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Design/index.ts#L185</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Override configurations if user wants to run matches with a non-dimensions based design and run their own design
-							in another language</p>
+							<p>Override configurations if a user wants to run matches with a non-dimensions based design and run their own design
+								This is what allows users to write competition designs in their own programming language and utilize Dimensions
+							features such as tournament running, database plugins, scalability, and much more automation.</p>
 						</div>
 					</div>
 				</section>
@@ -179,6 +182,9 @@
 					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
 						<a href="../modules/_design_index_.html#engineoptions" class="tsd-kind-icon">Engine<wbr>Options</a>
 					</li>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-module">
+						<a href="../modules/_design_index_.html#defaultdesignoptions" class="tsd-kind-icon">Default<wbr>Design<wbr>Options</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
@@ -190,6 +196,7 @@
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
 				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
@@ -199,6 +206,9 @@
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>

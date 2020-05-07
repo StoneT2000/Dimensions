@@ -103,10 +103,11 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_match_index_.match.configs.html#dimensionid" class="tsd-kind-icon">dimensionID</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_match_index_.match.configs.html#agentoptions" class="tsd-kind-icon">agent<wbr>Options</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_match_index_.match.configs.html#engineoptions" class="tsd-kind-icon">engine<wbr>Options</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_match_index_.match.configs.html#logginglevel" class="tsd-kind-icon">logging<wbr>Level</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_match_index_.match.configs.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_match_index_.match.configs.html#securemode" class="tsd-kind-icon">secure<wbr>Mode</a></li>
 							</ul>
 						</section>
 					</div>
@@ -115,27 +116,27 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="dimensionid" class="tsd-anchor"></a>
-					<h3>dimensionID</h3>
-					<div class="tsd-signature tsd-kind-icon">dimensionID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<a name="agentoptions" class="tsd-anchor"></a>
+					<h3>agent<wbr>Options</h3>
+					<div class="tsd-signature tsd-kind-icon">agent<wbr>Options<span class="tsd-signature-symbol">:</span> <a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="_agent_index_.agent.options.html" class="tsd-signature-type">Options</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/Match/index.ts#L501">https://github.com/StoneT2000/Dimensions/blob/0124128/src/Match/index.ts#L501</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Match/index.ts#L542">https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Match/index.ts#L542</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The id of the dimension this match was generated from if there is one</p>
+							<p>Default Agent options to use for all agents in a match. Commonly used for setting resource use boundaries</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="engineoptions" class="tsd-anchor"></a>
 					<h3>engine<wbr>Options</h3>
-					<div class="tsd-signature tsd-kind-icon">engine<wbr>Options<span class="tsd-signature-symbol">:</span> <a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="_matchengine_index_.matchengine.engineoptions.html" class="tsd-signature-type">EngineOptions</a><span class="tsd-signature-symbol">&gt;</span></div>
+					<div class="tsd-signature tsd-kind-icon">engine<wbr>Options<span class="tsd-signature-symbol">:</span> <a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="_matchengine_engineoptions_.engineoptions.html" class="tsd-signature-type">EngineOptions</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/Match/index.ts#L505">https://github.com/StoneT2000/Dimensions/blob/0124128/src/Match/index.ts#L505</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Match/index.ts#L531">https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Match/index.ts#L531</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -150,7 +151,7 @@
 					<div class="tsd-signature tsd-kind-icon">logging<wbr>Level<span class="tsd-signature-symbol">:</span> <a href="../enums/_logger_index_.logger.level.html" class="tsd-signature-type">LEVEL</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/Match/index.ts#L497">https://github.com/StoneT2000/Dimensions/blob/0124128/src/Match/index.ts#L497</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Match/index.ts#L526">https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Match/index.ts#L526</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -170,13 +171,33 @@
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/Match/index.ts#L492">https://github.com/StoneT2000/Dimensions/blob/0124128/src/Match/index.ts#L492</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Match/index.ts#L520">https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Match/index.ts#L520</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>Name of the match</p>
 						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="securemode" class="tsd-anchor"></a>
+					<h3>secure<wbr>Mode</h3>
+					<div class="tsd-signature tsd-kind-icon">secure<wbr>Mode<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Match/index.ts#L537">https://github.com/StoneT2000/Dimensions/blob/369d0e6/src/Match/index.ts#L537</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Whether to run match in secure mode or not</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p>true</p>
+							</dd>
+						</dl>
 					</div>
 				</section>
 			</section>
@@ -206,7 +227,7 @@
 								<a href="_match_index_.match.configs.html" class="tsd-kind-icon">Configs</a>
 								<ul>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="_match_index_.match.configs.html#dimensionid" class="tsd-kind-icon">dimensionID</a>
+										<a href="_match_index_.match.configs.html#agentoptions" class="tsd-kind-icon">agent<wbr>Options</a>
 									</li>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
 										<a href="_match_index_.match.configs.html#engineoptions" class="tsd-kind-icon">engine<wbr>Options</a>
@@ -216,6 +237,9 @@
 									</li>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
 										<a href="_match_index_.match.configs.html#name" class="tsd-kind-icon">name</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="_match_index_.match.configs.html#securemode" class="tsd-kind-icon">secure<wbr>Mode</a>
 									</li>
 								</ul>
 							</li>
@@ -233,6 +257,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="../classes/_match_index_.match.html#design" class="tsd-kind-icon">design</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="../classes/_match_index_.match.html#finishdate" class="tsd-kind-icon">finish<wbr>Date</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="../classes/_match_index_.match.html#id" class="tsd-kind-icon">id</a>
@@ -261,6 +288,9 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="../classes/_match_index_.match.html#name" class="tsd-kind-icon">name</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="../classes/_match_index_.match.html#resolvestoppromise" class="tsd-kind-icon">resolve<wbr>Stop<wbr>Promise</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="../classes/_match_index_.match.html#results" class="tsd-kind-icon">results</a>
 							</li>
@@ -281,9 +311,6 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="../classes/_match_index_.match.html#timestep" class="tsd-kind-icon">time<wbr>Step</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-static">
-								<a href="../classes/_match_index_.match.html#_id" class="tsd-kind-icon">_id</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="../classes/_match_index_.match.html#destroy" class="tsd-kind-icon">destroy</a>
@@ -321,6 +348,9 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="../classes/_match_index_.match.html#throw" class="tsd-kind-icon">throw</a>
 							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="../classes/_match_index_.match.html#genmatchid" class="tsd-kind-icon">gen<wbr>MatchID</a>
+							</li>
 							<li class=" tsd-kind-object-literal tsd-parent-kind-class">
 								<a href="../classes/_match_index_.match.html#configs-1" class="tsd-kind-icon">configs</a>
 							</li>
@@ -348,6 +378,7 @@
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
 				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
@@ -357,6 +388,9 @@
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>

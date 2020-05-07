@@ -67,10 +67,10 @@
 				<a href="#dimensions" id="dimensions" style="color: inherit; text-decoration: none;">
 					<h1>Dimensions</h1>
 				</a>
-				<p>This is an <strong>open sourced</strong> <strong>generic</strong> <strong>Artificial Intelligence competition framework</strong>, intended to provide you all the infrastructure needed to run your own AI competition with no hassle.</p>
+				<p>This is an <strong>open sourced</strong> <strong>generic</strong> <strong>Artificial Intelligence competition framework</strong>, intended to provide you fully scalable infrastructure needed to run your own AI competition with no hassle.</p>
 				<p>All you need to do?</p>
 				<p>Code a competition design and code a bot</p>
-				<p>Dimensions handles the rest, including match running, tournament running, TrueSkill rankings, and a local API and website through which you can watch this all happen at once. Dimensions allows you to design virtually any kind of AI competition you want with its vast array of configuration options and choices.</p>
+				<p>Dimensions handles the rest, including match running, tournament running, TrueSkill rankings, and a local API and website through which you can watch this all happen at once. Dimensions allows you to <strong>design virtually any kind of AI competition</strong> you want in <strong>any language</strong> with its vast array of flexible configuration options and choices.</p>
 				<p>Moreover, Dimensions utilizes an I/O based model to run competitions and pit AI agents against each other, allowing it to be generic and language agnostic so anyone from any background can compete in your competition design.</p>
 				<p>This was inspired by <a href="battlecode.org/">Battlecode</a> and <a href="https://halite.io/">Halite</a></p>
 				<p>Keep reading to learn how to <a href="#getting-started">get started</a> and make a tournament like this:</p>
@@ -92,8 +92,9 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
 					<h2>Features</h2>
 				</a>
 				<ul>
-					<li>Easy to build an AI competition that is language agnostic, allowing any kind of bot in any language to compete in your competition</li>
+					<li>Easy to build an AI competition that is language agnostic, allowing any kind of bot in any language to compete in your competitio</li>
 					<li>Can run many kinds of AI competitions and run different kinds of competition formats like round robin or using Trueskill in a ladder tournament.</li>
+					<li>Can wrap your own AI competition built without the dimensions framework to make use of its competition running features such as Trueskill leaderboards</li>
 					<li>Comes with an API served locally that gives access to data on ongoing matches and tournaments and allows for direct control of matches and tournaments through the API. See this page for details on this API: <a href="https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API">https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API</a><ul>
 							<li>Check out <a href="https://github.com/StoneT2000/Dimensions-web">https://github.com/StoneT2000/Dimensions-web</a> if you want a website to view the API from.</li>
 						</ul>
@@ -102,7 +103,7 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
 				<a href="#getting-started" id="getting-started" style="color: inherit; text-decoration: none;">
 					<h2>Getting Started</h2>
 				</a>
-				<p>At the moment, Dimensions supports competition designing through JavaScript / TypeScript only. However, all AI agents can be coded in any language due to the I/O model.</p>
+				<p>This guide will take you through how to start and run a competition built with Javascript/Typescript. To see how to use this framework to run a custom competition built without the dimensions framework, see this wiki on setting override options.</p>
 				<p>First, install the <code>dimensions-ai</code> package</p>
 				<pre><code>npm <span class="hljs-keyword">install</span> dimensions-ai</code></pre><p>Create a new file called <code>run.js</code> and inside it we need to first <code>require</code> the package</p>
 				<pre><code class="language-js"><span class="hljs-keyword">const</span> Dimension = <span class="hljs-built_in">require</span>(<span class="hljs-string">'dimensions-ai'</span>);</code></pre>
@@ -307,13 +308,6 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
 					<h2>Plans</h2>
 				</a>
 				<ul>
-					<li>Add tournament running (in progress)<ul>
-							<li>Single and Double elimination, seeded and random options</li>
-							<li>Trueskill / ELO rankings based, giving option of number of matches to run and other configs (Like Halite)</li>
-							<li>Simple round robins (Like associating football)</li>
-						</ul>
-					</li>
-					<li>Make the <code>Design</code> language agnostic through developing an I/O based API for other languages in order to implement the 3 Lifecycle functions <code>initialize, update, getResults</code>  </li>
 					<li>Make it easier to create a <code>Design</code> (design a competition)<ul>
 							<li>Make README easier to READ, and reduce the initial &quot;getting-used-to-framework&quot; curve.</li>
 						</ul>
@@ -363,6 +357,15 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
 						<a href="modules/_dimension_index_.html">&quot;<wbr>Dimension/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
+						<a href="modules/_dimensionerror_agenterror_index_.html">&quot;<wbr>Dimension<wbr>Error/<wbr>Agent<wbr>Error/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_dimensionerror_matcherror_index_.html">&quot;<wbr>Dimension<wbr>Error/<wbr>Match<wbr>Error/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_dimensionerror_tournamenterror_index_.html">&quot;<wbr>Dimension<wbr>Error/<wbr>Tournament<wbr>Error/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
 						<a href="modules/_dimensionerror_index_.html">&quot;<wbr>Dimension<wbr>Error/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
@@ -372,10 +375,31 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
 						<a href="modules/_match_index_.html">&quot;<wbr>Match/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
+						<a href="modules/_matchengine_engineoptions_.html">&quot;<wbr>Match<wbr>Engine/engine<wbr>Options&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
 						<a href="modules/_matchengine_index_.html">&quot;<wbr>Match<wbr>Engine/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
+						<a href="modules/_mongodb_index_.html">&quot;<wbr>MongoDB/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_mongodb_models_match_.html">&quot;<wbr>MongoDB/models/match&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_mongodb_models_user_.html">&quot;<wbr>MongoDB/models/user&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
 						<a href="modules/_parser_index_.html">&quot;<wbr>Parser/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_plugin_database_index_.html">&quot;<wbr>Plugin/<wbr>Database/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_plugin_database_utils_.html">&quot;<wbr>Plugin/<wbr>Database/utils&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_plugin_index_.html">&quot;<wbr>Plugin/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_tournament_elo_index_.html">&quot;<wbr>Tournament/ELO/index&quot;</a>
@@ -417,6 +441,9 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
 						<a href="modules/_station_index_.html">&quot;<wbr>Station/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module tsd-is-external">
+						<a href="modules/_station_routes_api_dimensions_auth_index_.html">&quot;<wbr>Station/routes/api/dimensions/auth/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
 						<a href="modules/_station_routes_api_dimensions_index_.html">&quot;<wbr>Station/routes/api/dimensions/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module tsd-is-external">
@@ -427,6 +454,9 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
 					</li>
 					<li class=" tsd-kind-module tsd-is-external">
 						<a href="modules/_station_routes_api_dimensions_tournament_index_.html">&quot;<wbr>Station/routes/api/dimensions/tournament/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="modules/_station_routes_api_dimensions_user_index_.html">&quot;<wbr>Station/routes/api/dimensions/user/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module tsd-is-external">
 						<a href="modules/_station_routes_api_status_.html">&quot;<wbr>Station/routes/api/status&quot;</a>
@@ -446,11 +476,15 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
 				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
 				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
