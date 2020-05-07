@@ -145,7 +145,7 @@ describe('Tournament Testing with RPS', () => {
           consoleDisplay: false,
           defaultMatchConfigs: {
             bestOf: 3,
-            loggingLevel: Dimension.Logger.LEVEL.WARN,
+            loggingLevel: Dimension.Logger.LEVEL.NONE,
             secureMode: false
           },
           resultHandler: RockPaperScissorsDesign.winsResultHandler
@@ -174,7 +174,7 @@ describe('Tournament Testing with RPS', () => {
         consoleDisplay: false,
         defaultMatchConfigs: {
           bestOf: 329,
-          loggingLevel: Dimension.Logger.LEVEL.WARN
+          loggingLevel: Dimension.Logger.LEVEL.NONE
         },
         resultHandler: RockPaperScissorsDesign.winsResultHandler
       });
@@ -243,7 +243,7 @@ describe('Tournament Testing with RPS', () => {
         consoleDisplay: false,
         defaultMatchConfigs: {
           bestOf: 329,
-          loggingLevel: Dimension.Logger.LEVEL.WARN
+          loggingLevel: Dimension.Logger.LEVEL.NONE
         },
         resultHandler: RockPaperScissorsDesign.trueskillResultHandler
       });
