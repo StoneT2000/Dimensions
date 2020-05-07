@@ -5,7 +5,6 @@
 export * from './Station';
 export { create, Dimension as DimensionType, DatabaseType } from './Dimension';
 export type { NanoID as nanoid } from './Dimension';
-export * from './Plugin/Database';
 export * from './Plugin';
 export * from './Logger';
 export * from './MongoDB';

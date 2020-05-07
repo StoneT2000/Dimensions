@@ -251,7 +251,7 @@ export class Match {
           }
           while (status != Match.Status.FINISHED)
           this.agents.forEach((agent: Agent) => {
-            agent.clearTimer();
+            agent._clearTimer();
           });
           this.results = await this.getResults();
 
@@ -315,7 +315,7 @@ export class Match {
 
         // if timeout is set active
         if (engineOptions.timeout.active) {
-          agent.setTimeout(() => {
+          agent._setTimeout(() => {
             // if agent times out, emit the timeout event
             agent.process.emit(MatchEngine.AGENT_EVENTS.TIMEOUT);
           }, engineOptions.timeout.max + MatchEngine.timeoutBuffer);

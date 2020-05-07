@@ -95,17 +95,17 @@ export class Agent {
 
   
   /** a promise that resolves when the Agent's current move in the {@link Match} is finished */
-  public currentMovePromise: Promise<void>;
+  public _currentMovePromise: Promise<void>;
   
   /* istanbul ignore next */
-  public currentMoveResolve: Function = () => {}; // set as a dummy function
-  public currentMoveReject: Function;
+  public _currentMoveResolve: Function = () => {}; // set as a dummy function
+  public _currentMoveReject: Function;
 
   /** A number that counts the number of times the agent has essentially interacted with the {@link MatchEngine} */
   public agentTimeStep = 0;
 
   /** Clears out the timer associated with the agent during a match */
-  public clearTimer: Function = () => {};
+  public _clearTimer: Function = () => {};
 
   private log = new Logger();
 
@@ -350,19 +350,19 @@ export class Agent {
         case '.py':
         case '.js':
         case '.php':
-          let p = this.spawnProcess(this.cmd, [this.src]);
+          let p = this._spawnProcess(this.cmd, [this.src]);
           // set root as the owner again
         
           // execSync(`sudo chown -R ${ROOT_USER} ${this.cwd}`);
           return p;
         case '.ts':
-          return this.spawnProcess(this.cmd, [this.srcNoExt + '.js']);
+          return this._spawnProcess(this.cmd, [this.srcNoExt + '.js']);
         case '.java':
-          return this.spawnProcess(this.cmd, [this.srcNoExt]);
+          return this._spawnProcess(this.cmd, [this.srcNoExt]);
         case '.c':
         case '.cpp':
         case '.go':
-          return this.spawnProcess('./' + this.srcNoExt + '.out', [])
+          return this._spawnProcess('./' + this.srcNoExt + '.out', [])
         default:
           throw new NotSupportedError(`Language with extension ${this.ext} is not supported yet`)
       }
@@ -376,7 +376,7 @@ export class Agent {
    * Note, we are spawning detached so we can kill off all sub processes if they are made. See {@link _terminate} for 
    * explanation
    */
-  spawnProcess(command: string, args: Array<string>): Promise<ChildProcess> {
+  _spawnProcess(command: string, args: Array<string>): Promise<ChildProcess> {
     return new Promise((resolve, reject) => {
       if (this.options.secureMode) {
         let p = spawn('sudo', ['-H', '-u', BOT_USER, command, ...args], {
@@ -425,7 +425,7 @@ export class Agent {
       }
     }
 
-    this.clearTimer();
+    this._clearTimer();
     clearInterval(this.memoryWatchInterval);
     
     this.status = Agent.Status.KILLED;
@@ -455,11 +455,11 @@ export class Agent {
   /**
    * Setup the agent timer clear out method
    */
-  setTimeout(fn: Function, delay: number, ...args: any[]) {
+  _setTimeout(fn: Function, delay: number, ...args: any[]) {
     let timer = setTimeout(() => {
       fn(...args);
     }, delay);
-    this.clearTimer = () => {
+    this._clearTimer = () => {
       clearTimeout(timer);
     }
   }
@@ -467,11 +467,11 @@ export class Agent {
   /**
    * Stop this agent from more outputs and mark it as done for now and awaiting for updates
    */
-  finishMove() {
-    this.clearTimer();
+  _finishMove() {
+    this._clearTimer();
 
     // Resolve move and tell engine in `getCommands` this agent is done outputting commands and awaits input
-    this.currentMoveResolve();
+    this._currentMoveResolve();
             
     // stop the process for now from sending more output and disallow commmands to ignore rest of output
     this.process.kill('SIGSTOP');
@@ -484,9 +484,9 @@ export class Agent {
     this.allowedToSendCommands = true;
     this.agentTimeStep++;
     this.currentMoveCommands = [];
-    this.currentMovePromise = new Promise((resolve, reject) => {
-      this.currentMoveResolve = resolve;
-      this.currentMoveReject = reject;
+    this._currentMovePromise = new Promise((resolve, reject) => {
+      this._currentMoveResolve = resolve;
+      this._currentMoveReject = reject;
     });
   }
 
@@ -565,18 +565,19 @@ export module Agent {
     name: string,
 
     /** 
-     * Whether or not to spawn agent securely and avoid malicious activity 
+     * Whether or not to spawn agent securely and avoid malicious activity
+     *  
      * When set to true, the agent's file and the directory containing the file are copied over to a temporary directory
-     * of which there is restricted access.
+     * of which there is restricted access. By default this is false
      * 
-     * @default `true`
+     * @default `false` (always inherited from the match configs, see {@link Match.Configs})
      */
     secureMode: boolean
 
     /** A specified ID to use for the agent */
     id: ID,
 
-    /** A specified tournament ID linking an agent to the tournament it belongs to */
+    /** A specified tournament ID linking an agent to the {@link Tournament} and {@link Player} it belongs to */
     tournamentID: Tournament.ID,
 
     /** Logging level of this agent */

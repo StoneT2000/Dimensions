@@ -10,18 +10,14 @@ import { deepMerge } from "../utils/DeepMerge";
 import { FatalError, MatchError, NotSupportedError } from "../DimensionError";
 
 import { Design } from '../Design';
-import { Design as DesignTypes } from '../Design/types';
 import { Logger } from '../Logger';
 import { Agent } from '../Agent';
 import { Match } from '../Match';
 
-import { EngineOptions as EngineOptionsAlias } from './engineOptions';
-
-
 /** @internal */
-type EngineOptions = EngineOptionsAlias;
+type EngineOptions = MatchEngine.EngineOptions;
 /** @internal */
-import DDS = DesignTypes.DynamicDataStrings;
+import DDS = Design.DynamicDataStrings;
 
 /**
  * @class MatchEngine
@@ -38,7 +34,7 @@ export class MatchEngine {
   private engineOptions: EngineOptions;
   
   /** Override options */
-  private overrideOptions: DesignTypes.OverrideOptions;
+  private overrideOptions: Design.OverrideOptions;
 
   /** Logger */
   private log = new Logger();
@@ -283,7 +279,7 @@ export class MatchEngine {
         case MatchEngine.COMMAND_FINISH_POLICIES.FINISH_SYMBOL:
           // if we receive the symbol representing that the agent is done with output and now awaits for updates
           if (`${str}` === this.engineOptions.commandFinishSymbol) { 
-            agent.finishMove();
+            agent._finishMove();
           }
           else {
             agent.currentMoveCommands.push(str);
@@ -293,7 +289,7 @@ export class MatchEngine {
           
           // if we receive the finish symbol, we mark agent as done with output (finishes their move prematurely)
           if (`${str}` === this.engineOptions.commandFinishSymbol) { 
-            agent.finishMove();
+            agent._finishMove();
           }
           // only log command if max isnt reached
           else if (agent.currentMoveCommands.length < this.engineOptions.commandLines.max - 1) {
@@ -301,7 +297,7 @@ export class MatchEngine {
           }
           // else if on final command before reaching max, push final command and resolve
           else if (agent.currentMoveCommands.length == this.engineOptions.commandLines.max - 1) {
-            agent.finishMove();
+            agent._finishMove();
             agent.currentMoveCommands.push(str);
           }
           break;
@@ -367,7 +363,7 @@ export class MatchEngine {
    */
   public async kill(agent: Agent) {
     agent._terminate();
-    agent.currentMoveResolve();
+    agent._currentMoveResolve();
     this.log.system(`Killed off agent ${agent.id} - ${agent.name}`);
   }
   
@@ -385,7 +381,7 @@ export class MatchEngine {
         return !agent.isTerminated();
       })
       let allAgentMovePromises = nonTerminatedAgents.map((agent: Agent) => {
-        return agent.currentMovePromise;
+        return agent._currentMovePromise;
       });
       Promise.all(allAgentMovePromises).then(() => {
         
@@ -630,9 +626,118 @@ export module MatchEngine {
   }
 
   /**
-   * Engine Options that specify how the MatchEngine should operate on a {@link Match}
-   */
-  export type EngineOptions = EngineOptionsAlias;
+ * Engine Options that specify how the {@link MatchEngine} should operate on a {@link Match}
+ */
+  export interface EngineOptions {
+    /** The command streaming type */
+    commandStreamType: MatchEngine.COMMAND_STREAM_TYPE,
+    /** 
+     * Delimiter for seperating commands from agents in their stdout and then sending these delimited commands to
+     * {@link Design.update}. If an agent sent `move a b 3,run 24 d,t 3` and the delimiter is `','` then the 
+     * {@link Design.update} function will receive commands `'move a b 3'` and `'run 24 d'` and `'t 3'`
+     * @default ','
+     */
+    commandDelimiter: string, 
+    /** 
+     * The finish symbol to use 
+     * @default 'D_FINISH'
+     */
+    commandFinishSymbol: string,
+    /** 
+     * Which kind of command finishing policy to use 
+     * @default 'finish_symbol'
+     */
+    commandFinishPolicy: MatchEngine.COMMAND_FINISH_POLICIES,
+    /** 
+     * Options for the {@link COMMAND_FINISH_POLICIES.LINE_COUNT} finishing policy. Used only if this policy is active
+     */
+    commandLines: {
+      /** 
+       * Maximum lines of commands delimited by new line characters '\n' allowed before engine cuts off an Agent 
+       * @default 1
+       */
+      max: number,
+      /** 
+       * Whether the engine should wait for a newline character before processing the line of commands received 
+       * This should for most cases be set to `true`; false will lead to some unpredictable behavior.
+       * @default true
+       */
+      waitForNewline: boolean
+    }
+
+    /**
+     * Whether agents output to standard error is logged by the matchengine or not
+     * 
+     * It's suggested to let agent output go to a file.
+     * 
+     * @default true
+     */
+    noStdErr: boolean
+
+    /** 
+     * Options for timeouts of agents 
+     */
+    timeout: {
+      /** 
+       * On or not 
+       * @default true 
+       */
+      active: boolean,
+      /** 
+       * How long in milliseconds each agent is given before they are timed out and the timeoutCallback 
+       * function is called
+       * @default 1000
+       */
+      max: number,
+      /** 
+       * the callback called when an agent times out. 
+       * Default is kill the agent with {@link Match.kill}.
+       */
+      timeoutCallback: 
+      /** 
+       * @param agent the agent that timed out
+       * @param match - the match the agent timed out in
+       * @param engineOptions - a copy of the engineOptions used that timed out the agent
+       */
+        (agent: Agent, match: Match, engineOptions: EngineOptions) => void
+    }
+
+    /**
+     * Options related to the memory usage of agents. The memoryCallback is called when the limit is reached
+     */
+    memory: {
+      /**
+       * Whether or not the engine will monitor the memory use
+       * @default true
+       */
+      active: boolean,
+
+      /**
+       * Maximum number of bytes an agent can use before the memoryCallback is called
+       * @default 1 GB (1,000,000,000 bytes)
+       */
+      limit: number
+
+      /**
+       * The callback called when an agent raeches the memory limit
+       * Default is kill the agent with {@link Match.kill}
+       */
+      memoryCallback:
+      /** 
+       * @param agent the agent that reached the memory limit
+       * @param match - the match the agent was in
+       * @param engineOptions - a copy of the engineOptions used in the match
+       */
+        (agent: Agent, match: Match, engineOptions: EngineOptions) => void
+
+      /**
+       * How frequently the engine checks the memory usage of an agent in milliseconds
+       * @default 100
+       */
+      checkRate: number
+    }
+  }
+
 
   /** Standard ways for commands from agents to be streamed to the MatchEngine for the {@link Design} to handle */
   export enum COMMAND_STREAM_TYPE {
