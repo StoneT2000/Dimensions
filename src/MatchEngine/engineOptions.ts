@@ -3,7 +3,7 @@ import { Match } from "../Match";
 import { Agent } from "../Agent";
 
 /**
- * Engine Options that specify how the MatchEngine should operate on a {@link Match}
+ * Engine Options that specify how the {@link MatchEngine} should operate on a {@link Match}
  */
 export interface EngineOptions {
   /** The command streaming type */
@@ -42,6 +42,15 @@ export interface EngineOptions {
     waitForNewline: boolean
   }
 
+  /**
+   * Whether agents output to standard error is logged by the matchengine or not
+   * 
+   * It's suggested to let agent output go to a file.
+   * 
+   * @default true
+   */
+  noStdErr: boolean
+
   /** 
    * Options for timeouts of agents 
    */
@@ -68,5 +77,40 @@ export interface EngineOptions {
      * @param engineOptions - a copy of the engineOptions used that timed out the agent
      */
       (agent: Agent, match: Match, engineOptions: EngineOptions) => void
+  }
+
+  /**
+   * Options related to the memory usage of agents. The memoryCallback is called when the limit is reached
+   */
+  memory: {
+    /**
+     * Whether or not the engine will monitor the memory use
+     * @default true
+     */
+    active: boolean,
+
+    /**
+     * Maximum number of bytes an agent can use before the memoryCallback is called
+     * @default 1 GB (1,000,000,000 bytes)
+     */
+    limit: number
+
+    /**
+     * The callback called when an agent raeches the memory limit
+     * Default is kill the agent with {@link Match.kill}
+     */
+    memoryCallback:
+    /** 
+     * @param agent the agent that reached the memory limit
+     * @param match - the match the agent was in
+     * @param engineOptions - a copy of the engineOptions used in the match
+     */
+      (agent: Agent, match: Match, engineOptions: EngineOptions) => void
+
+    /**
+     * How frequently the engine checks the memory usage of an agent in milliseconds
+     * @default 100
+     */
+    checkRate: number
   }
 }

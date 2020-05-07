@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>COMMAND_STREAM_TYPE | dimensions-ai</title>
+	<title>AGENT_EVENTS | dimensions-ai</title>
 	<meta name="description" content="Documentation for dimensions-ai">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -62,23 +62,16 @@
 					<a href="../classes/_matchengine_index_.matchengine.html">MatchEngine</a>
 				</li>
 				<li>
-					<a href="_matchengine_index_.matchengine.command_stream_type.html">COMMAND_STREAM_TYPE</a>
+					<a href="_matchengine_index_.matchengine.agent_events.html">AGENT_EVENTS</a>
 				</li>
 			</ul>
-			<h1>Enumeration COMMAND_STREAM_TYPE</h1>
+			<h1>Enumeration AGENT_EVENTS</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Standard ways for commands from agents to be streamed to the MatchEngine for the <a href="../modules/_design_types_.design.html">Design</a> to handle</p>
-					</div>
-				</div>
-			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
@@ -86,8 +79,8 @@
 						<section class="tsd-index-section ">
 							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_matchengine_index_.matchengine.command_stream_type.html#parallel" class="tsd-kind-icon">PARALLEL</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_matchengine_index_.matchengine.command_stream_type.html#sequential" class="tsd-kind-icon">SEQUENTIAL</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_matchengine_index_.matchengine.agent_events.html#exceed_memory_limit" class="tsd-kind-icon">EXCEED_<wbr>MEMORY_<wbr>LIMIT</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_matchengine_index_.matchengine.agent_events.html#timeout" class="tsd-kind-icon">TIMEOUT</a></li>
 							</ul>
 						</section>
 					</div>
@@ -96,34 +89,24 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Enumeration members</h2>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="parallel" class="tsd-anchor"></a>
-					<h3>PARALLEL</h3>
-					<div class="tsd-signature tsd-kind-icon">PARALLEL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;parallel&quot;</span></div>
+					<a name="exceed_memory_limit" class="tsd-anchor"></a>
+					<h3>EXCEED_<wbr>MEMORY_<wbr>LIMIT</h3>
+					<div class="tsd-signature tsd-kind-icon">EXCEED_<wbr>MEMORY_<wbr>LIMIT<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;exceedMemoryLimit&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8497610/src/MatchEngine/index.ts#L642">https://github.com/StoneT2000/Dimensions/blob/8497610/src/MatchEngine/index.ts#L642</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8497610/src/MatchEngine/index.ts#L655">https://github.com/StoneT2000/Dimensions/blob/8497610/src/MatchEngine/index.ts#L655</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>First come first serve for commands run. Not implemented</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="sequential" class="tsd-anchor"></a>
-					<h3>SEQUENTIAL</h3>
-					<div class="tsd-signature tsd-kind-icon">SEQUENTIAL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;sequential&quot;</span></div>
+					<a name="timeout" class="tsd-anchor"></a>
+					<h3>TIMEOUT</h3>
+					<div class="tsd-signature tsd-kind-icon">TIMEOUT<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;timeout&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8497610/src/MatchEngine/index.ts#L644">https://github.com/StoneT2000/Dimensions/blob/8497610/src/MatchEngine/index.ts#L644</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8497610/src/MatchEngine/index.ts#L656">https://github.com/StoneT2000/Dimensions/blob/8497610/src/MatchEngine/index.ts#L656</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Each agent&#39;s set of commands is run before the next agent</p>
-						</div>
-					</div>
 				</section>
 			</section>
 		</div>
@@ -145,22 +128,22 @@
 					<li class="current tsd-kind-class tsd-parent-kind-module">
 						<a href="../classes/_matchengine_index_.matchengine.html" class="tsd-kind-icon">Match<wbr>Engine</a>
 						<ul>
-							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
+							<li class="current tsd-kind-enum tsd-parent-kind-class tsd-is-static">
 								<a href="_matchengine_index_.matchengine.agent_events.html" class="tsd-kind-icon">AGENT_<wbr>EVENTS</a>
+								<ul>
+									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+										<a href="_matchengine_index_.matchengine.agent_events.html#exceed_memory_limit" class="tsd-kind-icon">EXCEED_<wbr>MEMORY_<wbr>LIMIT</a>
+									</li>
+									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+										<a href="_matchengine_index_.matchengine.agent_events.html#timeout" class="tsd-kind-icon">TIMEOUT</a>
+									</li>
+								</ul>
 							</li>
 							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
 								<a href="_matchengine_index_.matchengine.command_finish_policies.html" class="tsd-kind-icon">COMMAND_<wbr>FINISH_<wbr>POLICIES</a>
 							</li>
-							<li class="current tsd-kind-enum tsd-parent-kind-class tsd-is-static">
+							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
 								<a href="_matchengine_index_.matchengine.command_stream_type.html" class="tsd-kind-icon">COMMAND_<wbr>STREAM_<wbr>TYPE</a>
-								<ul>
-									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-										<a href="_matchengine_index_.matchengine.command_stream_type.html#parallel" class="tsd-kind-icon">PARALLEL</a>
-									</li>
-									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-										<a href="_matchengine_index_.matchengine.command_stream_type.html#sequential" class="tsd-kind-icon">SEQUENTIAL</a>
-									</li>
-								</ul>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="../interfaces/_matchengine_index_.matchengine.command.html" class="tsd-kind-icon">Command</a>

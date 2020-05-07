@@ -1,26 +1,33 @@
-import { FatalError, MatchError, NotSupportedError } from "../DimensionError";
+import os from 'os';
+import { spawn, ChildProcess, exec } from 'child_process';
+import pidusage from 'pidusage';
+
+// Import utilities
+import { deepCopy } from '../utils/DeepCopy';
 import { DeepPartial } from "../utils/DeepPartial";
 import { deepMerge } from "../utils/DeepMerge";
+
+import { FatalError, MatchError, NotSupportedError } from "../DimensionError";
+
 import { Design } from '../Design';
 import { Design as DesignTypes } from '../Design/types';
 import { Logger } from '../Logger';
-import os from 'os';
 import { Agent } from '../Agent';
 import { Match } from '../Match';
-import { deepCopy } from '../utils/DeepCopy';
-import { spawn, ChildProcess, exec } from 'child_process';
+
 import { EngineOptions as EngineOptionsAlias } from './engineOptions';
 
-type EngineOptions = EngineOptionsAlias;
 
+/** @internal */
+type EngineOptions = EngineOptionsAlias;
+/** @internal */
 import DDS = DesignTypes.DynamicDataStrings;
+
 /**
  * @class MatchEngine
- * @classdesc The Match Engine that takes a {@link Design} and starts matches by spawning new processes for each 
- * {@link Agent}.
+ * @classdesc The Match Engine that takes a {@link Design} and its specified {@link EngineOptions} to form the backend
+ * for running matches with agents. 
  * 
- * Functionally runs matches as storing the match causes circular problems 
- * (previously Match has Engine, Engine has Match)
  */
 export class MatchEngine {
 
@@ -145,7 +152,7 @@ export class MatchEngine {
     this.log.system('Succesfully ran compile step for agent ' + agent.id);
 
     // spawn the agent process
-    let p = await agent._spawn();
+    let p: ChildProcess = await agent._spawn();
     this.log.system('Spawned agent ' + agent.id);
 
     // add listener for memory limit exceeded

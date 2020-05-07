@@ -199,6 +199,7 @@ export const DefaultDesignOptions: DesignOptions = {
       // min: 1
       waitForNewline: true
     },
+    noStdErr: true,
     timeout: {
       max: 1000,
       active: true,
@@ -217,8 +218,9 @@ export const DefaultDesignOptions: DesignOptions = {
       active: true,
       memoryCallback: (agent: Agent, match: Match, engineOptions: EngineOptions) => {
         match.kill(agent.id);
-        match.log.error
-          (`agent ${agent.id} - '${agent.name}' reached the memory limit of ${engineOptions.memory.limit / 1000000} MB`);
+        match.log.error(
+          `agent ${agent.id} - '${agent.name}' reached the memory limit of ${engineOptions.memory.limit / 1000000} MB`
+        );
       },
       checkRate: 100
     }
