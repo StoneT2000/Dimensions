@@ -6,9 +6,11 @@ All you need to do?
 
 Code a competition design and code a bot
 
-Dimensions handles the rest, including match and tournament running, security, scalability and a local API and website through which you can watch this all happen at once. Dimensions allows you to **design virtually any kind of AI competition** you want in **any language** with its vast array of flexible configuration options and choices.
+Dimensions handles the rest, including match and tournament running, security, scalability and a local API and website through which you can monitor and control the entire system. 
 
-Moreover, Dimensions utilizes an I/O based model to run competitions and pit AI agents against each other, allowing it to be generic and language agnostic so anyone from any background can compete in your competition design.
+The framework was built with the goals of being **generalizable** and **accessible**. That's why Dimensions utilizes an I/O based model to run competitions and pit AI agents against each other (or themselves!), allowing it to be generic and language agnostic so anyone from any background can compete in your competition design. 
+
+It generalizes to many scenarios, and is able to recreate a range of systems from the Halite 3 AI competition, Battlecode 2020, to a generalized [Open AI's Gym](https://gym.openai.com/) that is open to machine learning in all languages.
 
 This was inspired by [Battlecode](battlecode.org/) and [Halite](https://halite.io/)
 
@@ -43,8 +45,12 @@ Also checkout the blog post introducing the motivation for Dimensions and though
 - Can wrap your own AI competition built without the dimensions framework to make use of its competition running features such as Trueskill leaderboards
 - Comes with an API served locally that gives access to data on ongoing matches and tournaments and allows for direct control of matches and tournaments through the API. See this page for details on this API: https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API
   - Check out https://github.com/StoneT2000/Dimensions-web if you want a website to view the API from.
-- Can use plugins like the [MongoDB]() plugin in three lines of code to automatically integrate and scale up your tournament.
+- Can use plugins like the [MongoDB]() plugin in three lines of code to automatically integrate and scale up your tournament and integrate an automatic user authentication and login system.
 - Ensures malicious bots cannot cause harm to your servers through `secureMode`. See [this wiki page](https://github.com/StoneT2000/Dimensions/wiki/Security) for details and best practices
+
+## Requirements
+
+At the moment, MacOS and Linux are 100% supported. Windows platforms work but `secureMode` is disabled for now. It's suggested to use Node 12.x or above. Lower versions are untested.
 
 ## Getting Started
 
@@ -291,6 +297,12 @@ Note that different tournament types have different tournament configurations an
 ### More Stuff!
 
 The [wiki](https://github.com/StoneT2000/Dimensions/wiki) is populated with more basic and advanced example usages of this framework. This ranges from how to [configure the match engine](https://github.com/StoneT2000/Dimensions/wiki/Configuration#engine-options), [configuring various tournaments and rank systems](https://github.com/StoneT2000/Dimensions/wiki/Running-Tournaments), to tips on designing a successful competition.
+
+### Strong Recommendations
+
+In a production setting, it is strongly recommended to create a Dimension in `secureMode` to decrease the likelihood of user uploaded bot code of causing any significant harm to a server. By default, `secureMode` is set to false, but you will always get a warning about it. Setting it to true also requires you to run the code as root user. Note that running in secureMode requires you to be as root user, so you must run with `sudo`. More details on that [here](https://github.com/StoneT2000/Dimensions/wiki/Security)
+
+Agents for each match are spawned in a new child process of the main node process running the match or tournament. To help make it more fair, it is recommended not to simultaneously spawn more agents than the number the number of cores your computer has. Namely, if your matches each allow for 4 agents and your device has 16 cores, then it is recommended to run no more than 4 matches at a time.
 
 ## Contributing
 
