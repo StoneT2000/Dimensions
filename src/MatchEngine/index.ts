@@ -14,20 +14,17 @@ import { Logger } from '../Logger';
 import { Agent } from '../Agent';
 import { Match } from '../Match';
 
-/** @internal */
+/** @ignore */
 type EngineOptions = MatchEngine.EngineOptions;
 
 
-
 /**
- * @class MatchEngine
- * @classdesc The Match Engine that takes a {@link Design} and its specified {@link EngineOptions} to form the backend
+ * The Match Engine that takes a {@link Design} and its specified {@link EngineOptions} to form the backend
  * for running matches with agents. 
- * 
  */
 export class MatchEngine {
 
-  // The design the MatchEngine runs on
+  /** The design the engine runs on */
   private design: Design;
 
   /** Engine options */
@@ -48,7 +45,7 @@ export class MatchEngine {
    */
   private killOffSignal = false;
   
-  // approx extra buffer time given to agents due to engine processing for timeout mechanism
+  /** approx extra buffer time given to agents due to engine processing for timeout mechanism */
   static timeoutBuffer: number = 25; 
   
   /**
@@ -81,7 +78,7 @@ export class MatchEngine {
    * Starts up the engine by intializing processes for all the agents and setting some variables for a match
    * @param agents - The agents involved to be setup for the given match
    * @param match - The match to initialize
-   * @returns a promise that resolves true if succesfully initialized
+   * @returns a promise that resolves once succesfully initialized
    */
   async initialize(agents: Array<Agent>, match: Match): Promise<void> {
     
@@ -750,12 +747,24 @@ export module MatchEngine {
    * A command delimited by the delimiter of the match engine from all commands sent by agent specified by agentID
    */
   export interface Command {
+    /**
+     * The string command received
+     */
     command: string
+    /**
+     * The id of the agent that sent this command
+     */
     agentID: Agent.ID
   }
 
   export enum AGENT_EVENTS {
+    /**
+     * Event emitted by process of {@link Agent} when memory limit is exceeded
+     */
     EXCEED_MEMORY_LIMIT = 'exceedMemoryLimit',
+    /**
+     * Event emitted by process of {@link Agent} when it times out.
+     */
     TIMEOUT = 'timeout'
   }
 
@@ -819,7 +828,10 @@ export module MatchEngine {
   }
 }
 
+/** name of the bot user that owns the agent's process @ignore */
 export const BOT_USER = 'dimensions_bot';
+/** root @ignore */
 export const ROOT_USER = 'root';
-/** @internal */
+
+/** @ignore */
 import DDS = MatchEngine.DynamicDataStrings;

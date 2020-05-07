@@ -16,8 +16,7 @@ import { genID } from '../utils';
 import { deepCopy } from '../utils/DeepCopy';
 
 /**
- * @class Match
- * @classdesc An match created using a {@link Design} and a list of Agents. The match can be stopped and resumed with 
+ * An match created using a {@link Design} and a list of Agents. The match can be stopped and resumed with 
  * {@link stop}, {@link resume}, and state and configurations can be retrieved at any point in time with the 
  * {@link state} and {@link configs} fields
  * 
@@ -465,8 +464,16 @@ export class Match {
   }
 
   /**
-   * Throw an error within the Match, indicating an {@link Agent} tried a command that was forbidden in the match
-   * according to a the utilized {@link Design}
+   * Throw an {@link FatalError}, {@link MatchError}, or {@link MatchWarn} within the Match. Indicates that the 
+   * {@link Agent} with id agentID caused this error/warning.
+   * 
+   * Throwing MatchWarn will just log a warning level message and throwing a MatchError will just log it as an error 
+   * level message.
+   * 
+   * Throwing FatalError will cause the match to automatically be destroyed. This is highly not recommended and it is
+   * suggested to have some internal logic to handle moments when the match cannot continue.
+   * 
+   * 
    * Examples are misuse of an existing command or using incorrect commands or sending too many commands
    * @param agentID - the misbehaving agent's ID
    * @param error - The error
@@ -492,7 +499,6 @@ export class Match {
 
   /**
    * Destroys this match and makes sure to remove any leftover processes
-   * 
    */
   public async destroy() {
     // reject the run promise first if it exists
@@ -513,7 +519,7 @@ export class Match {
 
 export module Match {
   /**
-   * Match Configurations. Has 4 specified fields. All other fields are up to user discretion
+   * Match Configurations. Has 5 specified fields. All other fields are up to user discretion
    */
   export interface Configs {
     /**
@@ -555,7 +561,7 @@ export module Match {
     /**
      * If the match is running at the moment
      */
-    RUNNING = 'running', // if match is running at the moment
+    RUNNING = 'running',
     /**
      * If the match is stopped
      */
@@ -563,7 +569,7 @@ export module Match {
     /**
      * If the match is completed
      */
-    FINISHED = 'finished', // if match is done
+    FINISHED = 'finished',
     /**
      * If fatal error occurs in Match, appears when match stops itself
      */

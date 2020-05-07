@@ -20,6 +20,7 @@ export class Player {
   
   /** 
    * Whether this player is anonymous and not tied to a user on the back end 
+   * 
    * If this is ever false, then that means 1. we have a backend setup 2. there is an actual user entry
    */
   public anonymous: boolean = true;
@@ -40,9 +41,8 @@ export class Player {
 
 
 /**
- * @class Tournament
- * @classdesc The tournament class extended by all concrete Tournament Classes. Tournament Types available now are
- * {@link RoundRobin.Tournament}, {@link Ladder.Tournament}, {@link Elimination.Tournament}
+ * The tournament class extended by all concrete Tournament Classes. Tournament Types available now are
+ * {@link RoundRobinTournament}, {@link LadderTournament}, {@link EliminationTournament}
  */
 export abstract class Tournament {
 
@@ -116,10 +116,11 @@ export abstract class Tournament {
    * 
    * If the player is to exist beyond the tournament, an existingID must always be provided and generated somewhere else
    * 
+   * Resolves with the new player or updated player
+   * 
    * @param file - The file to the bot or an object with the file and a name for the player specified
    * @param existingID - The optional id of the player 
    * 
-   * Resolves with the new player or updated player
    */
   public async addplayer(file: string | {file: string, name: string}, existingID?: NanoID): Promise<Player> {
     let id: NanoID;
@@ -192,6 +193,10 @@ export abstract class Tournament {
     }
   }
 
+  /**
+   * Function to be implemented by a tournament type that performs further tasks to integrate a new player
+   * @param player 
+   */
   abstract internalAddPlayer(player: Player): void;
 
   /**
@@ -254,7 +259,6 @@ export abstract class Tournament {
    * @param oldfile - the previous file for the player
    */
   abstract updatePlayer(player: Player, oldname: string, oldfile: string): void;
-
 
   /**
    * Set configs for this tournament
@@ -319,6 +323,9 @@ export abstract class Tournament {
     return false;
   }
 
+  /**
+   * Destroy this tournament. Rejects if an error occured in trying to destroy it.
+   */
   public async destroy(): Promise<void> {
     await this.preInternalDestroy();
     
@@ -464,6 +471,9 @@ export module Tournament {
     id?: string
   }
 
+  /**
+   * Internally used type.
+   */
   export interface TournamentConfigs<ConfigType> extends TournamentConfigsBase {
     tournamentConfigs: ConfigType    
     rankSystemConfigs: any

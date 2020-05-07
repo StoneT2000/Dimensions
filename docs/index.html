@@ -149,7 +149,7 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
   <span class="hljs-keyword">async</span> update(match, commands) {
     ...
   }
-  <span class="hljs-keyword">async</span> getResults(match) {
+  <span class="hljs-keyword">async</span> <span class="hljs-keyword">get</span><span class="hljs-title">Results</span>(<span class="hljs-params">match</span>) {
     ...
   }
 }</code></pre>
@@ -177,7 +177,7 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
       <span class="hljs-comment">// we return this to end the match</span>
       <span class="hljs-keyword">return</span> Match.Status.FINISHED;
     }
-  <span class="hljs-keyword">async</span> getResults(match) {
+  <span class="hljs-keyword">async</span> <span class="hljs-keyword">get</span><span class="hljs-title">Results</span>(<span class="hljs-params">match</span>) {
     <span class="hljs-keyword">let</span> results = {}
     ... <span class="hljs-comment">// determine results</span>
     <span class="hljs-keyword">return</span> results; <span class="hljs-comment">// return them</span>
@@ -370,9 +370,6 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_match_index_.html">&quot;<wbr>Match/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_matchengine_engineoptions_.html">&quot;<wbr>Match<wbr>Engine/engine<wbr>Options&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_matchengine_index_.html">&quot;<wbr>Match<wbr>Engine/index&quot;</a>

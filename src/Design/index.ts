@@ -1,14 +1,20 @@
-import { MatchEngine } from "../MatchEngine";
 import { deepMerge } from "../utils/DeepMerge";
 import { DeepPartial } from "../utils/DeepPartial";
+import { deepCopy } from "../utils/DeepCopy";
+
 import { Agent } from "../Agent";
 import { Match } from "../Match";
+import { MatchEngine } from "../MatchEngine";
 import { Logger } from "../Logger";
+
+/** @ignore */
 import EngineOptions = MatchEngine.EngineOptions;
+/** @ignore */
 import COMMAND_FINISH_POLICIES = MatchEngine.COMMAND_FINISH_POLICIES;
+/** @ignore */
 import COMMAND_STREAM_TYPE = MatchEngine.COMMAND_STREAM_TYPE;
+/** @ignore */
 import Command = MatchEngine.Command;
-import { deepCopy } from "../utils/DeepCopy";
 
 /**
  * @class Design
@@ -76,8 +82,8 @@ export abstract class Design {
 
   /**
    * Abstract function required to update match state with commands from Agents and send commands to Agents
-   * along with returning the current match status. Returning Match.Status.RUNNING indicates the match is not done yet. 
-   * Returning MatchStatus.FINISHED indicates the match is over.
+   * along with returning the current match status. Returning {@link Match.Status.RUNNING} indicates the match is not done yet. 
+   * Returning {@link Match.Status.FINISHED} indicates the match is over.
    * 
    * @see {@link Match} - This function is used by the match to update the match state and move forward a time step
    * @see {@link Agent} for what properties and methods related to agents are exposed to the user for use.

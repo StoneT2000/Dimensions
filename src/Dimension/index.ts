@@ -1,20 +1,24 @@
-import { Logger} from '../Logger';
+import { exec } from 'child_process';
+
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
+import { genID } from '../utils';
+import { deepCopy } from '../utils/DeepCopy';
+
+import { Logger} from '../Logger';
 import { Match } from '../Match';
 import { Station } from '../Station';
-import { FatalError, MatchDestroyedError, MissingFilesError, NotSupportedError } from '../DimensionError';
+import { FatalError, MissingFilesError, NotSupportedError } from '../DimensionError';
 import { Design } from '../Design';
 import { RoundRobinTournament } from '../Tournament/TournamentTypes/RoundRobin';
 import { EliminationTournament } from '../Tournament/TournamentTypes/Elimination';
 import { Tournament } from '../Tournament';
-import { deepCopy } from '../utils/DeepCopy';
 import { LadderTournament } from '../Tournament/TournamentTypes/Ladder';
-import { exec } from 'child_process';
+
 import { BOT_USER } from '../MatchEngine';
 import { Plugin } from '../Plugin';
 import { Database } from '../Plugin/Database';
-import { genID } from '../utils';
+
 
 
 /**
@@ -42,9 +46,15 @@ export type NanoID = string;
 export interface DimensionConfigs {
   /** Name of the dimension */
   name: string
-  /** Whether or not to activate the Station */
+  /** 
+   * Whether or not to activate the Station 
+   * @default `true`
+   */
   activateStation: boolean
-  /** Whether the station should observe this Dimension */
+  /** 
+   * Whether the station should observe this Dimension 
+   * @default `true`
+   */
   observe: boolean,
   /** The logging level for this Dimension */
   loggingLevel: Logger.LEVEL,
@@ -56,29 +66,30 @@ export interface DimensionConfigs {
 
   /**
    * Whether to run Dimension in a more secure environment.
-   * Requires rbash and setting up users and groups beforehand and running dimensions in sudo mode
-   * @default `true`
+   * Requires rbash and setting up users beforehand and running dimensions in sudo mode
+   * @default `false`
    */
   secureMode: boolean,
 
   /**
    * String denoting what kind of backing database is being used
+   * @default {@link DatabaseType.NONE}
    */
   backingDatabase: string | DatabaseType
 }
 /**
- * @class Dimension
- * @classdesc The Dimension framework for intiating a {@link Design} to then run instances of {@link Match} on.
+ * The Dimension framework for intiating a {@link Design} to then run instances of a {@link Match} or 
+ * {@link Tournament} on.
  */
 export class Dimension {
   
   /**
-   * The matches running in this Dimension
+   * A map of the matches running in this Dimension
    */
   public matches: Map<NanoID, Match> = new Map();
 
   /**
-   * Tounraments in this Dimension.
+   * A map of the tournaments in this Dimension.
    */
   public tournaments: Map<NanoID, Tournament> = new Map();
 
@@ -98,8 +109,7 @@ export class Dimension {
   public log = new Logger();
 
   /**
-   * The database plugin being used. Allows Dimensions to interact with a database and store match, tournament, and 
-   * user data, allowing for data persistance across instances.
+   * The database plugin being used. Allows Dimensions to interact with a database and store {@link Match}, {@link Tournament}, and user data, allowing for data persistance across instances.
    */
   public databasePlugin: Database;
 
@@ -117,7 +127,7 @@ export class Dimension {
   }
 
   /**
-   * Dimension configs
+   * Dimension configs. Set to defaults
    */
   public configs: DimensionConfigs = {
     name: '',
@@ -197,7 +207,7 @@ export class Dimension {
    * 
    * @param files - List of files or objects to use to generate agents and use for a new match
    * @param matchOptions - Options for the created match
-   * @param configs - Configurations that are `Design` dependent
+   * @param configs - Configurations that are {@link Design} dependent
    */
   public async createMatch(files: Array<string> | Array<{file: string, name: string}>, 
     configs?: DeepPartial<Match.Configs>): Promise<Match> {
