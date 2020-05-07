@@ -77,6 +77,9 @@ export class Agent {
   /** internal buffer to store stdout from an agent that has yet to be delimited / used */
   public _buffer: Array<string> = []; 
 
+  /** Interval that periodically watches the memory usage of the process associated with this agent */
+  public memoryWatchInterval = null;
+
   /**
    * The associatted process running the Agent
    */
@@ -421,6 +424,9 @@ export class Agent {
         this.log.detail(`couldn't kill original process nor the group`, err);
       }
     }
+
+    this.clearTimer();
+    clearInterval(this.memoryWatchInterval);
     
     this.status = Agent.Status.KILLED;
   }
@@ -587,12 +593,13 @@ export module Agent {
      * @default 1 minute (60,000 ms)
      */
     maxCompileTime: number
+
   }
 
   /**
    * Default Agent options
    */
-  export const OptionDefaults = {
+  export const OptionDefaults: Agent.Options = {
     secureMode: false,
     loggingLevel: Logger.LEVEL.INFO,
     id: null,

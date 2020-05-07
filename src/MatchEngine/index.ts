@@ -148,6 +148,15 @@ export class MatchEngine {
     let p = await agent._spawn();
     this.log.system('Spawned agent ' + agent.id);
 
+    // add listener for memory limit exceeded
+    p.on(MatchEngine.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, (stat) => {
+      this.engineOptions.memory.memoryCallback(agent, match, this.engineOptions);
+    });
+
+    // add listener for timeouts
+    p.on(MatchEngine.AGENT_EVENTS.TIMEOUT, () => {
+      this.engineOptions.timeout.timeoutCallback(agent, match, this.engineOptions);
+    })
 
     match.idToAgentsMap.set(agent.id, agent);
 
@@ -157,7 +166,7 @@ export class MatchEngine {
     // handler for stdout of Agent processes. Stores their output commands and resolves move promises
     p.stdout.on('readable', () => {
 
-      let data: string[];
+      let data: Array<string>;
       while (data = p.stdout.read()) {
         // split chunks into line by line and handle each line of commands
         let strs = `${data}`.split('\n');
@@ -226,6 +235,24 @@ export class MatchEngine {
     // store process
     agent.process = p;
 
+    if (this.engineOptions.memory.active) {
+      const checkAgentMemoryUsage = () => {
+        // setting { maxage: 0 } because otherwise pidusage leaves interval "memory leaks" and process doesn't exit fast
+        pidusage(agent.process.pid, { maxage: 0 }).then((stat) => {
+          if (stat.memory > this.engineOptions.memory.limit) {
+            agent.process.emit(MatchEngine.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, stat);
+          }
+        }).catch(() => {
+          // ignore errors
+        });
+      }
+      checkAgentMemoryUsage();
+      agent.memoryWatchInterval = setInterval(() => {
+        checkAgentMemoryUsage();
+      }, this.engineOptions.memory.checkRate);
+    }
+
+
     // this is for handling a race condition explained in the comments of this.killOffSignal
     // Briefly, sometimes agent process isn't stored yet during initialization and doesn't get killed as a result
     if (this.killOffSignal) {
@@ -241,7 +268,6 @@ export class MatchEngine {
   private async handleCommmand(agent: Agent, str: string) {
 
     // TODO: Implement parallel command stream type
-    // TODO: Implement timeout mechanism
     if (this.engineOptions.commandStreamType === MatchEngine.COMMAND_STREAM_TYPE.SEQUENTIAL) {
       // IF SEQUENTIAL, we wait for each unit to finish their move and output their commands
       
@@ -313,7 +339,8 @@ export class MatchEngine {
 
   /**
    * Kills all agents and processes from a match and cleans up. Kills any game processes as well. Shouldn't be used
-   * for custom design based matches.
+   * for custom design based matches. Called by {@link Match}
+   * 
    * @param match - the match to kill all agents in and clean up
    */
   public async killAndClean(match: Match) {
@@ -474,7 +501,7 @@ export class MatchEngine {
         }
       });
 
-     match.matchProcess.stdout.on('close', (code) => {
+      match.matchProcess.stdout.on('close', (code) => {
         this.log.system(`${match.name} | id: ${match.id} - exited with code ${code}`);
         if (matchTimedOut) {
           reject(new MatchError('Match timed out'));
@@ -613,6 +640,11 @@ export module MatchEngine {
   export interface Command {
     command: string
     agentID: Agent.ID
+  }
+
+  export enum AGENT_EVENTS {
+    EXCEED_MEMORY_LIMIT = 'exceedMemoryLimit',
+    TIMEOUT = 'timeout'
   }
 }
 
