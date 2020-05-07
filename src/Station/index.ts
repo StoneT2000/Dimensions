@@ -17,8 +17,8 @@ import { existsSync, mkdirSync } from 'fs';
 import { Agent } from '../Agent';
 
 
-const BOT_DIR = path.join(__dirname, 'local/bots');
-const BOT_DIR_TEMP = path.join(__dirname, 'local/botstemp');
+export const BOT_DIR = path.join(__dirname, 'local/bots');
+export const BOT_DIR_TEMP = path.join(__dirname, 'local/botstemp');
 
 // declare global and merge declaration with Express Request to allow storage of data across middlewhere in typescript 
 declare global {

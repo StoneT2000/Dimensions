@@ -10,6 +10,10 @@ import { pick } from '../../../../utils';
 import { Design } from '../../../../Design';
 import userAPI from './user';
 import authAPI from './auth';
+import { handleBotUpload } from '../../../handleBotUpload';
+import path from 'path';
+import { spawn } from 'child_process';
+import { removeDirectory } from '../../../../utils/System';
 
 const router = express.Router();
 
@@ -80,6 +84,34 @@ router.get('/:id/match', (req: Request, res: Response) => {
     matchData[key] = pickMatch(match);
   });
   res.json({error: null, matches: matchData});
+});
+
+/**
+ * POST
+ * Creates a match using the provided zip files of bots.
+ * Requires files: Array<zip files>, paths: JSON encoding of array of paths to the main file in the zip file, 
+ * names?: Array<string>
+ */
+router.post('/:id/match', async (req: Request, res: Response, next: NextFunction) => {
+
+  try {
+    let data = await handleBotUpload(req);
+    let dim = req.data.dimension;
+    let match = await dim.createMatch(data);
+    match.run().then(() => {
+      // delete all bot files and their directories as they are temporary and generated
+      data.forEach(({ file }) => {
+        let dir = path.dirname(file);
+        removeDirectory(dir);
+      });
+    }).catch(() => {
+      // ignore errors
+    });
+    res.json({error: null, matchID: match.id});
+  }
+  catch(err) {
+    return next(err);
+  }
 });
 
 /**
