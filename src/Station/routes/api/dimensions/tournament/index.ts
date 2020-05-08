@@ -13,6 +13,7 @@ import { spawn } from 'child_process';
 import matchAPI, { pickMatch } from '../match';
 import { pick } from '../../../../../utils';
 import { NanoID } from '../../../../../Dimension';
+import { handleBotUpload, UploadData } from '../../../../handleBotUpload';
 
 const BOT_DIR = path.join(__dirname, '../../../../local/bots');
 const BOT_DIR_TEMP = path.join(__dirname, '../../../../local/botstemp');
@@ -146,83 +147,32 @@ router.delete('/:tournamentID/match/:matchID', (req, res, next) => {
 
 /**
  * POST Route
- * Takes in form data of name: string, file: File, id: string
+ * Takes in form data of names: string[], files: File[], playerIDs: string[]
  * file must be a zip
  * id is a tournament ID string specified only if you want to upload a new bot to replace an existing one
  */
 router.post('/:tournamentID/upload/', async (req: Request, res: Response, next: NextFunction) => { 
+  let data: Array<UploadData>;
+  try {
+   data = await handleBotUpload(req);
+  } catch(err) {
+    return next(err);
+  }
   
-  const form = new IncomingForm();
-  form.parse(req, async (err, fields, files) => {
-    if (err) {
-      next(err);
-      return;
-    }
-    if (files.file === undefined) return next(new error.BadRequest('No file provided'));
-    let file = files.file;
-
-    let id = <NanoID>fields.id;
-
-
-    // if no id given, we will generate an ID to use. Generated here using the below function to avoid duplicate ids
-    if (!id) {
-      id = req.data.tournament.generateNextTournamentIDString();
-    }
-    
-    let botdirtemp = BOT_DIR_TEMP + '/' + id;
-    
-    // extract first
-    try {
-      await extract(file.path, {
-        dir: botdirtemp
-      });
-    }
-    catch (error) {
-      return next(new error.InternalServerError(error));
-    }
-
-    let pathToBotFile = path.join(botdirtemp, <string>fields.pathToFile);
-    let name = <string>fields.botName;
-    // double check file exists
-    if (!existsSync(pathToBotFile)) { 
-      // remove the extracted content
-      console.error('Bad path: ' + pathToBotFile);
-      // remove old folder
-      let p = spawn('find', [botdirtemp, '-exec', 'rm', '-rf', '{}', '+']);
-      return next(new error.BadRequest('Extracted but path to file is incorrect'));
-    }
-    else {
-      // TODO: Validate the files as well
-
-      // file is ready to use
-      let botdir = `${BOT_DIR}/${id}`;
-      pathToBotFile = botdir + '/' + fields.pathToFile;
-      // move it over to the production bots folder
-      
-      // remove old folder
-      let p = spawn('find', [botdir, '-exec', 'rm', '-rf', '{}', '+']);
-      p.on('error', (err) => {
-        return next(new error.InternalServerError(err));
-      });
-      p.on('close', (code) => {
-        ncp(botdirtemp, botdir, function (err) {
-          if (err) {
-            return next(new error.InternalServerError('Couldn\'t copy over files for use'))
-          }
-          // delete temp
-          let p = spawn('find', [botdirtemp, '-exec', 'rm', '-rf', '{}', '+']);
-  
-          if (name) {
-            req.data.tournament.addplayer({file: pathToBotFile, name: name}, id);
-          }
-          else {
-            req.data.tournament.addplayer(pathToBotFile, id);
-          }
-          res.json({error: null, message: 'Successfully uploaded bot'});
-        });
-      });
-    }
-  });
+  if (data.length > 1) return next(new error.BadRequest('Can only upload one tournament bot at a time'));
+  let bot = data[0];
+  let id = bot.playerID;
+  // if no id given, we will generate an ID to use. Generated here using the below function to avoid duplicate ids
+  if (!id) {
+    id = req.data.tournament.generateNextTournamentIDString();
+  }
+  if (bot.name) {
+    req.data.tournament.addplayer({file: bot.file, name: bot.name}, id);
+  }
+  else {
+    req.data.tournament.addplayer(bot.file, id);
+  }
+  res.json({error: null, message: 'Successfully uploaded bot'});
 });
 
 

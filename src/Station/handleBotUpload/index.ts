@@ -11,25 +11,28 @@ import { removeDirectory } from '../../utils/System';
 
 export interface UploadData {
   file: string,
-  name: string
+  name: string,
+  playerID: string, 
 }
 
 /**
  * Returns path to unzipped bot contents and the main file.
  */
 export const handleBotUpload = (req: Request): Promise<Array<UploadData>> => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     //@ts-ignore
     const form = formidable({ multiples: true });
     form.parse(req, async (err, fields, files) => {
       if (err) {
         throw err;
       }
-      console.log(files, fields);
       if (files.files === undefined) throw new error.BadRequest('No file(s) provided');
       if (fields.paths === undefined) throw new error.BadRequest('No file path(s) provided');
-      if (!files.files.length) throw new error.BadRequest('No file(s) provided');
+      if (!files.files.length) { 
+        files.files = [files.files];
+      }
       fields.paths = JSON.parse(fields.paths);
+      fields.names = JSON.parse(fields.names);
       if (!fields.paths.length) throw new error.BadRequest('No file path(s) provided');
 
       if (fields.paths.length != files.files.length) throw new error.BadRequest('Paths and File arrays mismatch');
@@ -37,6 +40,7 @@ export const handleBotUpload = (req: Request): Promise<Array<UploadData>> => {
       let uploads = files.files;
       let paths = fields.paths;
       let names = fields.names;
+      let playerIDs = fields.playerIDs;
       if (!names) names = [];
 
       let uploadProcessPromises: Array<Promise<UploadData>> = [];
@@ -44,15 +48,15 @@ export const handleBotUpload = (req: Request): Promise<Array<UploadData>> => {
         let upload = uploads[i];
         let pathToFile =  paths[i];
         let botName = names[i];
-        uploadProcessPromises.push(processUpload(upload, pathToFile, botName));
+        let playerID = playerIDs[i];
+        uploadProcessPromises.push(processUpload(upload, pathToFile, botName, playerID));
       }
-      let data = await Promise.all(uploadProcessPromises);
-      resolve(data);
+      Promise.all(uploadProcessPromises).then(resolve).catch(reject)
     });
   })
 }
 
-const processUpload = async (file: any, pathToFile: string, botName: string): Promise<UploadData> => {
+const processUpload = async (file: any, pathToFile: string, botName: string, playerID: string): Promise<UploadData> => {
   
   // generate a 18 char length nano ID to store this bot
   let id = genID(18);
@@ -81,7 +85,8 @@ const processUpload = async (file: any, pathToFile: string, botName: string): Pr
   else {
     return {
       name: name,
-      file: pathToBotFile
+      file: pathToBotFile,
+      playerID: playerID
     }
   }
 }
