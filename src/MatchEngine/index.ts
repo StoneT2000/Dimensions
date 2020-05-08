@@ -1,38 +1,51 @@
-import { FatalError, MatchError } from "../DimensionError";
+import os from 'os';
+import { spawn, ChildProcess, exec } from 'child_process';
+import pidusage from 'pidusage';
+
+// Import utilities
+import { deepCopy } from '../utils/DeepCopy';
 import { DeepPartial } from "../utils/DeepPartial";
 import { deepMerge } from "../utils/DeepMerge";
+
+import { FatalError, MatchError, NotSupportedError } from "../DimensionError";
+
 import { Design } from '../Design';
-import { Design as DesignTypes } from '../Design/types';
 import { Logger } from '../Logger';
 import { Agent } from '../Agent';
 import { Match } from '../Match';
-import { deepCopy } from '../utils/DeepCopy';
-import { spawn, ChildProcess } from 'child_process';
-import EngineOptions = MatchEngine.EngineOptions;
-import DDS = DesignTypes.DynamicDataStrings;
+
+/** @ignore */
+type EngineOptions = MatchEngine.EngineOptions;
+
+
 /**
- * @class MatchEngine
- * @classdesc The Match Engine that takes a {@link Design} and starts matches by spawning new processes for each 
- * {@link Agent}.
- * 
- * Functionally runs matches as storing the match causes circular problems 
- * (previously Match has Engine, Engine has Match)
+ * The Match Engine that takes a {@link Design} and its specified {@link EngineOptions} to form the backend
+ * for running matches with agents. 
  */
 export class MatchEngine {
 
-  // The design the MatchEngine runs on
+  /** The design the engine runs on */
   private design: Design;
 
   /** Engine options */
   private engineOptions: EngineOptions;
   
   /** Override options */
-  private overrideOptions: DesignTypes.OverrideOptions;
+  private overrideOptions: Design.OverrideOptions;
 
   /** Logger */
   private log = new Logger();
+
+  /** 
+   * A coordination signal to ensure that all processes are indeed killed due to asynchronous initialization of agents
+   * There is a race condition when a tournament/match is being destroyed and while every match is being destroyed, some
+   * matches are in the initialization stage where they call the engine's initialize function. As a result, when we 
+   * send a match destroy signal, we spawn some processes and haven't spawned some others for the agents. As a result, 
+   * all processes eventually get spawned but not all are cleaned up and killed.
+   */
+  private killOffSignal = false;
   
-  // approx extra buffer time given to agents due to engine processing for timeout mechanism
+  /** approx extra buffer time given to agents due to engine processing for timeout mechanism */
   static timeoutBuffer: number = 25; 
   
   /**
@@ -65,7 +78,7 @@ export class MatchEngine {
    * Starts up the engine by intializing processes for all the agents and setting some variables for a match
    * @param agents - The agents involved to be setup for the given match
    * @param match - The match to initialize
-   * @returns a promise that resolves true if succesfully initialized
+   * @returns a promise that resolves once succesfully initialized
    */
   async initialize(agents: Array<Agent>, match: Match): Promise<void> {
     
@@ -82,6 +95,39 @@ export class MatchEngine {
     return;
   }
 
+
+  /**
+   * Returns a promise that resolves once the process succesfully spawned and rejects if error occurs
+   * @param pid - process id to check
+   */
+  private async spawnedPromise(pid: number) {
+    const refreshRate = 10;
+    const checkSpawn = () => {
+      return new Promise((resolve, reject) => {
+        exec(`ps -p ${pid}`, (err, stdout) => {
+          if (err) reject(err);
+          if (stdout.split('\n').length > 2) {
+            resolve();
+          }
+          reject();
+        });
+      })
+    }
+    const setSpawnCheckTimer = (resolve, reject) => {
+      setTimeout(() => {
+        checkSpawn().then(() => {
+          resolve();
+        }).catch((err) => {
+          if (err) reject(err);
+          setSpawnCheckTimer(resolve, reject);
+        })
+      }, refreshRate);
+    }
+    return new Promise((resolve, reject) => {
+      setSpawnCheckTimer(resolve, reject);
+    });
+  }
+
   /**
    * Initializes a single agent, called by {@link initialize}
    * @param agent - agent to initialize
@@ -89,13 +135,28 @@ export class MatchEngine {
    */
   private async initializeAgent(agent: Agent, match: Match): Promise<void> {
     this.log.system("Setting up and spawning " + agent.name + ` | Command: ${agent.cmd} ${agent.src}`);
+
+    // wait for install step
+    await agent._install();
+    this.log.system('Succesfully ran install step for agent ' + agent.id);
+
     // wait for compilation step
-    
     await agent._compile();
     this.log.system('Succesfully ran compile step for agent ' + agent.id);
 
     // spawn the agent process
-    let p = await agent._spawn();
+    let p: ChildProcess = await agent._spawn();
+    this.log.system('Spawned agent ' + agent.id);
+
+    // add listener for memory limit exceeded
+    p.on(MatchEngine.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, (stat) => {
+      this.engineOptions.memory.memoryCallback(agent, match, this.engineOptions);
+    });
+
+    // add listener for timeouts
+    p.on(MatchEngine.AGENT_EVENTS.TIMEOUT, () => {
+      this.engineOptions.timeout.timeoutCallback(agent, match, this.engineOptions);
+    })
 
     match.idToAgentsMap.set(agent.id, agent);
 
@@ -104,11 +165,14 @@ export class MatchEngine {
 
     // handler for stdout of Agent processes. Stores their output commands and resolves move promises
     p.stdout.on('readable', () => {
-      let data: string[];
+
+      let data: Array<string>;
       while (data = p.stdout.read()) {
         // split chunks into line by line and handle each line of commands
         let strs = `${data}`.split('\n');
+
         // first store data into a buffer and process later if no newline character is detected
+        // if final char in the strs array is not '', then \n is not at the end
         if (this.engineOptions.commandLines.waitForNewline && strs.length >= 1 && strs[strs.length - 1] != '') {
           // using split with \n should make any existing final \n character to be set as '' in strs array
           
@@ -120,7 +184,8 @@ export class MatchEngine {
             agent._buffer = [];
           }
           for (let i = 0; i < strs.length - 1; i++) {
-            if (agent.getAllowedToSendCommands()) {
+            if (strs[i] === '') continue;
+            if (agent.isAllowedToSendCommands()) {
               this.handleCommmand(agent, strs[i]);
             }
           }
@@ -135,7 +200,8 @@ export class MatchEngine {
           }
           // this.log.systemIO(`${agent.name} - stdout: ${strs}`);
           for (let i = 0; i < strs.length; i++) {
-            if (agent.getAllowedToSendCommands()) {
+            if (strs[i] === '') continue;
+            if (agent.isAllowedToSendCommands()) {
               this.handleCommmand(agent, strs[i]);
             }
           }
@@ -144,7 +210,7 @@ export class MatchEngine {
       }
     });
 
-    // log stderr from agents to this stderr
+    // log stderr from agents to this stderr if option active
     p.stderr.on('data', (data) => {
       this.log.error(`${agent.id}: ${data.slice(0, data.length - 1)}`);
     });
@@ -152,10 +218,46 @@ export class MatchEngine {
     // when process closes, print message
     p.on('close', (code) => {
       this.log.system(`${agent.name} | id: ${agent.id} - exited with code ${code}`);
+
+      // remove the agent files if on secureMode and double check it is the temporary directory
+      if (agent.options.secureMode) {
+        let tmpdir = os.tmpdir();
+        if (agent.cwd.slice(0, tmpdir.length) === tmpdir) {
+          exec(`sudo rm -rf ${agent.cwd}`);
+        }
+        else {
+          this.log.error('couldn\'t remove agent files while in secure mode');
+        }
+      }
+      
     });
 
     // store process
     agent.process = p;
+
+    if (this.engineOptions.memory.active) {
+      const checkAgentMemoryUsage = () => {
+        // setting { maxage: 0 } because otherwise pidusage leaves interval "memory leaks" and process doesn't exit fast
+        pidusage(agent.process.pid, { maxage: 0 }).then((stat) => {
+          if (stat.memory > this.engineOptions.memory.limit) {
+            agent.process.emit(MatchEngine.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, stat);
+          }
+        }).catch(() => {
+          // ignore errors
+        });
+      }
+      checkAgentMemoryUsage();
+      agent.memoryWatchInterval = setInterval(() => {
+        checkAgentMemoryUsage();
+      }, this.engineOptions.memory.checkRate);
+    }
+
+
+    // this is for handling a race condition explained in the comments of this.killOffSignal
+    // Briefly, sometimes agent process isn't stored yet during initialization and doesn't get killed as a result
+    if (this.killOffSignal) {
+      this.kill(agent);
+    }
   }
 
   /**
@@ -166,7 +268,6 @@ export class MatchEngine {
   private async handleCommmand(agent: Agent, str: string) {
 
     // TODO: Implement parallel command stream type
-    // TODO: Implement timeout mechanism
     if (this.engineOptions.commandStreamType === MatchEngine.COMMAND_STREAM_TYPE.SEQUENTIAL) {
       // IF SEQUENTIAL, we wait for each unit to finish their move and output their commands
       
@@ -175,26 +276,31 @@ export class MatchEngine {
         case MatchEngine.COMMAND_FINISH_POLICIES.FINISH_SYMBOL:
           // if we receive the symbol representing that the agent is done with output and now awaits for updates
           if (`${str}` === this.engineOptions.commandFinishSymbol) { 
-            agent.finishMove();
+            agent._finishMove();
           }
           else {
             agent.currentMoveCommands.push(str);
           }
           break;
         case MatchEngine.COMMAND_FINISH_POLICIES.LINE_COUNT:
+          
+          // if we receive the finish symbol, we mark agent as done with output (finishes their move prematurely)
+          if (`${str}` === this.engineOptions.commandFinishSymbol) { 
+            agent._finishMove();
+          }
           // only log command if max isnt reached
-          if (agent.currentMoveCommands.length < this.engineOptions.commandLines.max - 1) {
+          else if (agent.currentMoveCommands.length < this.engineOptions.commandLines.max - 1) {
             agent.currentMoveCommands.push(str);
           }
           // else if on final command before reaching max, push final command and resolve
           else if (agent.currentMoveCommands.length == this.engineOptions.commandLines.max - 1) {
-            agent.finishMove();
+            agent._finishMove();
             agent.currentMoveCommands.push(str);
           }
           break;
         case MatchEngine.COMMAND_FINISH_POLICIES.CUSTOM:
           // TODO: Not implemented yet
-          throw new FatalError('Custom command finish policies are not allowed yet');
+          throw new NotSupportedError('Custom command finish policies are not allowed yet');
           break;
       }
 
@@ -233,13 +339,18 @@ export class MatchEngine {
 
   /**
    * Kills all agents and processes from a match and cleans up. Kills any game processes as well. Shouldn't be used
-   * for custom design based matches.
+   * for custom design based matches. Called by {@link Match}
+   * 
    * @param match - the match to kill all agents in and clean up
    */
   public async killAndClean(match: Match) {
+    // set to true to ensure no more processes are being spawned.
+    this.killOffSignal = true; 
     match.agents.forEach((agent) => {
-      agent.process.kill('SIGKILL')
-      agent.status = Agent.Status.KILLED;
+      // kill the process if it is not null
+      if (agent.process) {
+        this.kill(agent);
+      }
     });
   }
 
@@ -248,9 +359,8 @@ export class MatchEngine {
    * @param agent - the agent to kill off
    */
   public async kill(agent: Agent) {
-    agent.process.kill('SIGKILL');
     agent._terminate();
-    agent.currentMoveResolve();
+    agent._currentMoveResolve();
     this.log.system(`Killed off agent ${agent.id} - ${agent.name}`);
   }
   
@@ -268,7 +378,7 @@ export class MatchEngine {
         return !agent.isTerminated();
       })
       let allAgentMovePromises = nonTerminatedAgents.map((agent: Agent) => {
-        return agent.currentMovePromise;
+        return agent._currentMovePromise;
       });
       Promise.all(allAgentMovePromises).then(() => {
         
@@ -304,7 +414,7 @@ export class MatchEngine {
   public send(match: Match, message: string, agentID: Agent.ID): Promise<boolean> {
     return new Promise((resolve, reject) => {
       let agent = match.idToAgentsMap.get(agentID);
-      if (!agent.process.stdin.destroyed) {
+      if (!agent.process.stdin.destroyed && !agent.isTerminated()) {
         agent.process.stdin.write(`${message}\n`, (error: Error) => {
           if (error) reject(error);
           resolve(true);
@@ -362,7 +472,6 @@ export class MatchEngine {
 
   
       let processingStage = false;
-      let results: Array<string> = [];
       match.matchProcess.stdout.on('readable', () => {
         let data: string[];
         while (data = match.matchProcess.stdout.read()) {
@@ -392,7 +501,7 @@ export class MatchEngine {
         }
       });
 
-     match.matchProcess.stdout.on('close', (code) => {
+      match.matchProcess.stdout.on('close', (code) => {
         this.log.system(`${match.name} | id: ${match.id} - exited with code ${code}`);
         if (matchTimedOut) {
           reject(new MatchError('Match timed out'));
@@ -419,7 +528,7 @@ export class MatchEngine {
 
   /**
    * Attempts to resume a {@link Match} based on a custom {@link Design}
-   * @param match - the match to stop
+   * @param match - the match to resume
    */
   public async resumeCustom(match: Match) {
     // attempt to resume the match
@@ -502,7 +611,8 @@ export module MatchEngine {
     FINISH_SYMBOL = 'finish_symbol',
     
     /**
-     * Agent's finish their commands after they send {@link EngineOptions.commandLines.max} lines
+     * Agent's finish their commands by either sending a finish symmbol or after they send 
+     * {@link EngineOptions.commandLines.max} lines
      */
     LINE_COUNT = 'line_count',
     /**
@@ -513,11 +623,11 @@ export module MatchEngine {
   }
 
   /**
-   * Engine Options that specify how the MatchEngine should operate on a {@link Match}
+   * Engine Options that specify how the {@link MatchEngine} should operate on a {@link Match}
    */
   export interface EngineOptions {
     /** The command streaming type */
-    commandStreamType: COMMAND_STREAM_TYPE,
+    commandStreamType: MatchEngine.COMMAND_STREAM_TYPE,
     /** 
      * Delimiter for seperating commands from agents in their stdout and then sending these delimited commands to
      * {@link Design.update}. If an agent sent `move a b 3,run 24 d,t 3` and the delimiter is `','` then the 
@@ -534,7 +644,7 @@ export module MatchEngine {
      * Which kind of command finishing policy to use 
      * @default 'finish_symbol'
      */
-    commandFinishPolicy: COMMAND_FINISH_POLICIES,
+    commandFinishPolicy: MatchEngine.COMMAND_FINISH_POLICIES,
     /** 
      * Options for the {@link COMMAND_FINISH_POLICIES.LINE_COUNT} finishing policy. Used only if this policy is active
      */
@@ -551,6 +661,15 @@ export module MatchEngine {
        */
       waitForNewline: boolean
     }
+
+    /**
+     * Whether agents output to standard error is logged by the matchengine or not
+     * 
+     * It's suggested to let agent output go to a file.
+     * 
+     * @default true
+     */
+    noStdErr: boolean
 
     /** 
      * Options for timeouts of agents 
@@ -579,7 +698,43 @@ export module MatchEngine {
        */
         (agent: Agent, match: Match, engineOptions: EngineOptions) => void
     }
+
+    /**
+     * Options related to the memory usage of agents. The memoryCallback is called when the limit is reached
+     */
+    memory: {
+      /**
+       * Whether or not the engine will monitor the memory use
+       * @default true
+       */
+      active: boolean,
+
+      /**
+       * Maximum number of bytes an agent can use before the memoryCallback is called
+       * @default 1 GB (1,000,000,000 bytes)
+       */
+      limit: number
+
+      /**
+       * The callback called when an agent raeches the memory limit
+       * Default is kill the agent with {@link Match.kill}
+       */
+      memoryCallback:
+      /** 
+       * @param agent the agent that reached the memory limit
+       * @param match - the match the agent was in
+       * @param engineOptions - a copy of the engineOptions used in the match
+       */
+        (agent: Agent, match: Match, engineOptions: EngineOptions) => void
+
+      /**
+       * How frequently the engine checks the memory usage of an agent in milliseconds
+       * @default 100
+       */
+      checkRate: number
+    }
   }
+
 
   /** Standard ways for commands from agents to be streamed to the MatchEngine for the {@link Design} to handle */
   export enum COMMAND_STREAM_TYPE {
@@ -592,7 +747,91 @@ export module MatchEngine {
    * A command delimited by the delimiter of the match engine from all commands sent by agent specified by agentID
    */
   export interface Command {
+    /**
+     * The string command received
+     */
     command: string
+    /**
+     * The id of the agent that sent this command
+     */
     agentID: Agent.ID
   }
+
+  export enum AGENT_EVENTS {
+    /**
+     * Event emitted by process of {@link Agent} when memory limit is exceeded
+     */
+    EXCEED_MEMORY_LIMIT = 'exceedMemoryLimit',
+    /**
+     * Event emitted by process of {@link Agent} when it times out.
+     */
+    TIMEOUT = 'timeout'
+  }
+
+  /**
+   * Dynammic Data strings are strings in the {@link OverrideOptions} arguments array that are automatically replaced
+   * with dynamic data as defined in the documentation of these enums
+   */
+  export enum DynamicDataStrings {
+    /**
+     * D_FILES is automatically populated by a space seperated string list of the file paths provided for each of the 
+     * agents competing in a match. 
+     * NOTE, these paths don't actually need to be files, they can be directories or anything that works with 
+     * your own command and design
+     * 
+     * @example Suppose the paths to the sources the agents operate on are `path1, path2, path3`. Then `D_FILES` will 
+     * be passed into your command as `path1 path2 path3`
+     */
+    D_FILES = 'D_FILES',
+
+    /**
+     * D_AGENT_IDS is automatically populated by a space seperated string list of the agent IDs of every agent being
+     * loaded into a match in the same order as D_FILES. This should always be sorted by default as agents are loaded
+     * in order from agent ID `0` to agent ID `n`
+     * 
+     * @example Suppose a match is running with agents with IDs `0, 1, 2, 3`. Then `D_AGENT_IDS` will be passed into 
+     * your command as `0 1 2 3`
+     */
+    D_AGENT_IDS = 'D_AGENT_IDS',
+
+    /**
+     * D_TOURNAMENT_IDS is automatically populated by a space seperated string list of the tournament ID numbers of
+     * the agents being loaded into the match in the same order. If no tournament is being run all the ID numbers will 
+     * default to 0 but still be passed in to the command you give for the override configurations
+     * 
+     * @example Suppose a match in a tournament with ID 0 is running 4 agents with tournament IDs t0_1, t0_9, t0_11, 
+     * t0_15. Then `D_TOURNAMENT_IDS` will be passed into your command as `t0_1 t0_0 t0_11 t0_15`
+     */
+    D_TOURNAMENT_IDS = 'D_TOURNAMENT_IDS',
+
+    /**
+     * D_MATCH_ID is automatically replaced with the id of the match being run
+     * 
+     * @example Suppose the match has ID 12, then `D_MATCH_ID` is passed into your command as `12`
+     */
+    D_MATCH_ID = 'D_MATCH_ID',
+
+    /**
+     * D_MATCH_NAME is automatically replaced with the name of the match being run
+     * 
+     * @example Suppose the match has name 'my_match'. Then `D_MATCH_NAME` is passed into your commnad as `my_match`
+     */
+    D_MATCH_NAME = 'D_MATCH_NAME',
+
+    /**
+     * D_NAMES is automatically replaced with the names of the agents
+     * 
+     * @example Suppose the agents 0 and 1 had names `bob, richard`. Then `D_NAMES` is passed into your commnad as 
+     * `bob richard`
+     */
+    D_NAMES = 'D_NAMES'
+  }
 }
+
+/** name of the bot user that owns the agent's process @ignore */
+export const BOT_USER = 'dimensions_bot';
+/** root @ignore */
+export const ROOT_USER = 'root';
+
+/** @ignore */
+import DDS = MatchEngine.DynamicDataStrings;

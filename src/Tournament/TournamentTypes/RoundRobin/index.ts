@@ -2,11 +2,12 @@ import { Tournament, Player, } from "../../";
 import { DeepPartial } from "../../../utils/DeepPartial";
 import { Design } from '../../../Design';
 import { deepMerge } from "../../../utils/DeepMerge";
-import { FatalError } from "../../../DimensionError";
+import { FatalError, TournamentError, NotSupportedError } from "../../../DimensionError";
 import { Agent } from "../../../Agent";
 import { Logger } from "../../../Logger";
 import RANK_SYSTEM = Tournament.RANK_SYSTEM;
 import { sprintf } from 'sprintf-js';
+import { Dimension, NanoID } from "../../../Dimension";
 
 /**
  * The Round Robin Tournament Class
@@ -25,8 +26,14 @@ export class RoundRobinTournament extends Tournament {
     },
     agentsPerMatch: [2],
     resultHandler: null,
-    consoleDisplay: true
+    consoleDisplay: true,
+    id: 'aa2qlM'
   }
+  private shouldStop: boolean = false;
+  private resumePromise: Promise<void>;
+  private resumeResolver: Function;
+  private resolveStopPromise: Function;
+
   public state: Tournament.RoundRobin.State = {
     playerStats: new Map(),
     results: [],
@@ -38,20 +45,21 @@ export class RoundRobinTournament extends Tournament {
     design: Design,
     files: Array<string> | Array<{file: string, name:string}>, 
     tournamentConfigs: Tournament.TournamentConfigsBase,
-    id: number
+    id: NanoID,
+    dimension: Dimension
   ) {
-    super(design, files, id, tournamentConfigs);
+    super(design, files, id, tournamentConfigs, dimension);
     if (tournamentConfigs.consoleDisplay) {
       this.configs.consoleDisplay = tournamentConfigs.consoleDisplay;
     }
 
     // handle config defaults
     if (tournamentConfigs.rankSystem !== Tournament.RANK_SYSTEM.WINS) {
-      throw new FatalError('We currently do not support Round Robin tournaments with ranking system other than wins system');
+      throw new NotSupportedError('We currently do not support Round Robin tournaments with ranking system other than wins system');
     }
     for (let i = 0; i < tournamentConfigs.agentsPerMatch.length; i++) {
       if (tournamentConfigs.agentsPerMatch[i] != 2)
-        throw new FatalError('We currently only support 2 agents per match for Round Robin ');
+        throw new NotSupportedError('We currently only support 2 agents per match for Round Robin ');
     }
     if (!tournamentConfigs.rankSystemConfigs) {
       this.configs.rankSystemConfigs = {
@@ -64,8 +72,8 @@ export class RoundRobinTournament extends Tournament {
 
     // TODO we need to type check the result handler and see if it is correct. Throw a error if handler is of wrong format at runtime somehow
 
-    // handle rest
-    this.configs = deepMerge(this.configs, tournamentConfigs);
+    // handle rest. pass true flag to make sure arrays are clobbered and not merged
+    this.configs = deepMerge(this.configs, tournamentConfigs, true);
 
     // add all players
     files.forEach((file) => {
@@ -76,18 +84,31 @@ export class RoundRobinTournament extends Tournament {
     this.log.info('Initialized Round Robin Tournament');
   }
 
+  /**
+   * Runs a round robin to completion. Resolves with the {@link RoundRobin.State} once the tournament is finished
+   * @param configs - the configs to use for this run
+   */
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<Tournament.RoundRobin.Configs>>) {
     this.status = Tournament.TournamentStatus.RUNNING;
-    this.log.info('Running Tournament with competitors: ', this.competitors.map((player) => player.tournamentID.name));
-    this.configs = deepMerge(this.configs, configs);
+    this.log.info('Running Tournament');
+    this.configs = deepMerge(this.configs, configs, true);
     this.initialize();
     this.schedule();
     
     // running one at a time
     while (this.matchQueue.length) {
+      // stop logic
+      if (this.shouldStop) {
+        this.log.info('Stopped Tournament');
+        this.resolveStopPromise();
+        await this.resumePromise;
+        this.log.info('Resumed Tournament');
+        this.shouldStop = false;
+      }
       let matchInfo = this.matchQueue.shift();
       await this.handleMatch(matchInfo);
     }
+    this.status = Tournament.TournamentStatus.FINISHED;
     return this.state;
   }
 
@@ -118,7 +139,13 @@ export class RoundRobinTournament extends Tournament {
     let matchRes = await this.runMatch(matchInfo);
     let resInfo = <Tournament.RANK_SYSTEM.WINS.Results>this.configs.resultHandler(matchRes.results);
     
-    if (this.configs.tournamentConfigs.storePastResults) this.state.results.push(matchRes.results);
+    // store past results
+    if (this.configs.tournamentConfigs.storePastResults) {
+      if (!(this.dimension.hasDatabase() && this.dimension.databasePlugin.configs.saveTournamentMatches)) {
+        // if we have don't have a database that is set to actively store tournament matches we store locally
+        this.state.results.push(matchRes.results);
+      }
+    }
     
     // update total matches
     this.state.statistics.totalMatches++;
@@ -163,14 +190,41 @@ export class RoundRobinTournament extends Tournament {
     }
   }
 
-  public async stop() {
-
+  /**
+   * Stops the tournament
+   */
+  public stop(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (this.status !== Tournament.TournamentStatus.RUNNING) {
+        throw new TournamentError(`Can't stop a tournament that isn't running`);
+      }
+      this.log.info('Stopping Tournament...');
+      this.status = Tournament.TournamentStatus.STOPPED;
+      this.resumePromise = new Promise((resumeResolve) => {
+        this.resumeResolver = resumeResolve;
+      });
+      this.shouldStop = true;
+      this.resolveStopPromise = resolve;
+    });
   }
-  public async resume() {
+
+  /**
+   * Resumes the tournament
+   */
+  public async resume(): Promise<void> {
+    if (this.status !== Tournament.TournamentStatus.STOPPED) {
+      throw new TournamentError(`Can't resume a tournament that isn't stopped`);
+    }
     
+    this.log.info('Resuming Tournament...');
+    this.status = Tournament.TournamentStatus.RUNNING;
+    this.resumeResolver();
   }
 
   // TODO: move sorting to run function. It's ok too sort like this for small leagues, but larger will become slow.
+  /**
+   * Returns the current rankings
+   */
   public getRankings() {
     let ranks = [];
     this.state.playerStats.forEach((playerStat) => {
@@ -201,12 +255,22 @@ export class RoundRobinTournament extends Tournament {
     }
     return ranks;
   }
+
+  /**
+   * Gets the current configs
+   */
   public getConfigs(): Tournament.TournamentConfigs<Tournament.RoundRobin.Configs> {
     return this.configs;
   }
+
+  /**
+   * Sets the configs
+   * @param configs - configs to use
+   */
   public setConfigs(configs: DeepPartial<Tournament.TournamentConfigs<Tournament.RoundRobin.Configs>> = {}) {
-    this.configs = deepMerge(this.configs, configs);
+    this.configs = deepMerge(this.configs, configs, true);
   }
+
 
   private initialize() {
     this.state.playerStats = new Map();
@@ -224,6 +288,7 @@ export class RoundRobinTournament extends Tournament {
       this.printTournamentStatus();
     }
   }
+  
   /**
    * Queue up all matches necessary
    */
@@ -237,10 +302,12 @@ export class RoundRobinTournament extends Tournament {
   }
   private generateARound() {
     let roundQueue: Array<Array<Player>> = [];
-    for (let i = 0; i < this.competitors.length; i++) {
-      for (let j = i + 1; j < this.competitors.length; j++) {
-        let player1 = this.competitors[i];
-        let player2 = this.competitors[j];
+
+    let comp = Array.from(this.competitors.values());
+    for (let i = 0; i < this.competitors.size; i++) {
+      for (let j = i + 1; j < this.competitors.size; j++) {
+        let player1 = comp[i];
+        let player2 = comp[j];
         roundQueue.push([player1, player2]);
       }
     }
@@ -251,14 +318,14 @@ export class RoundRobinTournament extends Tournament {
     return;
   }
   updatePlayer(player: Player, oldname: string, oldfile: string) {
-    throw new FatalError('You are not allowed to update a player during elimination tournaments');
+    throw new TournamentError('You are not allowed to update a player during elimination tournaments');
   }
 
   private printTournamentStatus() {
     if (this.log.level > Logger.LEVEL.NONE) {
       console.clear();
       console.log(this.log.bar())
-      console.log(`Tournament: ${this.name} | Status: ${this.status} | Competitors: ${this.competitors.length} | Rank System: ${this.configs.rankSystem}\n`);
+      console.log(`Tournament - ID: ${this.id}, Name: ${this.name} | Dimension - ID: ${this.dimension.id}, Name: ${this.dimension.name}\nStatus: ${this.status} | Competitors: ${this.competitors.size} | Rank System: ${this.configs.rankSystem}\n`);
       console.log('Total Matches: ' + this.state.statistics.totalMatches);
       let ranks = this.getRankings();
       switch(this.configs.rankSystem) {

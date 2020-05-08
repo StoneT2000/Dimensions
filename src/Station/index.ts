@@ -10,14 +10,15 @@ import { Match } from '../Match';
 import * as error from './error';
 
 import cors from 'cors';
+import bodyParser from 'body-parser';
 import { Server } from 'http';
 import { Tournament } from '../Tournament';
 import { existsSync, mkdirSync } from 'fs';
 import { Agent } from '../Agent';
 
 
-const BOT_DIR = path.join(__dirname, 'local/bots');
-const BOT_DIR_TEMP = path.join(__dirname, 'local/botstemp');
+export const BOT_DIR = path.join(__dirname, 'local/bots');
+export const BOT_DIR_TEMP = path.join(__dirname, 'local/botstemp');
 
 // declare global and merge declaration with Express Request to allow storage of data across middlewhere in typescript 
 declare global {
@@ -68,13 +69,23 @@ export class Station {
 
     // CORS
     this.app.use(cors());
+    this.app.use(bodyParser.json());    
+    this.app.use(bodyParser.urlencoded({
+      extended: true
+    })); 
 
     // store all observed dimensions
     if (observedDimensions instanceof Array) {
-      this.app.set('dimensions', observedDimensions);
+      let dimensionsMap = new Map();
+      observedDimensions.forEach((dim) => {
+        dimensionsMap.set(dim.id, dim);
+      });
+      this.app.set('dimensions', dimensionsMap);
     }
     else {
-      this.app.set('dimensions', [observedDimensions]);
+      let m = new Map();
+      m.set(observedDimensions.id, observedDimensions);
+      this.app.set('dimensions', m);
     }
 
     // store in each request a data object
@@ -93,7 +104,7 @@ export class Station {
     this.app.use('/api/dimensions', dimensionsAPI);
 
     // Set up error handler
-    this.app.use(error.errorHandler);
+    this.app.use(error.errorHandler(this.log));
 
     this.log.system(`All middleware setup`);
 
@@ -101,7 +112,9 @@ export class Station {
     const successStart = () => {
       this.log.infobar();
       this.log.info(`Running '${this.name}' API at port ${this.port}`);
-      this.log.info(`Observing dimensions: ${this.app.get('dimensions').map((dim: Dimension) => dim.name)}`);
+      let dims = [];
+      this.app.get('dimensions').forEach((dim: Dimension) => dims.push(dim.name));
+      this.log.info(`Observing dimensions: ${dims}`);
     }
     this.tryToListen(this.app, this.port).then((port: number) => {
       this.port = port;
@@ -143,6 +156,10 @@ export class Station {
     })
   }
 
+  public setLogLevel(level: Logger.LEVEL) {
+    this.log.level = level;
+  }
+
   /**
    * Restart Station server / API
    * Resolves with the port number used
@@ -171,6 +188,8 @@ export class Station {
   }
 
   public observe(dimension: Dimension) {
-    this.app.set('dimensions', [...this.app.get('dimensions'), dimension]);
+    let dimMap = this.app.get('dimensions');
+    dimMap.set(dimension.id, dimension);
+    this.app.set('dimensions', dimMap);
   }
 }

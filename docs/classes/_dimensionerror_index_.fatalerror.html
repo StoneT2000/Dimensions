@@ -73,7 +73,8 @@
 				<div class="tsd-comment tsd-typography">
 					<dl class="tsd-comment-tags">
 						<dt>classdesc</dt>
-						<dd><p>A fatal error that caused the Dimension framework to break. When thrown, this should stop the process</p>
+						<dd><p>A generic fatal error that caused the Dimension framework to break. When thrown, this should stop the
+							process</p>
 						</dd>
 					</dl>
 				</div>
@@ -82,10 +83,18 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="_dimensionerror_index_.matcherror.html#error" class="tsd-signature-type">Error</a>
+						<a href="_dimensionerror_agenterror_index_.agenterror.html#error" class="tsd-signature-type">Error</a>
 						<ul class="tsd-hierarchy">
 							<li>
 								<span class="target">FatalError</span>
+								<ul class="tsd-hierarchy">
+									<li>
+										<a href="_dimensionerror_index_.missingfileserror.html" class="tsd-signature-type">MissingFilesError</a>
+									</li>
+									<li>
+										<a href="_dimensionerror_index_.notsupportederror.html" class="tsd-signature-type">NotSupportedError</a>
+									</li>
+								</ul>
 							</li>
 						</ul>
 					</li>
@@ -125,7 +134,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/DimensionError/index.ts#L65">https://github.com/StoneT2000/Dimensions/blob/0124128/src/DimensionError/index.ts#L65</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/DimensionError/index.ts#L48">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/DimensionError/index.ts#L48</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -146,7 +155,7 @@
 					<h3>message</h3>
 					<div class="tsd-signature tsd-kind-icon">message<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="_dimensionerror_index_.matcherror.html">MatchError</a>.<a href="_dimensionerror_index_.matcherror.html#message">message</a></p>
+						<p>Inherited from <a href="_dimensionerror_agenterror_index_.agenterror.html">AgentError</a>.<a href="_dimensionerror_agenterror_index_.agenterror.html#message">message</a></p>
 						<ul>
 						</ul>
 					</aside>
@@ -156,7 +165,7 @@
 					<h3>name</h3>
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="_dimensionerror_index_.matcherror.html">MatchError</a>.<a href="_dimensionerror_index_.matcherror.html#name">name</a></p>
+						<p>Inherited from <a href="_dimensionerror_agenterror_index_.agenterror.html">AgentError</a>.<a href="_dimensionerror_agenterror_index_.agenterror.html#name">name</a></p>
 						<ul>
 						</ul>
 					</aside>
@@ -166,8 +175,8 @@
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> stack</h3>
 					<div class="tsd-signature tsd-kind-icon">stack<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="_dimensionerror_index_.matcherror.html">MatchError</a>.<a href="_dimensionerror_index_.matcherror.html#stack">stack</a></p>
-						<p>Overrides <a href="_dimensionerror_index_.matcherror.html">MatchError</a>.<a href="_dimensionerror_index_.matcherror.html#stack">stack</a></p>
+						<p>Inherited from <a href="_dimensionerror_agenterror_index_.agenterror.html">AgentError</a>.<a href="_dimensionerror_agenterror_index_.agenterror.html#stack">stack</a></p>
+						<p>Overrides <a href="_dimensionerror_agenterror_index_.agenterror.html">AgentError</a>.<a href="_dimensionerror_agenterror_index_.agenterror.html#stack">stack</a></p>
 						<ul>
 						</ul>
 					</aside>
@@ -196,6 +205,39 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="../modules/_dimensionerror_index_.html#agentcompileerror" class="tsd-kind-icon">Agent<wbr>Compile<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="../modules/_dimensionerror_index_.html#agentcompiletimeouterror" class="tsd-kind-icon">Agent<wbr>Compile<wbr>Timeout<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="../modules/_dimensionerror_index_.html#agentdirectoryerror" class="tsd-kind-icon">Agent<wbr>Directory<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="../modules/_dimensionerror_index_.html#agenterror" class="tsd-kind-icon">Agent<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="../modules/_dimensionerror_index_.html#agentfileerror" class="tsd-kind-icon">Agent<wbr>File<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="../modules/_dimensionerror_index_.html#agentinstallerror" class="tsd-kind-icon">Agent<wbr>Install<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="../modules/_dimensionerror_index_.html#agentinstalltimeouterror" class="tsd-kind-icon">Agent<wbr>Install<wbr>Timeout<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="../modules/_dimensionerror_index_.html#agentmissingiderror" class="tsd-kind-icon">Agent<wbr>MissingIDError</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="../modules/_dimensionerror_index_.html#matchdestroyederror" class="tsd-kind-icon">Match<wbr>Destroyed<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="../modules/_dimensionerror_index_.html#matcherror" class="tsd-kind-icon">Match<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="../modules/_dimensionerror_index_.html#tournamenterror" class="tsd-kind-icon">Tournament<wbr>Error</a>
+					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="_dimensionerror_index_.dimensionerror.html" class="tsd-kind-icon">Dimension<wbr>Error</a>
 					</li>
@@ -224,13 +266,16 @@
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="_dimensionerror_index_.matchdestroyederror.html" class="tsd-kind-icon">Match<wbr>Destroyed<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="_dimensionerror_index_.matcherror.html" class="tsd-kind-icon">Match<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="_dimensionerror_index_.matchwarn.html" class="tsd-kind-icon">Match<wbr>Warn</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="_dimensionerror_index_.missingfileserror.html" class="tsd-kind-icon">Missing<wbr>Files<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="_dimensionerror_index_.notsupportederror.html" class="tsd-kind-icon">Not<wbr>Supported<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="_dimensionerror_index_.securityerror.html" class="tsd-kind-icon">Security<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
 						<a href="../modules/_dimensionerror_index_.html#dimension_error" class="tsd-kind-icon">DIMENSION_<wbr>ERROR</a>
@@ -239,13 +284,16 @@
 						<a href="../modules/_dimensionerror_index_.html#fatal_error" class="tsd-kind-icon">FATAL_<wbr>ERROR</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_dimensionerror_index_.html#match_destroyed_error" class="tsd-kind-icon">MATCH_<wbr>DESTROYED_<wbr>ERROR</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_dimensionerror_index_.html#match_error" class="tsd-kind-icon">MATCH_<wbr>ERROR</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
 						<a href="../modules/_dimensionerror_index_.html#match_warn" class="tsd-kind-icon">MATCH_<wbr>WARN</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_dimensionerror_index_.html#missing_files_error" class="tsd-kind-icon">MISSING_<wbr>FILES_<wbr>ERROR</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_dimensionerror_index_.html#not_supported_error" class="tsd-kind-icon">NOT_<wbr>SUPPORTED_<wbr>ERROR</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_dimensionerror_index_.html#security_error" class="tsd-kind-icon">SECURITY_<wbr>ERROR</a>
 					</li>
 				</ul>
 			</nav>
@@ -257,7 +305,7 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
@@ -267,6 +315,9 @@
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>

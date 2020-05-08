@@ -4,16 +4,19 @@ import { MatchEngine } from '../MatchEngine';
 import { Agent } from '../Agent';
 import { Logger } from '../Logger';
 import { Design } from '../Design';
-import { FatalError, MatchDestroyedError } from '../DimensionError';
+import { FatalError, MatchDestroyedError, MatchWarn, MatchError, NotSupportedError } from '../DimensionError';
 import { Tournament } from '../Tournament';
+
 import EngineOptions = MatchEngine.EngineOptions;
 import COMMAND_STREAM_TYPE = MatchEngine.COMMAND_STREAM_TYPE;
 import Command = MatchEngine.Command;
 import { ChildProcess } from 'child_process';
+import { NanoID } from '../Dimension';
+import { genID } from '../utils';
+import { deepCopy } from '../utils/DeepCopy';
 
 /**
- * @class Match
- * @classdesc An match created using a {@link Design} and a list of Agents. The match can be stopped and resumed with 
+ * An match created using a {@link Design} and a list of Agents. The match can be stopped and resumed with 
  * {@link stop}, {@link resume}, and state and configurations can be retrieved at any point in time with the 
  * {@link state} and {@link configs} fields
  * 
@@ -29,14 +32,19 @@ export class Match {
   public creationDate: Date;
 
   /**
+   * When the match finished
+   */
+  public finishDate: Date;
+
+  /**
    * Name of the match
    */
   public name: string;
   
   /**
-   * A unique ID for the match, unique to the current node process
+   * Match ID. It's always a 12 character NanoID
    */
-  public id: number;
+  public id: NanoID;
 
   /**
    * The state field. This can be used to store anything by the user when this `match` is passed to the {@link Design} 
@@ -97,8 +105,9 @@ export class Match {
   public configs: Match.Configs = {
     name: '',
     loggingLevel: Logger.LEVEL.INFO,
-    dimensionID: null,
-    engineOptions: {}
+    engineOptions: {},
+    secureMode: false,
+    agentOptions: Agent.OptionDefaults
   };
 
   /** Match process used to store the process governing a match running on a custom design */
@@ -116,10 +125,11 @@ export class Match {
   /** Resolver for the above promise */
   private resumeResolve: Function;
 
+  /** Resolver for stop Promise */
+  private resolveStopPromise: Function;
+
   /** Rejecter for the run promise */
   private runReject: Function;
-
-  private static _id: number = 0;
 
   /**
    * Match Constructor
@@ -135,14 +145,21 @@ export class Match {
   ) {
 
     // override configs with provided configs argument
-    this.configs = deepMerge(this.configs, configs);
+    this.configs = deepMerge(deepCopy(this.configs), deepCopy(configs));
+
+    // agent runs in securemode if parent match is in securemode
+    this.configs.agentOptions.secureMode = this.configs.secureMode;
+    // agent logging level is inherited from parent match.
+    this.configs.agentOptions.loggingLevel = this.configs.loggingLevel;
+    
+    this.id = Match.genMatchID();
 
     this.creationDate = new Date();
     if (this.configs.name) {
       this.name = this.configs.name;
     }
     else {
-      this.name = `match_${Match._id}`;
+      this.name = `match_${this.id}`;
     }
 
     // set logging level to what was given
@@ -152,8 +169,7 @@ export class Match {
     // store reference to the matchEngine used and override any options
     this.matchEngine = new MatchEngine(this.design, this.log.level);
     this.matchEngine.setEngineOptions(configs.engineOptions);
-    this.id = Match._id;
-    Match._id++;
+    
   }
 
   /**
@@ -162,7 +178,7 @@ export class Match {
    */
   public async initialize(): Promise<boolean> {
     this.log.infobar();
-    this.log.info(`Design: ${this.design.name} | Initializing match: ${this.name}`);
+    this.log.info(`Design: ${this.design.name} | Initializing match - ID: ${this.id}, Name: ${this.name}`);
 
     let overrideOptions = this.design.getDesignOptions().override;
 
@@ -171,7 +187,7 @@ export class Match {
     this.timeStep = 0;
     
     // Initialize agents with agent files
-    this.agents = Agent.generateAgents(this.agentFiles, this.log.level);
+    this.agents = Agent.generateAgents(this.agentFiles, this.configs.agentOptions);
     this.agents.forEach((agent) => {
       this.idToAgentsMap.set(agent.id, agent);
       if (agent.tournamentID !== null) {
@@ -179,7 +195,7 @@ export class Match {
       }
     });
 
-    // if overriding wiith custom design, log some other info and use a different engine initialization function
+    // if overriding with custom design, log some other info and use a different engine initialization function
     if (overrideOptions.active) {
       this.log.detail('Match Arguments', overrideOptions.arguments);
       await this.matchEngine.initializeCustom(this);
@@ -194,7 +210,6 @@ export class Match {
     await this.design.initialize(this);
 
     // remove initialized status and set as READY
-    // TODO: add more security checks etc. before marking match as ready to run
     this.matchStatus = Match.Status.READY;
 
     return true;
@@ -221,6 +236,11 @@ export class Match {
           this.log.system('Running custom');
           await this.matchEngine.runCustom(this);
           this.results = await this.getResults();
+
+          // process results with result handler if necessary
+          if (overrideOptions.resultHandler) {
+            this.results = overrideOptions.resultHandler(this.results);
+          }
           resolve(this.results);
         }
         else {
@@ -230,15 +250,17 @@ export class Match {
           }
           while (status != Match.Status.FINISHED)
           this.agents.forEach((agent: Agent) => {
-            agent.clearTimer();
+            agent._clearTimer();
           });
           this.results = await this.getResults();
 
+          // kill processes and clean up
           // TODO: Perhaps add a cleanup status if cleaning up processes takes a long time
           await this.killAndCleanUp();
         
-          resolve(this.results);
         }
+        this.finishDate = new Date();
+        resolve(this.results);
       }
       catch (error) {
         reject(error);
@@ -259,6 +281,7 @@ export class Match {
         this.matchStatus = Match.Status.STOPPED;
         this.matchEngine.stop(this);
         this.log.info('Stopped match');
+        this.resolveStopPromise();
         await this.resumePromise;
         this.matchEngine.resume(this);
         this.log.info('Resumed match');
@@ -288,10 +311,12 @@ export class Match {
         agent.process.kill('SIGCONT');
         // setup the agent and its promises and get it ready for the next move
         agent._setupMove();
+
+        // if timeout is set active
         if (engineOptions.timeout.active) {
-          agent.setTimeout(() => {
-            // if agent times out, call the provided callback in engine options
-            engineOptions.timeout.timeoutCallback(agent, this, engineOptions);
+          agent._setTimeout(() => {
+            // if agent times out, emit the timeout event
+            agent.process.emit(MatchEngine.AGENT_EVENTS.TIMEOUT);
           }, engineOptions.timeout.max + MatchEngine.timeoutBuffer);
         }
         // each of these steps can take ~2 ms
@@ -309,7 +334,7 @@ export class Match {
       // this means agents end up sending commands using out of sync state information, so the `Design` would need to 
       // adhere to this. Possibilities include stateless designs, or heavily localized designs where out of 
       // sync states wouldn't matter much
-      throw new FatalError('PARALLEL command streaming has not been implemented yet');
+      throw new NotSupportedError('PARALLEL command streaming has not been implemented yet');
     }
   }
 
@@ -325,22 +350,25 @@ export class Match {
    */
   public stop() {
     
-    if (this.matchStatus != Match.Status.RUNNING) {
-      this.log.error('You can\'t stop a match that is not running');
-      return false;
-    }
-    this.log.info('Stopping match...');
-    this.shouldStop = true;
-    this.resumePromise = new Promise((resolve) => {
-      this.resumeResolve = resolve;
+    return new Promise((resolve, reject) => {
+      if (this.matchStatus != Match.Status.RUNNING) {
+        this.log.warn('You can\'t stop a match that is not running');
+        reject(new MatchWarn('You can\t stop a match that is not running'));
+        return;
+      }  
+      // if override is on, we stop using the matchEngine stop function
+      if (this.design.getDesignOptions().override.active) {
+        return this.matchEngine.stopCustom(this);
+      }
+      else {
+        this.resolveStopPromise = resolve;
+        this.log.info('Stopping match...');
+        this.resumePromise = new Promise((resolve) => {
+          this.resumeResolve = resolve;
+        });
+        this.shouldStop = true;
+      }
     });
-
-    // if override is on, we stop using the matchEngine stop function
-    if (this.design.getDesignOptions().override.active) {
-      this.matchEngine.stopCustom(this);
-    }
-   
-    return true;
   }
 
   /**
@@ -348,23 +376,25 @@ export class Match {
    * @returns true if succesfully resumed
    */
   public resume() {
-    if (this.matchStatus != Match.Status.STOPPED) {
-      this.log.error('You can\'t resume a match that is not stopped');
-      return false;
-    }
-    this.log.info('Resuming match...');
-
-    // set back to running and resolve
-    this.matchStatus = Match.Status.RUNNING;
-    this.resumeResolve();
-
-    // if override is on, we resume using the matchEngine resume function
-    if (this.design.getDesignOptions().override.active) {
-      this.matchEngine.resumeCustom(this);
-    }
-    
-    return true;
-
+    return new Promise((resolve, reject) => {
+      if (this.matchStatus != Match.Status.STOPPED) {
+        this.log.warn('You can\'t resume a match that is not stopped');
+        reject(new MatchWarn('You can\'t resume a match that is not stopped'));
+        return;
+      }
+      this.log.info('Resuming match...');
+      
+      // if override is on, we resume using the matchEngine resume function
+      if (this.design.getDesignOptions().override.active) {
+        return this.matchEngine.resumeCustom(this);
+      }
+      else {
+        // set back to running and resolve
+        this.matchStatus = Match.Status.RUNNING;
+        this.resumeResolve();
+        resolve();
+      }
+    });
   }
 
   /**
@@ -396,14 +426,6 @@ export class Match {
     return await this.design.getResults(this);
   }
 
-  /* TODO
-   * Set the move resolve policy
-   * @param config - The configuration to use for the next update. Specifically set conditions for when MatchEngine 
-   * should call agent.currentMoveResolve() and thus return commands and move to next update
-   */
-  // public async setAgentResolvePolicy(config = {}) {
-
-  // }
 
   /**
    * Sends a message to the standard input of all agents in this match
@@ -442,67 +464,91 @@ export class Match {
   }
 
   /**
-   * Throw an error within the Match, indicating an {@link Agent} tried a command that was forbidden in the match
-   * according to a the utilized {@link Design}
+   * Throw an {@link FatalError}, {@link MatchError}, or {@link MatchWarn} within the Match. Indicates that the 
+   * {@link Agent} with id agentID caused this error/warning.
+   * 
+   * Throwing MatchWarn will just log a warning level message and throwing a MatchError will just log it as an error 
+   * level message.
+   * 
+   * Throwing FatalError will cause the match to automatically be destroyed. This is highly not recommended and it is
+   * suggested to have some internal logic to handle moments when the match cannot continue.
+   * 
+   * 
    * Examples are misuse of an existing command or using incorrect commands or sending too many commands
    * @param agentID - the misbehaving agent's ID
    * @param error - The error
    */
   public async throw(agentID: Agent.ID, error: Error) {
 
-    // Fatal errors are logged and end the whole match
-    // TODO: Try to use `instanceof`
-    if (error.name === 'Dimension.FatalError') {
-      console.log('FATAL')
-      this.killAndCleanUp().then(() => {
-        throw new FatalError(`${this.idToAgentsMap.get(agentID).name} | ${error.message}`); 
-      });
+    // Fatal errors are logged and should end the whole match
+    if (error instanceof FatalError) {
+      await this.destroy();
+      this.log.error(`FatalError: ${this.idToAgentsMap.get(agentID).name} | ${error.message}`); 
     }
-    if (error.name === 'Dimension.MatchWarning') {
-      this.log.warn(`ID: ${agentID}, ${this.idToAgentsMap.get(agentID).name} | ${error}`);
+    else if (error instanceof MatchWarn) {
+      this.log.warn(`ID: ${agentID}, ${this.idToAgentsMap.get(agentID).name} | ${error.message}`);
     }
-    if (error.name === 'Dimension.MatchError') {
-      this.log.error(`ID: ${agentID}, ${this.idToAgentsMap.get(agentID).name} | ${error}`);
+    else if (error instanceof MatchError) {
+      this.log.error(`ID: ${agentID}, ${this.idToAgentsMap.get(agentID).name} | ${error.message}`);
       // TODO, if match is set to store an error log, this should be logged!
+    }
+    else {
+      this.log.error('User tried throwing an error of type other than FatalError, MatchWarn, or MatchError');
     }
   }
 
   /**
    * Destroys this match and makes sure to remove any leftover processes
-   * 
    */
   public async destroy() {
-    // reject the run promise first
-    this.runReject(new MatchDestroyedError('Match was destroyed'));
+    // reject the run promise first if it exists
+    if (this.runReject) this.runReject(new MatchDestroyedError('Match was destroyed'));
 
     // now actually stop and clean up
     await this.killAndCleanUp(); // Theoretically this line is not needed for custom matches, but in here in case
     await this.matchEngine.killAndCleanCustom(this);
   }
+
+  /**
+   * Generates a 12 character nanoID string for identifying matches
+   */
+  public static genMatchID() {
+    return genID(12);
+  }
 }
 
 export module Match {
   /**
-   * Match Configurations. Has 4 specified fields. All other fields are up to user discretion
+   * Match Configurations. Has 5 specified fields. All other fields are up to user discretion
    */
   export interface Configs {
     /**
      * Name of the match
      */
     name: string
+
     /**
      * Logging level for this match.
      * @see {@link Logger}
      */
     loggingLevel: Logger.LEVEL,
-    /**
-     * The id of the dimension this match was generated from if there is one
-     */
-    dimensionID: number,
+
     /**
      * The engine options to use in this match.
      */
     engineOptions: DeepPartial<EngineOptions>
+
+    /**
+     * Whether to run match in secure mode or not
+     * @default true
+     */
+    secureMode: boolean,
+
+    /**
+     * Default Agent options to use for all agents in a match. Commonly used for setting resource use boundaries
+     */
+    agentOptions: DeepPartial<Agent.Options>
+
     [key: string]: any
   }
   export enum Status {
@@ -515,7 +561,7 @@ export module Match {
     /**
      * If the match is running at the moment
      */
-    RUNNING = 'running', // if match is running at the moment
+    RUNNING = 'running',
     /**
      * If the match is stopped
      */
@@ -523,7 +569,7 @@ export module Match {
     /**
      * If the match is completed
      */
-    FINISHED = 'finished', // if match is done
+    FINISHED = 'finished',
     /**
      * If fatal error occurs in Match, appears when match stops itself
      */

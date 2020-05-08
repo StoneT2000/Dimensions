@@ -7,10 +7,12 @@
  * stack traces--useful for debugging.
  */
 import express, { Request, Response, NextFunction } from 'express';
+import { Logger } from '../../Logger';
 /**
  * Base error class.
  *
  * Supports HTTP status codes and a custom message.
+ * From the ACM Membership Portal Backend repository
  */
 export class HttpError extends Error {
   public status;
@@ -30,49 +32,49 @@ export class HttpError extends Error {
 }
 
 export class UserError extends HttpError {
-  constructor(message) {
+  constructor(message: string | Error) {
     super(200, message || 'User Error');
   }
 }
 
 export class BadRequest extends HttpError {
-  constructor(message) {
+  constructor(message: string | Error) {
     super(400, message || 'Bad Request');
   }
 }
 
 export class Unauthorized extends HttpError {
-  constructor(message) {
+  constructor(message: string | Error) {
     super(401, message || 'Unauthorized');
   }
 }
 
 export class Forbidden extends HttpError {
-  constructor(message) {
+  constructor(message: string | Error) {
     super(403, message || 'Permission denied');
   }
 }
 
 export class NotFound extends HttpError {
-  constructor(message) {
+  constructor(message: string | Error) {
     super(404, message || 'Resource not found');
   }
 }
 
 export class Unprocessable extends HttpError {
-  constructor(message) {
+  constructor(message: string | Error) {
     super(422, message || 'Unprocessable request');
   }
 }
 
 export class InternalServerError extends HttpError {
-  constructor(message) {
+  constructor(message: string | Error) {
     super(500, message || 'Internal server error');
   }
 }
 
 export class NotImplemented extends HttpError {
-  constructor(message) {
+  constructor(message: string | Error) {
     super(501, message || 'Not Implemented');
   }
 }
@@ -82,18 +84,13 @@ export class NotImplemented extends HttpError {
  * General error handling middleware. Attaches to Express so that throwing or calling next() with
  * an error ends up here and all errors are handled uniformly.
  */
-export const errorHandler = (err: HttpError, req: Request, res: Response, next: NextFunction) => {
+export const errorHandler = (log: Logger) => (err: HttpError, req: Request, res: Response, next: NextFunction) => {
   if (!err) err = new InternalServerError('An unknown error occurred in the errorHandler');
   if (!err.status) err = new InternalServerError(err.message);
 
-  // fully error log only the internal server errors
-  if (err.status === 500) {
-    console.error(err);
-  }
-  else {
-    // otherwise just error log the
-    console.error(`Station ${err.status}: ${err.message}`);
-  }
+  // otherwise just log the error message at the warning level
+  log.warn(`${err.status}: ${err.message}`);
+  
   res.status(err.status).json({
     error: {
       status: err.status,

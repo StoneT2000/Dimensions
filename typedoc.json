@@ -4,5 +4,6 @@
   "out": "docs",
   "theme": "./theme/dimensions",
   "tsconfig": "./tsconfig.json",
-  "exclude": ["./src/Station/**/*"]
+  "exclude": ["./src/Station/**/*"],
+  "target": "es5"
 }

@@ -1,6 +1,6 @@
 import { Match } from '../Match';
 import { Design } from '../Design';
-import { FatalError } from '../DimensionError';
+import { FatalError, MatchError, TournamentError } from '../DimensionError';
 import { RoundRobinTournament } from './TournamentTypes/RoundRobin';
 import { EliminationTournament } from './TournamentTypes/Elimination';
 import { DeepPartial } from '../utils/DeepPartial';
@@ -10,21 +10,39 @@ import { Agent } from '../Agent';
 import { deepCopy } from '../utils/DeepCopy';
 import { Rating } from 'ts-trueskill';
 import { ELORating } from './ELO';
+import { Dimension, DatabaseType, NanoID } from '../Dimension';
+import { genID } from '../utils';
 
 /**
  * Player class that persists data for the same ephemereal agent across multiple matches
  */
 export class Player {
+  
+  /** 
+   * Whether this player is anonymous and not tied to a user on the back end 
+   * 
+   * If this is ever false, then that means 1. we have a backend setup 2. there is an actual user entry
+   */
+  public anonymous: boolean = true;
+
+  /** Associated username if there is one */
+  public username: string = undefined;
   constructor(public tournamentID: Tournament.ID, public file: string) {
 
+  }
+
+  /**
+   * Generates a 12 character player id string
+   */
+  public static generatePlayerID() {
+    return genID(12);
   }
 }
 
 
 /**
- * @class Tournament
- * @classdesc The tournament class extended by all concrete Tournament Classes. Tournament Types available now are
- * {@link RoundRobin.Tournament}, {@link Ladder.Tournament}, {@link Elimination.Tournament}
+ * The tournament class extended by all concrete Tournament Classes. Tournament Types available now are
+ * {@link RoundRobinTournament}, {@link LadderTournament}, {@link EliminationTournament}
  */
 export abstract class Tournament {
 
@@ -32,7 +50,7 @@ export abstract class Tournament {
   abstract configs: Tournament.TournamentConfigsBase;
 
   /** Mapping match ids to active ongoing matches */
-  public matches: Map<number, Match> = new Map();
+  public matches: Map<NanoID, Match> = new Map();
 
   /** A queue whose elements are each arrays of player that are to compete against each other */
   public matchQueue: Array<Array<Player>> = [];
@@ -47,9 +65,15 @@ export abstract class Tournament {
   public log = new Logger();
 
   /** Registered competitors in this tournament */
-  public competitors: Array<Player> = [];
+  public competitors: Map<NanoID, Player> = new Map();
 
   private playerID = 0;
+
+  /** A reference to the dimension this tournament was spawned from */
+  public dimension: Dimension;
+
+  /** This tournament's ID */
+  public id: NanoID;
 
   /**
    * This Tournament's name
@@ -59,27 +83,52 @@ export abstract class Tournament {
   constructor(
     protected design: Design,
     files: Array<string> | Array<{file: string, name:string}>, 
-    public id: number,
-    tournamentConfigs: Tournament.TournamentConfigsBase
+    id: NanoID,
+    tournamentConfigs: Tournament.TournamentConfigsBase,
+    dimension: Dimension
   ) {
+    this.id = id;
+
+    // use overriden id if provided
+    if (tournamentConfigs.id) {
+      this.id = tournamentConfigs.id;
+    }
+
     this.log.level = (tournamentConfigs.loggingLevel !== undefined) ? tournamentConfigs.loggingLevel : Logger.LEVEL.INFO;
     this.name = tournamentConfigs.name ? tournamentConfigs.name : `tournament_${this.id}`;
+
+    
     this.log.identifier = this.name;
+    this.dimension = dimension;
+
+    this.log.info(`Created Tournament - ID: ${this.id}, Name: ${this.name}`);
+    
+    // if no name is provided but database is being used, log a warning
+    if (!tournamentConfigs.name && dimension.hasDatabase()) {
+      this.log.warn(`A name has to be specified for a tournament otherwise tournament player data will not be reused across runs of the tournament`)
+    }
+
   }
 
   /**
    * Add a player to the tournament. Can specify an ID to use. If that ID exists already, this will update the file for 
-   * that player instead 
+   * that player instead
+   * 
+   * If the player is to exist beyond the tournament, an existingID must always be provided and generated somewhere else
+   * 
+   * Resolves with the new player or updated player
+   * 
    * @param file - The file to the bot or an object with the file and a name for the player specified
+   * @param existingID - The optional id of the player 
+   * 
    */
-  public addplayer(file: string | {file: string, name: string}, existingID?: string) {
-    let id: string;
+  public async addplayer(file: string | {file: string, name: string}, existingID?: NanoID): Promise<Player> {
+    let id: NanoID;
     if (existingID) {
-      let content = existingID.split('_');
-      let existingPlayerID = parseInt(content[1]);
-      if (existingPlayerID < this.competitors.length) {
-        // bot exists already
-        let player = this.competitors[existingPlayerID];
+    
+      if (this.competitors.has(existingID)) {
+        // bot exists in tournament already
+        let player = this.competitors.get(existingID);
         let oldname = player.tournamentID.name;
         let oldfile = player.file;
         if (typeof file === 'string') {
@@ -92,37 +141,70 @@ export abstract class Tournament {
         // update bot instead and call a tournament's updateBot function
         this.updatePlayer(player, oldname, oldfile)
         id = existingID;
-        return;
+        return player;
       }
       else {
+        // otherwise bot doesn't exist, and we use this id as our id to generate a new player
         id = existingID;
       }
+
+
     }
     else {
       id = this.generateNextTournamentIDString();
     }
     
-    // push new competitor and call internal add so tournaments can internall sort out the addition of a new player
+    // add new competitor and call internal add so tournaments can perform any internal operations for the
+    // addition of a new player
     if (typeof file === 'string') {
       let name = `player-${id}`;
       let newPlayer = new Player({id: id, name: name}, file);
-      this.competitors.push(newPlayer);
+
+      // check database
+      if (this.dimension.hasDatabase()) {
+        let user = await this.dimension.databasePlugin.getUser(newPlayer.tournamentID.id);
+        if (user) {
+          newPlayer.anonymous = false;
+          newPlayer.username = user.username;
+        }
+      }
+      this.competitors.set(id, newPlayer);
+  
       this.internalAddPlayer(newPlayer);
+      return newPlayer;
     }
     else {
       let newPlayer = new Player({id: id, name: file.name}, file.file);
-      this.competitors.push(newPlayer);
+
+      // check database
+      if (this.dimension.hasDatabase()) {
+        
+        let user = await this.dimension.databasePlugin.getUser(newPlayer.tournamentID.id);
+        if (user) {
+          newPlayer.anonymous = false;
+          newPlayer.username = user.username;
+        }
+      }
+
+      this.competitors.set(id, newPlayer);
+
       this.internalAddPlayer(newPlayer);
+      return newPlayer;
     }
   }
 
+  /**
+   * Function to be implemented by a tournament type that performs further tasks to integrate a new player
+   * @param player 
+   */
   abstract internalAddPlayer(player: Player): void;
 
   /**
-   * Returns a new and unique id
+   * Returns a new id for identifying a player in a tournament
+   * Only used when adding a plyaer to a tournament is done without specifying an id to use.
    */
   public generateNextTournamentIDString() {
-    return `t${this.id}_${this.playerID++}`;
+    return Player.generatePlayerID();
   }
 
   /**
@@ -134,14 +216,17 @@ export abstract class Tournament {
       return false;
     }
     let playerID = content[1];
-    if (isNaN(parseInt(playerID))) {
+    // may not be the safest way to determine
+    // @ts-ignore
+    if (isNaN(parseInt(playerID)) || !(parseInt(playerID) == playerID)) {
       return false;
     }
     if (content[0][0] !== 't') {
       return false;
     }
     let tourneyID = content[0].slice(1);
-    if (isNaN(parseInt(tourneyID)) || parseInt(tourneyID) !== this.id) {
+    // @ts-ignore
+    if (isNaN(parseInt(tourneyID)) || parseInt(tourneyID) !== this.id || !(parseInt(tourneyID) == tourneyID)) {
       return false;
     }
     return true;
@@ -174,7 +259,6 @@ export abstract class Tournament {
    * @param oldfile - the previous file for the player
    */
   abstract updatePlayer(player: Player, oldname: string, oldfile: string): void;
-
 
   /**
    * Set configs for this tournament
@@ -212,6 +296,14 @@ export abstract class Tournament {
 
     // Get results
     let results = await match.run();
+
+    // if database plugin is active and saveTournamentMatches is set to true, store match
+    if (this.dimension.hasDatabase()) {
+      if (this.dimension.databasePlugin.configs.saveTournamentMatches) {
+        this.dimension.databasePlugin.storeMatch(match);
+      }
+    }
+
     // remove the match from the active matches list
     this.matches.delete(match.id);
     // TODO: Add option to just archive matches instead
@@ -222,13 +314,61 @@ export abstract class Tournament {
   /**
    * Removes a match by id. Returns true if deleted, false if nothing was deleted
    */
-  public async removeMatch(matchID: number) {
+  public async removeMatch(matchID: NanoID) {
     if (this.matches.has(matchID)) {
       let match = this.matches.get(matchID);
       await match.destroy();
       return this.matches.delete(matchID);
     }
     return false;
+  }
+
+  /**
+   * Destroy this tournament. Rejects if an error occured in trying to destroy it.
+   */
+  public async destroy(): Promise<void> {
+    await this.preInternalDestroy();
+    
+    // stop if running
+    if (this.status === Tournament.TournamentStatus.RUNNING) this.stop();
+    
+    let destroyPromises = [];
+    
+    // now remove all match processes
+    this.matches.forEach((match) => {
+      destroyPromises.push(match.destroy());
+    });
+    await Promise.all(destroyPromises);
+    await this.postInternalDestroy();
+  }
+
+  /**
+   * Pre run function before generic destroy takes place
+   */
+  protected async preInternalDestroy() {
+
+  }
+
+  /**
+   * Post run function before generic destroy takes place
+   */
+  protected async postInternalDestroy() {
+
+  }
+
+  /**
+   * Generates a 6 character tournament ID identifying this tournament class instance. Not to be confused with
+   * {@link Tournament.ID} which is the ID for competitors in the tournament
+   */
+  public static genTournamentClassID() {
+    return genID(6);
+  }
+
+  /**
+   * Returns the name of the tournament but formatted (no spaces)
+   */
+  public getSafeName() {
+    return this.name.replace(/ /g, '_');
   }
 }
 
@@ -256,6 +396,8 @@ export module Tournament {
     RUNNING = 'running',
     /** Tournmanet crashed some how */
     CRASHED = 'crashed',
+    /** Tournament is done */
+    FINISHED = 'finished'
   }
 
   /**
@@ -322,8 +464,16 @@ export module Tournament {
      * @default true
      */
     consoleDisplay?: boolean
+
+    /**
+     * Set this ID to override the generated ID 
+     */
+    id?: string
   }
 
+  /**
+   * Internally used type.
+   */
   export interface TournamentConfigs<ConfigType> extends TournamentConfigsBase {
     tournamentConfigs: ConfigType    
     rankSystemConfigs: any
@@ -345,7 +495,7 @@ export module Tournament {
    */
   export interface ID {
     /** A string id. This should never change */
-    readonly id: string
+    readonly id: NanoID
     /** A display name */
     name: string
   }
@@ -483,8 +633,9 @@ export module Tournament {
        * A map from a {@link Player} Tournament ID string to statistics
        */
       playerStats: Map<string, {player: Player, wins: number, ties: number, losses: number, matchesPlayed: number}>
+      
       /**
-       * Stats for this Tournament
+       * Stats for this Tournament in this instance. Intended to be constant memory usage
        */
       statistics: {
         totalMatches: number
@@ -525,9 +676,10 @@ export module Tournament {
       /**
        * A map from a {@link Player} Tournament ID string to statistics
        */
-      playerStats: Map<string, {player: Player, wins: number, ties: number, losses: number, matchesPlayed: number, rankState: any}>
+      playerStats: Map<NanoID, PlayerStat>
+      
       /**
-       * Stats for this Tournament
+       * Stats for this Tournament in this instance. Intended to be constant memory usage
        */
       statistics: {
         totalMatches: number
@@ -537,6 +689,17 @@ export module Tournament {
        * Past results stored. Each element is what is returned by {@link Design.getResults}
        */
       results: Array<any>
+    }
+    /**
+     * Player stat interface for ladder tournaments
+     */
+    export interface PlayerStat {
+      player: Player, 
+      wins: number, 
+      ties: number, 
+      losses: number, 
+      matchesPlayed: number, 
+      rankState: any
     }
   }
   
@@ -576,8 +739,9 @@ export module Tournament {
        * A map from a {@link Player} Tournament ID string to statistics
        */
       playerStats: Map<string, {player: Player, wins: number, losses: number, matchesPlayed: number, seed: number, rank: number}>
+      
       /**
-       * Stats for this Tournament
+       * Stats for this Tournament in this instance. Intended to be constant memory usage
        */
       statistics: {
         totalMatches: number

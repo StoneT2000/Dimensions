@@ -97,8 +97,16 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_tournament_index_.player.html#anonymous" class="tsd-kind-icon">anonymous</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_tournament_index_.player.html#file" class="tsd-kind-icon">file</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_tournament_index_.player.html#tournamentid" class="tsd-kind-icon">tournamentID</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_tournament_index_.player.html#username" class="tsd-kind-icon">username</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_tournament_index_.player.html#generateplayerid" class="tsd-kind-icon">generate<wbr>PlayerID</a></li>
 							</ul>
 						</section>
 					</div>
@@ -116,7 +124,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/Tournament/index.ts#L17">https://github.com/StoneT2000/Dimensions/blob/0124128/src/Tournament/index.ts#L17</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/Tournament/index.ts#L29">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/Tournament/index.ts#L29</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -136,12 +144,28 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="anonymous" class="tsd-anchor"></a>
+					<h3>anonymous</h3>
+					<div class="tsd-signature tsd-kind-icon">anonymous<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = true</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/Tournament/index.ts#L26">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/Tournament/index.ts#L26</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Whether this player is anonymous and not tied to a user on the back end</p>
+						</div>
+						<p>If this is ever false, then that means 1. we have a backend setup 2. there is an actual user entry</p>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="file" class="tsd-anchor"></a>
 					<h3>file</h3>
 					<div class="tsd-signature tsd-kind-icon">file<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/Tournament/index.ts#L18">https://github.com/StoneT2000/Dimensions/blob/0124128/src/Tournament/index.ts#L18</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/Tournament/index.ts#L30">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/Tournament/index.ts#L30</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -151,9 +175,49 @@
 					<div class="tsd-signature tsd-kind-icon">tournamentID<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.id.html" class="tsd-signature-type">ID</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/Tournament/index.ts#L18">https://github.com/StoneT2000/Dimensions/blob/0124128/src/Tournament/index.ts#L18</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/Tournament/index.ts#L30">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/Tournament/index.ts#L30</a></li>
 						</ul>
 					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="username" class="tsd-anchor"></a>
+					<h3>username</h3>
+					<div class="tsd-signature tsd-kind-icon">username<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = undefined</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/Tournament/index.ts#L29">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/Tournament/index.ts#L29</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Associated username if there is one</p>
+						</div>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="generateplayerid" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> generate<wbr>PlayerID</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">generate<wbr>PlayerID<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/Tournament/index.ts#L37">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/Tournament/index.ts#L37</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Generates a 12 character player id string</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -179,10 +243,19 @@
 								<a href="_tournament_index_.player.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_tournament_index_.player.html#anonymous" class="tsd-kind-icon">anonymous</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_tournament_index_.player.html#file" class="tsd-kind-icon">file</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_tournament_index_.player.html#tournamentid" class="tsd-kind-icon">tournamentID</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_tournament_index_.player.html#username" class="tsd-kind-icon">username</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_tournament_index_.player.html#generateplayerid" class="tsd-kind-icon">generate<wbr>PlayerID</a>
 							</li>
 						</ul>
 					</li>
@@ -201,7 +274,7 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
@@ -214,7 +287,13 @@
 				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 			</ul>
 			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
 			</ul>
 		</div>
 	</div>

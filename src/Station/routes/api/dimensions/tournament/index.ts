@@ -12,6 +12,7 @@ import ncp from 'ncp';
 import { spawn } from 'child_process';
 import matchAPI, { pickMatch } from '../match';
 import { pick } from '../../../../../utils';
+import { NanoID } from '../../../../../Dimension';
 
 const BOT_DIR = path.join(__dirname, '../../../../local/bots');
 const BOT_DIR_TEMP = path.join(__dirname, '../../../../local/botstemp');
@@ -22,7 +23,7 @@ const router = express.Router();
  */
 const getTournament = (req: Request, res: Response, next: NextFunction) => {
   let tournament = 
-    req.data.dimension.tournaments.filter((tournament) => tournament.id == parseInt(req.params.tournamentID) || tournament.name == req.params.tournamentID)[0];
+    req.data.dimension.tournaments.get(req.params.tournamentID);
   if (!tournament) {
     return next(new error.BadRequest(`No tournament found with name or id of '${req.params.tournamentID}' in dimension ${req.data.dimension.id} - '${req.data.dimension.name}'`));
   }
@@ -104,8 +105,8 @@ router.post('/:tournamentID/run', async (req: Request, res: Response, next: Next
  * Stops a tournament if it isn't stopped
  */
 router.post('/:tournamentID/stop', async (req: Request, res: Response, next: NextFunction) => {
-  if (req.data.tournament.status === Tournament.TournamentStatus.STOPPED) {
-    return next(new error.BadRequest('Tournament is already stopped'));
+  if (req.data.tournament.status !== Tournament.TournamentStatus.RUNNING) {
+    return next(new error.BadRequest(`Can't stop a tournament that isn't running`));
   }
   // stop the tournament
   if (req.data.tournament.stop()) {
@@ -133,7 +134,7 @@ router.get('/:tournamentID/ranks', async (req: Request, res: Response, next: Nex
  * Deletes a match
  */
 router.delete('/:tournamentID/match/:matchID', (req, res, next) => {
-  return req.data.tournament.removeMatch(parseInt(req.params.matchID)).then(() => {
+  return req.data.tournament.removeMatch(req.params.matchID).then(() => {
     res.json({error: null});
   }).catch((error) => {
     return next(new error.InternalServerError('Something went wrong'));
@@ -160,20 +161,13 @@ router.post('/:tournamentID/upload/', async (req: Request, res: Response, next: 
     if (files.file === undefined) return next(new error.BadRequest('No file provided'));
     let file = files.file;
 
-    let id = <string>fields.id;
+    let id = <NanoID>fields.id;
 
 
     // if no id given, we will generate an ID to use. Generated here using the below function to avoid duplicate ids
     if (!id) {
       id = req.data.tournament.generateNextTournamentIDString();
     }
-
-    // validate ID
-    if (!req.data.tournament.validateTournamentID(id)) {
-      return next(new error.BadRequest('Invalid ID'));
-    }
-
-    
     
     let botdirtemp = BOT_DIR_TEMP + '/' + id;
     

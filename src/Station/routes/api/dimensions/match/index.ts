@@ -9,20 +9,37 @@ import agentRouter, { pickAgent } from './agent';
 const router = express.Router();
 
 /**
- * Get match by matchID. Requires a tournament or dimension to be stored
+ * Get match by matchID. Requires a tournament or dimension to be stored. 
+ * 
+ * For tournaments, it will get a match only if it's active. Otherwise a database plugin is needed in order to retrieve
+ * the match. NOTE that the database plugin will not recover all of the same match data as usually returned from active
+ * matches
+ * 
+ * For dimension run match (via {@link Dimension.runMatch}), it is retrievable as long as it has not been destroyed
  */
-export const getMatch = (req: Request, res: Response, next: NextFunction) => {
+export const getMatch = async (req: Request, res: Response, next: NextFunction) => {
   let match: Match;
-  if (req.data.tournament){
-    match = req.data.tournament.matches.get(parseInt(req.params.matchID));
+  if (req.data.tournament) {
+    match = req.data.tournament.matches.get(req.params.matchID);
   }
   else if (req.data.dimension) {
-    match = req.data.dimension.matches.get(parseInt(req.params.matchID));
+    match = req.data.dimension.matches.get(req.params.matchID);
   }
   else {
     return next(new error.BadRequest(`System error. match API route was added out of order`));
   }
   if (!match) {
+    if (req.data.dimension.hasDatabase()) {
+      try {
+        match = await req.data.dimension.databasePlugin.getMatch(req.params.matchID);
+      } catch (error) {
+        return next(error);
+      }
+    }
+  }
+
+  if (!match) {
+    
     return next(new error.BadRequest(`No match found with name or id of '${req.params.matchID}' in dimension ${req.data.dimension.id} - '${req.data.dimension.name}'`));
   }
   req.data.match = match;
@@ -33,8 +50,10 @@ export const getMatch = (req: Request, res: Response, next: NextFunction) => {
  * Pick relevant fields of a match
  */
 export const pickMatch = (match: Match) => {
-  let picked = pick(match, 'agentFiles','configs', 'creationDate','id', 'idToAgentsMap','log', 'mapAgentIDtoTournamentID', 'matchStatus','name');
-  picked.agents = match.agents.map((agent) => pickAgent(agent));
+  let picked = pick(match,'configs', 'creationDate', 'id','log', 'mapAgentIDtoTournamentID', 'matchStatus','name', 'finishDate', 'results');
+  if (match.agents) {
+    picked.agents = match.agents.map((agent) => pickAgent(agent));
+  }
   return picked;
 };
 
@@ -58,7 +77,7 @@ router.get('/:matchID/results', (req, res) => {
  * Gets whatever is stored in the match state
  */
 router.get('/:matchID/state', (req, res) => {
-  res.json({error: null, results: req.data.match.state || null});
+  res.json({error: null, state: req.data.match.state || null});
 });
 
 /**
@@ -79,7 +98,8 @@ router.post('/:matchID/run', async (req: Request, res: Response, next: NextFunct
       req.data.match.resume();
     }
     else {
-      req.data.match.run();
+      // run and do nothing with the error
+      req.data.match.run().catch(() => {});
     }
     res.json({error: null, msg:'Running Match'})
   }
@@ -99,16 +119,18 @@ router.post('/:matchID/stop', async (req: Request, res: Response, next: NextFunc
   if (req.data.match.matchStatus === Match.Status.FINISHED) {
     return next(new error.BadRequest('Match is already finished'));
   }
+  if (req.data.match.matchStatus === Match.Status.READY) {
+    return next(new error.BadRequest('Match hasn\'t started and can\'t be stopped as a result'));
+  }
   if (req.data.match.matchStatus === Match.Status.UNINITIALIZED) {
     return next(new error.BadRequest('Can\'t stop an uninitialized match'));
   }
   
-  if (req.data.match.stop()) {
+  return req.data.match.stop().then(() => {
     res.json({error: null, msg:'Stopped Match'})
-  }
-  else {
+  }).catch(() => {
     return next(new error.InternalServerError('Couldn\'t stop the match'));
-  }
+  });
 });
 
 router.use('/:matchID/agent', agentRouter);

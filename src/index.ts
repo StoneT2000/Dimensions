@@ -3,12 +3,15 @@
  */
 
 export * from './Station';
-export { create, Dimension as DimensionType } from './Dimension';
+export { create, Dimension as DimensionType, DatabaseType } from './Dimension';
+export type { NanoID as nanoid } from './Dimension';
+export * from './Plugin';
 export * from './Logger';
+export * from './MongoDB';
 export * from './Design';
 export * from './Agent';
 export * from './Tournament';
 export * from './Match';
 export * from './MatchEngine';
-export * from './DimensionError';
-// export * from './Parser';
+export * as DError from './DimensionError';
+export { MatchError, FatalError, MatchWarn } from './DimensionError/'

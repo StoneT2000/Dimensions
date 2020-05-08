@@ -71,14 +71,10 @@
 		<div class="col-8 col-content">
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
-					<dl class="tsd-comment-tags">
-						<dt>classdesc</dt>
-						<dd><p>The Match Engine that takes a <a href="../modules/_design_types_.design.html">Design</a> and starts matches by spawning new processes for each
-							<a href="_agent_index_.agent.html">Agent</a>.</p>
-							<p>Functionally runs matches as storing the match causes circular problems
-							(previously Match has Engine, Engine has Match)</p>
-						</dd>
-					</dl>
+					<div class="lead">
+						<p>The Match Engine that takes a <a href="_design_index_.design.html">Design</a> and its specified <a href="../interfaces/_matchengine_index_.matchengine.engineoptions.html">EngineOptions</a> to form the backend
+						for running matches with agents.</p>
+					</div>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
@@ -96,8 +92,10 @@
 						<section class="tsd-index-section ">
 							<h3>Enumerations</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-enum tsd-parent-kind-class tsd-is-static"><a href="../enums/_matchengine_index_.matchengine.agent_events.html" class="tsd-kind-icon">AGENT_<wbr>EVENTS</a></li>
 								<li class="tsd-kind-enum tsd-parent-kind-class tsd-is-static"><a href="../enums/_matchengine_index_.matchengine.command_finish_policies.html" class="tsd-kind-icon">COMMAND_<wbr>FINISH_<wbr>POLICIES</a></li>
 								<li class="tsd-kind-enum tsd-parent-kind-class tsd-is-static"><a href="../enums/_matchengine_index_.matchengine.command_stream_type.html" class="tsd-kind-icon">COMMAND_<wbr>STREAM_<wbr>TYPE</a></li>
+								<li class="tsd-kind-enum tsd-parent-kind-class tsd-is-static"><a href="../enums/_matchengine_index_.matchengine.dynamicdatastrings.html" class="tsd-kind-icon">Dynamic<wbr>Data<wbr>Strings</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -118,6 +116,7 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_matchengine_index_.matchengine.html#design" class="tsd-kind-icon">design</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_matchengine_index_.matchengine.html#engineoptions-1" class="tsd-kind-icon">engine<wbr>Options</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_matchengine_index_.matchengine.html#killoffsignal" class="tsd-kind-icon">kill<wbr>Off<wbr>Signal</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_matchengine_index_.matchengine.html#log" class="tsd-kind-icon">log</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_matchengine_index_.matchengine.html#overrideoptions" class="tsd-kind-icon">override<wbr>Options</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_matchengine_index_.matchengine.html#timeoutbuffer" class="tsd-kind-icon">timeout<wbr>Buffer</a></li>
@@ -142,6 +141,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_matchengine_index_.matchengine.html#send" class="tsd-kind-icon">send</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_matchengine_index_.matchengine.html#setengineoptions" class="tsd-kind-icon">set<wbr>Engine<wbr>Options</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_matchengine_index_.matchengine.html#setloglevel" class="tsd-kind-icon">set<wbr>Log<wbr>Level</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_matchengine_index_.matchengine.html#spawnedpromise" class="tsd-kind-icon">spawned<wbr>Promise</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_matchengine_index_.matchengine.html#stop" class="tsd-kind-icon">stop</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_matchengine_index_.matchengine.html#stopcustom" class="tsd-kind-icon">stop<wbr>Custom</a></li>
 							</ul>
@@ -161,7 +161,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L36">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L36</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L49">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L49</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -201,9 +201,14 @@
 					<div class="tsd-signature tsd-kind-icon">design<span class="tsd-signature-symbol">:</span> <a href="_design_index_.design.html" class="tsd-signature-type">Design</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L24">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L24</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L28">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L28</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The design the engine runs on</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="engineoptions-1" class="tsd-anchor"></a>
@@ -211,7 +216,7 @@
 					<div class="tsd-signature tsd-kind-icon">engine<wbr>Options<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_matchengine_index_.matchengine.engineoptions.html" class="tsd-signature-type">EngineOptions</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L27">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L27</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L31">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L31</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -221,12 +226,31 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="killoffsignal" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> kill<wbr>Off<wbr>Signal</h3>
+					<div class="tsd-signature tsd-kind-icon">kill<wbr>Off<wbr>Signal<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L46">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L46</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>A coordination signal to ensure that all processes are indeed killed due to asynchronous initialization of agents
+								There is a race condition when a tournament/match is being destroyed and while every match is being destroyed, some
+								matches are in the initialization stage where they call the engine&#39;s initialize function. As a result, when we
+								send a match destroy signal, we spawn some processes and haven&#39;t spawned some others for the agents. As a result,
+							all processes eventually get spawned but not all are cleaned up and killed.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="log" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> log</h3>
 					<div class="tsd-signature tsd-kind-icon">log<span class="tsd-signature-symbol">:</span> <a href="_logger_index_.logger.html" class="tsd-signature-type">Logger</a><span class="tsd-signature-symbol"> = new Logger()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L33">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L33</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L37">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L37</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -238,10 +262,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="overrideoptions" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> override<wbr>Options</h3>
-					<div class="tsd-signature tsd-kind-icon">override<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">DesignTypes.OverrideOptions</span></div>
+					<div class="tsd-signature tsd-kind-icon">override<wbr>Options<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_design_index_.customdesign.overrideoptions.html" class="tsd-signature-type">OverrideOptions</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L30">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L30</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L34">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L34</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -256,9 +280,14 @@
 					<div class="tsd-signature tsd-kind-icon">timeout<wbr>Buffer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 25</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L36">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L36</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L49">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L49</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>approx extra buffer time given to agents due to engine processing for timeout mechanism</p>
+						</div>
+					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -273,7 +302,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L264">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L264</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L374">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L374</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -307,7 +336,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L56">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L56</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L69">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L69</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -329,7 +358,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L166">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L166</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L268">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L268</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -366,7 +395,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L70">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L70</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L83">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L83</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -390,7 +419,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>a promise that resolves true if succesfully initialized</p>
+							<p>a promise that resolves once succesfully initialized</p>
 						</li>
 					</ul>
 				</section>
@@ -404,7 +433,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L90">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L90</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L136">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L136</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -441,7 +470,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L323">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L323</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L433">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L433</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -472,7 +501,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L250">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L250</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L361">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L361</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -503,13 +532,13 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L239">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L239</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L346">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L346</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Kills all agents and processes from a match and cleans up. Kills any game processes as well. Shouldn&#39;t be used
-									for custom design based matches.</p>
+									for custom design based matches. Called by <a href="_match_index_.match.html">Match</a></p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -535,7 +564,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L433">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L433</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L542">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L542</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -560,13 +589,13 @@
 					<a name="parsecustomarguments" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> parse<wbr>Custom<wbr>Arguments</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">parse<wbr>Custom<wbr>Arguments<span class="tsd-signature-symbol">(</span>match<span class="tsd-signature-symbol">: </span><a href="_match_index_.match.html" class="tsd-signature-type">Match</a>, args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="../modules/_matchengine_index_.html#dds" class="tsd-signature-type">DDS</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">parse<wbr>Custom<wbr>Arguments<span class="tsd-signature-symbol">(</span>match<span class="tsd-signature-symbol">: </span><a href="_match_index_.match.html" class="tsd-signature-type">Match</a>, args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">DDS</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L442">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L442</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L551">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L551</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -583,7 +612,7 @@
 									</div>
 								</li>
 								<li>
-									<h5>args: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="../modules/_matchengine_index_.html#dds" class="tsd-signature-type">DDS</a><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>args: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">DDS</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>the arguments to parse</p>
 									</div>
@@ -603,7 +632,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L225">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L225</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L331">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L331</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -634,12 +663,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L424">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L424</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L533">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L533</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Attempts to resume a <a href="_match_index_.match.html">Match</a> based on a custom <a href="../modules/_design_types_.design.html">Design</a></p>
+									<p>Attempts to resume a <a href="_match_index_.match.html">Match</a> based on a custom <a href="_design_index_.design.html">Design</a></p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -647,7 +676,7 @@
 								<li>
 									<h5>match: <a href="_match_index_.match.html" class="tsd-signature-type">Match</a></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the match to stop</p>
+										<p>the match to resume</p>
 									</div>
 								</li>
 							</ul>
@@ -665,13 +694,13 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L334">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L334</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L444">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L444</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Run a custom match. A custom match much print to stdout all relevant data to be used by the engine and
-										Dimensions framework. All output after the conclude command from <a href="../interfaces/_design_types_.design.overrideoptions.html">Design.OverrideOptions</a> is outputted
+										Dimensions framework. All output after the conclude command from <a href="../interfaces/_design_index_.design.overrideoptions.html">Design.OverrideOptions</a> is outputted
 										is stored as a list of new line delimited strings and returned as the match results. The match must exit with
 									exit code 0 to be marked as succesfully complete and the processing of results stops and this function resolves</p>
 								</div>
@@ -699,7 +728,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L304">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L304</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L414">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L414</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -742,7 +771,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L60">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L60</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L73">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L73</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -770,7 +799,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L52">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L52</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L65">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L65</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -788,6 +817,37 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="spawnedpromise" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> spawned<wbr>Promise</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">spawned<wbr>Promise<span class="tsd-signature-symbol">(</span>pid<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L103">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L103</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns a promise that resolves once the process succesfully spawned and rejects if error occurs</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>pid: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>process id to check</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="stop" class="tsd-anchor"></a>
 					<h3>stop</h3>
@@ -798,7 +858,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L213">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L213</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L319">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L319</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -829,12 +889,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L414">https://github.com/StoneT2000/Dimensions/blob/0124128/src/MatchEngine/index.ts#L414</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L523">https://github.com/StoneT2000/Dimensions/blob/fb6e6a4/src/MatchEngine/index.ts#L523</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Attempts to stop a <a href="_match_index_.match.html">Match</a> based on a custom <a href="../modules/_design_types_.design.html">Design</a></p>
+									<p>Attempts to stop a <a href="_match_index_.match.html">Match</a> based on a custom <a href="_design_index_.design.html">Design</a></p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -871,10 +931,16 @@
 						<a href="_matchengine_index_.matchengine.html" class="tsd-kind-icon">Match<wbr>Engine</a>
 						<ul>
 							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
+								<a href="../enums/_matchengine_index_.matchengine.agent_events.html" class="tsd-kind-icon">AGENT_<wbr>EVENTS</a>
+							</li>
+							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
 								<a href="../enums/_matchengine_index_.matchengine.command_finish_policies.html" class="tsd-kind-icon">COMMAND_<wbr>FINISH_<wbr>POLICIES</a>
 							</li>
 							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
 								<a href="../enums/_matchengine_index_.matchengine.command_stream_type.html" class="tsd-kind-icon">COMMAND_<wbr>STREAM_<wbr>TYPE</a>
+							</li>
+							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
+								<a href="../enums/_matchengine_index_.matchengine.dynamicdatastrings.html" class="tsd-kind-icon">Dynamic<wbr>Data<wbr>Strings</a>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="../interfaces/_matchengine_index_.matchengine.command.html" class="tsd-kind-icon">Command</a>
@@ -890,6 +956,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_matchengine_index_.matchengine.html#engineoptions-1" class="tsd-kind-icon">engine<wbr>Options</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_matchengine_index_.matchengine.html#killoffsignal" class="tsd-kind-icon">kill<wbr>Off<wbr>Signal</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_matchengine_index_.matchengine.html#log" class="tsd-kind-icon">log</a>
@@ -948,6 +1017,9 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_matchengine_index_.matchengine.html#setloglevel" class="tsd-kind-icon">set<wbr>Log<wbr>Level</a>
 							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_matchengine_index_.matchengine.html#spawnedpromise" class="tsd-kind-icon">spawned<wbr>Promise</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_matchengine_index_.matchengine.html#stop" class="tsd-kind-icon">stop</a>
 							</li>
@@ -958,11 +1030,11 @@
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_matchengine_index_.html#dds" class="tsd-kind-icon">DDS</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="../modules/_matchengine_index_.html#bot_user" class="tsd-kind-icon">BOT_<wbr>USER</a>
 					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_matchengine_index_.html#engineoptions" class="tsd-kind-icon">Engine<wbr>Options</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="../modules/_matchengine_index_.html#root_user" class="tsd-kind-icon">ROOT_<wbr>USER</a>
 					</li>
 				</ul>
 			</nav>
@@ -974,7 +1046,7 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
@@ -989,6 +1061,9 @@
 			<ul class="tsd-legend">
 				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>

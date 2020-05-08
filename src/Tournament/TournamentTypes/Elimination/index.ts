@@ -6,8 +6,9 @@ import EliminationState = Tournament.Elimination.State;
 import EliminationConfigs = Tournament.Elimination.Configs;
 
 import RANK_SYSTEM = Tournament.RANK_SYSTEM;
-import { FatalError } from "../../../DimensionError";
+import { FatalError, TournamentError, NotSupportedError } from "../../../DimensionError";
 import { Agent } from "../../../Agent";
+import { Dimension, NanoID } from "../../../Dimension";
 
 export class EliminationTournament extends Tournament {
   configs: Tournament.TournamentConfigs<EliminationConfigs> = {
@@ -23,7 +24,8 @@ export class EliminationTournament extends Tournament {
     },
     resultHandler: null,
     agentsPerMatch: [2],
-    consoleDisplay: true
+    consoleDisplay: true,
+    id: 'z3Ap49'
   }
   state: EliminationState = {
     playerStats: new Map(),
@@ -35,17 +37,24 @@ export class EliminationTournament extends Tournament {
     resultsMap: new Map()
   };
   matchHashes: Array<string> = [];
+
+  private shouldStop: boolean = false;
+  private resumePromise: Promise<void>;
+  private resumeResolver: Function;
+  private resolveStopPromise: Function;
+
   constructor(
     design: Design,
     files: Array<string> | Array<{file: string, name:string}>, 
     tournamentConfigs: Tournament.TournamentConfigsBase,
-    id: number
+    id: NanoID,
+    dimension: Dimension
   ) {
-    super(design, files, id, tournamentConfigs);
+    super(design, files, id, tournamentConfigs, dimension);
     if (tournamentConfigs.consoleDisplay) {
       this.configs.consoleDisplay = tournamentConfigs.consoleDisplay;
     }
-    this.configs = deepMerge(this.configs, tournamentConfigs);
+    this.configs = deepMerge(this.configs, tournamentConfigs, true);
     switch(tournamentConfigs.rankSystem) {
       case RANK_SYSTEM.WINS:
         // set default rank system configs
@@ -60,34 +69,89 @@ export class EliminationTournament extends Tournament {
         }
         break;
       default:
-        throw new FatalError('We currently do not support this rank system for ladder tournaments');
+        throw new NotSupportedError('We currently do not support this rank system for ladder tournaments');
     }
     // add all players
     files.forEach((file) => {
       this.addplayer(file);
     });
   }
+  
+  /**
+   * Get the current tournament configs
+   */
   public getConfigs(): Tournament.TournamentConfigs<EliminationConfigs> {
     return this.configs;
   }
+
+  /**
+   * Set configs to use. Merges the provided configurations and overwrites provided fields with what is provided
+   * @param configs - new tournament configs to update with
+   */
   public setConfigs(configs: DeepPartial<Tournament.TournamentConfigs<EliminationConfigs>> = {}) {
-    this.configs = deepMerge(this.configs, configs);
+    this.configs = deepMerge(this.configs, configs, true);
   }
+
+  /**
+   * Gets the rankings of the tournament. This will return the tournament rankings in the elimination tournament
+   */
   public getRankings() {
     let ranks = Array.from(this.state.playerStats).sort((a, b) => a[1].rank - b[1].rank);
     return ranks.map((a) => a[1]);
   }
-  public async stop() {
 
+  /**
+   * Stops the tournament if it's running
+   */
+  public stop(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (this.status !== Tournament.TournamentStatus.RUNNING) {
+        reject(new TournamentError(`Can't stop a tournament that isn't running`));
+      }
+      this.log.info('Stopping Tournament...');
+      this.status = Tournament.TournamentStatus.STOPPED;
+      this.resumePromise = new Promise((resumeResolve) => {
+        this.resumeResolver = resumeResolve;
+      });
+      this.shouldStop = true;
+      this.resolveStopPromise = resolve;
+    });
   }
-  public async resume() {
-    
+
+  /**
+   * Reesumes the tournament if it's stopped
+   */
+  public async resume(): Promise<void> {
+    if (this.status !== Tournament.TournamentStatus.STOPPED) {
+      throw new TournamentError(`Can't resume a tournament that isn't stopped`);
+    }
+    this.log.info('Resuming Tournament...');
+    this.status = Tournament.TournamentStatus.RUNNING;
+    this.resumeResolver();
   }
+
+  /**
+   * Runs the tournament to completion. Resolves with {@link Elimination.State} once the tournament is finished
+   * @param configs - tournament configurations to use
+   */
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<EliminationConfigs>>) {
-    this.configs = deepMerge(this.configs, configs);
+    
+    this.configs = deepMerge(this.configs, configs, true);
     this.initialize();
 
+    this.status = Tournament.TournamentStatus.RUNNING;
+    
     while (this.matchQueue.length) {
+      // stop logic
+      if (this.shouldStop) {
+        this.log.info('Stopped Tournament');
+        this.resolveStopPromise();
+        
+        // we wait for the resume function to resolve the resumePromise to continue the loop
+        await this.resumePromise;
+        this.log.info('Resumed Tournament');
+        this.shouldStop = false;
+      }
       let matchInfo = this.matchQueue.shift();
       let matchHash = this.matchHashes.shift();
       await this.handleMatch(matchInfo, matchHash);        
@@ -99,6 +163,7 @@ export class EliminationTournament extends Tournament {
         this.generateRound();
       }
     }
+    this.status = Tournament.TournamentStatus.FINISHED;
     return this.state;
   }
 
@@ -110,7 +175,7 @@ export class EliminationTournament extends Tournament {
     if (matchInfo.length != 2) {
       throw new FatalError(`This shouldn't happen, tried to run a match with player count not equal to 2 in an elimination tournament`);
     }
-    // deal wiht case when one is a null
+    // deal with case when one is a null, likely meaning a competitor has a bye
     if (matchInfo[0] == null) {
       let winner = matchInfo[1];
       // store result into with matchHash key
@@ -129,7 +194,13 @@ export class EliminationTournament extends Tournament {
     let matchRes = await this.runMatch(matchInfo);
     let res: RANK_SYSTEM.WINS.Results = this.configs.resultHandler(matchRes.results);
 
-    if (this.configs.tournamentConfigs.storePastResults) this.state.results.push(res);
+    // store past results
+    if (this.configs.tournamentConfigs.storePastResults) {
+      if (!(this.dimension.hasDatabase() && this.dimension.databasePlugin.configs.saveTournamentMatches)) {
+        // if we have don't have a database that is set to actively store tournament matches we store locally
+        this.state.results.push(res);
+      }
+    }
     this.state.statistics.totalMatches++;
 
     let rankSystemConfigs: RANK_SYSTEM.WINS.Configs = this.configs.rankSystemConfigs;
@@ -164,8 +235,9 @@ export class EliminationTournament extends Tournament {
       loser = this.state.playerStats.get(p0ID);
     }
     else {
-      // randomly decide who gets to win because score was tied
+      // TODO: randomly decide who gets to win because score was tied
     }
+
     // update stats
     winner.wins++;
     winner.matchesPlayed++;
@@ -182,18 +254,21 @@ export class EliminationTournament extends Tournament {
     this.state.results = [];
     switch(this.configs.rankSystem) {
       case RANK_SYSTEM.WINS:
-        let configs: RANK_SYSTEM.WINS.Configs = this.configs.rankSystemConfigs;
 
-        // set up the seeding array
+        // set up the seeding array and fill it up with null to fill up all empty spots
         let seeding = this.configs.tournamentConfigs.seeding;
         if (seeding == null) seeding = [];
-        for (let i = 0; i < this.competitors.length - seeding.length; i++) {
+        if (seeding.length > this.competitors.size) {
+          throw new TournamentError(`Seeds provided cannot be greater than the number of competitors`);
+        }
+        for (let i = 0; i < this.competitors.size - seeding.length; i++) {
           seeding.push(null);
         }
+        
 
         // find the leftover seeds that are not used
         let leftOverSeeds: Set<number> = new Set();
-        for (let i = 0; i < this.competitors.length; i++) {
+        for (let i = 0; i < this.competitors.size; i++) {
           leftOverSeeds.add(i + 1);
         }
         for (let i = 0; i < seeding.length; i++) {
@@ -202,7 +277,7 @@ export class EliminationTournament extends Tournament {
               leftOverSeeds.delete(seeding[i]);
             }
             else {
-              throw new FatalError(`Duplicate seeds are not allowed. There are duplicate seeds of ${seeding[i]}`);
+              throw new TournamentError(`Duplicate seeds are not allowed. There are duplicate seeds of ${seeding[i]}`);
             }
           }
         }
@@ -224,18 +299,16 @@ export class EliminationTournament extends Tournament {
         });
         break;
     }
-    let pow = Math.ceil(Math.log2(this.competitors.length));
+    let pow = Math.ceil(Math.log2(this.competitors.size));
     let round = Math.pow(2, pow);
     this.state.currentRound = round;
     // generate rounds to play
     this.generateFirstRounds();
+    this.status = Tournament.TournamentStatus.INITIALIZED;
   }
 
   private generateFirstRounds() {
-    // while(round > 0) {
-    //   this.state.roundsToPlay.push({round: round, lives: 0});
-    //   round = Math.floor(round / 2);
-    // }
+
     // get players in order of seed
     let round = this.state.currentRound;
     let seededArr = Array.from(this.state.playerStats).sort((a, b) => a[1].seed - b[1].seed);
@@ -248,6 +321,9 @@ export class EliminationTournament extends Tournament {
         p2 = seededArr[oseed][1].player;
       }
       this.matchQueue.push([p1, p2]);
+
+      // hashes are of the form `betterseed,worseseed`, which has a 1-1 bijection with the match that should be played
+      // in a elimination tournament. e.g 8,9 is a matchup that can happen is during the round of (8 + 9 - 1) = 16
       this.matchHashes.push(`${i+1},${oseed + 1}`);
     }
   }
@@ -261,11 +337,12 @@ export class EliminationTournament extends Tournament {
     for (let i = 0; i < nextRound / 2; i++) {
       let oseed = nextRound - (i + 1);
       hashes.push([i+1, oseed+1]);
-      // this.matchHashes.push(`${i + 1}, ${oseed + 1}`);
     }
     // for each hash is a new match to queue up, find the winners from the previous rounds
     for (let i = 0; i < hashes.length; i++) {
       let hash = hashes[i];
+      // we can generate the match right before this one in the winners bracket through simple arithmetic
+      // and knowing that each hash[i] represents the better seed as it is in the next round
       let oldOpponent1 = oldRound - hash[0] + 1;
       let res1 = this.state.resultsMap.get(`${hash[0]},${oldOpponent1}`);
       let p1 = res1.winner;
@@ -280,6 +357,7 @@ export class EliminationTournament extends Tournament {
     this.state.currentRound = nextRound;
 
   }
+
   /**
    * Performs a Fisher Yates Shuffle
    * @param arr - the array to shuffle
@@ -295,9 +373,11 @@ export class EliminationTournament extends Tournament {
   }
 
   internalAddPlayer(player: Player) {
-    return;
+    if (this.status === Tournament.TournamentStatus.INITIALIZED || this.status === Tournament.TournamentStatus.RUNNING)
+    throw new 
+      TournamentError('You are not allowed to add a player during the middle or after initialization of elimination tournaments');
   }
   updatePlayer(player: Player, oldname: string, oldfile: string) {
-    throw new FatalError('You are not allowed to update a player during elimination tournaments');
+    throw new TournamentError('You are not allowed to update a player during elimination tournaments');
   }
 }
