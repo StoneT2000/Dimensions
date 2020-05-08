@@ -1,16 +1,16 @@
 # Dimensions
 
-This is an **open sourced** **generic** **Artificial Intelligence competition framework**, intended to provide you fully scalable infrastructure needed to run your own AI competition with no hassle.
+This is an **open sourced** **generic** **Artificial Intelligence competition framework**, intended to provide you the fully scalable infrastructure needed to run your own AI competition with no hassle.
 
 All you need to do?
 
-Code a competition design and code a bot
+Code a **competition design** and code a **bot**
 
 Dimensions handles the rest, including match and tournament running, security, scalability and a local API and website through which you can monitor and control the entire system. 
 
 The framework was built with the goals of being **generalizable** and **accessible**. That's why Dimensions utilizes an I/O based model to run competitions and pit AI agents against each other (or themselves!), allowing it to be generic and language agnostic so anyone from any background can compete in your competition design. 
 
-It generalizes to many scenarios, and is able to recreate a range of systems from the Halite 3 AI competition, Battlecode 2020, to a generalized [Open AI's Gym](https://gym.openai.com/) that is open to machine learning in all languages.
+It generalizes to many scenarios, and is able to recreate a range of systems from the Halite 3 AI competition, Battlecode 2020, to a generalized [Open AI Gym](https://gym.openai.com/) that is open to machine learning in all languages in addition to Python through simple stdio.
 
 This was inspired by [Battlecode](battlecode.org/) and [Halite](https://halite.io/)
 
@@ -40,12 +40,12 @@ Also checkout the blog post introducing the motivation for Dimensions and though
 
 ## Features
 
-- Easy to build an AI competition that is language agnostic, allowing any kind of bot in any language to compete in your competitio
-- Can run many kinds of AI competitions and run different kinds of competition formats like round robin or using Trueskill in a ladder tournament (like a leaderboard).
-- Can wrap your own AI competition built without the dimensions framework to make use of its competition running features such as Trueskill leaderboards
+- Easy to build an AI competition that is language agnostic, allowing any kind of bot in any language to compete in your competition
+- Run many kinds of AI competitions and run different kinds of formats like round robin or using Trueskill in a ladder tournament (like a leaderboard).
+- Wrap your own AI competition built without the dimensions framework to make use of its competition running features such as Trueskill leaderboards
 - Comes with an API served locally that gives access to data on ongoing matches and tournaments and allows for direct control of matches and tournaments through the API. See this page for details on this API: https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API
   - Check out https://github.com/StoneT2000/Dimensions-web if you want a website to view the API from.
-- Can use plugins like the [MongoDB]() plugin in three lines of code to automatically integrate and scale up your tournament and integrate an automatic user authentication and login system.
+- Supports plugins like the [MongoDB]() plugin in three lines of code to automatically integrate and scale up your tournament and integrate an automatic user authentication and login system.
 - Ensures malicious bots cannot cause harm to your servers through `secureMode`. See [this wiki page](https://github.com/StoneT2000/Dimensions/wiki/Security) for details and best practices
 
 ## Requirements
@@ -55,8 +55,6 @@ At the moment, MacOS and Linux are 100% supported. Windows platforms work but `s
 ## Getting Started
 
 This guide will take you through how to start and run a competition built with Javascript/Typescript. To see how to use this framework to run a custom competition built without the dimensions framework, see [this wiki page](https://github.com/StoneT2000/Dimensions/wiki/Custom-Competition-Design) on setting override options.
-
-If you already have a design, feel free to skip to the section on running a [match](#run-a-match) and a [tournament](#run-a-tournament)
 
 First, install the `dimensions-ai` package
 
@@ -78,6 +76,8 @@ In order to start writing AI to compete against each other in a competition, you
 You need to design a competition to allow people to compete and facilitate the matches. More info on that soon. And it is highly suggested to design an AI starter kit so people can get straight into competing.
 
 Let's first design a simple RockPaperScissors competition. To design a competition, you will need to code. On the roadmap there are plans to potentially make a no-code competition designer.
+
+If you already have a design, feel free to skip to the section on running a [match](#run-a-match) and a [tournament](#run-a-tournament)
 
 ### Designing The Competition
 
@@ -121,7 +121,7 @@ Each `match` parameter passed in is of type `Match` and is the same `match` that
 
 The `commands` parameter is an array of commands objects of the form `{command: string, agentID: number}`
 
-Each command holds a command string, which is essentially something that was logged to output from one of the agents. For example, if an agent with ID `0` did `print('P')` in python or `console.log('P')`, the match engine will pick this up and populate `commands` with the array item `{command: 'P', agentID: 0}`
+Each command holds a command string, which is essentially something that was logged to output from one of the agents. For example, if an agent with ID `0` did `print('P')` in python or `console.log('P')` in javascript, the match engine will pick this up and populate `commands` with the array item `{command: 'P', agentID: 0}`
 
 There are some requirements for these lifecycle functions:
 
@@ -145,6 +145,7 @@ class RockPaperScissorsDesign extend Dimension.Design {
       // we return this to end the match
       return Match.Status.FINISHED;
     }
+  }
   async getResults(match) {
     let results = {}
     ... // determine results
@@ -169,7 +170,7 @@ This part is not language bound, so you can program an AI in any language you wa
 
 Other starter kit templates in other languages can be found in [/templates/starter-kits](https://github.com/StoneT2000/Dimensions/tree/master/templates/starter-kits/) and you can use them to help kickstart development for your own starter kit for your own `design`
 
-AI Starter kits are suggested to contain at least two files, `agent.js` (or whichever extension matches your language) and [`myBot.js`](https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/myBot.js). It can be merged into one but for organization, splitting it up is better.
+AI Starter kits are suggested to contain at least two files, `kit.js` (or whichever extension matches your language) and [`myBot.js`](https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/myBot.js). It can be merged into one but for organization, splitting it up is better. Every bot must have some entry point file like `myBot.js` of which the match will use to execute the bot.
 
 [`kit.js`](https://github.com/StoneT2000/Dimensions/blob/master/templates/starter-kits/js/kit.js) should have a `Agent` class with some kind of asynchronous  `initialize, update` functions and a `endTurn` function.
 
@@ -232,8 +233,8 @@ We can now run our first match by passing in an array of paths to the bot codes,
 
 ```js
 let results = await myDimension.runMatch(
-  ['./examples/rock-paper-scissors/bots/smarter.js', 
-   './examples/rock-paper-scissors/bots/smarter.js'],
+  ['./examples/rock-paper-scissors/bots/paper.js', 
+   './examples/rock-paper-scissors/bots/rock.js'],
   {
     bestOf: 5 // a configuration accessible in match through match.configs.bestOf
   }
@@ -246,13 +247,13 @@ You can now log the results, of which are the same results returned by your `des
 console.log(results)
 ```
 
-Notice that your console will also print something about a station. It'll give you a link to the `Station`, a local server that gives you access to an API to access and control your Dimension, Matches, Tournaments and more. Check https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API for details on the API.
+Notice that your console will also print something about a station. It'll give you a link to the `Station`, a local server that gives you access to an API to access and control your Dimension, Matches, Tournaments and more. Check out https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API for details on the API.
 
 If you want to view the API from a website, see this repo: https://github.com/StoneT2000/Dimensions-web
 
 ### Run a Tournament
 
-This framework also provides tournament running features, which currently include [Round Robin](https://stonet2000.github.io/Dimensions/classes/_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.html), [Elimination]() TODO Add link, and [Ladder](https://stonet2000.github.io/Dimensions/classes/_tournament_tournamenttypes_ladder_index_.laddertournament.html) type tournaments. Additionally, there are various ranking systems used, such as Win/Tie/Loss and Trueskill. This section takes your through a really brief rundown of how to run a tournament. See [this wiki page](https://github.com/StoneT2000/Dimensions/wiki/Running-Tournaments) for more in depth details on setting up the various kinds of tournaments
+This framework also provides tournament running features, which currently include [Round Robin](https://stonet2000.github.io/Dimensions/classes/_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.html), [Elimination](https://stonet2000.github.io/Dimensions/classes/_tournament_tournamenttypes_elimination_index_.eliminationtournament.html), and [Ladder](https://stonet2000.github.io/Dimensions/classes/_tournament_tournamenttypes_ladder_index_.laddertournament.html) type tournaments. Additionally, there are various ranking systems used, such as Win/Tie/Loss and Trueskill. This section takes your through a really brief rundown of how to run a tournament. See [this wiki page](https://github.com/StoneT2000/Dimensions/wiki/Running-Tournaments) for more in depth details on setting up the various kinds of tournaments
 
 Here is how you run a tournament. First, you will need a `resultHandler` function. This function must given to the tournament to indicate how the results of a `match` should be interpreted. Recall that these results are returned by the `getResult` command in your design. It is suggested to provide these result handlers in your `Design`. 
 
@@ -303,6 +304,27 @@ The [wiki](https://github.com/StoneT2000/Dimensions/wiki) is populated with more
 In a production setting, it is strongly recommended to create a Dimension in `secureMode` to decrease the likelihood of user uploaded bot code of causing any significant harm to a server. By default, `secureMode` is set to false, but you will always get a warning about it. Setting it to true also requires you to run the code as root user. Note that running in secureMode requires you to be as root user, so you must run with `sudo`. More details on that [here](https://github.com/StoneT2000/Dimensions/wiki/Security)
 
 Agents for each match are spawned in a new child process of the main node process running the match or tournament. To help make it more fair, it is recommended not to simultaneously spawn more agents than the number the number of cores your computer has. Namely, if your matches each allow for 4 agents and your device has 16 cores, then it is recommended to run no more than 4 matches at a time.
+
+## Plugins
+
+Plugins intend to be a simple "drag and drop." Dimensions can `use` a plugin and the plugin will automatically configure the dimension as needed. See here for how to [develop a plugin](https://github.com/StoneT2000/Dimensions/wiki/Plugin)
+
+### MongoDB
+
+The MongoDB plugin is provided out of the box by Dimensions and you can opt in or not. First, you will need to obtain a [MongoDB connection string](https://docs.mongodb.com/manual/reference/connection-string/). On your local host, it might be something like
+
+```
+mongodb://localhost:27017/dimensions
+```
+
+To use MongoDB, do the following
+
+```js
+let mongo = new Dimension.MongoDB('mongodb://localhost:27017/dimensions');
+myDimension.use(mongo)
+```
+
+And now you have the additional functionality of automatic saving of matches and tournament data to the database. Furthermore, player data is saved across sessions now provided you register a player through the authentication and login API that comes with using a backing database plugin like the MongoDB plugin.
 
 ## Contributing
 
