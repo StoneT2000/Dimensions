@@ -33,6 +33,7 @@ export const handleBotUpload = (req: Request): Promise<Array<UploadData>> => {
       }
       fields.paths = JSON.parse(fields.paths);
       fields.names = JSON.parse(fields.names);
+      fields.playerIDs = JSON.parse(fields.playerIDs);
       if (!fields.paths.length) throw new error.BadRequest('No file path(s) provided');
 
       if (fields.paths.length != files.files.length) throw new error.BadRequest('Paths and File arrays mismatch');
