@@ -1,6 +1,6 @@
 {
   "name": "dimensions-ai",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "A generalized AI Competition framework that allows you to create any competition you want in any language you want with no hassle.",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -35,6 +35,7 @@
     "ncp": "^2.0.0",
     "pidusage": "^2.0.18",
     "sprintf-js": "^1.1.2",
+    "tree-kill": "^1.2.2",
     "ts-trueskill": "^2.5.5"
   },
   "devDependencies": {

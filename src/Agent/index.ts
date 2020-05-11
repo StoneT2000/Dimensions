@@ -2,6 +2,7 @@ import { ChildProcess, spawn, execSync } from "child_process";
 import path from 'path';
 import fs from 'fs';
 import os from 'os';
+import treekill from 'tree-kill';
 import { Logger } from "../Logger";
 import { FatalError, AgentFileError, AgentDirectoryError, AgentMissingIDError, AgentInstallTimeoutError, AgentCompileTimeoutError, NotSupportedError, AgentCompileError, AgentInstallError } from "../DimensionError";
 import { Tournament } from "../Tournament";
@@ -407,22 +408,12 @@ export class Agent {
    * Terminates this agent by stopping all related processes and remove any temporary directory
    */
   _terminate() {
-    // first try to kill the process and all its child processes it spawned
-    // trick copied from https://azimi.me/2014/12/31/kill-child_process-node-js.html
+
     try {
-      process.kill(-this.process.pid, 'SIGKILL');
+      treekill(this.process.pid, 'SIGKILL');
     }
-    catch (err) {
-      this.log.detail(`couldn't kill group of processes`, err);
-      
-      try {
-        // then just kill the original process
-        process.kill(this.process.pid, 'SIGKILL');
-      }
-      catch (err) {
-        // TODO: This lines occurs sometimes but we don't get any orphans or anything still. Not sure why
-        this.log.detail(`couldn't kill original process nor the group`, err);
-      }
+    catch(err) {
+      this.log.error(err.message);
     }
 
     this._clearTimer();
