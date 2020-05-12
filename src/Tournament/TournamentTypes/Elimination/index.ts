@@ -13,7 +13,7 @@ import { Dimension, NanoID } from "../../../Dimension";
 export class EliminationTournament extends Tournament {
   configs: Tournament.TournamentConfigs<EliminationConfigs> = {
     defaultMatchConfigs: {},
-    type: Tournament.TOURNAMENT_TYPE.ELIMINATION,
+    type: Tournament.Type.ELIMINATION,
     rankSystem: null,
     rankSystemConfigs: null,
     tournamentConfigs: {
@@ -105,11 +105,11 @@ export class EliminationTournament extends Tournament {
    */
   public stop(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (this.status !== Tournament.TournamentStatus.RUNNING) {
+      if (this.status !== Tournament.Status.RUNNING) {
         reject(new TournamentError(`Can't stop a tournament that isn't running`));
       }
       this.log.info('Stopping Tournament...');
-      this.status = Tournament.TournamentStatus.STOPPED;
+      this.status = Tournament.Status.STOPPED;
       this.resumePromise = new Promise((resumeResolve) => {
         this.resumeResolver = resumeResolve;
       });
@@ -122,11 +122,11 @@ export class EliminationTournament extends Tournament {
    * Reesumes the tournament if it's stopped
    */
   public async resume(): Promise<void> {
-    if (this.status !== Tournament.TournamentStatus.STOPPED) {
+    if (this.status !== Tournament.Status.STOPPED) {
       throw new TournamentError(`Can't resume a tournament that isn't stopped`);
     }
     this.log.info('Resuming Tournament...');
-    this.status = Tournament.TournamentStatus.RUNNING;
+    this.status = Tournament.Status.RUNNING;
     this.resumeResolver();
   }
 
@@ -139,7 +139,7 @@ export class EliminationTournament extends Tournament {
     this.configs = deepMerge(this.configs, configs, true);
     this.initialize();
 
-    this.status = Tournament.TournamentStatus.RUNNING;
+    this.status = Tournament.Status.RUNNING;
     
     while (this.matchQueue.length) {
       // stop logic
@@ -163,7 +163,7 @@ export class EliminationTournament extends Tournament {
         this.generateRound();
       }
     }
-    this.status = Tournament.TournamentStatus.FINISHED;
+    this.status = Tournament.Status.FINISHED;
     return this.state;
   }
 
@@ -304,7 +304,7 @@ export class EliminationTournament extends Tournament {
     this.state.currentRound = round;
     // generate rounds to play
     this.generateFirstRounds();
-    this.status = Tournament.TournamentStatus.INITIALIZED;
+    this.status = Tournament.Status.INITIALIZED;
   }
 
   private generateFirstRounds() {
@@ -373,7 +373,7 @@ export class EliminationTournament extends Tournament {
   }
 
   internalAddPlayer(player: Player) {
-    if (this.status === Tournament.TournamentStatus.INITIALIZED || this.status === Tournament.TournamentStatus.RUNNING)
+    if (this.status === Tournament.Status.INITIALIZED || this.status === Tournament.Status.RUNNING)
     throw new 
       TournamentError('You are not allowed to add a player during the middle or after initialization of elimination tournaments');
   }

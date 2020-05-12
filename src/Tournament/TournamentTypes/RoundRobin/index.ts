@@ -17,7 +17,7 @@ import { Dimension, NanoID } from "../../../Dimension";
 export class RoundRobinTournament extends Tournament {
   configs: Tournament.TournamentConfigs<Tournament.RoundRobin.Configs> = {
     defaultMatchConfigs: {},
-    type: Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
+    type: Tournament.Type.ROUND_ROBIN,
     rankSystem: null,
     rankSystemConfigs: null,
     tournamentConfigs: {
@@ -80,7 +80,7 @@ export class RoundRobinTournament extends Tournament {
       this.addplayer(file);
     });
 
-    this.status = Tournament.TournamentStatus.INITIALIZED;
+    this.status = Tournament.Status.INITIALIZED;
     this.log.info('Initialized Round Robin Tournament');
   }
 
@@ -89,7 +89,7 @@ export class RoundRobinTournament extends Tournament {
    * @param configs - the configs to use for this run
    */
   public async run(configs?: DeepPartial<Tournament.TournamentConfigs<Tournament.RoundRobin.Configs>>) {
-    this.status = Tournament.TournamentStatus.RUNNING;
+    this.status = Tournament.Status.RUNNING;
     this.log.info('Running Tournament');
     this.configs = deepMerge(this.configs, configs, true);
     this.initialize();
@@ -108,7 +108,7 @@ export class RoundRobinTournament extends Tournament {
       let matchInfo = this.matchQueue.shift();
       await this.handleMatch(matchInfo);
     }
-    this.status = Tournament.TournamentStatus.FINISHED;
+    this.status = Tournament.Status.FINISHED;
     return this.state;
   }
 
@@ -195,11 +195,11 @@ export class RoundRobinTournament extends Tournament {
    */
   public stop(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (this.status !== Tournament.TournamentStatus.RUNNING) {
+      if (this.status !== Tournament.Status.RUNNING) {
         throw new TournamentError(`Can't stop a tournament that isn't running`);
       }
       this.log.info('Stopping Tournament...');
-      this.status = Tournament.TournamentStatus.STOPPED;
+      this.status = Tournament.Status.STOPPED;
       this.resumePromise = new Promise((resumeResolve) => {
         this.resumeResolver = resumeResolve;
       });
@@ -212,12 +212,12 @@ export class RoundRobinTournament extends Tournament {
    * Resumes the tournament
    */
   public async resume(): Promise<void> {
-    if (this.status !== Tournament.TournamentStatus.STOPPED) {
+    if (this.status !== Tournament.Status.STOPPED) {
       throw new TournamentError(`Can't resume a tournament that isn't stopped`);
     }
     
     this.log.info('Resuming Tournament...');
-    this.status = Tournament.TournamentStatus.RUNNING;
+    this.status = Tournament.Status.RUNNING;
     this.resumeResolver();
   }
 

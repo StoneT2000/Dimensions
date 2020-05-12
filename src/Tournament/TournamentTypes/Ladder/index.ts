@@ -5,20 +5,21 @@ import { deepMerge } from "../../../utils/DeepMerge";
 import { FatalError, MatchDestroyedError, TournamentError, NotSupportedError } from "../../../DimensionError";
 import { Agent } from "../../../Agent";
 import { Rating, rate, quality, TrueSkill } from "ts-trueskill";
-import LadderState = Tournament.Ladder.State;
-import LadderConfigs = Tournament.Ladder.Configs;
-import LadderPlayerStat = Tournament.Ladder.PlayerStat;
-import RANK_SYSTEM = Tournament.RANK_SYSTEM;
+import LadderState = Ladder.State;
+import LadderConfigs = Ladder.Configs;
+import LadderPlayerStat = Ladder.PlayerStat;
 import { sprintf } from 'sprintf-js';
 import { Logger } from "../../../Logger";
 import { ELOSystem, ELORating } from "../../ELO";
 import { Dimension, NanoID } from "../../../Dimension";
 import { Database } from "../../../Plugin/Database";
+import { RANK_SYSTEM } from "../../RANK_SYSTEM";
+import { TournamentStatus, TOURNAMENT_TYPE } from "../../types";
 
-export class LadderTournament extends Tournament {
+export class Ladder extends Tournament {
   configs: Tournament.TournamentConfigs<LadderConfigs> = {
     defaultMatchConfigs: {},
-    type: Tournament.TOURNAMENT_TYPE.LADDER,
+    type: TOURNAMENT_TYPE.LADDER,
     rankSystem: null,
     rankSystemConfigs: null,
     tournamentConfigs: {
@@ -102,7 +103,7 @@ export class LadderTournament extends Tournament {
       }
     });
 
-    this.status = Tournament.TournamentStatus.INITIALIZED;
+    this.status = TournamentStatus.INITIALIZED;
     this.log.info('Initialized Ladder Tournament');
   }
   public getConfigs(): Tournament.TournamentConfigs<LadderConfigs> {
@@ -152,22 +153,22 @@ export class LadderTournament extends Tournament {
    * Stops the tournament if it was running.
    */
   public async stop() {
-    if (this.status !== Tournament.TournamentStatus.RUNNING) {
+    if (this.status !== TournamentStatus.RUNNING) {
       throw new TournamentError(`Can't stop a tournament that isn't running`);
     }
     this.log.info('Stopping Tournament...');
-    this.status = Tournament.TournamentStatus.STOPPED;
+    this.status = TournamentStatus.STOPPED;
   }
   
   /**
    * Resumes the tournament if it was stopped.
    */
   public async resume() {
-    if (this.status !== Tournament.TournamentStatus.STOPPED) {
+    if (this.status !== TournamentStatus.STOPPED) {
       throw new TournamentError(`Can't resume a tournament that isn't stopped`);
     }
     this.log.info('Resuming Tournament...');
-    this.status = Tournament.TournamentStatus.RUNNING;
+    this.status = TournamentStatus.RUNNING;
     this.tourneyRunner();
   }
 
@@ -181,7 +182,7 @@ export class LadderTournament extends Tournament {
     this.configs = deepMerge(this.configs, configs, true);
     await this.initialize();
     this.schedule();
-    this.status = Tournament.TournamentStatus.RUNNING;
+    this.status = TournamentStatus.RUNNING;
     this.tourneyRunner();
   }
 
@@ -219,14 +220,14 @@ export class LadderTournament extends Tournament {
 
     // as soon as one match finished, call it again
     Promise.race(matchPromises).then(() => {
-      if (this.status == Tournament.TournamentStatus.RUNNING) {
+      if (this.status == TournamentStatus.RUNNING) {
         this.tourneyRunner();
       }
     }).catch((error) => {
       this.log.error(error);
       if (error instanceof MatchDestroyedError) {
         // keep running even if a match is destroyed and the tournament is marked as to keep running
-        if (this.status == Tournament.TournamentStatus.RUNNING) {
+        if (this.status == TournamentStatus.RUNNING) {
           this.tourneyRunner();
         }
       }
@@ -666,5 +667,62 @@ export class LadderTournament extends Tournament {
       });
     }
 
+  }
+}
+
+/**
+ * The Ladder Tournament namespace
+ */
+export namespace Ladder {
+  export type Tournament = Ladder;
+  
+  /**
+   * Configuration interface for {@link LadderTournament}.
+   */
+  export interface Configs extends Tournament.TournamentTypeConfig {
+    /** Max matches that can run concurrently on one node instance 
+     * @default 1
+     */
+    maxConcurrentMatches: number 
+    /** The date to stop running this tournament once it is started. If null, no end date 
+     * @default null
+     */
+    endDate: Date
+    /** The max matches to run before stopping the tournament. If null, then no maximum
+     * @default null
+     */
+    maxTotalMatches: number 
+  }
+  /**
+   * The {@link LadderTournament} state, consisting of the current player statistics and past results
+   */
+  export interface State extends Tournament.TournamentTypeState {
+    /**
+     * A map from a {@link Player} Tournament ID string to statistics
+     */
+    playerStats: Map<NanoID, PlayerStat>
+    
+    /**
+     * Stats for this Tournament in this instance. Intended to be constant memory usage
+     */
+    statistics: {
+      totalMatches: number
+    }
+    currentRanks: Array<{player: Player, rankState: any}>
+    /**
+     * Past results stored. Each element is what is returned by {@link Design.getResults}
+     */
+    results: Array<any>
+  }
+  /**
+   * Player stat interface for ladder tournaments
+   */
+  export interface PlayerStat {
+    player: Player, 
+    wins: number, 
+    ties: number, 
+    losses: number, 
+    matchesPlayed: number, 
+    rankState: any
   }
 }

@@ -13,7 +13,6 @@ import { Design } from '../Design';
 import { RoundRobinTournament } from '../Tournament/TournamentTypes/RoundRobin';
 import { EliminationTournament } from '../Tournament/TournamentTypes/Elimination';
 import { Tournament } from '../Tournament';
-import { LadderTournament } from '../Tournament/TournamentTypes/Ladder';
 
 import { BOT_USER } from '../MatchEngine';
 import { Plugin } from '../Plugin';
@@ -316,13 +315,13 @@ export class Dimension {
       configs = deepMerge({defaultMatchConfigs: dimensionDefaultMatchConfigs}, configs);
       
       switch(configs.type) {
-        case Tournament.TOURNAMENT_TYPE.ROUND_ROBIN:
+        case Tournament.Type.ROUND_ROBIN:
           newTourney = new RoundRobinTournament(this.design, files, configs, id, this);
           break;
-        case Tournament.TOURNAMENT_TYPE.LADDER:
-          newTourney = new LadderTournament(this.design, files, configs, id, this);
+        case Tournament.Type.LADDER:
+          newTourney = new Tournament.Ladder(this.design, files, configs, id, this);
           break;
-        case Tournament.TOURNAMENT_TYPE.ELIMINATION:
+        case Tournament.Type.ELIMINATION:
           newTourney = new EliminationTournament(this.design, files, configs, id, this);
           break;
       }

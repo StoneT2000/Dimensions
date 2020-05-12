@@ -24,6 +24,7 @@ export const BOT_DIR_TEMP = path.join(__dirname, 'local/botstemp');
 declare global {
   namespace Express {
     interface Request {
+      //@ts-ignore
       data: {
         dimension?: Dimension,
         match?: Match,
