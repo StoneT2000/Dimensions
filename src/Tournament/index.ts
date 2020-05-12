@@ -388,10 +388,19 @@ export module Tournament {
   export import Type = _TOURNAMENT_TYPE;
   export import Status = _TournamentStatus;
 
-  // /**
-  //  * @deprecated
-  //  */
-  // export import TOURNAMENT_TYPE = _TOURNAMENT_TYPE;
+  /**
+   * @deprecated since v2.1.0 
+   * 
+   * Use {@link Tournament.Type} instead.
+   */
+  export import TOURNAMENT_TYPE = _TOURNAMENT_TYPE;
+
+  /**
+   * @deprecated since v2.1.0 
+   * 
+   * Use {@link Tournament.Status} instead.
+   */
+  export import TournamentStatus = _TournamentStatus;
 
   /**
    * Required and Optional Tournament configurations
