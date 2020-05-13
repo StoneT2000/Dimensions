@@ -81,15 +81,15 @@ router.get('/:tournamentID/matchQueue', (req, res) => {
  */
 router.post('/:tournamentID/run', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    if (req.data.tournament.status === Tournament.TournamentStatus.INITIALIZED) {
+    if (req.data.tournament.status === Tournament.Status.INITIALIZED) {
       await req.data.tournament.run();
       res.json({error: null, msg:'Running Tournament'})
     }
-    else if (req.data.tournament.status === Tournament.TournamentStatus.STOPPED) {
+    else if (req.data.tournament.status === Tournament.Status.STOPPED) {
       await req.data.tournament.resume();
       res.json({error: null, msg:'Running Tournament'})
     }
-    else if (req.data.tournament.status === Tournament.TournamentStatus.RUNNING) {
+    else if (req.data.tournament.status === Tournament.Status.RUNNING) {
       return next(new error.BadRequest('Tournament is already running'));
     }
     else {
@@ -106,7 +106,7 @@ router.post('/:tournamentID/run', async (req: Request, res: Response, next: Next
  * Stops a tournament if it isn't stopped
  */
 router.post('/:tournamentID/stop', async (req: Request, res: Response, next: NextFunction) => {
-  if (req.data.tournament.status !== Tournament.TournamentStatus.RUNNING) {
+  if (req.data.tournament.status !== Tournament.Status.RUNNING) {
     return next(new error.BadRequest(`Can't stop a tournament that isn't running`));
   }
   // stop the tournament

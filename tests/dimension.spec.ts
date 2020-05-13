@@ -27,31 +27,31 @@ describe('Testing Dimension Class', () => {
       loggingLevel: Logger.LEVEL.NONE
     });
     let tourney = d.createTournament(['abc', 'def'], {
-      type: Tournament.TOURNAMENT_TYPE.LADDER,
+      type: Tournament.Type.LADDER,
       agentsPerMatch: [2],
-      rankSystem: Tournament.RANK_SYSTEM.ELO,
+      rankSystem: Tournament.RankSystem.ELO,
       resultHandler: () => {}
     });
-    expect(tourney.configs.type).to.be.eql(Tournament.TOURNAMENT_TYPE.LADDER);
-    expect(tourney.configs.rankSystem).to.be.eql(Tournament.RANK_SYSTEM.ELO);
+    expect(tourney.configs.type).to.be.eql(Tournament.Type.LADDER);
+    expect(tourney.configs.rankSystem).to.be.eql(Tournament.RankSystem.ELO);
 
     tourney = d.createTournament([], {
-      type: Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
+      type: Tournament.Type.ROUND_ROBIN,
       agentsPerMatch: [2],
-      rankSystem: Tournament.RANK_SYSTEM.WINS,
+      rankSystem: Tournament.RankSystem.WINS,
       resultHandler: () => {}
     });
-    expect(tourney.configs.type).to.be.eql(Tournament.TOURNAMENT_TYPE.ROUND_ROBIN);
-    expect(tourney.configs.rankSystem).to.be.eql(Tournament.RANK_SYSTEM.WINS);
+    expect(tourney.configs.type).to.be.eql(Tournament.Type.ROUND_ROBIN);
+    expect(tourney.configs.rankSystem).to.be.eql(Tournament.RankSystem.WINS);
 
     tourney = d.createTournament([], {
-      type: Tournament.TOURNAMENT_TYPE.ELIMINATION,
+      type: Tournament.Type.ELIMINATION,
       agentsPerMatch: [2],
-      rankSystem: Tournament.RANK_SYSTEM.WINS,
+      rankSystem: Tournament.RankSystem.WINS,
       resultHandler: () => {}
     });
-    expect(tourney.configs.type).to.be.eql(Tournament.TOURNAMENT_TYPE.ELIMINATION);
-    expect(tourney.configs.rankSystem).to.be.eql(Tournament.RANK_SYSTEM.WINS);
+    expect(tourney.configs.type).to.be.eql(Tournament.Type.ELIMINATION);
+    expect(tourney.configs.rankSystem).to.be.eql(Tournament.RankSystem.WINS);
   });
   it('shouldn\'t be able to remove non-existent matches', () => {
     let dominationDesign = new DominationDesign('Domination');

@@ -268,8 +268,8 @@ let botSources = [simpleBot, simpleBot, simpleBot, simpleBot, simpleBot];
 
 let RPSTournament = myDimension.createTournament(botSources, {
   name: 'A Best of 329 Rock Paper Scissors Tournament', // give it a name
-  type: Tournament.TOURNAMENT_TYPE.LADDER, // Create a Ladder Tournament
-  rankSystem: Tournament.RANK_SYSTEM.TRUESKILL, // Use Trueskill to rank bots
+  type: Tournament.Type.LADDER, // Create a Ladder Tournament
+  rankSystem: Tournament.RankSystem.TRUESKILL, // Use Trueskill to rank bots
   agentsPerMatch: [2], // specify how many bots can play at a time
   defaultMatchConfigs: {
     bestOf: 329

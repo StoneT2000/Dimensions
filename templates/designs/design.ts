@@ -95,8 +95,8 @@ export class MyDesign extends Dimension.Design {
   // It's recommended to write result handlers for the different rank systems so that people using the design
   // can run tournaments with it
 
-  // result handler for RANK_SYSTEM.WINS 
-  static winsResultHandler(results: MyMatchResults): Tournament.RANK_SYSTEM.WINS.Results {
+  // result handler for RankSystem.WINS 
+  static winsResultHandler(results: MyMatchResults): Tournament.RankSystem.WINS.Results {
     let winners = []; let ties = []; let losers = [];
     // push the numerical agent ids of the winners, tied players, and losers into the arrays and return them
     return {
@@ -106,8 +106,8 @@ export class MyDesign extends Dimension.Design {
     }
   }
 
-  // result handler for RANK_SYSTEM.TRUESKILL
-  static trueskillResultHandler(results: MyMatchResults): Tournament.RANK_SYSTEM.TRUESKILL.Results {
+  // result handler for RankSystem.TRUESKILL
+  static trueskillResultHandler(results: MyMatchResults): Tournament.RankSystem.TRUESKILL.Results {
     let rankings = [];
     for (let i = 0; i < results.ranks.length; i++) {
       let info = results.ranks[i];

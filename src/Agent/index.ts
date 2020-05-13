@@ -38,7 +38,7 @@ export class Agent {
 
   /**
    * Name of the agent
-   * @default `agent_[agent.id]``
+   * @default `agent_[agent.id]`
    */
   public name: string;
 

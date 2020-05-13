@@ -548,7 +548,7 @@ export class MatchEngine {
    * @param match - the match to parse arguments for
    * @param args - the arguments to parse
    */
-  private parseCustomArguments(match: Match, args: Array<string | DDS>): Array<string> {
+  private parseCustomArguments(match: Match, args: Array<string | MatchEngine.DynamicDataStrings>): Array<string> {
 
     if (match.matchStatus === Match.Status.UNINITIALIZED) {
       throw new FatalError(`Match ${match.id} - ${match.name} is not initialized yet`);
@@ -558,29 +558,29 @@ export class MatchEngine {
     
     for (let i = 0; i < args.length; i++) {
       switch(args[i]) {
-        case DDS.D_FILES:
+        case MatchEngine.DynamicDataStrings.D_FILES:
           match.agents.forEach((agent) => {
             parsed.push(agent.file);
           });
           break;
-        case DDS.D_TOURNAMENT_IDS:
+        case MatchEngine.DynamicDataStrings.D_TOURNAMENT_IDS:
           match.agents.forEach((agent) => {
             // pass in tournament ID string if it exists, otherwise pass in 0
             parsed.push(agent.tournamentID.id ? agent.tournamentID : '0');
           });
           break;
-        case DDS.D_AGENT_IDS:
+        case MatchEngine.DynamicDataStrings.D_AGENT_IDS:
           match.agents.forEach((agent) => {
             parsed.push(agent.id);
           });
           break;
-        case DDS.D_MATCH_ID:
+        case MatchEngine.DynamicDataStrings.D_MATCH_ID:
           parsed.push(match.id);
           break;
-        case DDS.D_MATCH_NAME:
+        case MatchEngine.DynamicDataStrings.D_MATCH_NAME:
           parsed.push(match.name);
           break;
-        case DDS.D_NAMES:
+        case MatchEngine.DynamicDataStrings.D_NAMES:
           match.agents.forEach((agent) => {
             let parsedName = agent.name;
             parsedName = parsedName.replace('/', '-');
@@ -774,20 +774,21 @@ export module MatchEngine {
    */
   export enum DynamicDataStrings {
     /**
-     * D_FILES is automatically populated by a space seperated string list of the file paths provided for each of the 
+     * `D_FILES` is automatically populated by a space seperated string list of the file paths provided for each of the 
      * agents competing in a match. 
+     * 
      * NOTE, these paths don't actually need to be files, they can be directories or anything that works with 
      * your own command and design
      * 
-     * @example Suppose the paths to the sources the agents operate on are `path1, path2, path3`. Then `D_FILES` will 
-     * be passed into your command as `path1 path2 path3`
+     * @example Suppose the paths to the sources the agents operate on are `path1`, `path2`, `path3`. Then `D_FILES` 
+     * will be passed into your command as `path1 path2 path3`
      */
     D_FILES = 'D_FILES',
 
     /**
-     * D_AGENT_IDS is automatically populated by a space seperated string list of the agent IDs of every agent being
+     * `D_AGENT_IDS` is automatically populated by a space seperated string list of the agent IDs of every agent being
      * loaded into a match in the same order as D_FILES. This should always be sorted by default as agents are loaded
-     * in order from agent ID `0` to agent ID `n`
+     * in order from agent ID `0` to agent ID `n-1`in a `n` agent match
      * 
      * @example Suppose a match is running with agents with IDs `0, 1, 2, 3`. Then `D_AGENT_IDS` will be passed into 
      * your command as `0 1 2 3`
@@ -795,19 +796,19 @@ export module MatchEngine {
     D_AGENT_IDS = 'D_AGENT_IDS',
 
     /**
-     * D_TOURNAMENT_IDS is automatically populated by a space seperated string list of the tournament ID numbers of
+     * `D_TOURNAMENT_IDS` is automatically populated by a space seperated string list of the tournament ID numbers of
      * the agents being loaded into the match in the same order. If no tournament is being run all the ID numbers will 
      * default to 0 but still be passed in to the command you give for the override configurations
      * 
-     * @example Suppose a match in a tournament with ID 0 is running 4 agents with tournament IDs t0_1, t0_9, t0_11, 
-     * t0_15. Then `D_TOURNAMENT_IDS` will be passed into your command as `t0_1 t0_0 t0_11 t0_15`
+     * @example Suppose a match in a tournament is running 2 agents with tournament IDs `Qb6NyTxufGGU`, `EGg3tSN2KUgl`
+     * Then `D_TOURNAMENT_IDS` will be passed into your command as `Qb6NyTxufGGU EGg3tSN2KUgl`
      */
     D_TOURNAMENT_IDS = 'D_TOURNAMENT_IDS',
 
     /**
      * D_MATCH_ID is automatically replaced with the id of the match being run
      * 
-     * @example Suppose the match has ID 12, then `D_MATCH_ID` is passed into your command as `12`
+     * @example Suppose the match has ID `eF1uEacgfgMm`, then `D_MATCH_ID` is passed into your command as `eF1uEacgfgMm`
      */
     D_MATCH_ID = 'D_MATCH_ID',
 
@@ -828,10 +829,7 @@ export module MatchEngine {
   }
 }
 
-/** name of the bot user that owns the agent's process @ignore */
+/** name of the bot user that owns the agent's process */
 export const BOT_USER = 'dimensions_bot';
-/** root @ignore */
-export const ROOT_USER = 'root';
-
 /** @ignore */
-import DDS = MatchEngine.DynamicDataStrings;
+export const ROOT_USER = 'root';

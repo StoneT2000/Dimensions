@@ -321,8 +321,8 @@ myDimension.runMatch(
 
 let tourney = myDimension.createTournament(['./bots/js/smarter.js', './bots/python/rock.py', './bots/js/paper.js', './bots/js/rock.js'], {
   name: 'RPS Best of 101 Tournament',
-  type: Dimension.Tournament.TOURNAMENT_TYPE.LADDER, // run a round robin tournament
-  rankSystem: Dimension.Tournament.RANK_SYSTEM.TRUESKILL, // use a win/loss/ties based ranking
+  type: Dimension.Tournament.Type.LADDER, // run a round robin tournament
+  rankSystem: Dimension.Tournament.rankSystem.TRUESKILL, // use a win/loss/ties based ranking
   agentsPerMatch: [2], // specify design can only have 2 players at a time
   resultHandler: RockPaperScissorsDesign.trueskillResultHandler, // give a result handler
   defaultMatchConfigs: {
