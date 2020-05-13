@@ -346,12 +346,7 @@ export class RoundRobin extends Tournament {
  * The RoundRobin Tournament namespace
  */
 export namespace RoundRobin {
-  /**
-   * @deprecated since v2.1.0 
-   * 
-   * Use {@link Tournament.RoundRobin} as the type instead
-   */
-  export type Tournament = RoundRobin
+
   /**
    * Configuration interface for {@link RoundRobinTournament}
    */

@@ -681,13 +681,6 @@ export class Ladder extends Tournament {
 export namespace Ladder {
   
   /**
-   * @deprecated since v2.1.0 
-   * 
-   * Use {@link Tournament.Ladder} as the type instead
-   */
-  export type Tournament = Ladder;
-  
-  /**
    * Configuration interface for {@link LadderTournament}.
    */
   export interface Configs extends Tournament.TournamentTypeConfig {

@@ -392,13 +392,6 @@ export class Elimination extends Tournament {
 export namespace Elimination {
 
   /**
-   * @deprecated since v2.1.0 
-   * 
-   * Use {@link Tournament.Elimination} as the type instead
-   */
-  export type Tournament = Elimination
-
-  /**
    * Configuration interface for {@link EliminationTournament}
    */
   export interface Configs extends Tournament.TournamentTypeConfig {
