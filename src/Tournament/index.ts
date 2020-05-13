@@ -5,19 +5,19 @@ import { FatalError, MatchError, TournamentError } from '../DimensionError'
 import { DeepPartial } from '../utils/DeepPartial';
 import { Logger } from '../Logger';
 
-import { RankSystem } from './RankSystem';
+import RankSystemDefault = require('./RankSystem');
 import { deepCopy } from '../utils/DeepCopy';
 import { Dimension, NanoID } from '../Dimension';
 import { genID } from '../utils';
-import { TournamentStatus } from './TournamentStatus';
-import { TournamentType } from './TournamentTypes';
+import TournamentStatusDefault = require('./TournamentStatus');
+import TournamentTypeDefault = require('./TournamentTypes');
 
 /** @ignore */
-import _RankSystem = RankSystem;
+import _RankSystem = RankSystemDefault.RankSystem;
 /** @ignore */
-import _TOURNAMENT_TYPE = TournamentType;
+import _TOURNAMENT_TYPE = TournamentTypeDefault.TournamentType;
 /** @ignore */
-import _TournamentStatus = TournamentStatus;
+import _TournamentStatus = TournamentStatusDefault.TournamentStatus;
 
 /**
  * Player class that persists data for the same ephemereal agent across multiple matches
@@ -379,15 +379,15 @@ export abstract class Tournament {
 }
 
 // some imports moved to here to avoid circular issues with using values
-import { Ladder } from './Ladder';
+import LadderDefault = require('./Ladder');
 /** @ignore */
-import LadderTournament = Ladder;
-import { RoundRobin } from './RoundRobin';
+import LadderTournament = LadderDefault.Ladder;
+import RoundRobinDefault = require('./RoundRobin');
 /** @ignore */
-import RoundRobinTournament = RoundRobin;
-import { Elimination } from './Elimination';
+import RoundRobinTournament = RoundRobinDefault.RoundRobin;
+import EliminationDefault = require('./Elimination');
 /** @ignore */
-import EliminationTournament = Elimination;
+import EliminationTournament = EliminationDefault.Elimination;
 
 export module Tournament {
 
