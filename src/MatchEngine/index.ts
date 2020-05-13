@@ -359,7 +359,7 @@ export class MatchEngine {
    * @param agent - the agent to kill off
    */
   public async kill(agent: Agent) {
-    agent._terminate();
+    await agent._terminate();
     agent._currentMoveResolve();
     this.log.system(`Killed off agent ${agent.id} - ${agent.name}`);
   }

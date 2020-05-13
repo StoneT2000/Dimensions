@@ -352,9 +352,6 @@ export class Agent {
         case '.js':
         case '.php':
           let p = this._spawnProcess(this.cmd, [this.src]);
-          // set root as the owner again
-        
-          // execSync(`sudo chown -R ${ROOT_USER} ${this.cwd}`);
           return p;
         case '.ts':
           return this._spawnProcess(this.cmd, [this.srcNoExt + '.js']);
@@ -383,7 +380,7 @@ export class Agent {
         let p = spawn('sudo', ['-H', '-u', BOT_USER, command, ...args], {
           cwd: this.cwd,
           detached: true,
-        }).on('error', (err) => { reject(err) });
+        }).on('error', (err) => { reject(err) })
         resolve(p);
         
       }
@@ -407,19 +404,22 @@ export class Agent {
   /**
    * Terminates this agent by stopping all related processes and remove any temporary directory
    */
-  _terminate() {
-
-    try {
-      treekill(this.process.pid, 'SIGKILL');
-    }
-    catch(err) {
-      this.log.error(err.message);
-    }
-
-    this._clearTimer();
-    clearInterval(this.memoryWatchInterval);
-    
+  _terminate(): Promise<void> {
     this.status = Agent.Status.KILLED;
+    return new Promise((resolve, reject) => {
+      
+      treekill(this.process.pid, 'SIGKILL', (err) => {
+        this._clearTimer();
+        clearInterval(this.memoryWatchInterval);
+
+        if (err) {
+          reject(err);
+        }
+        else {
+          resolve();
+        }
+      });
+    });
   }
 
   /**

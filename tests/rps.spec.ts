@@ -254,6 +254,7 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
       expect(match.resume()).to.be.rejectedWith(MatchWarn);
       await match.stop();
       expect(match.stop()).to.be.rejectedWith(MatchWarn);
+      await match.resume();
     });
   });
 
