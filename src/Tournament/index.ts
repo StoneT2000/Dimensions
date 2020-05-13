@@ -1,19 +1,21 @@
 import { Match } from '../Match';
 import { Design } from '../Design';
-import { FatalError, MatchError, TournamentError } from '../DimensionError';
-import { RoundRobinTournament } from './TournamentTypes/RoundRobin';
-import { EliminationTournament } from './TournamentTypes/Elimination';
+import { FatalError, MatchError, TournamentError } from '../DimensionError'
+
 import { DeepPartial } from '../utils/DeepPartial';
 import { Logger } from '../Logger';
 
-import { RANK_SYSTEM as _RANK_SYSTEM } from './RANK_SYSTEM';
+import { RankSystem } from './RankSystem';
 import { deepCopy } from '../utils/DeepCopy';
-import { Dimension, DatabaseType, NanoID } from '../Dimension';
+import { Dimension, NanoID } from '../Dimension';
 import { genID } from '../utils';
-import { TOURNAMENT_TYPE, TournamentStatus } from './types';
+import { TournamentStatus } from './TournamentStatus';
+import { TournamentType } from './TournamentTypes';
 
 /** @ignore */
-import _TOURNAMENT_TYPE = TOURNAMENT_TYPE;
+import _RankSystem = RankSystem;
+/** @ignore */
+import _TOURNAMENT_TYPE = TournamentType;
 /** @ignore */
 import _TournamentStatus = TournamentStatus;
 
@@ -45,8 +47,8 @@ export class Player {
 
 
 /**
- * The tournament class extended by all concrete Tournament Classes. Tournament Types available now are
- * {@link RoundRobinTournament}, {@link LadderTournament}, {@link EliminationTournament}
+ * The tournament class and module extended by all concrete Tournament Classes. Tournament Types available now are
+ * {@link RoundRobin}, {@link Ladder}, {@link Elimination}
  */
 export abstract class Tournament {
 
@@ -56,7 +58,7 @@ export abstract class Tournament {
   /** Mapping match ids to active ongoing matches */
   public matches: Map<NanoID, Match> = new Map();
 
-  /** A queue whose elements are each arrays of player that are to compete against each other */
+  /** A queue whose elements are each arrays of players that are to compete against each other */
   public matchQueue: Array<Array<Player>> = [];
   
   /** The current status of the tournament */
@@ -377,16 +379,29 @@ export abstract class Tournament {
 }
 
 // some imports moved to here to avoid circular issues with using values
-import { Ladder } from './TournamentTypes/Ladder';
+import { Ladder } from './Ladder';
+/** @ignore */
 import LadderTournament = Ladder;
+import { RoundRobin } from './RoundRobin';
+/** @ignore */
+import RoundRobinTournament = RoundRobin;
+import { Elimination } from './Elimination';
+/** @ignore */
+import EliminationTournament = Elimination;
 
-/**
- * The Tournament module with all tournament related classes, enums, and interfaces
- */
 export module Tournament {
 
+  // Re-export some types
   export import Type = _TOURNAMENT_TYPE;
   export import Status = _TournamentStatus;
+  export import RankSystem = _RankSystem;
+
+  /**
+   * @deprecated since v2.1.0
+   * 
+   * Use {@link Tournament.RankSystem} instead
+   */
+  export import RANK_SYSTEM = _RankSystem;
 
   /**
    * @deprecated since v2.1.0 
@@ -413,18 +428,18 @@ export module Tournament {
     /**
      * The tournament type to run. See {@link TOURNAMENT_TYPE}
      */
-    type: TOURNAMENT_TYPE,
+    type: Type,
     /**
-     * The ranking system to use for this tournament. See {@link RANK_SYSTEM}
+     * The ranking system to use for this tournament
      */
-    rankSystem: RANK_SYSTEM,
+    rankSystem: RankSystem,
 
     /**
      * The result handler for returning the appropriate results to the tournament for processing.
      * 
      * To find what kind of result should be returned, find the Results interface for the rank system you are using. 
      * 
-     * Example: For {@link RANK_SYSTEM.TRUESKILL}, go to {@link RANK_SYSTEM.TRUESKILL.Results}
+     * Example: For {@link Tournament.RankSystem.TRUESKILL}, go to {@link Tournament.RankSystem.TRUESKILL.Results}
      */
     resultHandler: 
     /**
@@ -433,8 +448,8 @@ export module Tournament {
     (results: any) => any
 
     /**
-     * The configurations for a specified rank system. For example, see {@link RANK_SYSTEM.WINS.Configs}, 
-     * {@link RANK_SYSTEM.TRUESKILL.Configs}
+     * The configurations for a specified rank system. For example, see {@link RankSystem.WINS.Configs}, 
+     * {@link RankSystem.TRUESKILL.Configs}
      */
     rankSystemConfigs?: any,
 
@@ -450,7 +465,7 @@ export module Tournament {
 
     /**
      * Tournament configurations. Dependent on the type of tournament chosen
-     * Example: For {@link RoundRobin.Tournament}, go to {@link RoundRobin.Configs}
+     * Example: For {@link RoundRobin}, go to {@link RoundRobin.Configs}
      */
     tournamentConfigs?: any
 
@@ -501,104 +516,11 @@ export module Tournament {
     /** A display name */
     name: string
   }
-  
-  /**
-   * The RoundRobin Tournament namespace
-   */
-  export namespace RoundRobin {
-    export type Tournament = RoundRobinTournament
-    /**
-     * Configuration interface for {@link RoundRobinTournament}
-     */
-    export interface Configs extends Tournament.TournamentTypeConfig {
-      /**
-       * Number of times each player competes against another player
-       * @default `2`
-       */
-      times: number
-    }
-    /**
-     * The {@link RoundRobinTournament} state, consisting of the current player statistics and past results
-     */
-    export interface State extends Tournament.TournamentTypeState {
-      /**
-       * A map from a {@link Player} Tournament ID string to statistics
-       */
-      playerStats: Map<string, {player: Player, wins: number, ties: number, losses: number, matchesPlayed: number}>
-      
-      /**
-       * Stats for this Tournament in this instance. Intended to be constant memory usage
-       */
-      statistics: {
-        totalMatches: number
-      }
-      /**
-       * Past results stored. Each element is what is returned by {@link Design.getResults}
-       */
-      results: Array<any>
-    }
-  }
 
-  /**
-   * The Elimination Tournament namespace
-   */
-  export namespace Elimination {
-    export type Tournament = EliminationTournament
-    /**
-     * Configuration interface for {@link EliminationTournament}
-     */
-    export interface Configs extends Tournament.TournamentTypeConfig {
-      /**
-       * Number of times the elimination tournament runs
-       * @default `2`
-       */
-      times: number,
-      /**
-       * Number of times a player can lose before being eliminated. Can be 1 for single elimination. 2 for double 
-       * elimination is not implemented yet
-       * @default `1`
-       */
-      lives: 1,
-
-      /**
-       * The seeding of the competitors in the order they are loaded. 
-       * When set to null, no seeds are used. When the ith array element is null, the ith competitor loaded, which has * tournament ID of i, does not have a seed.
-       * @default `null`
-       */
-      seeding: Array<number>
-    }
-    /**
-     * The {@link EliminationTournament} state, consisting of the current player statistics and past results
-     */
-    export interface State extends Tournament.TournamentTypeState {
-      /**
-       * A map from a {@link Player} Tournament ID string to statistics
-       */
-      playerStats: Map<string, {player: Player, wins: number, losses: number, matchesPlayed: number, seed: number, rank: number}>
-      
-      /**
-       * Stats for this Tournament in this instance. Intended to be constant memory usage
-       */
-      statistics: {
-        totalMatches: number
-      }
-
-      currentRound: number
-      /**
-       * Past results stored. Each element is what is returned by {@link Design.getResults}
-       */
-      results: Array<any>
-
-      /**
-       * A match hash in the tournament indicating what seeds are meant to compete against each other.
-       * This maps a match hash to the result at the part of the tournament, indicating who won and lost
-       */
-      resultsMap: Map<string, {winner: Player, loser: Player}>
-    }
-  }
-  
-  export import RANK_SYSTEM = _RANK_SYSTEM;
+  // Re-export tournament classes/namespaces
   export import Ladder = LadderTournament; 
+  export import RoundRobin = RoundRobinTournament;
+  export import Elimination = EliminationTournament;
 }
 
 

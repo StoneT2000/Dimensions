@@ -10,8 +10,6 @@ import { Match } from '../Match';
 import { Station } from '../Station';
 import { FatalError, MissingFilesError, NotSupportedError } from '../DimensionError';
 import { Design } from '../Design';
-import { RoundRobinTournament } from '../Tournament/TournamentTypes/RoundRobin';
-import { EliminationTournament } from '../Tournament/TournamentTypes/Elimination';
 import { Tournament } from '../Tournament';
 
 import { BOT_USER } from '../MatchEngine';
@@ -316,13 +314,13 @@ export class Dimension {
       
       switch(configs.type) {
         case Tournament.Type.ROUND_ROBIN:
-          newTourney = new RoundRobinTournament(this.design, files, configs, id, this);
+          newTourney = new Tournament.RoundRobin(this.design, files, configs, id, this);
           break;
         case Tournament.Type.LADDER:
           newTourney = new Tournament.Ladder(this.design, files, configs, id, this);
           break;
         case Tournament.Type.ELIMINATION:
-          newTourney = new EliminationTournament(this.design, files, configs, id, this);
+          newTourney = new Tournament.Elimination(this.design, files, configs, id, this);
           break;
       }
       this.statistics.tournamentsCreated++;

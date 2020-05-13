@@ -157,7 +157,7 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
   <span class="hljs-keyword">async</span> update(match, commands) {
     ...
   }
-  <span class="hljs-keyword">async</span> <span class="hljs-keyword">get</span><span class="hljs-title">Results</span>(<span class="hljs-params">match</span>) {
+  <span class="hljs-keyword">async</span> getResults(match) {
     ...
   }
 }</code></pre>
@@ -186,7 +186,7 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
       <span class="hljs-keyword">return</span> Match.Status.FINISHED;
     }
   }
-  <span class="hljs-keyword">async</span> <span class="hljs-keyword">get</span><span class="hljs-title">Results</span>(<span class="hljs-params">match</span>) {
+  <span class="hljs-keyword">async</span> getResults(match) {
     <span class="hljs-keyword">let</span> results = {}
     ... <span class="hljs-comment">// determine results</span>
     <span class="hljs-keyword">return</span> results; <span class="hljs-comment">// return them</span>
@@ -425,22 +425,25 @@ myDimension.use(mongo)</code></pre>
 						<a href="modules/_tournament_elo_index_.html">&quot;<wbr>Tournament/ELO/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_tournament_rank_system_index_.html">&quot;<wbr>Tournament/RANK_<wbr>SYSTEM/index&quot;</a>
+						<a href="modules/_tournament_elimination_index_.html">&quot;<wbr>Tournament/<wbr>Elimination/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_tournament_tournamenttypes_elimination_index_.html">&quot;<wbr>Tournament/<wbr>Tournament<wbr>Types/<wbr>Elimination/index&quot;</a>
+						<a href="modules/_tournament_ladder_index_.html">&quot;<wbr>Tournament/<wbr>Ladder/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_tournament_tournamenttypes_ladder_index_.html">&quot;<wbr>Tournament/<wbr>Tournament<wbr>Types/<wbr>Ladder/index&quot;</a>
+						<a href="modules/_tournament_ranksystem_index_.html">&quot;<wbr>Tournament/<wbr>Rank<wbr>System/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_tournament_tournamenttypes_roundrobin_index_.html">&quot;<wbr>Tournament/<wbr>Tournament<wbr>Types/<wbr>Round<wbr>Robin/index&quot;</a>
+						<a href="modules/_tournament_roundrobin_index_.html">&quot;<wbr>Tournament/<wbr>Round<wbr>Robin/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_tournament_tournamentstatus_index_.html">&quot;<wbr>Tournament/<wbr>Tournament<wbr>Status/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_tournament_tournamenttypes_index_.html">&quot;<wbr>Tournament/<wbr>Tournament<wbr>Types/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_tournament_index_.html">&quot;<wbr>Tournament/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_tournament_types_.html">&quot;<wbr>Tournament/types&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_index_.html">&quot;index&quot;</a>
