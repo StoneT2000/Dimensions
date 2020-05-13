@@ -271,8 +271,8 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
 
 <span class="hljs-keyword">let</span> RPSTournament = myDimension.createTournament(botSources, {
   <span class="hljs-attr">name</span>: <span class="hljs-string">'A Best of 329 Rock Paper Scissors Tournament'</span>, <span class="hljs-comment">// give it a name</span>
-  <span class="hljs-attr">type</span>: Tournament.TOURNAMENT_TYPE.LADDER, <span class="hljs-comment">// Create a Ladder Tournament</span>
-  <span class="hljs-attr">rankSystem</span>: Tournament.RANK_SYSTEM.TRUESKILL, <span class="hljs-comment">// Use Trueskill to rank bots</span>
+  <span class="hljs-attr">type</span>: Tournament.Type.LADDER, <span class="hljs-comment">// Create a Ladder Tournament</span>
+  <span class="hljs-attr">rankSystem</span>: Tournament.RankSystem.TRUESKILL, <span class="hljs-comment">// Use Trueskill to rank bots</span>
   <span class="hljs-attr">agentsPerMatch</span>: [<span class="hljs-number">2</span>], <span class="hljs-comment">// specify how many bots can play at a time</span>
   <span class="hljs-attr">defaultMatchConfigs</span>: {
     <span class="hljs-attr">bestOf</span>: <span class="hljs-number">329</span>
