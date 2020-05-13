@@ -12,7 +12,7 @@ let pathtorunner = './tests/bh20files/run_game.sh'
 
 let bh2020 = Dimension.Design.createCustom('bh2020trueskill', {
   resultHandler: (res) => {
-    let results: Dimension.Tournament.RANK_SYSTEM.TRUESKILL.Results;
+    let results: Dimension.Tournament.RankSystem.TRUESKILL.Results;
     if (res[0] === 'Team.WHITE wins!') {
       return {ranks: [{rank: 1, agentID: 0}, {rank: 2, agentID: 1}]};
     }
@@ -41,15 +41,15 @@ let pathToEmptyBot = 'tests/bh20files/emptybot'
 let botlist = [{file: pathToExampleFuncs, name: 'example_1'}, {file: pathToEmptyBot, name: 'empty_1'}];
 
 let tourney = battlecodeDimension.createTournament(botlist, {
-  type: Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
+  type: Tournament.Type.ROUND_ROBIN,
   name: 'The \'real\' Battle hack 2020 leaderboard',
-  rankSystem: Tournament.RANK_SYSTEM.WINS,
+  rankSystem: Tournament.RankSystem.WINS,
   consoleDisplay: false,
   defaultMatchConfigs: {
     loggingLevel: Logger.LEVEL.NONE
   },
   resultHandler: (res) => {
-    let results: Dimension.Tournament.RANK_SYSTEM.WINS.Results;
+    let results: Dimension.Tournament.RankSystem.WINS.Results;
     if (res.ranks[0].rank === 1) {
       return {winners: [res.ranks[0].agentID], losers: [res.ranks[1].agentID], ties: []};
     }

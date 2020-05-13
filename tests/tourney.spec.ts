@@ -65,14 +65,14 @@ describe('Tournament Testing with RPS', () => {
     beforeEach(() => {
       
       DefaultRPSTournament = <Dimension.Tournament.RoundRobin.Tournament>myDimension.createTournament(players, {
-        type: Dimension.Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
-        rankSystem: Dimension.Tournament.RANK_SYSTEM.WINS,
+        type: Dimension.Tournament.Type.ROUND_ROBIN,
+        rankSystem: Dimension.Tournament.RankSystem.WINS,
         resultHandler: RockPaperScissorsDesign.winsResultHandler,
         agentsPerMatch: [2],
       });
       RPSTournament = <Dimension.Tournament.RoundRobin.Tournament>myDimension.createTournament(filesAndNames, {
-        type: Dimension.Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
-        rankSystem: Dimension.Tournament.RANK_SYSTEM.WINS,
+        type: Dimension.Tournament.Type.ROUND_ROBIN,
+        rankSystem: Dimension.Tournament.RankSystem.WINS,
         name: 'Rock Paper Scissors',
         loggingLevel: Dimension.Logger.LEVEL.NONE,
         agentsPerMatch: [2],
@@ -137,8 +137,8 @@ describe('Tournament Testing with RPS', () => {
       });
       it('should run be able to stop and resume a tourney and handle errors', (done) => {
         let t = <Dimension.Tournament.RoundRobin.Tournament>myDimension.createTournament(filesAndNames, {
-          type: Dimension.Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
-          rankSystem: Dimension.Tournament.RANK_SYSTEM.WINS,
+          type: Dimension.Tournament.Type.ROUND_ROBIN,
+          rankSystem: Dimension.Tournament.RankSystem.WINS,
           name: 'Rock Paper Scissors',
           loggingLevel: Dimension.Logger.LEVEL.NONE,
           agentsPerMatch: [2],
@@ -166,8 +166,8 @@ describe('Tournament Testing with RPS', () => {
         loggingLevel: Dimension.Logger.LEVEL.WARN
       });
       EliminationTourney = myDimension.createTournament(filesAndNames, {
-        type: Dimension.Tournament.TOURNAMENT_TYPE.ELIMINATION,
-        rankSystem: Dimension.Tournament.RANK_SYSTEM.WINS,
+        type: Dimension.Tournament.Type.ELIMINATION,
+        rankSystem: Dimension.Tournament.RankSystem.WINS,
         name: 'Rock Paper Scissors Elim Tourney',
         loggingLevel: Dimension.Logger.LEVEL.NONE,
         agentsPerMatch: [2],
@@ -198,7 +198,7 @@ describe('Tournament Testing with RPS', () => {
   describe('Trueskill Ladder', () => {
     let RPSTrueskillLadder: Dimension.Tournament.Ladder.Tournament;
     let RPSTrueskillLadderConfigTests: Dimension.Tournament.Ladder.Tournament;
-    let trueskillConfigs: DeepPartial<Tournament.RANK_SYSTEM.TRUESKILL.Configs> = {};
+    let trueskillConfigs: DeepPartial<Tournament.RankSystem.TRUESKILL.Configs> = {};
     let defaultMatchConfigsTests = {
       bestOf: 1000,
       loggingLevel: Dimension.Logger.LEVEL.WARN
@@ -221,8 +221,8 @@ describe('Tournament Testing with RPS', () => {
       trueskillConfigs.initialMu = 100;
       trueskillConfigs.initialSigma = 15;
       RPSTrueskillLadderConfigTests = <Dimension.Tournament.Ladder.Tournament>myDimension.createTournament(filesAndNames, {
-        type: Dimension.Tournament.TOURNAMENT_TYPE.LADDER,
-        rankSystem: Dimension.Tournament.RANK_SYSTEM.TRUESKILL,
+        type: Dimension.Tournament.Type.LADDER,
+        rankSystem: Dimension.Tournament.RankSystem.TRUESKILL,
         rankSystemConfigs: trueskillConfigs,
         name: 'Rock Paper Scissors Trueskill ladder',
         loggingLevel: Dimension.Logger.LEVEL.NONE,
@@ -235,8 +235,8 @@ describe('Tournament Testing with RPS', () => {
     beforeEach(() => {
       
       RPSTrueskillLadder = <Dimension.Tournament.Ladder.Tournament>myDimension.createTournament(filesAndNames, {
-        type: Dimension.Tournament.TOURNAMENT_TYPE.LADDER,
-        rankSystem: Dimension.Tournament.RANK_SYSTEM.TRUESKILL,
+        type: Dimension.Tournament.Type.LADDER,
+        rankSystem: Dimension.Tournament.RankSystem.TRUESKILL,
         name: 'Rock Paper Scissors Trueskill ladder',
         loggingLevel: Dimension.Logger.LEVEL.NONE,
         agentsPerMatch: [2],

@@ -42,8 +42,8 @@ describe('Test API Dimensions', () => {
   });
   it('/api/dimensions/:dimensionID/tournament - should return all tournaments', (done) => {
     let tourney = dim.createTournament(bots, {
-      type: Tournament.TOURNAMENT_TYPE.ROUND_ROBIN,
-      rankSystem: Tournament.RANK_SYSTEM.WINS,
+      type: Tournament.Type.ROUND_ROBIN,
+      rankSystem: Tournament.RankSystem.WINS,
       agentsPerMatch: [2],
       loggingLevel: Logger.LEVEL.NONE,
       resultHandler: RockPaperScissorsDesign.winsResultHandler

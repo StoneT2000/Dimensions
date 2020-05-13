@@ -106,14 +106,14 @@
 					<div class="tsd-signature tsd-kind-icon">D_<wbr>AGENT_<wbr>IDS<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;D_AGENT_IDS&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/17e3993/src/MatchEngine/index.ts#L795">https://github.com/StoneT2000/Dimensions/blob/17e3993/src/MatchEngine/index.ts#L795</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c9a72ff/src/MatchEngine/index.ts#L796">https://github.com/StoneT2000/Dimensions/blob/c9a72ff/src/MatchEngine/index.ts#L796</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>D_AGENT_IDS is automatically populated by a space seperated string list of the agent IDs of every agent being
+							<p><code>D_AGENT_IDS</code> is automatically populated by a space seperated string list of the agent IDs of every agent being
 								loaded into a match in the same order as D_FILES. This should always be sorted by default as agents are loaded
-							in order from agent ID <code>0</code> to agent ID <code>n</code></p>
+							in order from agent ID <code>0</code> to agent ID <code>n-1</code>in a <code>n</code> agent match</p>
 						</div>
 						<dl class="tsd-comment-tags">
 							<dt>example</dt>
@@ -129,20 +129,20 @@
 					<div class="tsd-signature tsd-kind-icon">D_<wbr>FILES<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;D_FILES&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/17e3993/src/MatchEngine/index.ts#L785">https://github.com/StoneT2000/Dimensions/blob/17e3993/src/MatchEngine/index.ts#L785</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c9a72ff/src/MatchEngine/index.ts#L786">https://github.com/StoneT2000/Dimensions/blob/c9a72ff/src/MatchEngine/index.ts#L786</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>D_FILES is automatically populated by a space seperated string list of the file paths provided for each of the
-								agents competing in a match.
-								NOTE, these paths don&#39;t actually need to be files, they can be directories or anything that works with
-							your own command and design</p>
+							<p><code>D_FILES</code> is automatically populated by a space seperated string list of the file paths provided for each of the
+							agents competing in a match.</p>
 						</div>
+						<p>NOTE, these paths don&#39;t actually need to be files, they can be directories or anything that works with
+						your own command and design</p>
 						<dl class="tsd-comment-tags">
 							<dt>example</dt>
-							<dd><p>Suppose the paths to the sources the agents operate on are <code>path1, path2, path3</code>. Then <code>D_FILES</code> will
-								be passed into your command as <code>path1 path2 path3</code></p>
+							<dd><p>Suppose the paths to the sources the agents operate on are <code>path1</code>, <code>path2</code>, <code>path3</code>. Then <code>D_FILES</code>
+								will be passed into your command as <code>path1 path2 path3</code></p>
 							</dd>
 						</dl>
 					</div>
@@ -153,7 +153,7 @@
 					<div class="tsd-signature tsd-kind-icon">D_<wbr>MATCH_<wbr>ID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;D_MATCH_ID&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/17e3993/src/MatchEngine/index.ts#L812">https://github.com/StoneT2000/Dimensions/blob/17e3993/src/MatchEngine/index.ts#L812</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c9a72ff/src/MatchEngine/index.ts#L813">https://github.com/StoneT2000/Dimensions/blob/c9a72ff/src/MatchEngine/index.ts#L813</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -162,7 +162,7 @@
 						</div>
 						<dl class="tsd-comment-tags">
 							<dt>example</dt>
-							<dd><p>Suppose the match has ID 12, then <code>D_MATCH_ID</code> is passed into your command as <code>12</code></p>
+							<dd><p>Suppose the match has ID <code>eF1uEacgfgMm</code>, then <code>D_MATCH_ID</code> is passed into your command as <code>eF1uEacgfgMm</code></p>
 							</dd>
 						</dl>
 					</div>
@@ -173,7 +173,7 @@
 					<div class="tsd-signature tsd-kind-icon">D_<wbr>MATCH_<wbr>NAME<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;D_MATCH_NAME&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/17e3993/src/MatchEngine/index.ts#L819">https://github.com/StoneT2000/Dimensions/blob/17e3993/src/MatchEngine/index.ts#L819</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c9a72ff/src/MatchEngine/index.ts#L820">https://github.com/StoneT2000/Dimensions/blob/c9a72ff/src/MatchEngine/index.ts#L820</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -193,7 +193,7 @@
 					<div class="tsd-signature tsd-kind-icon">D_<wbr>NAMES<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;D_NAMES&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/17e3993/src/MatchEngine/index.ts#L827">https://github.com/StoneT2000/Dimensions/blob/17e3993/src/MatchEngine/index.ts#L827</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c9a72ff/src/MatchEngine/index.ts#L828">https://github.com/StoneT2000/Dimensions/blob/c9a72ff/src/MatchEngine/index.ts#L828</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -214,19 +214,19 @@
 					<div class="tsd-signature tsd-kind-icon">D_<wbr>TOURNAMENT_<wbr>IDS<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;D_TOURNAMENT_IDS&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/17e3993/src/MatchEngine/index.ts#L805">https://github.com/StoneT2000/Dimensions/blob/17e3993/src/MatchEngine/index.ts#L805</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c9a72ff/src/MatchEngine/index.ts#L806">https://github.com/StoneT2000/Dimensions/blob/c9a72ff/src/MatchEngine/index.ts#L806</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>D_TOURNAMENT_IDS is automatically populated by a space seperated string list of the tournament ID numbers of
+							<p><code>D_TOURNAMENT_IDS</code> is automatically populated by a space seperated string list of the tournament ID numbers of
 								the agents being loaded into the match in the same order. If no tournament is being run all the ID numbers will
 							default to 0 but still be passed in to the command you give for the override configurations</p>
 						</div>
 						<dl class="tsd-comment-tags">
 							<dt>example</dt>
-							<dd><p>Suppose a match in a tournament with ID 0 is running 4 agents with tournament IDs t0_1, t0_9, t0_11,
-								t0_15. Then <code>D_TOURNAMENT_IDS</code> will be passed into your command as <code>t0_1 t0_0 t0_11 t0_15</code></p>
+							<dd><p>Suppose a match in a tournament is running 2 agents with tournament IDs <code>Qb6NyTxufGGU</code>, <code>EGg3tSN2KUgl</code>
+								Then <code>D_TOURNAMENT_IDS</code> will be passed into your command as <code>Qb6NyTxufGGU EGg3tSN2KUgl</code></p>
 							</dd>
 						</dl>
 					</div>
@@ -373,9 +373,6 @@
 				<ul class="after-current">
 					<li class=" tsd-kind-variable tsd-parent-kind-module">
 						<a href="../modules/_matchengine_index_.html#bot_user" class="tsd-kind-icon">BOT_<wbr>USER</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-module">
-						<a href="../modules/_matchengine_index_.html#root_user" class="tsd-kind-icon">ROOT_<wbr>USER</a>
 					</li>
 				</ul>
 			</nav>

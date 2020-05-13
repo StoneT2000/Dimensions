@@ -426,7 +426,7 @@ export module Tournament {
      */
     defaultMatchConfigs?: DeepPartial<Match.Configs>
     /**
-     * The tournament type to run. See {@link TOURNAMENT_TYPE}
+     * The tournament type to run. See {@link Tournament.Type}
      */
     type: Type,
     /**
