@@ -50,6 +50,11 @@ export class Ladder extends Tournament {
   };
 
   /**
+   * Set of player IDs of players to remove
+   */
+  private playersToRemove: Set<nanoid> = new Set();
+
+  /**
    * ELO System used in this tournament
    */
   private elo: ELOSystem;
@@ -316,6 +321,8 @@ export class Ladder extends Tournament {
                 }
               }
             }
+            // make sure its referenced to right player object still
+            playerStat.player = player;
           }
         }
       }
@@ -493,14 +500,44 @@ export class Ladder extends Tournament {
   }
 
   /**
+   * Removes all players in {@link this.playersToRemove} when player is no longer in an active match
+   */
+  private async removePlayersSafely() {
+    this.playersToRemove.forEach((playerID) => {
+      let player = this.state.playerStats.get(playerID).player;
+      if (player.activeMatchCount === 0) {
+        try {
+          this._internalRemovePlayer(playerID);
+          this.playersToRemove.delete(playerID);
+        }
+        catch(err) {
+          this.log.error('could not find player with ID: ' + playerID);
+        }
+      }
+    });
+  }
+  /**
    * Removes player from tournament. Removes from state and stats from database
    * @param playerID 
    */
   async internalRemovePlayer(playerID: nanoid) {
     if (this.state.playerStats.has(playerID)) {
+      this.playersToRemove.add(playerID);
+      this.removePlayersSafely();
+    }
+    else {
+      throw new TournamentPlayerDoesNotExistError(`Could not find player with ID: ${playerID}`);
+    }
+  }
+  /**
+   * 
+   * @param playerID 
+   */
+  private async _internalRemovePlayer(playerID: nanoid) {
+    if (this.state.playerStats.has(playerID)) {
       // let playerStats = this.state.playerStats.get(playerID);
       this.state.playerStats.delete(playerID);
-      
+      this.log.info('Removed player ' + playerID);
       if (this.dimension.hasDatabase()) {
         let user = await this.dimension.databasePlugin.getUser(playerID);
         if (user) {
@@ -514,7 +551,8 @@ export class Ladder extends Tournament {
           }
           // delete stats for this tournament to remove player
           delete update.statistics[safeName];
-          await this.dimension.databasePlugin.updateUser(playerID, update)
+          await this.dimension.databasePlugin.updateUser(playerID, update);
+          this.log.info('Removed player ' + playerID + ' from DB');
         }
       }
     }
@@ -565,20 +603,42 @@ export class Ladder extends Tournament {
         return false;
       }
     }
+    return true;
   }
 
+  /**
+   * Change match counts of all players
+   */
+  private changeMatchCounts(matchInfo: Array<Player>, amount: number) {
+    for (let i = 0; i < matchInfo.length; i++) {
+      let playerStat = this.state.playerStats.get(matchInfo[i].tournamentID.id);
+      if (!playerStat) {
+        // undo changes
+        this.changeMatchCounts(matchInfo.slice(0, i), -amount);
+        return false;
+      }
+      playerStat.player.activeMatchCount += amount;
+    }
+  }
   /**
    * Handles the start and end of a match, and updates state accrding to match results and the given result handler
    * @param matchInfo 
    */
   private async handleMatch(matchInfo: Array<Player>) {
+    
+    matchInfo.forEach((player) => {
+      player.activeMatchCount++;
+    });
 
     if (!this.checkMatchIntegrity(matchInfo)) {
       // quit
       this.log.detail('Match queued cannot be run anymore');
+      matchInfo.forEach((player) => {
+        player.activeMatchCount--;
+      });
       return;
     }
-
+    
     if (this.configs.consoleDisplay) {
       this.printTournamentStatus();
       console.log();
@@ -598,16 +658,17 @@ export class Ladder extends Tournament {
     }
 
     this.log.detail('Running match - Competitors: ', matchInfo.map((player) => {return player.tournamentID.name}));
-    
+
     let matchRes = await this.runMatch(matchInfo);
+
     // update total matches
     this.state.statistics.totalMatches++;
     // update matches played per player
-    matchInfo.map((player) => {
+    matchInfo.forEach((player) => {
       let oldplayerStat = this.state.playerStats.get(player.tournamentID.id);
       oldplayerStat.matchesPlayed++;
       this.state.playerStats.set(player.tournamentID.id, oldplayerStat);
-    })
+    });
 
     let resInfo = this.configs.resultHandler(matchRes.results);
     switch(this.configs.rankSystem) {
@@ -633,6 +694,13 @@ export class Ladder extends Tournament {
         this.state.results.push(matchRes.results);
       }
     }
+    matchInfo.forEach((player) => {
+      player.activeMatchCount--;
+    });
+    /**
+     * Remove players as needed
+     */
+    this.removePlayersSafely();
   }
 
   private async handleMatchWithTrueSkill() {

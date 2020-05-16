@@ -27,6 +27,7 @@ export class MongoDB extends Database {
 
   constructor(connectionString: string, configs: DeepPartial<Database.Configs> = {}) {
     super(configs);
+    mongoose.set('useFindAndModify', false);
     this.connectionString = connectionString;
     let matchSchema = MatchSchemaCreator();
     this.models.match = mongoose.model('Match', matchSchema);
