@@ -84,6 +84,14 @@ export abstract class Database extends Plugin {
    * @param publicView
    */
   abstract getUser(usernameOrID: string, publicView?: boolean): Promise<Database.User>
+
+  /**
+   * Gets all users with statistics in a tournament specified by the tournamentKeyName, which is a string that is the 
+   * key stored in the user's statistics property mapping to the tournament's statistics
+   * @param tournamentKeyName 
+   * @param publicView
+   */
+  abstract getUsersInTournament(tournamentKeyName: string): Promise<Array<Database.User>>
 }
 
 export module Database {
@@ -111,7 +119,9 @@ export module Database {
     passwordHash: string,
 
     /** Related Statistics */
-    statistics?: any,
+    statistics?: {
+      [x in string]: any
+    },
     /** Creation date of the user */
     creationDate?: Date,
     /** A Player ID generated using {@link Player.generatePlayerID}, returning a 12 char nanoid */

@@ -27,6 +27,7 @@ export class Ladder extends Tournament {
     type: TournamentType.LADDER,
     rankSystem: null,
     rankSystemConfigs: null,
+    addDatabasePlayers: true,
     tournamentConfigs: {
       maxConcurrentMatches: 1,
       endDate: null,
@@ -46,11 +47,6 @@ export class Ladder extends Tournament {
       totalMatches: 0
     }
   };
-
-  /**
-   * Promise array of which all resolves once every player added through constructor is finished adding
-   */
-  public initialAddPlayerPromises: Array<Promise<any>> = [];
 
   /**
    * ELO System used in this tournament
@@ -107,6 +103,9 @@ export class Ladder extends Tournament {
         this.initialAddPlayerPromises.push(this.addplayer(file, file.existingID));
       }
     });
+    if (this.configs.addDatabasePlayers) {
+      this.initialAddPlayerPromises.push(this.addExistingDatabasePlayers());
+    }
 
     this.status = TournamentStatus.INITIALIZED;
     this.log.info('Initialized Ladder Tournament');
@@ -123,12 +122,13 @@ export class Ladder extends Tournament {
       case RankSystem.TRUESKILL:
         this.state.playerStats.forEach((stat) => {
           let rankState = <RankSystem.TRUESKILL.RankState>stat.rankState;
+
           rankings.push({
             player: stat.player,
             name: stat.player.tournamentID.name,
             id: stat.player.tournamentID.id,
             matchesPlayed: stat.matchesPlayed,
-            rankState: {...rankState, score: rankState.rating.mu - 3 * rankState.rating.sigma}
+            rankState: {rating: {...rankState.rating, mu: rankState.rating.mu, sigma: rankState.rating.sigma}, score: rankState.rating.mu - 3 * rankState.rating.sigma}
           });
         });
         rankings.sort((a, b) => {
@@ -462,7 +462,7 @@ export class Ladder extends Tournament {
     }
   }
 
-  updatePlayer(player: Player, oldname: string, oldfile: string) {
+  async updatePlayer(player: Player, oldname: string, oldfile: string) {
     let playerStats = this.state.playerStats.get(player.tournamentID.id);
     switch(this.configs.rankSystem) {
       case RankSystem.ELO: {
@@ -477,7 +477,6 @@ export class Ladder extends Tournament {
         let rankSystemConfigs = <RankSystem.TRUESKILL.Configs>this.configs.rankSystemConfigs;
         let currState = <RankSystem.TRUESKILL.RankState>playerStats.rankState;
         
-
         // TODO: Give user option to define how to reset score
         currState.rating = new Rating(rankSystemConfigs.initialMu, rankSystemConfigs.initialSigma)
         break;
@@ -488,6 +487,8 @@ export class Ladder extends Tournament {
     playerStats.losses = 0;
     playerStats.wins = 0;
     playerStats.ties = 0;
+    let user = await this.dimension.databasePlugin.getUser(player.tournamentID.id);
+    await this.updateDatabaseTrueskillPlayerStats(playerStats, user);
   }
 
   private printTournamentStatus() {
