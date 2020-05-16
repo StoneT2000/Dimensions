@@ -9,6 +9,7 @@ import { pickMatch } from '../Station/routes/api/dimensions/match';
 import bcrypt from 'bcryptjs';
 import UserSchemaCreator from './models/user';
 import { generateToken, verify } from '../Plugin/Database/utils';
+import { Tournament } from '../Tournament';
 const salt = bcrypt.genSaltSync();
 
 export class MongoDB extends Database {
@@ -26,6 +27,7 @@ export class MongoDB extends Database {
 
   constructor(connectionString: string, configs: DeepPartial<Database.Configs> = {}) {
     super(configs);
+    mongoose.set('useFindAndModify', false);
     this.connectionString = connectionString;
     let matchSchema = MatchSchemaCreator();
     this.models.match = mongoose.model('Match', matchSchema);
@@ -116,8 +118,18 @@ export class MongoDB extends Database {
     return verify(jwt);
   }
 
-
-
+  public async getUsersInTournament(tournamentKey: string) {
+    let key = `statistics.${tournamentKey}`;
+    return this.models.user.find({ [key]: {$exists: true}}).then((users) => {
+      if (!users) {
+        throw new Error('No users');
+      }
+      else {
+        let mapped = users.map(user => user.toObject());
+        return mapped;
+      }
+    });
+  }
 
   public async manipulate(dimension: Dimension) {
     dimension.configs.backingDatabase = DatabaseType.MONGO;

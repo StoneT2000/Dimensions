@@ -281,21 +281,12 @@ describe('Tournament Testing with RPS', () => {
       expect(c.get(id).tournamentID.id).to.equal('customid');
       // expect(RPSTrueskillLadder.addplayer({file:'./test/js-kit/rps/rock.js', name:'newname'}, `t_100_22_not_real_id`)).to.be.rejectedWith(TournamentError);
     });
-    it('should be able to remove active matches', (done) => {
-      RPSTrueskillLadder.run();
-      setTimeout(() => {
-        let removePromises = [];
-        expect(RPSTrueskillLadder.matches.size).to.not.be.equal(0);
-        // stop the tournament and remove all matches
-        RPSTrueskillLadder.stop();
-        RPSTrueskillLadder.matches.forEach((match) => {
-          removePromises.push(RPSTrueskillLadder.removeMatch(match.id));
-        });
-        Promise.all(removePromises).then(() => {
-          expect(RPSTrueskillLadder.matches.size).to.be.equal(0);
-          done();
-        });
-      }, 2000);
+    it('should be able to remove competitors', async () => {
+      await Promise.all(RPSTrueskillLadder.initialAddPlayerPromises);
+      let origCount = RPSTrueskillLadder.competitors.size;
+      let player = await RPSTrueskillLadder.addplayer('./tests/js-kit/rps/smarter.js');
+      await RPSTrueskillLadder.removePlayer(player.tournamentID.id);
+      expect(RPSTrueskillLadder.competitors.size).to.be.equal(origCount);
     });
     it('should stop and resume normally', (done) => {
       testTournamentStopResume(RPSTrueskillLadder, done);

@@ -19,6 +19,7 @@ export class Elimination extends Tournament {
     defaultMatchConfigs: {},
     type: Tournament.Type.ELIMINATION,
     rankSystem: null,
+    addDatabasePlayers: false,
     rankSystemConfigs: null,
     tournamentConfigs: {
       times: 1,
@@ -381,7 +382,7 @@ export class Elimination extends Tournament {
     throw new 
       TournamentError('You are not allowed to add a player during the middle or after initialization of elimination tournaments');
   }
-  updatePlayer(player: Player, oldname: string, oldfile: string) {
+  async updatePlayer(player: Player, oldname: string, oldfile: string) {
     throw new TournamentError('You are not allowed to update a player during elimination tournaments');
   }
 }

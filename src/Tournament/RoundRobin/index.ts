@@ -19,6 +19,7 @@ export class RoundRobin extends Tournament {
     defaultMatchConfigs: {},
     type: Tournament.Type.ROUND_ROBIN,
     rankSystem: null,
+    addDatabasePlayers: false,
     rankSystemConfigs: null,
     tournamentConfigs: {
       times: 2,
@@ -317,7 +318,7 @@ export class RoundRobin extends Tournament {
   internalAddPlayer(player: Player) {
     return;
   }
-  updatePlayer(player: Player, oldname: string, oldfile: string) {
+  async updatePlayer(player: Player, oldname: string, oldfile: string) {
     throw new TournamentError('You are not allowed to update a player during elimination tournaments');
   }
 
