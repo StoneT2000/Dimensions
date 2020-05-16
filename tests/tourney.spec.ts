@@ -281,6 +281,14 @@ describe('Tournament Testing with RPS', () => {
       expect(c.get(id).tournamentID.id).to.equal('customid');
       // expect(RPSTrueskillLadder.addplayer({file:'./test/js-kit/rps/rock.js', name:'newname'}, `t_100_22_not_real_id`)).to.be.rejectedWith(TournamentError);
     });
+    it('should be able to remove competitors', async () => {
+      await Promise.all(RPSTrueskillLadder.initialAddPlayerPromises);
+      let origCount = RPSTournament.competitors.size;
+      let player = await RPSTrueskillLadder.addplayer('./tests/js-kit/rps/smarter.js');
+      await RPSTrueskillLadder.removePlayer(player.tournamentID.id);
+      expect(RPSTournament.competitors.size).to.be.equal(origCount);
+      expect(RPSTournament.state.playerStats.size).to.be.equal(origCount);
+    });
     it('should be able to remove active matches', (done) => {
       RPSTrueskillLadder.run();
       setTimeout(() => {

@@ -14,6 +14,7 @@ import matchAPI, { pickMatch } from '../match';
 import { pick } from '../../../../../utils';
 import { NanoID } from '../../../../../Dimension';
 import { handleBotUpload, UploadData } from '../../../../handleBotUpload';
+import { TournamentPlayerDoesNotExistError } from '../../../../../DimensionError';
 
 const BOT_DIR = path.join(__dirname, '../../../../local/bots');
 const BOT_DIR_TEMP = path.join(__dirname, '../../../../local/botstemp');
@@ -132,17 +133,37 @@ router.get('/:tournamentID/ranks', async (req: Request, res: Response, next: Nex
 });
 
 /**
+ * DELETE
+ * 
  * Deletes a match
  */
 router.delete('/:tournamentID/match/:matchID', (req, res, next) => {
   return req.data.tournament.removeMatch(req.params.matchID).then(() => {
     res.json({error: null});
-  }).catch((error) => {
+  }).catch((err) => {
     return next(new error.InternalServerError('Something went wrong'));
   });
   // TODO: There should be a better way to abstract this so we don't need to store something related to the match API
   // in the dimensions API.
   // I also don't want to store a removeMatch function in the match itself as that doesn't make sense.
+});
+
+/**
+ * DELETE
+ * 
+ * Removes a player with specified playerID
+ */
+router.delete('/:tournamentID/player/:playerID', (req, res, next) => {
+  return req.data.tournament.removePlayer(req.params.playerID).then(() => {
+    res.json({error: null});
+  }).catch((err) => {
+    if (err instanceof TournamentPlayerDoesNotExistError) {
+      return next(new error.BadRequest(`Player with ID ${req.params.playerID} does not exist`));
+    }
+    else {
+      return next(new error.InternalServerError(`Something went wrong: ${err.message}`));
+    }
+  });
 });
 
 /**

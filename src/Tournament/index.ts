@@ -1,6 +1,6 @@
 import { Match } from '../Match';
 import { Design } from '../Design';
-import { FatalError, MatchError, TournamentError } from '../DimensionError'
+import { FatalError, TournamentPlayerDoesNotExistError } from '../DimensionError'
 
 import { DeepPartial } from '../utils/DeepPartial';
 import { Logger } from '../Logger';
@@ -214,30 +214,6 @@ export abstract class Tournament {
   }
 
   /**
-   * Returns true if the id given is associated to this tournament and valid for use
-   */
-  public validateTournamentID(id: string) {
-    let content = id.split('_');
-    if (content.length !== 2) {
-      return false;
-    }
-    let playerID = content[1];
-    // may not be the safest way to determine
-    // @ts-ignore
-    if (isNaN(parseInt(playerID)) || !(parseInt(playerID) == playerID)) {
-      return false;
-    }
-    if (content[0][0] !== 't') {
-      return false;
-    }
-    let tourneyID = content[0].slice(1);
-    // @ts-ignore
-    if (isNaN(parseInt(tourneyID)) || parseInt(tourneyID) !== this.id || !(parseInt(tourneyID) == tourneyID)) {
-      return false;
-    }
-    return true;
-  }
-  /**
    * Start the tournament
    * @param configs - the configs to use for the tournament
    */
@@ -265,6 +241,25 @@ export abstract class Tournament {
    * @param oldfile - the previous file for the player
    */
   abstract updatePlayer(player: Player, oldname: string, oldfile: string): void;
+
+  /**
+   * Removes the competitor/player with id `playerID` (a {@link nanoid}). Resolves if succesful, otherwise rejects if
+   * player doesn't exist or couldn't be removed
+   * 
+   * @param playerID - ID of the player to remove
+   */
+  public async removePlayer(playerID: nanoid) {
+    if (this.competitors.delete(playerID)) {
+      await this.internalRemovePlayer(playerID);
+    }
+    else {
+      throw new TournamentPlayerDoesNotExistError('Not a player');
+    }
+  }
+
+  protected async internalRemovePlayer(playerID: nanoid) {
+
+  }
 
   /**
    * Set configs for this tournament
@@ -388,6 +383,7 @@ import RoundRobinTournament = RoundRobinDefault.RoundRobin;
 import EliminationDefault = require('./Elimination');
 /** @ignore */
 import EliminationTournament = EliminationDefault.Elimination;
+import { nanoid } from '..';
 
 export module Tournament {
 
