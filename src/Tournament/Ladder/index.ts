@@ -2,7 +2,7 @@ import { Tournament, Player } from "..";
 import { DeepPartial } from "../../utils/DeepPartial";
 import { Design } from '../../Design';
 import { deepMerge } from "../../utils/DeepMerge";
-import { MatchDestroyedError, TournamentError, NotSupportedError } from "../../DimensionError";
+import { MatchDestroyedError, TournamentError, NotSupportedError, TournamentPlayerDoesNotExistError } from "../../DimensionError";
 import { Agent } from "../../Agent";
 import { Rating, rate, quality, TrueSkill } from "ts-trueskill";
 import { sprintf } from 'sprintf-js';
@@ -17,6 +17,7 @@ import { TournamentType } from "../TournamentTypes";
 import LadderState = Ladder.State;
 import LadderConfigs = Ladder.Configs;
 import LadderPlayerStat = Ladder.PlayerStat;
+import { nanoid } from "../..";
 
 /**
  * The Ladder Tournament class and namespace. 
@@ -489,6 +490,37 @@ export class Ladder extends Tournament {
     playerStats.ties = 0;
   }
 
+  /**
+   * Removes player from tournament. Removes from state and stats from database
+   * @param playerID 
+   */
+  async internalRemovePlayer(playerID: nanoid) {
+    if (this.state.playerStats.has(playerID)) {
+      // let playerStats = this.state.playerStats.get(playerID);
+      this.state.playerStats.delete(playerID);
+      
+      if (this.dimension.hasDatabase()) {
+        let user = await this.dimension.databasePlugin.getUser(playerID);
+        if (user) {
+          let safeName = this.getSafeName();
+          let update = {
+            statistics: {}
+          }
+          // if there exists stats already, keep them
+          if (user && user.statistics) {
+            update.statistics = user.statistics;
+          }
+          // delete stats for this tournament to remove player
+          delete update.statistics[safeName];
+          await this.dimension.databasePlugin.updateUser(playerID, update)
+        }
+      }
+    }
+    else {
+      throw new TournamentPlayerDoesNotExistError(`Could not find player with ID: ${playerID}`);
+    }
+  }
+
   private printTournamentStatus() {
     if (this.log.level > Logger.LEVEL.NONE) {
       console.clear();
@@ -522,10 +554,29 @@ export class Ladder extends Tournament {
   }
 
   /**
+   * Checks whether match can still be run
+   */
+  private checkMatchIntegrity(matchInfo: Array<Player>) {
+    for (let i = 0; i < matchInfo.length; i++) {
+      let player = matchInfo[i];
+      if (!this.competitors.has(player.tournamentID.id)) {
+        return false;
+      }
+    }
+  }
+
+  /**
    * Handles the start and end of a match, and updates state accrding to match results and the given result handler
    * @param matchInfo 
    */
   private async handleMatch(matchInfo: Array<Player>) {
+
+    if (!this.checkMatchIntegrity(matchInfo)) {
+      // quit
+      this.log.detail('Match queued cannot be run anymore');
+      return;
+    }
+
     if (this.configs.consoleDisplay) {
       this.printTournamentStatus();
       console.log();
