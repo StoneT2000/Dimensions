@@ -118,7 +118,8 @@ export abstract class Tournament {
 
   /**
    * Add a player to the tournament. Can specify an ID to use. If that ID exists already, this will update the file for 
-   * that player instead
+   * that player instead. First time a player is added (doesn't exist in competitors map yet), if there is existing 
+   * stats they won't be reset. Subsequent adds will change the stats.
    * 
    * If the player is to exist beyond the tournament, an existingID must always be provided and generated somewhere else
    * 
@@ -134,6 +135,7 @@ export abstract class Tournament {
     
       if (this.competitors.has(existingID)) {
         // bot exists in tournament already
+        
         let player = this.competitors.get(existingID);
         let oldname = player.tournamentID.name;
         let oldfile = player.file;
@@ -187,6 +189,7 @@ export abstract class Tournament {
         
         let user = await this.dimension.databasePlugin.getUser(newPlayer.tournamentID.id);
         if (user) {
+          newPlayer.tournamentID.name = file.name;
           newPlayer.anonymous = false;
           newPlayer.username = user.username;
         }

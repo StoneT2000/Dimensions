@@ -280,7 +280,7 @@ export class Ladder extends Tournament {
   }
   
   /**
-   * Initialize trueskill player stats
+   * Initialize trueskill player stats. Pulls data from database if it exists and uses past stats to fill in
    * @param player 
    * 
    * This is probably a nightmare to test
@@ -483,6 +483,7 @@ export class Ladder extends Tournament {
         break;
       }
     }
+    playerStats.player = player;
     playerStats.matchesPlayed = 0;
     playerStats.losses = 0;
     playerStats.wins = 0;
