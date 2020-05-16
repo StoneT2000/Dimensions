@@ -22,38 +22,42 @@ export const handleBotUpload = (req: Request): Promise<Array<UploadData>> => {
   return new Promise((resolve, reject) => {
     //@ts-ignore
     const form = formidable({ multiples: true });
-    form.parse(req, async (err, fields, files) => {
-      if (err) {
-        throw err;
-      }
-      if (files.files === undefined) throw new error.BadRequest('No file(s) provided');
-      if (fields.paths === undefined) throw new error.BadRequest('No file path(s) provided');
-      if (!files.files.length) { 
-        files.files = [files.files];
-      }
-      fields.paths = JSON.parse(fields.paths);
-      fields.names = JSON.parse(fields.names);
-      fields.playerIDs = JSON.parse(fields.playerIDs);
-      if (!fields.paths.length) throw new error.BadRequest('No file path(s) provided');
+    try {
+      form.parse(req, async (err, fields, files) => {
+        if (err) {
+          throw err;
+        }
+        if (files.files === undefined) throw new error.BadRequest('No file(s) provided');
+        if (fields.paths === undefined) throw new error.BadRequest('No file path(s) provided');
+        if (!files.files.length) { 
+          files.files = [files.files];
+        }
+        fields.paths = JSON.parse(fields.paths);
+        fields.names = JSON.parse(fields.names);
+        fields.playerIDs = JSON.parse(fields.playerIDs);
+        if (!fields.paths.length) throw new error.BadRequest('No file path(s) provided');
 
-      if (fields.paths.length != files.files.length) throw new error.BadRequest('Paths and File arrays mismatch');
+        if (fields.paths.length != files.files.length) throw new error.BadRequest('Paths and File arrays mismatch');
 
-      let uploads = files.files;
-      let paths = fields.paths;
-      let names = fields.names;
-      let playerIDs = fields.playerIDs;
-      if (!names) names = [];
+        let uploads = files.files;
+        let paths = fields.paths;
+        let names = fields.names;
+        let playerIDs = fields.playerIDs;
+        if (!names) names = [];
 
-      let uploadProcessPromises: Array<Promise<UploadData>> = [];
-      for (let i = 0; i < uploads.length; i++) {
-        let upload = uploads[i];
-        let pathToFile =  paths[i];
-        let botName = names[i];
-        let playerID = playerIDs[i];
-        uploadProcessPromises.push(processUpload(upload, pathToFile, botName, playerID));
-      }
-      Promise.all(uploadProcessPromises).then(resolve).catch(reject)
-    });
+        let uploadProcessPromises: Array<Promise<UploadData>> = [];
+        for (let i = 0; i < uploads.length; i++) {
+          let upload = uploads[i];
+          let pathToFile =  paths[i];
+          let botName = names[i];
+          let playerID = playerIDs[i];
+          uploadProcessPromises.push(processUpload(upload, pathToFile, botName, playerID));
+        }
+        Promise.all(uploadProcessPromises).then(resolve).catch(reject)
+      });
+    } catch(err) {
+      reject(err);
+    }
   })
 }
 

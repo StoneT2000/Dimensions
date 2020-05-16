@@ -86,6 +86,11 @@ export abstract class Tournament {
    */
   public name = '';
 
+  /**
+   * Promise array of which all resolves once every player added through constructor is finished adding
+   */
+  public initialAddPlayerPromises: Array<Promise<any>> = [];
+
   constructor(
     protected design: Design,
     files: Array<string> | Array<{file: string, name:string}>, 
@@ -109,16 +114,17 @@ export abstract class Tournament {
 
     this.log.info(`Created Tournament - ID: ${this.id}, Name: ${this.name}`);
     
-    // if no name is provided but database is being used, log a warning
+    // if no name is provided but database is being used, log an error
     if (!tournamentConfigs.name && dimension.hasDatabase()) {
-      this.log.warn(`A name has to be specified for a tournament otherwise tournament player data will not be reused across runs of the tournament`)
+      this.log.error(`A name has to be specified for a tournament otherwise tournament player data will not be reused across runs of the tournament`)
     }
-
+  
   }
 
   /**
    * Add a player to the tournament. Can specify an ID to use. If that ID exists already, this will update the file for 
-   * that player instead
+   * that player instead. First time a player is added (doesn't exist in competitors map yet), if there is existing 
+   * stats they won't be reset. Subsequent adds will change the stats.
    * 
    * If the player is to exist beyond the tournament, an existingID must always be provided and generated somewhere else
    * 
@@ -134,6 +140,7 @@ export abstract class Tournament {
     
       if (this.competitors.has(existingID)) {
         // bot exists in tournament already
+        
         let player = this.competitors.get(existingID);
         let oldname = player.tournamentID.name;
         let oldfile = player.file;
@@ -145,7 +152,7 @@ export abstract class Tournament {
           player.tournamentID.name = file.name;
         }
         // update bot instead and call a tournament's updateBot function
-        this.updatePlayer(player, oldname, oldfile)
+        await this.updatePlayer(player, oldname, oldfile)
         id = existingID;
         return player;
       }
@@ -187,6 +194,7 @@ export abstract class Tournament {
         
         let user = await this.dimension.databasePlugin.getUser(newPlayer.tournamentID.id);
         if (user) {
+          newPlayer.tournamentID.name = file.name;
           newPlayer.anonymous = false;
           newPlayer.username = user.username;
         }
@@ -196,6 +204,27 @@ export abstract class Tournament {
 
       this.internalAddPlayer(newPlayer);
       return newPlayer;
+    }
+  }
+
+  /**
+   * Adds existing database players
+   */
+  protected async addExistingDatabasePlayers(): Promise<void> {
+    if (this.dimension.hasDatabase()) {
+      console.log('add existing');
+      return this.dimension.databasePlugin.getUsersInTournament(this.getSafeName()).then((users) => {
+        users.forEach((user) => {
+          //@ts-ignore
+          let p: Player = user.statistics[this.getSafeName()].player;
+          let newPlayer = new Player({id: p.tournamentID.id, name: p.tournamentID.name}, p.file);
+          newPlayer.anonymous = false;
+          newPlayer.username = user.username
+          this.competitors.set(newPlayer.tournamentID.id, newPlayer);
+          this.internalAddPlayer(newPlayer);
+        });
+        return;
+      });
     }
   }
 
@@ -240,7 +269,7 @@ export abstract class Tournament {
    * @param oldname - the previous name for the player
    * @param oldfile - the previous file for the player
    */
-  abstract updatePlayer(player: Player, oldname: string, oldfile: string): void;
+  abstract async updatePlayer(player: Player, oldname: string, oldfile: string): Promise<void>;
 
   /**
    * Removes the competitor/player with id `playerID` (a {@link nanoid}). Resolves if succesful, otherwise rejects if
@@ -474,7 +503,7 @@ export module Tournament {
 
     /**
      * Whether or not to display a continuous console log of the current tournament as it runs
-     * @default true
+     * @default `true`
      */
     consoleDisplay?: boolean
 
@@ -482,6 +511,14 @@ export module Tournament {
      * Set this ID to override the generated ID 
      */
     id?: string
+
+    /**
+     * Auto add all database players with statistics in this tournament (has entered into the tournament at some time)
+     * upon creation of tournament
+     * @default `true` when tournament type is {@link Ladder}. `false` otherwise as it is not supported on 
+     * {@link RoundRobin} and {@link Elimination} variants
+     */
+    addDatabasePlayers?: boolean
   }
 
   /**
