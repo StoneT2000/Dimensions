@@ -188,7 +188,7 @@ router.post('/:tournamentID/upload/', async (req: Request, res: Response, next: 
     id = req.data.tournament.generateNextTournamentIDString();
   }
   if (bot.name) {
-    req.data.tournament.addplayer({file: bot.file, name: bot.name}, id);
+    req.data.tournament.addplayer({file: bot.file, name: bot.name, botdir: bot.botdir}, id);
   }
   else {
     req.data.tournament.addplayer(bot.file, id);

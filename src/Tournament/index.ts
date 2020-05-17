@@ -43,6 +43,12 @@ export class Player {
 
   /** Associated username if there is one */
   public username: string = undefined;
+
+  /**
+   * Path to player's directory, not the file to be executed/used
+   */
+  public botDirPath: string = undefined;
+
   constructor(public tournamentID: Tournament.ID, public file: string) {
 
   }
@@ -151,7 +157,7 @@ export abstract class Tournament {
    * @param existingID - The optional id of the player 
    * 
    */
-  public async addplayer(file: string | {file: string, name: string}, existingID?: NanoID): Promise<Player> {
+  public async addplayer(file: string | {file: string, name: string, botdir?: string}, existingID?: NanoID): Promise<Player> {
     let id: NanoID;
     if (existingID) {
     
@@ -162,15 +168,18 @@ export abstract class Tournament {
         let oldname = player.tournamentID.name;
         let oldfile = player.file;
         // remove the oldfile
-        player.lock();
-        removeDirectorySync(oldfile);
-        player.unlock();
+        if (player.botDirPath) {
+          player.lock();
+          removeDirectorySync(player.botDirPath);
+          player.unlock();
+        }
         if (typeof file === 'string') {
           player.file = file;
         }
         else {
           player.file = file.file;
           player.tournamentID.name = file.name;
+          player.botDirPath = file.botdir;
         }
         // update bot instead and call a tournament's updateBot function
         await this.updatePlayer(player, oldname, oldfile)
@@ -209,7 +218,7 @@ export abstract class Tournament {
     }
     else {
       let newPlayer = new Player({id: id, name: file.name}, file.file);
-
+      newPlayer.botDirPath = file.botdir;
       // check database
       if (this.dimension.hasDatabase()) {
         
@@ -242,6 +251,7 @@ export abstract class Tournament {
           let newPlayer = new Player({id: p.tournamentID.id, name: p.tournamentID.name}, p.file);
           newPlayer.anonymous = false;
           newPlayer.username = user.username
+          newPlayer.botDirPath = p.botDirPath;
           this.competitors.set(newPlayer.tournamentID.id, newPlayer);
           this.internalAddPlayer(newPlayer);
         });

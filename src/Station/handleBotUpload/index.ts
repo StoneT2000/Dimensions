@@ -12,7 +12,8 @@ import { removeDirectory } from '../../utils/System';
 export interface UploadData {
   file: string,
   name: string,
-  playerID: string, 
+  playerID: string,
+  botdir: string
 }
 
 /**
@@ -91,7 +92,8 @@ const processUpload = async (file: any, pathToFile: string, botName: string, pla
     return {
       name: name,
       file: pathToBotFile,
-      playerID: playerID
+      playerID: playerID,
+      botdir: botdir
     }
   }
 }
