@@ -602,6 +602,9 @@ export class Ladder extends Tournament {
       if (!this.competitors.has(player.tournamentID.id)) {
         return false;
       }
+      if (this.competitors.get(player.tournamentID.id).locked) {
+        return false;
+      }
     }
     return true;
   }

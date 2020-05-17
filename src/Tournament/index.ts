@@ -36,10 +36,22 @@ export class Player {
    */
   public activeMatchCount: number = 0;
 
+  /**
+   * Lock player from playing matches
+   */
+  public locked: boolean = false;
+
   /** Associated username if there is one */
   public username: string = undefined;
   constructor(public tournamentID: Tournament.ID, public file: string) {
 
+  }
+
+  lock() {
+    this.locked = true;
+  }
+  unlock() {
+    this.locked = false;
   }
 
   /**
@@ -149,6 +161,10 @@ export abstract class Tournament {
         let player = this.competitors.get(existingID);
         let oldname = player.tournamentID.name;
         let oldfile = player.file;
+        // remove the oldfile
+        player.lock();
+        removeDirectorySync(oldfile);
+        player.unlock();
         if (typeof file === 'string') {
           player.file = file;
         }
@@ -222,6 +238,7 @@ export abstract class Tournament {
         users.forEach((user) => {
           //@ts-ignore
           let p: Player = user.statistics[this.getSafeName()].player;
+          // use existing id, name, and *FILE*
           let newPlayer = new Player({id: p.tournamentID.id, name: p.tournamentID.name}, p.file);
           newPlayer.anonymous = false;
           newPlayer.username = user.username
@@ -418,6 +435,7 @@ import EliminationDefault = require('./Elimination');
 /** @ignore */
 import EliminationTournament = EliminationDefault.Elimination;
 import { nanoid } from '..';
+import { removeDirectory, removeDirectorySync } from '../utils/System';
 
 export module Tournament {
 
