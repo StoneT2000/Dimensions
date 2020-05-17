@@ -5,6 +5,8 @@ seed=$3
 replay_name=$4
 board_size=$5
 max_rounds=$6
+wname=$7
+bname=$8
 replay_path="replays/${replay_name}.txt"
 echo Team 1: $w > $replay_path
 echo Team 2: $b >> $replay_path
@@ -22,4 +24,12 @@ echo Required-by:  >> $replay_path
 
 python3 ./tests/bh20files/run_game.py $w $b --seed $seed --delay 0 --raw-text --board-size $board_size --max-rounds $max_rounds >> $replay_path
 echo D_MATCH_FINISHED
-echo `awk '/./{line=$0} END{print line}' $replay_path`
+WINNER=`awk '/./{line=$0} END{print line}' $replay_path`
+echo $WINNER
+if [[ $WINNER == 'Team.WHITE wins!' ]]; then
+  echo $wname
+  echo $bname
+else
+  echo $bname
+  echo $wname
+fi

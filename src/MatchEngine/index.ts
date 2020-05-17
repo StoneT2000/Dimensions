@@ -508,9 +508,20 @@ export class MatchEngine {
         }
         else {
           clearTimeout(matchProcessTimer);
-          resolve(match.results);
-          
+          resolve(match.results); 
         }
+        // remove the agent files if on secureMode and double check it is the temporary directory
+        match.agents.forEach((agent) => {
+          if (agent.options.secureMode) {
+            let tmpdir = os.tmpdir();
+            if (agent.cwd.slice(0, tmpdir.length) === tmpdir) {
+              exec(`sudo rm -rf ${agent.cwd}`);
+            }
+            else {
+              this.log.error('couldn\'t remove agent files while in secure mode');
+            }
+          }
+        });
       });
 
     });
