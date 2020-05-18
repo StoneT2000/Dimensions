@@ -1,7 +1,7 @@
 import { Storage as DStorage } from "../../Plugin/Storage";
 import { Storage, Bucket, GetSignedUrlConfig } from '@google-cloud/storage';
 import { DeepPartial } from "../../utils/DeepPartial";
-import { Dimension, DatabaseType, StorageType } from "../../Dimension";
+import { Dimension, StorageType } from "../../Dimension";
 import { Plugin } from "../../Plugin";
 import { nanoid } from "../..";
 import path from 'path';

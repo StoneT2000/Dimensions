@@ -10,6 +10,8 @@ import bcrypt from 'bcryptjs';
 import UserSchemaCreator from './models/user';
 import { generateToken, verify } from '../../Plugin/Database/utils';
 import { Tournament } from '../../Tournament';
+import { pick } from '../../utils';
+require('dotenv').config();
 const salt = bcrypt.genSaltSync();
 
 export class MongoDB extends Database {
@@ -47,6 +49,11 @@ export class MongoDB extends Database {
   
   public async initialize(dimension: Dimension) {
     await this.connect();
+    // create admin user
+    let existingUser = this.getUser('admin');
+    if (!existingUser) {
+      await this.registerUser('admin', process.env.ADMIN_PASSWORD);
+    }
     return;
   }
 
@@ -77,7 +84,14 @@ export class MongoDB extends Database {
    */
   public async getUser(usernameOrID: string, publicView: boolean = true) {
     return this.models.user.findOne( {$or: [ { username: usernameOrID }, { playerID: usernameOrID } ]} ).then((user) => {
-      if (user) return user.toObject();
+      let obj: Database.User;
+      if (user) {
+        obj = user.toObject();
+        if (!publicView) return obj;
+        let d = <Database.User>pick(obj, 'creationDate', 'meta', 'statistics', 'playerID', 'username');
+        obj = {...d, passwordHash: ""}
+        return obj;
+      }
       return null;
     });
   } 
@@ -119,6 +133,11 @@ export class MongoDB extends Database {
 
   public async verifyToken(jwt: string) {
     return verify(jwt);
+  }
+
+  public isAdmin(user: Database.PublicUser) {
+    if (user.username === 'admin') return true;
+    return false;
   }
 
   public async getUsersInTournament(tournamentKey: string) {

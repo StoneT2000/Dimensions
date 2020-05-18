@@ -4,15 +4,12 @@
 import express, { Request, Response, NextFunction } from 'express';
 import * as error from '../../../../error';
 import { Tournament } from '../../../../../Tournament';
-import { IncomingForm } from 'formidable';
-import extract from 'extract-zip';
-import { existsSync } from 'fs';
 import path from 'path';
-import ncp from 'ncp';
-import { spawn } from 'child_process';
 import matchAPI, { pickMatch } from '../match';
 import { pick } from '../../../../../utils';
-import { NanoID } from '../../../../../Dimension';
+
+import { requireAuth, requireAdmin } from '../auth';
+
 import { handleBotUpload, UploadData } from '../../../../handleBotUpload';
 import { TournamentPlayerDoesNotExistError } from '../../../../../DimensionError';
 
@@ -34,7 +31,7 @@ const getTournament = (req: Request, res: Response, next: NextFunction) => {
 }
 
 router.use('/:tournamentID', getTournament);
-
+router.use('/:tournamentID', requireAuth)
 /**
  * Picks out relevant fields for a tournament
  */
@@ -80,7 +77,7 @@ router.get('/:tournamentID/matchQueue', (req, res) => {
  * POST
  * Run a tournament if it is initialized or resume it if it was stopped
  */
-router.post('/:tournamentID/run', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/:tournamentID/run', requireAdmin, async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (req.data.tournament.status === Tournament.Status.INITIALIZED) {
       await req.data.tournament.run();
@@ -106,7 +103,7 @@ router.post('/:tournamentID/run', async (req: Request, res: Response, next: Next
  * POST
  * Stops a tournament if it isn't stopped
  */
-router.post('/:tournamentID/stop', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/:tournamentID/stop', requireAdmin, async (req: Request, res: Response, next: NextFunction) => {
   if (req.data.tournament.status !== Tournament.Status.RUNNING) {
     return next(new error.BadRequest(`Can't stop a tournament that isn't running`));
   }
@@ -137,7 +134,7 @@ router.get('/:tournamentID/ranks', async (req: Request, res: Response, next: Nex
  * 
  * Deletes a match
  */
-router.delete('/:tournamentID/match/:matchID', (req, res, next) => {
+router.delete('/:tournamentID/match/:matchID', requireAdmin, (req, res, next) => {
   return req.data.tournament.removeMatch(req.params.matchID).then(() => {
     res.json({error: null});
   }).catch((err) => {
@@ -153,7 +150,10 @@ router.delete('/:tournamentID/match/:matchID', (req, res, next) => {
  * 
  * Removes a player with specified playerID
  */
-router.delete('/:tournamentID/player/:playerID', (req, res, next) => {
+router.delete('/:tournamentID/player/:playerID', requireAuth, (req, res, next) => {
+  if (!req.data.dimension.databasePlugin.isAdmin(req.data.user) || req.params.playerID !== req.data.user.playerID) {
+    return next(new error.Unauthorized(`Insufficient permissions to delete this player`));
+  }
   return req.data.tournament.removePlayer(req.params.playerID).then(() => {
     res.json({error: null});
   }).catch((err) => {
@@ -172,10 +172,11 @@ router.delete('/:tournamentID/player/:playerID', (req, res, next) => {
  * file must be a zip
  * id is a tournament ID string specified only if you want to upload a new bot to replace an existing one
  */
-router.post('/:tournamentID/upload/', async (req: Request, res: Response, next: NextFunction) => { 
+router.post('/:tournamentID/upload/', requireAuth, async (req: Request, res: Response, next: NextFunction) => { 
   let data: Array<UploadData>;
+  console.log(req);
   try {
-   data = await handleBotUpload(req);
+   data = await handleBotUpload(req, req.data.user);
   } catch(err) {
     return next(err);
   }
@@ -183,6 +184,11 @@ router.post('/:tournamentID/upload/', async (req: Request, res: Response, next: 
   if (data.length > 1) return next(new error.BadRequest('Can only upload one tournament bot at a time'));
   let bot = data[0];
   let id = bot.playerID;
+  
+  // upload bot 
+  let storage = req.data.dimension.storagePlugin;
+  await storage.uploadTournamentFile(bot.originalFile, id, req.data.tournament.id);
+  
   // if no id given, we will generate an ID to use. Generated here using the below function to avoid duplicate ids
   if (!id) {
     id = req.data.tournament.generateNextTournamentIDString();

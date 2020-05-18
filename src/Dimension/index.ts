@@ -481,6 +481,13 @@ export class Dimension {
   }
 
   /**
+   * Returns true if dimension has a storage plugin backing it
+   */
+  public hasStorage() {
+    return this.storagePlugin && this.configs.backingStorage !== StorageType.NONE;
+  }
+
+  /**
    * Cleanup function to run right before process exits
    */
   private async cleanup() {

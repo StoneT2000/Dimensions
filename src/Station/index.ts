@@ -15,6 +15,7 @@ import { Server } from 'http';
 import { Tournament } from '../Tournament';
 import { existsSync, mkdirSync } from 'fs';
 import { Agent } from '../Agent';
+import { Plugin } from '../Plugin';
 
 
 export const BOT_DIR = path.join(__dirname, '../../../../local/bots');
@@ -29,6 +30,7 @@ declare global {
         match?: Match,
         tournament?: Tournament
         agent?: Agent,
+        user?: Plugin.Database.PublicUser
         [x: string]: any
       }
     }

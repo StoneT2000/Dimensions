@@ -8,18 +8,21 @@ import { spawn } from 'child_process';
 import { BOT_DIR } from '..';
 import { genID } from '../../utils';
 import { removeDirectory } from '../../utils/System';
+import { Database } from '../../Plugin/Database';
 
 export interface UploadData {
   file: string,
   name: string,
   playerID: string,
-  botdir: string
+  botdir: string,
+  originalFile: string
 }
 
 /**
- * Returns path to unzipped bot contents and the main file.
+ * Returns path to unzipped bot contents and the main file. If user provided, will only handle upload if user 
+ * matches playerID given
  */
-export const handleBotUpload = (req: Request): Promise<Array<UploadData>> => {
+export const handleBotUpload = (req: Request, user?: Database.PublicUser): Promise<Array<UploadData>> => {
   return new Promise((resolve, reject) => {
     //@ts-ignore
     const form = formidable({ multiples: true });
@@ -52,6 +55,13 @@ export const handleBotUpload = (req: Request): Promise<Array<UploadData>> => {
           let pathToFile =  paths[i];
           let botName = names[i];
           let playerID = playerIDs[i];
+          if (user) {
+            // if differrent playerID and isn't admin, throw insufficient permissions
+            if (user.playerID !== playerID && !req.data.dimension.databasePlugin.isAdmin(user)) {
+              reject(new error.Unauthorized('Insufficient permissions to upload bot for this player ID'));
+              return;
+            }
+          }
           uploadProcessPromises.push(processUpload(upload, pathToFile, botName, playerID));
         }
         Promise.all(uploadProcessPromises).then(resolve).catch(reject)
@@ -93,7 +103,8 @@ const processUpload = async (file: any, pathToFile: string, botName: string, pla
       name: name,
       file: pathToBotFile,
       playerID: playerID,
-      botdir: botdir
+      botdir: botdir,
+      originalFile: file.path
     }
   }
 }
