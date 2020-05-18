@@ -23,4 +23,12 @@ router.get('/:userid', requireAuth, (req, res, next) => {
   }).catch(next);
 });
 
+router.get('/', requireAuth, (req, res, next) => {
+  let dimension = req.data.dimension;
+  let publicView = false;
+  dimension.databasePlugin.getUser(req.data.user.playerID, publicView).then((user) => {
+    res.json({error: null, user: user});
+  }).catch(next);
+})
+
 export default router;

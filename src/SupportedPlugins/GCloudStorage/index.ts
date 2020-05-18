@@ -6,6 +6,8 @@ import { Plugin } from "../../Plugin";
 import { nanoid } from "../..";
 import path from 'path';
 import fs from "fs";
+import { Database } from "../../Plugin/Database";
+import { Tournament } from "../../Tournament";
 
 export class GCloudStorage extends DStorage {
   public name: string = 'GCloudStorage'
@@ -33,8 +35,9 @@ export class GCloudStorage extends DStorage {
     await this.dimensionBucket.upload("./tests/run.3.ts");
   }
 
-  async uploadTournamentFile(file: string, userID: nanoid, tournamentID: nanoid) {
-    let dest = `users/${userID}/tournaments/${tournamentID}/bot.zip`
+  async uploadTournamentFile(file: string, user: Database.User, tournament: Tournament) {
+    let dest = 
+      `users/${user.username}_${user.playerID}/tournaments/${tournament.getKeyName()}/bot.zip`
     return this.dimensionBucket.upload(file, {
       destination: dest
     }).then(() => {

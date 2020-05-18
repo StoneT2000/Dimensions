@@ -157,7 +157,7 @@ export abstract class Tournament {
    * @param existingID - The optional id of the player 
    * 
    */
-  public async addplayer(file: string | {file: string, name: string, botdir?: string}, existingID?: NanoID): Promise<Player> {
+  public async addplayer(file: string | {file: string, name: string, botdir?: string, botkey?: string}, existingID?: NanoID): Promise<Player> {
     let id: NanoID;
     if (existingID) {
     
@@ -242,10 +242,10 @@ export abstract class Tournament {
    */
   protected async addExistingDatabasePlayers(): Promise<void> {
     if (this.dimension.hasDatabase()) {
-      return this.dimension.databasePlugin.getUsersInTournament(this.getSafeName()).then((users) => {
+      return this.dimension.databasePlugin.getUsersInTournament(this.getKeyName()).then((users) => {
         users.forEach((user) => {
-          //@ts-ignore
-          let p: Player = user.statistics[this.getSafeName()].player;
+
+          let p: Player = user.statistics[this.getKeyName()].player;
           // use existing id, name, and *FILE*
           let newPlayer = new Player({id: p.tournamentID.id, name: p.tournamentID.name}, p.file);
           newPlayer.anonymous = false;
@@ -430,6 +430,13 @@ export abstract class Tournament {
    */
   public getSafeName() {
     return this.name.replace(/ /g, '_');
+  }
+
+  /**
+   * Returns a key name to be used when storing a tournament by a combination of its name and id
+   */
+  public getKeyName() {
+    return `${this.getSafeName()}_${this.id}`;
   }
 }
 

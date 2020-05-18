@@ -30,7 +30,7 @@ declare global {
         match?: Match,
         tournament?: Tournament
         agent?: Agent,
-        user?: Plugin.Database.PublicUser
+        user?: Plugin.Database.User
         [x: string]: any
       }
     }

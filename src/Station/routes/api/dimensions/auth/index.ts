@@ -12,10 +12,10 @@ const router = express.Router();
  */
 export const requireAuth = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.get('Authorization');
-  if (!authHeader) return next(new error.BadRequest('Missing auth token'));
+  if (!authHeader) return next(new error.Unauthorized('Missing auth token'));
   const authHead = authHeader.split(' ');
   const invalidAuthFormat = authHead.length !== 2 || authHead[0] !== 'Bearer' || authHead[1].length === 0;
-  if (invalidAuthFormat) return next(new error.BadRequest('Invalid auth token format'));
+  if (invalidAuthFormat) return next(new error.Unauthorized('Invalid auth token format'));
   let dimension = req.data.dimension;
   dimension.databasePlugin.verifyToken(authHead[1]).then((data) => {
     req.data.user = data;
@@ -28,10 +28,10 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction) => 
  */
 export const requireAdmin = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.get('Authorization');
-  if (!authHeader) return next(new error.BadRequest('Missing auth token'));
+  if (!authHeader) return next(new error.Unauthorized('Missing auth token'));
   const authHead = authHeader.split(' ');
   const invalidAuthFormat = authHead.length !== 2 || authHead[0] !== 'Bearer' || authHead[1].length === 0;
-  if (invalidAuthFormat) return next(new error.BadRequest('Invalid auth token format'));
+  if (invalidAuthFormat) return next(new error.Unauthorized('Invalid auth token format'));
   let dimension = req.data.dimension;
   dimension.databasePlugin.verifyToken(authHead[1]).then((data) => {
     if (dimension.databasePlugin.isAdmin(data)) {
@@ -42,7 +42,6 @@ export const requireAdmin = (req: Request, res: Response, next: NextFunction) =>
       next(new error.Unauthorized('Requires admin access'));
     }
   }).catch(next);
-  next();
 }
 
 /**
