@@ -8,14 +8,14 @@ const router = express.Router();
 
 /**
  * POST
- * Registers a user. Requires username, password in body
+ * Registers a user. Requires username, password in body. Optional userData is passed
  */
 router.post('/register', (req, res, next) => {
   if (!req.body.username) return next(new error.BadRequest('Missing username'));
   if (!req.body.password) return next(new error.BadRequest('Missing password'));
 
   let dimension = req.data.dimension;
-  dimension.databasePlugin.registerUser(req.body.username, req.body.password).then((user) => {
+  dimension.databasePlugin.registerUser(req.body.username, req.body.password, req.body.userData).then((user) => {
     res.json({error: null, msg: 'success'});
   }).catch(next);
 });
