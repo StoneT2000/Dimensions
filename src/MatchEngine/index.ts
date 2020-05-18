@@ -460,7 +460,7 @@ export class MatchEngine {
         match.matchProcess = spawn('sudo', ['-H', '-u', ROOT_USER, cmd, ...parsed]).on('error', (err) => {
           if (err) throw err;
         });
-        this.log.important(
+        this.log.system(
           `${match.name} | id: ${match.id} - spawned: sudo -H -u ${ROOT_USER} ${cmd} ${parsed.join(' ')}`
         );
       }
@@ -468,7 +468,7 @@ export class MatchEngine {
         match.matchProcess = spawn(cmd, parsed).on('error', (err) => {
           if (err) throw err;
         });
-        this.log.important(
+        this.log.system(
           `${match.name} | id: ${match.id} - spawned: ${cmd} ${parsed.join(' ')}`
         );
       }
