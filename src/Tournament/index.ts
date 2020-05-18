@@ -242,7 +242,6 @@ export abstract class Tournament {
    */
   protected async addExistingDatabasePlayers(): Promise<void> {
     if (this.dimension.hasDatabase()) {
-      console.log('add existing');
       return this.dimension.databasePlugin.getUsersInTournament(this.getSafeName()).then((users) => {
         users.forEach((user) => {
           //@ts-ignore

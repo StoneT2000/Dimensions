@@ -1,7 +1,5 @@
 import { Dimension } from "../Dimension";
 
-import { Database as DatabaseAlias } from './Database';
-
 /**
  * Abstract Plugin class to be inherited in the development of external tooling to manipulate a {@link Dimension}
  * 
@@ -27,12 +25,14 @@ export abstract class Plugin {
   abstract async manipulate(dimension: Dimension): Promise<void>;
 }
 
-export module Plugin {
+import DatabaseDefault = require('./Database');
+/** @ignore */
+import _Database = DatabaseDefault.Database
+import StorageDefault = require('./Storage');
+/** @ignore */
+import _Storage = StorageDefault.Storage;
 
-  /**
-   * @ignore
-   */
-  export type Database = DatabaseAlias;
+export module Plugin {
 
   /**
    * Enumeration for plugin types
@@ -49,11 +49,15 @@ export module Plugin {
      * Plugins that work with the file storage capabilities 
      * Currently not used
      */
-    FILE_STORE = 'fileStore',
+    STORAGE = 'storage',
 
     /**
      * Other type, of which we will only run the {@link Plugin.manipulate} function
      */
     OTHER = 'other'
   }
+
+  // re-export some classes
+  export import Database = _Database;
+  export import Storage = _Storage;
 }

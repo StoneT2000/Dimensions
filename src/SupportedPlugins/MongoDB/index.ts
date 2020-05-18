@@ -1,15 +1,15 @@
 import mongoose from 'mongoose';
-import { Plugin } from '../Plugin';
-import { Database } from '../Plugin/Database';
-import { Dimension, DatabaseType, NanoID } from '../Dimension';
+import { Plugin } from '../../Plugin';
+import { Database } from '../../Plugin/Database';
+import { Dimension, DatabaseType, NanoID } from '../../Dimension';
 import MatchSchemaCreator from './models/match';
-import { Match } from '../Match';
-import { DeepPartial } from '../utils/DeepPartial';
-import { pickMatch } from '../Station/routes/api/dimensions/match';
+import { Match } from '../../Match';
+import { DeepPartial } from '../../utils/DeepPartial';
+import { pickMatch } from '../../Station/routes/api/dimensions/match';
 import bcrypt from 'bcryptjs';
 import UserSchemaCreator from './models/user';
-import { generateToken, verify } from '../Plugin/Database/utils';
-import { Tournament } from '../Tournament';
+import { generateToken, verify } from '../../Plugin/Database/utils';
+import { Tournament } from '../../Tournament';
 const salt = bcrypt.genSaltSync();
 
 export class MongoDB extends Database {
@@ -45,7 +45,7 @@ export class MongoDB extends Database {
     return this.db;
   }
   
-  public async initialize() {
+  public async initialize(dimension: Dimension) {
     await this.connect();
     return;
   }

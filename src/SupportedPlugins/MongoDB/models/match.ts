@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import { MongoDB } from '..';
-import { DeepPartial } from '../../utils/DeepPartial';
-import { deepMerge } from '../../utils/DeepMerge';
-import { deepCopy } from '../../utils/DeepCopy';
+import { DeepPartial } from '../../../utils/DeepPartial';
+import { deepMerge } from '../../../utils/DeepMerge';
+import { deepCopy } from '../../../utils/DeepCopy';
 let Schema = mongoose.Schema;
 let ObjectId = mongoose.Schema.Types.ObjectId;
 const defaultMatchSchemaOptions: MongoDB.MatchSchemaOptions = {

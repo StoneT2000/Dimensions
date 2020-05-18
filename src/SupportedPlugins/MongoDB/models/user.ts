@@ -2,10 +2,10 @@ import mongoose from 'mongoose';
 let Schema = mongoose.Schema;
 
 import { MongoDB } from '..';
-import { DeepPartial } from '../../utils/DeepPartial';
-import { deepMerge } from '../../utils/DeepMerge';
-import { deepCopy } from '../../utils/DeepCopy';
-import { Player } from '../../Tournament';
+import { DeepPartial } from '../../../utils/DeepPartial';
+import { deepMerge } from '../../../utils/DeepMerge';
+import { deepCopy } from '../../../utils/DeepCopy';
+import { Player } from '../../../Tournament';
 
 const defaultUserSchemaOptions: MongoDB.UserSchemaOptions = {
   creationDate: true

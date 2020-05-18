@@ -1,6 +1,6 @@
 import { DeepPartial } from "../../utils/DeepPartial";
 import { deepMerge } from "../../utils/DeepMerge";
-import { NanoID } from "../../Dimension";
+import { NanoID, Dimension } from "../../Dimension";
 import { Match } from "../../Match";
 import { Plugin } from "..";
 
@@ -24,7 +24,7 @@ export abstract class Database extends Plugin {
    * Performs any intialization tasks
    * Resolves when done
    */
-  abstract async initialize(): Promise<any>
+  abstract async initialize(dimension: Dimension): Promise<any>
 
   /**
    * Stores any match related data. Typically will just store match results
