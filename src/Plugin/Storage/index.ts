@@ -2,6 +2,7 @@ import { Plugin } from "..";
 import { DeepPartial } from "../../utils/DeepPartial";
 import { deepMerge } from "../../utils/DeepMerge";
 import { Dimension } from "../../Dimension";
+import { nanoid } from "../..";
 
 export abstract class Storage extends Plugin {
   
@@ -20,9 +21,20 @@ export abstract class Storage extends Plugin {
   abstract async initialize(dimension: Dimension): Promise<any>
 
   /**
-   * Upload a file (should be a zip). Returns a identifying key to allow for future retrieval
+   * Upload a file (should be a zip) for a tournament. Returns a identifying key to allow for future retrieval
+   * @param file - path to file to upload
+   * @param userID - id of user file belongs to
+   * @param tournamentID - id of the tournament this file is to be used for
    */
-  abstract async upload(file: string): Promise<string>
+  abstract async uploadTournamentFile(file: string, userID: nanoid, tournamentID: nanoid): Promise<string>
+
+  /**
+   * Upload a file
+   * @param file - path to file to upload
+   * @param userID - id of user file belongs to
+   * @param destinationName - destination name
+   */
+  abstract async upload(file: string, userID: nanoid, destinationName: string): Promise<string>
 
   /**
    * Download a file to a destination location

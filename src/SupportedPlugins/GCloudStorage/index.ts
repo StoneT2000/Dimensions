@@ -3,6 +3,9 @@ import { Storage, Bucket, GetSignedUrlConfig } from '@google-cloud/storage';
 import { DeepPartial } from "../../utils/DeepPartial";
 import { Dimension, DatabaseType, StorageType } from "../../Dimension";
 import { Plugin } from "../../Plugin";
+import { nanoid } from "../..";
+import path from 'path';
+import fs from "fs";
 
 export class GCloudStorage extends DStorage {
   public name: string = 'GCloudStorage'
@@ -24,24 +27,33 @@ export class GCloudStorage extends DStorage {
     this.storage = new Storage({keyFilename: this.configs.keyFilename});
     let exists = await this.storage.bucket(bucketName).exists();
     if (!exists) {
-       await this.createBucket(bucketName);
+       await this.storage.createBucket(bucketName);
     }
     this.dimensionBucket = this.storage.bucket(bucketName);
     await this.dimensionBucket.upload("./tests/run.3.ts");
   }
 
-  async createBucket(bucketName: string) {
-    // Creates the new bucket
-    await this.storage.createBucket(bucketName);
+  async uploadTournamentFile(file: string, userID: nanoid, tournamentID: nanoid) {
+    let dest = `users/${userID}/tournaments/${tournamentID}/bot.zip`
+    return this.dimensionBucket.upload(file, {
+      destination: dest
+    }).then(() => {
+      return dest;
+    });
   }
-  
-  async upload(file: string) {
-    let key = '';
-    return key;
+
+  async upload(file: string, userID: nanoid, destination?: string) {
+    let dest = `users/${userID}/${destination ? destination : path.basename(file)}`;
+    return this.dimensionBucket.upload(file, {
+      destination: dest
+    }).then(() => {
+      return dest;
+    })
   }
 
   async download(key: string, destination: string) {
-
+    let file = this.dimensionBucket.file(key);
+    file.createReadStream().pipe(fs.createWriteStream(destination))
     return;
   }
 
