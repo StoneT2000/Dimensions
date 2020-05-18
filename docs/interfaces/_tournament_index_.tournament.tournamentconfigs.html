@@ -107,6 +107,7 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_tournament_index_.tournament.tournamentconfigs.html#adddatabaseplayers" class="tsd-kind-icon">add<wbr>Database<wbr>Players</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_tournament_index_.tournament.tournamentconfigs.html#agentspermatch" class="tsd-kind-icon">agents<wbr>Per<wbr>Match</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_tournament_index_.tournament.tournamentconfigs.html#consoledisplay" class="tsd-kind-icon">console<wbr>Display</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_tournament_index_.tournament.tournamentconfigs.html#defaultmatchconfigs" class="tsd-kind-icon">default<wbr>Match<wbr>Configs</a></li>
@@ -126,13 +127,36 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="adddatabaseplayers" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> add<wbr>Database<wbr>Players</h3>
+					<div class="tsd-signature tsd-kind-icon">add<wbr>Database<wbr>Players<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html">TournamentConfigsBase</a>.<a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html#adddatabaseplayers">addDatabasePlayers</a></p>
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L554">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L554</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Auto add all database players with statistics in this tournament (has entered into the tournament at some time)
+							upon creation of tournament</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p><code>true</code> when tournament type is <a href="../classes/_tournament_index_.tournament.html#ladder">Ladder</a>. <code>false</code> otherwise as it is not supported on
+								<a href="../classes/_tournament_index_.tournament.html#roundrobin">RoundRobin</a> and <a href="../classes/_tournament_index_.tournament.html#elimination">Elimination</a> variants</p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 					<a name="agentspermatch" class="tsd-anchor"></a>
 					<h3>agents<wbr>Per<wbr>Match</h3>
 					<div class="tsd-signature tsd-kind-icon">agents<wbr>Per<wbr>Match<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html">TournamentConfigsBase</a>.<a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html#agentspermatch">agentsPerMatch</a></p>
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L477">https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L477</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L535">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L535</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -154,7 +178,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html">TournamentConfigsBase</a>.<a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html#consoledisplay">consoleDisplay</a></p>
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L483">https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L483</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L541">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L541</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -163,7 +187,7 @@
 						</div>
 						<dl class="tsd-comment-tags">
 							<dt>default</dt>
-							<dd><p>true</p>
+							<dd><p><code>true</code></p>
 							</dd>
 						</dl>
 					</div>
@@ -175,7 +199,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html">TournamentConfigsBase</a>.<a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html#defaultmatchconfigs">defaultMatchConfigs</a></p>
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L427">https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L427</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L485">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L485</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -191,7 +215,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html">TournamentConfigsBase</a>.<a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html#id">id</a></p>
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L488">https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L488</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L546">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L546</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -207,7 +231,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html">TournamentConfigsBase</a>.<a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html#logginglevel">loggingLevel</a></p>
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L459">https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L459</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L517">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L517</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -223,7 +247,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html">TournamentConfigsBase</a>.<a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html#name">name</a></p>
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L464">https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L464</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L522">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L522</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -239,7 +263,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html">TournamentConfigsBase</a>.<a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html#ranksystem">rankSystem</a></p>
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L435">https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L435</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L493">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L493</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -255,7 +279,7 @@
 					<aside class="tsd-sources">
 						<p>Overrides <a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html">TournamentConfigsBase</a>.<a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html#ranksystemconfigs">rankSystemConfigs</a></p>
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L496">https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L496</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L562">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L562</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -266,7 +290,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html">TournamentConfigsBase</a>.<a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html#resulthandler">resultHandler</a></p>
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L444">https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L444</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L502">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L502</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -312,7 +336,7 @@
 					<aside class="tsd-sources">
 						<p>Overrides <a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html">TournamentConfigsBase</a>.<a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html#tournamentconfigs">tournamentConfigs</a></p>
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L495">https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L495</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L561">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L561</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -323,7 +347,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html">TournamentConfigsBase</a>.<a href="_tournament_ladder_index_.ladder.tournamentconfigsbase.html#type">type</a></p>
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L431">https://github.com/StoneT2000/Dimensions/blob/8b0a8ec/src/Tournament/index.ts#L431</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L489">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Tournament/index.ts#L489</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -358,6 +382,9 @@
 							<li class="current tsd-kind-interface tsd-parent-kind-class tsd-has-type-parameter">
 								<a href="_tournament_index_.tournament.tournamentconfigs.html" class="tsd-kind-icon">Tournament<wbr>Configs</a>
 								<ul>
+									<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+										<a href="_tournament_index_.tournament.tournamentconfigs.html#adddatabaseplayers" class="tsd-kind-icon">add<wbr>Database<wbr>Players</a>
+									</li>
 									<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 										<a href="_tournament_index_.tournament.tournamentconfigs.html#agentspermatch" class="tsd-kind-icon">agents<wbr>Per<wbr>Match</a>
 									</li>
@@ -397,6 +424,24 @@
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_tournament_index_.html#eliminationdefault" class="tsd-kind-icon">Elimination<wbr>Default</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_tournament_index_.html#ladderdefault" class="tsd-kind-icon">Ladder<wbr>Default</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_tournament_index_.html#ranksystemdefault" class="tsd-kind-icon">Rank<wbr>System<wbr>Default</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_tournament_index_.html#roundrobindefault" class="tsd-kind-icon">Round<wbr>Robin<wbr>Default</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_tournament_index_.html#tournamentstatusdefault" class="tsd-kind-icon">Tournament<wbr>Status<wbr>Default</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_tournament_index_.html#tournamenttypedefault" class="tsd-kind-icon">Tournament<wbr>Type<wbr>Default</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
