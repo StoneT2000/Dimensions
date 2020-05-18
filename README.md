@@ -326,6 +326,12 @@ myDimension.use(mongo)
 
 And now you have the additional functionality of automatic saving of matches and tournament data to the database. Furthermore, player data is saved across sessions now provided you register a player through the authentication and login API that comes with using a backing database plugin like the MongoDB plugin.
 
+You will also need to provide a `.env` file in the same directory as the file, containing the keys `JWT_SECRET` and `ADMIN_PASSWORD`, e.g.
+```
+JWT_SECRET=my_secret_dont_share_this
+ADMIN_PASSWORD=admin_user_password
+```
+
 ## Contributing
 
 Everyone is more than welcome to contribute to this project! You can open an issue or submit a PR
