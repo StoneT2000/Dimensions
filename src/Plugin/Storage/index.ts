@@ -38,11 +38,14 @@ export abstract class Storage extends Plugin {
 
   /**
    * Download a file to a destination location
+   * @param key - the key referencing the object to download
+   * @param destination - destination path to download to locally
    */
   abstract async download(key: string, destination: string): Promise<any>
 
   /**
    * Get download url (signed url) for a objet with that key
+   * @param key - the key referencing the object to download
    */
   abstract async getDownloadURL(key: string): Promise<string>
 }
