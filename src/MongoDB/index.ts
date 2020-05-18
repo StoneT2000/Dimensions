@@ -64,7 +64,10 @@ export class MongoDB extends Database {
     return this.models.user.create({
       username: username,
       passwordHash: hash,
-      statistics: {}
+      statistics: {},
+      meta: {
+        ...userData
+      }
     });
   }
 

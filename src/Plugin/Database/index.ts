@@ -126,5 +126,10 @@ export module Database {
     creationDate?: Date,
     /** A Player ID generated using {@link Player.generatePlayerID}, returning a 12 char nanoid */
     playerID?: NanoID
+
+    /** any other user related meta data such as email, user statistics, etc. */
+    meta?: {
+      [x in string]: any
+    }
   }
 }
