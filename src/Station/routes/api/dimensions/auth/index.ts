@@ -11,6 +11,10 @@ const router = express.Router();
  * Auth requiring middleware
  */
 export const requireAuth = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.data.dimension.hasDatabase()) {
+    next();
+    return;
+  }
   const authHeader = req.get('Authorization');
   if (!authHeader) return next(new error.Unauthorized('Missing auth token'));
   const authHead = authHeader.split(' ');
@@ -27,6 +31,10 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction) => 
  * Admin requiring middleware
  */
 export const requireAdmin = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.data.dimension.hasDatabase()) {
+    next();
+    return;
+  }
   const authHeader = req.get('Authorization');
   if (!authHeader) return next(new error.Unauthorized('Missing auth token'));
   const authHead = authHeader.split(' ');

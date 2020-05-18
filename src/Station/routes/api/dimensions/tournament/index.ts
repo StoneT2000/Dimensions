@@ -147,7 +147,7 @@ router.delete('/:tournamentID/match/:matchID', requireAdmin, (req, res, next) =>
  * Removes a player with specified playerID
  */
 router.delete('/:tournamentID/player/:playerID', requireAuth, (req, res, next) => {
-  if (!req.data.dimension.databasePlugin.isAdmin(req.data.user) || req.params.playerID !== req.data.user.playerID) {
+  if (!req.data.dimension.databasePlugin.isAdmin(req.data.user) && req.params.playerID !== req.data.user.playerID) {
     return next(new error.Unauthorized(`Insufficient permissions to delete this player`));
   }
   return req.data.tournament.removePlayer(req.params.playerID).then(() => {
@@ -194,7 +194,6 @@ router.post('/:tournamentID/upload/', requireAuth, async (req: Request, res: Res
     let storage = req.data.dimension.storagePlugin;
     botkey = await storage.uploadTournamentFile(bot.originalFile, user, req.data.tournament);
   }
-  
   
   // if no id given, we will generate an ID to use. Generated here using the below function to avoid duplicate ids
   if (!id) {

@@ -11,9 +11,14 @@ import EngineOptions = MatchEngine.EngineOptions;
 import COMMAND_STREAM_TYPE = MatchEngine.COMMAND_STREAM_TYPE;
 import Command = MatchEngine.Command;
 import { ChildProcess } from 'child_process';
-import { NanoID } from '../Dimension';
+import { NanoID, Dimension } from '../Dimension';
 import { genID } from '../utils';
 import { deepCopy } from '../utils/DeepCopy';
+import path from 'path';
+import extract = require('extract-zip');
+import { removeFileSync, removeDirectory } from '../utils/System';
+import { BOT_DIR } from '../Station';
+import { mkdirSync } from 'fs';
 
 /**
  * An match created using a {@link Design} and a list of Agents. The match can be stopped and resumed with 
@@ -132,6 +137,12 @@ export class Match {
   private runReject: Function;
 
   /**
+   * Non local files that should be removed as they are stored somewhere else. Typically bot files are non local if 
+   * using a backing storage service
+   */
+  private nonLocalFiles: Array<string> = [];
+
+  /**
    * Match Constructor
    * @param design - The {@link Design} used
    * @param agents - List of agents used to create Match.
@@ -140,8 +151,9 @@ export class Match {
    */
   constructor(
     public design: Design, 
-    public agentFiles: Array<String> | Array<{file: string, name: string}> | Array<{file: string, tournamentID: Tournament.ID}>, 
-    configs: DeepPartial<Match.Configs> = {}
+    public agentFiles: Array<String> | Array<{file: string, name: string, botkey?: string}> | Array<{file: string, tournamentID: Tournament.ID, botkey?: string}>, 
+    configs: DeepPartial<Match.Configs> = {},
+    private dimension: Dimension
   ) {
 
     // override configs with provided configs argument
@@ -186,6 +198,34 @@ export class Match {
     
     this.timeStep = 0;
     
+    // copy over any agent bot files if dimension has a backing storage servicde and the agent has botkey specified
+    // copy them over the agent's specified file location to use
+    let retrieveBotFilePromises: Array<Promise<any>> = [];
+    let retrieveBotFileIndexes: Array<number> = [];
+    if (this.dimension.hasStorage()) {
+      this.agentFiles.forEach((agentFile, index) => {
+        if (agentFile.botkey && agentFile.file) {
+          console.log(agentFile.botkey, agentFile.file);
+          
+          // we know that the directory of the file should be the "root" directory of the bot
+          retrieveBotFilePromises.push(
+            this.retrieveBot(agentFile.botkey, agentFile.file)
+          );
+          retrieveBotFileIndexes.push(index);
+          
+        }
+      });
+    }
+    let retrievedBotFiles = await Promise.all(retrieveBotFilePromises);
+    retrieveBotFileIndexes.forEach((val, index) => {
+      if (!(typeof this.agentFiles[val] === "string")) {
+        //@ts-ignore
+        this.agentFiles[val].file = retrievedBotFiles[index];
+        // push them as non local files so they can be removed when match is done
+        this.nonLocalFiles.push(path.dirname(retrievedBotFiles[index]));
+      }
+    });
+
     // Initialize agents with agent files
     this.agents = Agent.generateAgents(this.agentFiles, this.configs.agentOptions);
     this.agents.forEach((agent) => {
@@ -215,6 +255,26 @@ export class Match {
     return true;
   }
 
+  /**
+   * Retrieves a bot through its key and downloads it to a random generated folder. Returns the new file
+   * @param botkey 
+   */
+  private async retrieveBot(botkey: string, file: string) {
+    let dir = BOT_DIR + '/anon-' + genID(18);
+    mkdirSync(dir);
+    
+    let zipFile = path.join(dir, 'bot.zip');
+    await this.dimension.storagePlugin.download(
+      botkey,
+      zipFile
+    );
+    await extract(zipFile, {
+      dir: dir
+    });
+    removeFileSync(zipFile);
+    return path.join(dir, path.basename(file));
+  }
+
 
   /**
    * Runs this match to completion. Sets this.results to match results and resolves with the match results when done
@@ -241,7 +301,6 @@ export class Match {
           if (overrideOptions.resultHandler) {
             this.results = overrideOptions.resultHandler(this.results);
           }
-          resolve(this.results);
         }
         else {
           // otherwise run the match using the design with calls to this.next()
@@ -259,6 +318,7 @@ export class Match {
           await this.killAndCleanUp();
         
         }
+
         this.finishDate = new Date();
         resolve(this.results);
       }
@@ -398,10 +458,15 @@ export class Match {
   }
 
   /**
-   * Stop all agents through the match engine
+   * Stop all agents through the match engine and clean up any other files and processes
    */
   private async killAndCleanUp() {
     await this.matchEngine.killAndClean(this);
+    let removeNonLocalFilesPromises: Array<Promise<any>> = [];
+    this.nonLocalFiles.forEach((nonLocalFile) => {
+      removeNonLocalFilesPromises.push(removeDirectory(nonLocalFile));
+    });
+    Promise.all(removeNonLocalFilesPromises);
   }
 
   /**

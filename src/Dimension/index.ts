@@ -231,7 +231,7 @@ export class Dimension {
    * @param matchOptions - Options for the created match
    * @param configs - Configurations that are {@link Design} dependent
    */
-  public async createMatch(files: Array<string> | Array<{file: string, name: string}>, 
+  public async createMatch(files: Array<string> | Array<{file: string, name: string, botkey?: string}>, 
     configs?: DeepPartial<Match.Configs>): Promise<Match> {
 
     if (!files.length) {
@@ -245,9 +245,9 @@ export class Dimension {
     // create new match
     let match: Match;
     if (typeof files[0] === 'string') {
-      match = new Match(this.design, <Array<string>> files, matchConfigs);
+      match = new Match(this.design, <Array<string>> files, matchConfigs, this);
     } else {
-      match = new Match(this.design, <Array<{file: string, name: string}>> files, matchConfigs);
+      match = new Match(this.design, <Array<{file: string, name: string, botkey?: string}>> files, matchConfigs, this);
     }
     this.statistics.matchesCreated++;
 
@@ -273,7 +273,7 @@ export class Dimension {
    * `Design.update` and `Design.storeResults`
    */
   public async runMatch(
-    files: Array<string> | Array<{file: string, name: string}>, 
+    files: Array<string> | Array<{file: string, name: string, botkey?: string}>, 
     configs?: DeepPartial<Match.Configs>
   ): Promise<any> {
     if (!files.length) throw new MissingFilesError('No files provided for match');
@@ -284,9 +284,9 @@ export class Dimension {
 
     let match: Match;
     if (typeof files[0] === 'string') {
-      match = new Match(this.design, <Array<string>> files, matchConfigs);
+      match = new Match(this.design, <Array<string>> files, matchConfigs, this);
     } else {
-      match = new Match(this.design, <Array<{file: string, name: string}>> files, matchConfigs);
+      match = new Match(this.design, <Array<{file: string, name: string, botkey?: string}>> files, matchConfigs, this);
     }
     this.statistics.matchesCreated++;
 

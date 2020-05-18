@@ -49,8 +49,13 @@ export class Player {
    */
   public botDirPath: string = undefined;
 
-  constructor(public tournamentID: Tournament.ID, public file: string) {
+  /**
+   * Key that references the player's bot file object if it exists
+   */
+  public botkey: string = undefined;
 
+  constructor(public tournamentID: Tournament.ID, public file: string, botkey?: string) {
+    this.botkey = botkey;
   }
 
   lock() {
@@ -217,7 +222,7 @@ export abstract class Tournament {
       return newPlayer;
     }
     else {
-      let newPlayer = new Player({id: id, name: file.name}, file.file);
+      let newPlayer = new Player({id: id, name: file.name}, file.file, file.botkey);
       newPlayer.botDirPath = file.botdir;
       // check database
       if (this.dimension.hasDatabase()) {
@@ -247,7 +252,7 @@ export abstract class Tournament {
 
           let p: Player = user.statistics[this.getKeyName()].player;
           // use existing id, name, and *FILE*
-          let newPlayer = new Player({id: p.tournamentID.id, name: p.tournamentID.name}, p.file);
+          let newPlayer = new Player({id: p.tournamentID.id, name: p.tournamentID.name}, p.file, p.botkey);
           newPlayer.anonymous = false;
           newPlayer.username = user.username
           newPlayer.botDirPath = p.botDirPath;
@@ -345,9 +350,10 @@ export abstract class Tournament {
     
     let match: Match;
     let filesAndNamesAndIDs = players.map((player) => {
-      return {file: player.file, tournamentID: player.tournamentID}
+      // if player has a botkey, download their bot file and update player.file, otherwise use whats in player.file
+      return {file: player.file, tournamentID: player.tournamentID, botkey: player.botkey}
     });
-    match = new Match(this.design, <Array<{file: string, tournamentID: Tournament.ID}>>(filesAndNamesAndIDs), matchConfigs);
+    match = new Match(this.design, <Array<{file: string, tournamentID: Tournament.ID, botkey?: string}>>(filesAndNamesAndIDs), matchConfigs, this.dimension);
 
     // store match into the tournament
     this.matches.set(match.id, match);

@@ -52,7 +52,12 @@ export const handleBotUpload = (req: Request, user?: Database.PublicUser): Promi
         let uploadProcessPromises: Array<Promise<UploadData>> = [];
         for (let i = 0; i < uploads.length; i++) {
           let upload = uploads[i];
-          let pathToFile =  paths[i];
+          let pathToFile = paths[i];
+          if ((<string>pathToFile).indexOf('/') !== -1 || (<string>pathToFile).indexOf('\\') !== -1) {
+            reject(new error.BadRequest('Path for file/directory cannot have / or \\ in them. File/directory must be in root directory after unzipping file'));
+            return;
+          }
+
           let botName = names[i];
           let playerID = playerIDs[i];
           if (user) {
@@ -77,7 +82,7 @@ const processUpload = async (file: any, pathToFile: string, botName: string, pla
   // generate a 18 char length nano ID to store this bot
   let id = genID(18);
       
-  let botdir = BOT_DIR + '/bot-' + id;
+  let botdir = BOT_DIR + '/bot-' + playerID + '-' + id;
 
   // extract first
   try {
@@ -91,12 +96,13 @@ const processUpload = async (file: any, pathToFile: string, botName: string, pla
 
   let pathToBotFile = path.join(botdir, pathToFile);
   let name = botName;
+  console.log("Uploaded path: ", pathToBotFile);
 
   // check if file exists
   if (!existsSync(pathToBotFile)) { 
     // remove folder if doesn't exist
     removeDirectory(botdir);
-    throw new error.BadRequest(`Extracted zip file to bot-${id} but path to file ${pathToFile} does not exist in the extracted directory`);
+    throw new error.BadRequest(`Extracted zip file to bot-${playerID}-${id} but path to file ${pathToFile} does not exist in the extracted directory`);
   }
   else {
     return {
