@@ -40,42 +40,72 @@ let pathToEmptyBot = 'tests/bh20files/emptybot'
 
 let botlist = [{file: pathToExampleFuncs, name: 'example_1'}, {file: pathToEmptyBot, name: 'empty_1'}];
 
-let tourney = battlecodeDimension.createTournament(botlist, {
-  type: Tournament.Type.ROUND_ROBIN,
-  name: 'The \'real\' Battle hack 2020 leaderboard',
-  rankSystem: Tournament.RankSystem.WINS,
-  consoleDisplay: false,
-  defaultMatchConfigs: {
-    loggingLevel: Logger.LEVEL.NONE
-  },
-  resultHandler: (res) => {
-    let results: Dimension.Tournament.RankSystem.WINS.Results;
-    if (res.ranks[0].rank === 1) {
-      return {winners: [res.ranks[0].agentID], losers: [res.ranks[1].agentID], ties: []};
-    }
-    else if (res.ranks[0].rank === 2) {
-      return {winners: [res.ranks[1].agentID], losers: [res.ranks[0].agentID], ties: []};
-    }
-    else {
-      console.error('UNEXPECTED OUTPUT!!', res);
-      return {winners: [], losers: [], ties: [0, 1]};
-    }
-  },
-  agentsPerMatch: [2],
-  tournamentConfigs: {
-    // maxConcurrentMatches: 2,
-    storePastResults: false
-  }
-});
+let tourney: Tournament;
 
 describe('Testing with custom Battlehack2020 design', () => {
-  describe('Test run match', () => {
+  beforeEach(() => {
+    tourney = battlecodeDimension.createTournament(botlist, {
+      type: Tournament.Type.ROUND_ROBIN,
+      name: 'bh2020 custom test',
+      rankSystem: Tournament.RankSystem.WINS,
+      consoleDisplay: false,
+      defaultMatchConfigs: {
+        loggingLevel: Logger.LEVEL.NONE
+      },
+      resultHandler: (res) => {
+        let results: Dimension.Tournament.RankSystem.WINS.Results;
+        if (res.ranks[0].rank === 1) {
+          return {winners: [res.ranks[0].agentID], losers: [res.ranks[1].agentID], ties: []};
+        }
+        else if (res.ranks[0].rank === 2) {
+          return {winners: [res.ranks[1].agentID], losers: [res.ranks[0].agentID], ties: []};
+        }
+        else {
+          console.error('UNEXPECTED OUTPUT!!', res);
+          return {winners: [], losers: [], ties: [0, 1]};
+        }
+      },
+      agentsPerMatch: [2],
+      tournamentConfigs: {
+        // maxConcurrentMatches: 2,
+        storePastResults: false
+      }
+    });
+  });
+  describe('Test run (non secure)', () => {
     it('should run and example should beat empty and return appropriate results', () => {
       battlecodeDimension.runMatch([pathToExampleFuncs, pathToEmptyBot]).then((res) => {
         expect(res).to.eql({ranks: [{rank: 1, agentID: 0}, {rank: 2, agentID: 1}]});
       });
     });
     it('should run a tourney fine', async () => {
+      let res = await tourney.run();
+      tourney.competitors.forEach((player) => {
+        switch (player.tournamentID.name) {
+          case 'example_1':
+            expect(res.playerStats.get(player.tournamentID.id)).to.contain({wins: 2, ties: 0, losses: 0, matchesPlayed: 2});
+            break;
+          case 'empty_1':
+            expect(res.playerStats.get(player.tournamentID.id)).to.contain({wins: 0, ties: 0, losses: 2, matchesPlayed: 2});
+            break;
+        }
+      })
+      
+      
+    });
+  });
+  describe('Test run (secure)', () => {
+    it('should run and example should beat empty and return appropriate results', () => {
+      battlecodeDimension.runMatch([pathToExampleFuncs, pathToEmptyBot], { secureMode: true }).then((res) => {
+        expect(res).to.eql({ranks: [{rank: 1, agentID: 0}, {rank: 2, agentID: 1}]});
+      });
+    });
+    it('should run a tourney fine', async () => {
+      tourney.setConfigs({
+        defaultMatchConfigs: {
+          secureMode: true
+        }
+      })
       let res = await tourney.run();
       tourney.competitors.forEach((player) => {
         switch (player.tournamentID.name) {

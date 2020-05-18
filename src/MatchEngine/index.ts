@@ -454,11 +454,25 @@ export class MatchEngine {
       // spawn the match process with the parsed arguments
       let matchProcessTimer: any;
 
-      let fullcmd = [cmd, parsed.join(' ')];
-      match.matchProcess = spawn(cmd, parsed).on('error', (err) => {
-        if (err) throw err;
-      });
-      this.log.system(`${match.name} | id: ${match.id} - spawned: ${fullcmd}`);
+      // in secure mode, spawn given script as root user. User is required to spawn their match with 
+      // sudo -H -u dimensions_bot to ensure security
+      if (match.configs.secureMode) {
+        match.matchProcess = spawn('sudo', ['-H', '-u', ROOT_USER, cmd, ...parsed]).on('error', (err) => {
+          if (err) throw err;
+        });
+        this.log.important(
+          `${match.name} | id: ${match.id} - spawned: sudo -H -u ${ROOT_USER} ${cmd} ${parsed.join(' ')}`
+        );
+      }
+      else {
+        match.matchProcess = spawn(cmd, parsed).on('error', (err) => {
+          if (err) throw err;
+        });
+        this.log.important(
+          `${match.name} | id: ${match.id} - spawned: ${cmd} ${parsed.join(' ')}`
+        );
+      }
+      
 
       let matchTimedOut = false;
       // set up timer if specified

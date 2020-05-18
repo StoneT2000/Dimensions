@@ -22,7 +22,7 @@ echo Requires: RestrictedPython >> $replay_path
 echo Required-by:  >> $replay_path
 
 
-python3 ./tests/bh20files/run_game.py $w $b --seed $seed --delay 0 --raw-text --board-size $board_size --max-rounds $max_rounds >> $replay_path
+sudo -H -u dimensions_bot python3 ./tests/bh20files/run_game.py $w $b --seed $seed --delay 0 --raw-text --board-size $board_size --max-rounds $max_rounds >> $replay_path
 echo D_MATCH_FINISHED
 WINNER=`awk '/./{line=$0} END{print line}' $replay_path`
 echo $WINNER
