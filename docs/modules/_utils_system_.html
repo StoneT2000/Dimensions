@@ -75,6 +75,8 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_utils_system_.html#removedirectory" class="tsd-kind-icon">remove<wbr>Directory</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_utils_system_.html#removedirectorysync" class="tsd-kind-icon">remove<wbr>Directory<wbr>Sync</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_utils_system_.html#removefile" class="tsd-kind-icon">remove<wbr>File</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_utils_system_.html#removefilesync" class="tsd-kind-icon">remove<wbr>File<wbr>Sync</a></li>
 							</ul>
 						</section>
 					</div>
@@ -92,13 +94,22 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/utils/System.ts#L11">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/utils/System.ts#L11</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/utils/System.ts#L49">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/utils/System.ts#L49</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Removes files in the given directory</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>dir: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+										</div>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -115,13 +126,88 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/utils/System.ts#L7">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/utils/System.ts#L7</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/utils/System.ts#L41">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/utils/System.ts#L41</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Removes files in the given directory synchronously</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>dir: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+										</div>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="removefile" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> remove<wbr>File</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>File<span class="tsd-signature-symbol">(</span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/utils/System.ts#L19">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/utils/System.ts#L19</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Removes a file</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>file: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>file to remove</p>
+										</div>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="removefilesync" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> remove<wbr>File<wbr>Sync</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>File<wbr>Sync<span class="tsd-signature-symbol">(</span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/utils/System.ts#L11">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/utils/System.ts#L11</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Removes a file synchronously</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>file: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>file to remove</p>
+										</div>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -148,6 +234,12 @@
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="_utils_system_.html#removedirectorysync" class="tsd-kind-icon">remove<wbr>Directory<wbr>Sync</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_utils_system_.html#removefile" class="tsd-kind-icon">remove<wbr>File</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_utils_system_.html#removefilesync" class="tsd-kind-icon">remove<wbr>File<wbr>Sync</a>
 					</li>
 				</ul>
 			</nav>

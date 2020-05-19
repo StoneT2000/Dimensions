@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_mongodb_index_.html">&quot;MongoDB/index&quot;</a>
+					<a href="../modules/_supportedplugins_gcloudstorage_index_.html">&quot;SupportedPlugins/GCloudStorage/index&quot;</a>
 				</li>
 				<li>
-					<a href="../classes/_mongodb_index_.mongodb.html">MongoDB</a>
+					<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html">GCloudStorage</a>
 				</li>
 				<li>
-					<a href="_mongodb_index_.mongodb.configs.html">Configs</a>
+					<a href="_supportedplugins_gcloudstorage_index_.gcloudstorage.configs.html">Configs</a>
 				</li>
 			</ul>
 			<h1>Interface Configs</h1>
@@ -75,7 +75,8 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Configuration interface for the <a href="../classes/_plugin_database_index_.database.html">Database</a> plugin</p>
+						<p>Storage configs interface
+						Specific configurations for GCloud storage</p>
 					</div>
 				</div>
 			</section>
@@ -83,7 +84,12 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">Configs</span>
+						<span class="tsd-signature-symbol">{}</span>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">Configs</span>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -94,8 +100,7 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_mongodb_index_.mongodb.configs.html#savematches" class="tsd-kind-icon">save<wbr>Matches</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_mongodb_index_.mongodb.configs.html#savetournamentmatches" class="tsd-kind-icon">save<wbr>Tournament<wbr>Matches</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_supportedplugins_gcloudstorage_index_.gcloudstorage.configs.html#keyfilename" class="tsd-kind-icon">key<wbr>Filename</a></li>
 							</ul>
 						</section>
 					</div>
@@ -104,32 +109,17 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="savematches" class="tsd-anchor"></a>
-					<h3>save<wbr>Matches</h3>
-					<div class="tsd-signature tsd-kind-icon">save<wbr>Matches<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<a name="keyfilename" class="tsd-anchor"></a>
+					<h3>key<wbr>Filename</h3>
+					<div class="tsd-signature tsd-kind-icon">key<wbr>Filename<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Plugin/Database/index.ts#L105">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Plugin/Database/index.ts#L105</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/SupportedPlugins/GCloudStorage/index.ts#L96">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/SupportedPlugins/GCloudStorage/index.ts#L96</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Whether or not to save matches into the database when we run <a href="../classes/_dimension_index_.dimension.html#runmatch">Dimension.runMatch</a></p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="savetournamentmatches" class="tsd-anchor"></a>
-					<h3>save<wbr>Tournament<wbr>Matches</h3>
-					<div class="tsd-signature tsd-kind-icon">save<wbr>Tournament<wbr>Matches<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Plugin/Database/index.ts#L108">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Plugin/Database/index.ts#L108</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Whether or not to save matches into the database when the tournament runs a match</p>
+							<p>Path to key file from a google account service key</p>
 						</div>
 					</div>
 				</section>
@@ -142,7 +132,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="../modules/_mongodb_index_.html">&quot;<wbr>MongoDB/index&quot;</a>
+						<a href="../modules/_supportedplugins_gcloudstorage_index_.html">&quot;<wbr>Supported<wbr>Plugins/GCloud<wbr>Storage/index&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -151,95 +141,56 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_mongodb_index_.mongodb.html" class="tsd-kind-icon">MongoDB</a>
+						<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html" class="tsd-kind-icon">GCloud<wbr>Storage</a>
 						<ul>
 							<li class="current tsd-kind-interface tsd-parent-kind-class">
-								<a href="_mongodb_index_.mongodb.configs.html" class="tsd-kind-icon">Configs</a>
+								<a href="_supportedplugins_gcloudstorage_index_.gcloudstorage.configs.html" class="tsd-kind-icon">Configs</a>
 								<ul>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="_mongodb_index_.mongodb.configs.html#savematches" class="tsd-kind-icon">save<wbr>Matches</a>
-									</li>
-									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="_mongodb_index_.mongodb.configs.html#savetournamentmatches" class="tsd-kind-icon">save<wbr>Tournament<wbr>Matches</a>
+										<a href="_supportedplugins_gcloudstorage_index_.gcloudstorage.configs.html#keyfilename" class="tsd-kind-icon">key<wbr>Filename</a>
 									</li>
 								</ul>
 							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="_mongodb_index_.mongodb.matchschemaoptions.html" class="tsd-kind-icon">Match<wbr>Schema<wbr>Options</a>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="_mongodb_index_.mongodb.models.html" class="tsd-kind-icon">Models</a>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="_mongodb_index_.mongodb.user.html" class="tsd-kind-icon">User</a>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="_mongodb_index_.mongodb.userschemaoptions.html" class="tsd-kind-icon">User<wbr>Schema<wbr>Options</a>
-							</li>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-								<a href="../classes/_mongodb_index_.mongodb.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="../classes/_mongodb_index_.mongodb.html#connectionstring" class="tsd-kind-icon">connection<wbr>String</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="../classes/_mongodb_index_.mongodb.html#db" class="tsd-kind-icon">db</a>
+								<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
-								<a href="../classes/_mongodb_index_.mongodb.html#name" class="tsd-kind-icon">name</a>
+								<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html#configs-1" class="tsd-kind-icon">configs</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html#dimensionbucket" class="tsd-kind-icon">dimension<wbr>Bucket</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
-								<a href="../classes/_mongodb_index_.mongodb.html#type" class="tsd-kind-icon">type</a>
+								<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html#name" class="tsd-kind-icon">name</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="../classes/_mongodb_index_.mongodb.html#connect" class="tsd-kind-icon">connect</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html#storage" class="tsd-kind-icon">storage</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-								<a href="../classes/_mongodb_index_.mongodb.html#deleteuser" class="tsd-kind-icon">delete<wbr>User</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-								<a href="../classes/_mongodb_index_.mongodb.html#getmatch" class="tsd-kind-icon">get<wbr>Match</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
+								<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html#type" class="tsd-kind-icon">type</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-								<a href="../classes/_mongodb_index_.mongodb.html#getuser" class="tsd-kind-icon">get<wbr>User</a>
+								<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html#download" class="tsd-kind-icon">download</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-								<a href="../classes/_mongodb_index_.mongodb.html#getusersintournament" class="tsd-kind-icon">get<wbr>Users<wbr>InTournament</a>
+								<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html#getdownloadurl" class="tsd-kind-icon">get<wbr>DownloadURL</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-								<a href="../classes/_mongodb_index_.mongodb.html#initialize" class="tsd-kind-icon">initialize</a>
+								<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html#initialize" class="tsd-kind-icon">initialize</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-								<a href="../classes/_mongodb_index_.mongodb.html#loginuser" class="tsd-kind-icon">login<wbr>User</a>
+								<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html#manipulate" class="tsd-kind-icon">manipulate</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-								<a href="../classes/_mongodb_index_.mongodb.html#manipulate" class="tsd-kind-icon">manipulate</a>
+								<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html#upload" class="tsd-kind-icon">upload</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-								<a href="../classes/_mongodb_index_.mongodb.html#registeruser" class="tsd-kind-icon">register<wbr>User</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-								<a href="../classes/_mongodb_index_.mongodb.html#storematch" class="tsd-kind-icon">store<wbr>Match</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-								<a href="../classes/_mongodb_index_.mongodb.html#updateuser" class="tsd-kind-icon">update<wbr>User</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-								<a href="../classes/_mongodb_index_.mongodb.html#verifytoken" class="tsd-kind-icon">verify<wbr>Token</a>
-							</li>
-							<li class=" tsd-kind-object-literal tsd-parent-kind-class tsd-is-inherited">
-								<a href="../classes/_mongodb_index_.mongodb.html#configs-1" class="tsd-kind-icon">configs</a>
-							</li>
-							<li class=" tsd-kind-object-literal tsd-parent-kind-class">
-								<a href="../classes/_mongodb_index_.mongodb.html#models-1" class="tsd-kind-icon">models</a>
+								<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html#uploadtournamentfile" class="tsd-kind-icon">upload<wbr>Tournament<wbr>File</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_mongodb_index_.html#salt" class="tsd-kind-icon">salt</a>
-					</li>
 				</ul>
 			</nav>
 		</div>

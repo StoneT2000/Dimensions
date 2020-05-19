@@ -49,8 +49,19 @@ export class Player {
    */
   public botDirPath: string = undefined;
 
-  constructor(public tournamentID: Tournament.ID, public file: string) {
+  /**
+   * Key that references the player's bot file object if it exists
+   */
+  public botkey: string = undefined;
 
+  /**
+   * Path to the zip file for the bot
+   */
+  public zipFile: string = undefined;
+
+  constructor(public tournamentID: Tournament.ID, public file: string, zipFile: string, botkey?: string) {
+    this.botkey = botkey;
+    this.zipFile = zipFile;
   }
 
   lock() {
@@ -157,7 +168,7 @@ export abstract class Tournament {
    * @param existingID - The optional id of the player 
    * 
    */
-  public async addplayer(file: string | {file: string, name: string, botdir?: string}, existingID?: NanoID): Promise<Player> {
+  public async addplayer(file: string | {file: string, name: string, zipFile?: string, botdir?: string, botkey?: string}, existingID?: NanoID): Promise<Player> {
     let id: NanoID;
     if (existingID) {
     
@@ -180,6 +191,8 @@ export abstract class Tournament {
           player.file = file.file;
           player.tournamentID.name = file.name;
           player.botDirPath = file.botdir;
+          player.zipFile = file.zipFile;
+          player.botkey = file.botkey;
         }
         // update bot instead and call a tournament's updateBot function
         await this.updatePlayer(player, oldname, oldfile)
@@ -201,7 +214,7 @@ export abstract class Tournament {
     // addition of a new player
     if (typeof file === 'string') {
       let name = `player-${id}`;
-      let newPlayer = new Player({id: id, name: name}, file);
+      let newPlayer = new Player({id: id, name: name}, file, undefined);
 
       // check database
       if (this.dimension.hasDatabase()) {
@@ -217,7 +230,7 @@ export abstract class Tournament {
       return newPlayer;
     }
     else {
-      let newPlayer = new Player({id: id, name: file.name}, file.file);
+      let newPlayer = new Player({id: id, name: file.name}, file.file, file.zipFile, file.botkey);
       newPlayer.botDirPath = file.botdir;
       // check database
       if (this.dimension.hasDatabase()) {
@@ -239,16 +252,17 @@ export abstract class Tournament {
 
   /**
    * Adds existing database players
+   * 
+   * This is always needed when running a tournament on a single server
    */
   protected async addExistingDatabasePlayers(): Promise<void> {
     if (this.dimension.hasDatabase()) {
-      console.log('add existing');
-      return this.dimension.databasePlugin.getUsersInTournament(this.getSafeName()).then((users) => {
+      return this.dimension.databasePlugin.getUsersInTournament(this.getKeyName()).then((users) => {
         users.forEach((user) => {
-          //@ts-ignore
-          let p: Player = user.statistics[this.getSafeName()].player;
+
+          let p: Player = user.statistics[this.getKeyName()].player;
           // use existing id, name, and *FILE*
-          let newPlayer = new Player({id: p.tournamentID.id, name: p.tournamentID.name}, p.file);
+          let newPlayer = new Player({id: p.tournamentID.id, name: p.tournamentID.name}, p.file, p.zipFile, p.botkey);
           newPlayer.anonymous = false;
           newPlayer.username = user.username
           newPlayer.botDirPath = p.botDirPath;
@@ -346,9 +360,10 @@ export abstract class Tournament {
     
     let match: Match;
     let filesAndNamesAndIDs = players.map((player) => {
-      return {file: player.file, tournamentID: player.tournamentID}
+      // if player has a botkey, download their bot file and update player.file, otherwise use whats in player.file
+      return {file: player.file, tournamentID: player.tournamentID, botkey: player.botkey}
     });
-    match = new Match(this.design, <Array<{file: string, tournamentID: Tournament.ID}>>(filesAndNamesAndIDs), matchConfigs);
+    match = new Match(this.design, <Array<{file: string, tournamentID: Tournament.ID, botkey?: string}>>(filesAndNamesAndIDs), matchConfigs, this.dimension);
 
     // store match into the tournament
     this.matches.set(match.id, match);
@@ -431,6 +446,13 @@ export abstract class Tournament {
    */
   public getSafeName() {
     return this.name.replace(/ /g, '_');
+  }
+
+  /**
+   * Returns a key name to be used when storing a tournament by a combination of its name and id
+   */
+  public getKeyName() {
+    return `${this.getSafeName()}_${this.id}`;
   }
 }
 
