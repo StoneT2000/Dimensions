@@ -74,6 +74,9 @@ export class MongoDB extends Database {
       [
         { 
           "$match": {
+            "governID": {
+              "$eq": governID
+            },
             "agents.tournamentID.id": {
               "$eq": playerID
             }
