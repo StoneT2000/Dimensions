@@ -74,7 +74,7 @@
 					<div class="lead">
 						<p>Abstract Plugin class to be inherited in the development of external tooling to manipulate a <a href="_dimension_index_.dimension.html">Dimension</a></p>
 					</div>
-					<p>There are specific <a href="_plugin_database_index_.database.html">Database</a> plugins which are used for setting up a backing database to the dimension so it
+					<p>There are specific <a href="_plugin_index_.plugin.html#database">Database</a> plugins which are used for setting up a backing database to the dimension so it
 					can automatically store relevant data such as matches and tournaments and player stats</p>
 				</div>
 			</section>
@@ -84,6 +84,9 @@
 					<li>
 						<span class="target">Plugin</span>
 						<ul class="tsd-hierarchy">
+							<li>
+								<a href="_plugin_storage_index_.storage.html" class="tsd-signature-type">Storage</a>
+							</li>
 							<li>
 								<a href="_plugin_database_index_.database.html" class="tsd-signature-type">Database</a>
 							</li>
@@ -106,6 +109,8 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_plugin_index_.plugin.html#name" class="tsd-kind-icon">name</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_plugin_index_.plugin.html#type-1" class="tsd-kind-icon">type</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_plugin_index_.plugin.html#database" class="tsd-kind-icon">Database</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_plugin_index_.plugin.html#storage" class="tsd-kind-icon">Storage</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -125,7 +130,7 @@
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Plugin/index.ts#L16">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Plugin/index.ts#L16</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Plugin/index.ts#L14">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Plugin/index.ts#L14</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -137,10 +142,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="type-1" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagAbstract">Abstract</span> type</h3>
-					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../enums/_plugin_database_index_.database.type.html" class="tsd-signature-type">Type</a></div>
+					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="../enums/_plugin_storage_index_.storage.type.html" class="tsd-signature-type">Type</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Plugin/index.ts#L21">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Plugin/index.ts#L21</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Plugin/index.ts#L19">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Plugin/index.ts#L19</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -148,6 +153,26 @@
 							<p>Type of the plugin. Required in order for Dimensions to know how to use it</p>
 						</div>
 					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="database" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> Database</h3>
+					<div class="tsd-signature tsd-kind-icon">Database<span class="tsd-signature-symbol">:</span> <a href="_plugin_database_index_.database.html" class="tsd-signature-type">Database</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Plugin/index.ts#L61">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Plugin/index.ts#L61</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="storage" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> Storage</h3>
+					<div class="tsd-signature tsd-kind-icon">Storage<span class="tsd-signature-symbol">:</span> <a href="_plugin_storage_index_.storage.html" class="tsd-signature-type">Storage</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Plugin/index.ts#L62">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Plugin/index.ts#L62</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -162,7 +187,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Plugin/index.ts#L27">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Plugin/index.ts#L27</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Plugin/index.ts#L25">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Plugin/index.ts#L25</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -212,6 +237,12 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_plugin_index_.plugin.html#type-1" class="tsd-kind-icon">type</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="_plugin_index_.plugin.html#database" class="tsd-kind-icon">Database</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="_plugin_index_.plugin.html#storage" class="tsd-kind-icon">Storage</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_plugin_index_.plugin.html#manipulate" class="tsd-kind-icon">manipulate</a>
 							</li>
@@ -219,6 +250,12 @@
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_plugin_index_.html#databasedefault" class="tsd-kind-icon">Database<wbr>Default</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_plugin_index_.html#storagedefault" class="tsd-kind-icon">Storage<wbr>Default</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
@@ -246,6 +283,9 @@
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
 			</ul>
 		</div>
 	</div>

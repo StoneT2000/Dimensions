@@ -87,8 +87,8 @@
 							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_plugin_index_.plugin.type.html#database" class="tsd-kind-icon">DATABASE</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_plugin_index_.plugin.type.html#file_store" class="tsd-kind-icon">FILE_<wbr>STORE</a></li>
 								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_plugin_index_.plugin.type.html#other" class="tsd-kind-icon">OTHER</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_plugin_index_.plugin.type.html#storage" class="tsd-kind-icon">STORAGE</a></li>
 							</ul>
 						</section>
 					</div>
@@ -102,29 +102,13 @@
 					<div class="tsd-signature tsd-kind-icon">DATABASE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;database&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Plugin/index.ts#L46">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Plugin/index.ts#L46</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Plugin/index.ts#L46">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Plugin/index.ts#L46</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>Plugins that work with database capabilities
-							Includes plugins such as <a href="../classes/_mongodb_index_.mongodb.html">MongoDB</a>, which handle the storage of match results and user data</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="file_store" class="tsd-anchor"></a>
-					<h3>FILE_<wbr>STORE</h3>
-					<div class="tsd-signature tsd-kind-icon">FILE_<wbr>STORE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;fileStore&quot;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Plugin/index.ts#L52">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Plugin/index.ts#L52</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Plugins that work with the file storage capabilities
-							Currently not used</p>
+							Includes plugins such as <a href="../classes/_supportedplugins_mongodb_index_.mongodb.html">MongoDB</a>, which handle the storage of match results and user data</p>
 						</div>
 					</div>
 				</section>
@@ -134,12 +118,28 @@
 					<div class="tsd-signature tsd-kind-icon">OTHER<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;other&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Plugin/index.ts#L57">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Plugin/index.ts#L57</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Plugin/index.ts#L57">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Plugin/index.ts#L57</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
 							<p>Other type, of which we will only run the <a href="../classes/_plugin_index_.plugin.html#manipulate">Plugin.manipulate</a> function</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="storage" class="tsd-anchor"></a>
+					<h3>STORAGE</h3>
+					<div class="tsd-signature tsd-kind-icon">STORAGE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;storage&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Plugin/index.ts#L52">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Plugin/index.ts#L52</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Plugins that work with the file storage capabilities
+							Currently not used</p>
 						</div>
 					</div>
 				</section>
@@ -170,10 +170,10 @@
 										<a href="_plugin_index_.plugin.type.html#database" class="tsd-kind-icon">DATABASE</a>
 									</li>
 									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-										<a href="_plugin_index_.plugin.type.html#file_store" class="tsd-kind-icon">FILE_<wbr>STORE</a>
+										<a href="_plugin_index_.plugin.type.html#other" class="tsd-kind-icon">OTHER</a>
 									</li>
 									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-										<a href="_plugin_index_.plugin.type.html#other" class="tsd-kind-icon">OTHER</a>
+										<a href="_plugin_index_.plugin.type.html#storage" class="tsd-kind-icon">STORAGE</a>
 									</li>
 								</ul>
 							</li>
@@ -183,6 +183,12 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="../classes/_plugin_index_.plugin.html#type-1" class="tsd-kind-icon">type</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="../classes/_plugin_index_.plugin.html#database" class="tsd-kind-icon">Database</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="../classes/_plugin_index_.plugin.html#storage" class="tsd-kind-icon">Storage</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="../classes/_plugin_index_.plugin.html#manipulate" class="tsd-kind-icon">manipulate</a>
 							</li>
@@ -190,6 +196,12 @@
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_plugin_index_.html#databasedefault" class="tsd-kind-icon">Database<wbr>Default</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_plugin_index_.html#storagedefault" class="tsd-kind-icon">Storage<wbr>Default</a>
+					</li>
 				</ul>
 			</nav>
 		</div>

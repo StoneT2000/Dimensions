@@ -93,6 +93,7 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_dimension_index_.dimensionconfigs.html#activatestation" class="tsd-kind-icon">activate<wbr>Station</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_dimension_index_.dimensionconfigs.html#backingdatabase" class="tsd-kind-icon">backing<wbr>Database</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_dimension_index_.dimensionconfigs.html#backingstorage" class="tsd-kind-icon">backing<wbr>Storage</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_dimension_index_.dimensionconfigs.html#defaultmatchconfigs" class="tsd-kind-icon">default<wbr>Match<wbr>Configs</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_dimension_index_.dimensionconfigs.html#id" class="tsd-kind-icon">id</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_dimension_index_.dimensionconfigs.html#logginglevel" class="tsd-kind-icon">logging<wbr>Level</a></li>
@@ -112,7 +113,7 @@
 					<div class="tsd-signature tsd-kind-icon">activate<wbr>Station<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Dimension/index.ts#L50">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Dimension/index.ts#L50</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Dimension/index.ts#L61">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Dimension/index.ts#L61</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -132,7 +133,7 @@
 					<div class="tsd-signature tsd-kind-icon">backing<wbr>Database<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="../enums/_dimension_index_.databasetype.html" class="tsd-signature-type">DatabaseType</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Dimension/index.ts#L75">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Dimension/index.ts#L75</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Dimension/index.ts#L86">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Dimension/index.ts#L86</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -147,12 +148,32 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="backingstorage" class="tsd-anchor"></a>
+					<h3>backing<wbr>Storage</h3>
+					<div class="tsd-signature tsd-kind-icon">backing<wbr>Storage<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="../enums/_dimension_index_.storagetype.html" class="tsd-signature-type">StorageType</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Dimension/index.ts#L92">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Dimension/index.ts#L92</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>String denoting what kind of backing storage is being used</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p><a href="../enums/_dimension_index_.databasetype.html#none">DatabaseType.NONE</a></p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="defaultmatchconfigs" class="tsd-anchor"></a>
 					<h3>default<wbr>Match<wbr>Configs</h3>
 					<div class="tsd-signature tsd-kind-icon">default<wbr>Match<wbr>Configs<span class="tsd-signature-symbol">:</span> <a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="_match_index_.match.configs.html" class="tsd-signature-type">Configs</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Dimension/index.ts#L59">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Dimension/index.ts#L59</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Dimension/index.ts#L70">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Dimension/index.ts#L70</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -167,7 +188,7 @@
 					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <a href="../modules/_dimension_index_.html#nanoid" class="tsd-signature-type">NanoID</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Dimension/index.ts#L62">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Dimension/index.ts#L62</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Dimension/index.ts#L73">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Dimension/index.ts#L73</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -182,7 +203,7 @@
 					<div class="tsd-signature tsd-kind-icon">logging<wbr>Level<span class="tsd-signature-symbol">:</span> <a href="../enums/_logger_index_.logger.level.html" class="tsd-signature-type">LEVEL</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Dimension/index.ts#L57">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Dimension/index.ts#L57</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Dimension/index.ts#L68">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Dimension/index.ts#L68</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -197,7 +218,7 @@
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Dimension/index.ts#L45">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Dimension/index.ts#L45</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Dimension/index.ts#L56">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Dimension/index.ts#L56</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -212,7 +233,7 @@
 					<div class="tsd-signature tsd-kind-icon">observe<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Dimension/index.ts#L55">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Dimension/index.ts#L55</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Dimension/index.ts#L66">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Dimension/index.ts#L66</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -232,7 +253,7 @@
 					<div class="tsd-signature tsd-kind-icon">secure<wbr>Mode<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Dimension/index.ts#L69">https://github.com/StoneT2000/Dimensions/blob/e442ae7/src/Dimension/index.ts#L69</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Dimension/index.ts#L80">https://github.com/StoneT2000/Dimensions/blob/a910a4f/src/Dimension/index.ts#L80</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -265,6 +286,9 @@
 					<li class=" tsd-kind-enum tsd-parent-kind-module">
 						<a href="../enums/_dimension_index_.databasetype.html" class="tsd-kind-icon">Database<wbr>Type</a>
 					</li>
+					<li class=" tsd-kind-enum tsd-parent-kind-module">
+						<a href="../enums/_dimension_index_.storagetype.html" class="tsd-kind-icon">Storage<wbr>Type</a>
+					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="../classes/_dimension_index_.dimension.html" class="tsd-kind-icon">Dimension</a>
 					</li>
@@ -278,6 +302,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="_dimension_index_.dimensionconfigs.html#backingdatabase" class="tsd-kind-icon">backing<wbr>Database</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_dimension_index_.dimensionconfigs.html#backingstorage" class="tsd-kind-icon">backing<wbr>Storage</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="_dimension_index_.dimensionconfigs.html#defaultmatchconfigs" class="tsd-kind-icon">default<wbr>Match<wbr>Configs</a>
