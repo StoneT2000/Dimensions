@@ -205,7 +205,6 @@ export class Match {
     if (this.dimension.hasStorage()) {
       this.agentFiles.forEach((agentFile, index) => {
         if (agentFile.botkey && agentFile.file) {
-          console.log(agentFile.botkey, agentFile.file);
           
           // we know that the directory of the file should be the "root" directory of the bot
           retrieveBotFilePromises.push(
