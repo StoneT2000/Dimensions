@@ -54,8 +54,14 @@ export class Player {
    */
   public botkey: string = undefined;
 
-  constructor(public tournamentID: Tournament.ID, public file: string, botkey?: string) {
+  /**
+   * Path to the zip file for the bot
+   */
+  public zipFile: string = undefined;
+
+  constructor(public tournamentID: Tournament.ID, public file: string, zipFile: string, botkey?: string) {
     this.botkey = botkey;
+    this.zipFile = zipFile;
   }
 
   lock() {
@@ -162,7 +168,7 @@ export abstract class Tournament {
    * @param existingID - The optional id of the player 
    * 
    */
-  public async addplayer(file: string | {file: string, name: string, botdir?: string, botkey?: string}, existingID?: NanoID): Promise<Player> {
+  public async addplayer(file: string | {file: string, name: string, zipFile: string, botdir?: string, botkey?: string}, existingID?: NanoID): Promise<Player> {
     let id: NanoID;
     if (existingID) {
     
@@ -206,7 +212,7 @@ export abstract class Tournament {
     // addition of a new player
     if (typeof file === 'string') {
       let name = `player-${id}`;
-      let newPlayer = new Player({id: id, name: name}, file);
+      let newPlayer = new Player({id: id, name: name}, file, undefined);
 
       // check database
       if (this.dimension.hasDatabase()) {
@@ -222,7 +228,7 @@ export abstract class Tournament {
       return newPlayer;
     }
     else {
-      let newPlayer = new Player({id: id, name: file.name}, file.file, file.botkey);
+      let newPlayer = new Player({id: id, name: file.name}, file.file, file.zipFile, file.botkey);
       newPlayer.botDirPath = file.botdir;
       // check database
       if (this.dimension.hasDatabase()) {

@@ -96,7 +96,6 @@ const processUpload = async (file: any, pathToFile: string, botName: string, pla
 
   let pathToBotFile = path.join(botdir, pathToFile);
   let name = botName;
-  console.log("Uploaded path: ", pathToBotFile);
 
   // check if file exists
   if (!existsSync(pathToBotFile)) { 

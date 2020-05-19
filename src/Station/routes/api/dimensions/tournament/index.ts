@@ -2,8 +2,9 @@
  * API for dimension's tournaments
  */
 import express, { Request, Response, NextFunction } from 'express';
+import archiver from 'archiver';
 import * as error from '../../../../error';
-import { Tournament } from '../../../../../Tournament';
+import { Tournament, Player } from '../../../../../Tournament';
 import path from 'path';
 import matchAPI, { pickMatch } from '../match';
 import { pick } from '../../../../../utils';
@@ -12,6 +13,8 @@ import { requireAuth, requireAdmin } from '../auth';
 
 import { handleBotUpload, UploadData } from '../../../../handleBotUpload';
 import { TournamentPlayerDoesNotExistError } from '../../../../../DimensionError';
+import { removeDirectory, removeDirectorySync } from '../../../../../utils/System';
+import { spawnSync } from 'child_process';
 
 const BOT_DIR = path.join(__dirname, '../../../../local/bots');
 const BOT_DIR_TEMP = path.join(__dirname, '../../../../local/botstemp');
@@ -162,11 +165,49 @@ router.delete('/:tournamentID/player/:playerID', requireAuth, (req, res, next) =
   });
 });
 
+router.get('/:tournamentID/player/:playerID', requireAuth, async (req, res, next) => {
+  if (!req.data.dimension.databasePlugin.isAdmin(req.data.user) && req.params.playerID !== req.data.user.playerID) {
+    return next(new error.Unauthorized(`Insufficient permissions to retrieve this player`));
+  }
+  let tournament = req.data.tournament;
+  res.json({error: null, player: tournament.competitors.get(req.params.playerID)});
+})
+
+/**
+ * GET
+ * 
+ * Returns a url to download the bot if a storage service is provided, otherwise directly returns the bot file
+ */
+router.get('/:tournamentID/player/:playerID/bot', requireAuth, async (req, res, next) => {
+  if (!req.data.dimension.databasePlugin.isAdmin(req.data.user) && req.params.playerID !== req.data.user.playerID) {
+    return next(new error.Unauthorized(`Insufficient permissions to retrieve this player`));
+  }
+  let tournament = req.data.tournament;
+  
+  req.data.dimension.databasePlugin.getUser(req.params.playerID).then((user) => {
+    let player: Player = user.statistics[tournament.getKeyName()].player;
+    if (req.data.dimension.hasStorage()) {
+      let key = player.botkey;
+      req.data.dimension.storagePlugin.getDownloadURL(key).then((url) => {
+        res.json({error: null, url: url});
+      });
+    }
+    else {
+      // send a zipped up version of their bot
+      res.sendFile(player.zipFile);
+    }
+  }).catch(next);
+  
+});
+
 /**
  * POST Route
  * Takes in form data of names: string[], files: File[], playerIDs: string[]
  * file must be a zip
  * id is a tournament ID string specified only if you want to upload a new bot to replace an existing one
+ * 
+ * TODO: This route can be kind of slow because it reuploads a users bot and also checks its integrity and then deletes
+ * it again
  */
 router.post('/:tournamentID/upload/', requireAuth, async (req: Request, res: Response, next: NextFunction) => { 
   let data: Array<UploadData>;
@@ -188,11 +229,19 @@ router.post('/:tournamentID/upload/', requireAuth, async (req: Request, res: Res
     if (!user) return next(new error.BadRequest('Invalid player ID'));
   }
 
+  let zipLoc = path.join(path.dirname(bot.file), 'bot.zip');
+
   // upload bot if storage is used
   let botkey: string;
   if (req.data.dimension.hasStorage()) {
     let storage = req.data.dimension.storagePlugin;
     botkey = await storage.uploadTournamentFile(bot.originalFile, user, req.data.tournament);
+    
+    // as we use storage, we can delete the extracted content safely
+    removeDirectorySync(path.dirname(bot.file));
+  }
+  else {
+    spawnSync('cp', [bot.originalFile, zipLoc]);
   }
   
   // if no id given, we will generate an ID to use. Generated here using the below function to avoid duplicate ids
@@ -200,7 +249,7 @@ router.post('/:tournamentID/upload/', requireAuth, async (req: Request, res: Res
     id = req.data.tournament.generateNextTournamentIDString();
   }
   if (bot.name || bot.botdir || botkey) {
-    req.data.tournament.addplayer({file: bot.file, name: bot.name, botdir: bot.botdir, botkey: botkey}, id);
+    req.data.tournament.addplayer({file: bot.file, name: bot.name, zipFile: zipLoc, botdir: bot.botdir, botkey: botkey}, id);
   }
   else {
     req.data.tournament.addplayer(bot.file, id);
