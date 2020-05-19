@@ -26,10 +26,10 @@ export class GCloudStorage extends DStorage {
    */
   async initialize(dimension: Dimension) {
     let bucketName = dimension.name.toLowerCase().replace(/ /g, "_") + '_' + dimension.id.toLowerCase();
-    this.storage = new Storage({keyFilename: this.configs.keyFilename});
+    this.storage = new Storage({ keyFilename: this.configs.keyFilename, projectId: this.configs.projectId});
     let exists = await this.storage.bucket(bucketName).exists();
-    if (!exists) {
-       await this.storage.createBucket(bucketName);
+    if (!exists[0]) {
+      await this.storage.createBucket(bucketName);
     }
     this.dimensionBucket = this.storage.bucket(bucketName);
   }
@@ -93,5 +93,10 @@ export module GCloudStorage {
      * Path to key file from a google account service key
      */
     keyFilename: string
+
+    /**
+     * Project ID
+     */
+    projectId: string
   }
 }
