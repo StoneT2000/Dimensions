@@ -32,7 +32,6 @@ export class GCloudStorage extends DStorage {
        await this.storage.createBucket(bucketName);
     }
     this.dimensionBucket = this.storage.bucket(bucketName);
-    await this.dimensionBucket.upload("./tests/run.3.ts");
   }
 
   async uploadTournamentFile(file: string, user: Database.User, tournament: Tournament) {
