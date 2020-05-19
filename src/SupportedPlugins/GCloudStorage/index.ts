@@ -25,7 +25,7 @@ export class GCloudStorage extends DStorage {
    * Initializer. Initializes the storage object and creates necessary buckets
    */
   async initialize(dimension: Dimension) {
-    let bucketName = dimension.name.toLowerCase() + '_' + dimension.id.toLowerCase();
+    let bucketName = dimension.name.toLowerCase().replace(/ /g, "_") + '_' + dimension.id.toLowerCase();
     this.storage = new Storage({keyFilename: this.configs.keyFilename});
     let exists = await this.storage.bucket(bucketName).exists();
     if (!exists) {
