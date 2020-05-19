@@ -252,6 +252,8 @@ export abstract class Tournament {
 
   /**
    * Adds existing database players
+   * 
+   * This is always needed when running a tournament on a single server
    */
   protected async addExistingDatabasePlayers(): Promise<void> {
     if (this.dimension.hasDatabase()) {
@@ -260,7 +262,7 @@ export abstract class Tournament {
 
           let p: Player = user.statistics[this.getKeyName()].player;
           // use existing id, name, and *FILE*
-          let newPlayer = new Player({id: p.tournamentID.id, name: p.tournamentID.name}, p.file, p.botkey);
+          let newPlayer = new Player({id: p.tournamentID.id, name: p.tournamentID.name}, p.file, p.zipFile, p.botkey);
           newPlayer.anonymous = false;
           newPlayer.username = user.username
           newPlayer.botDirPath = p.botDirPath;

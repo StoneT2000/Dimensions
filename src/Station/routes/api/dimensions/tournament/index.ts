@@ -2,7 +2,6 @@
  * API for dimension's tournaments
  */
 import express, { Request, Response, NextFunction } from 'express';
-import archiver from 'archiver';
 import * as error from '../../../../error';
 import { Tournament, Player } from '../../../../../Tournament';
 import path from 'path';
@@ -13,11 +12,9 @@ import { requireAuth, requireAdmin } from '../auth';
 
 import { handleBotUpload, UploadData } from '../../../../handleBotUpload';
 import { TournamentPlayerDoesNotExistError } from '../../../../../DimensionError';
-import { removeDirectory, removeDirectorySync } from '../../../../../utils/System';
+import { removeDirectorySync } from '../../../../../utils/System';
 import { spawnSync } from 'child_process';
 
-const BOT_DIR = path.join(__dirname, '../../../../local/bots');
-const BOT_DIR_TEMP = path.join(__dirname, '../../../../local/botstemp');
 const router = express.Router();
 
 /**
@@ -69,6 +66,7 @@ router.get('/:tournamentID/match', (req: Request, res: Response) => {
 
 /**
  * GET
+ * 
  * Get the current match queue
  */
 router.get('/:tournamentID/matchQueue', (req, res) => {
@@ -77,6 +75,7 @@ router.get('/:tournamentID/matchQueue', (req, res) => {
 
 /**
  * POST
+ * 
  * Run a tournament if it is initialized or resume it if it was stopped
  */
 router.post('/:tournamentID/run', requireAdmin, (req: Request, res: Response, next: NextFunction) => {
@@ -165,6 +164,11 @@ router.delete('/:tournamentID/player/:playerID', requireAuth, (req, res, next) =
   });
 });
 
+/**
+ * GET
+ * 
+ * Retrieves player data of the ongoing tournament
+ */
 router.get('/:tournamentID/player/:playerID', requireAuth, async (req, res, next) => {
   if (!req.data.dimension.databasePlugin.isAdmin(req.data.user) && req.params.playerID !== req.data.user.playerID) {
     return next(new error.Unauthorized(`Insufficient permissions to retrieve this player`));
@@ -186,6 +190,7 @@ router.get('/:tournamentID/player/:playerID/bot', requireAuth, async (req, res, 
   
   req.data.dimension.databasePlugin.getUser(req.params.playerID).then((user) => {
     let player: Player = user.statistics[tournament.getKeyName()].player;
+
     if (req.data.dimension.hasStorage()) {
       let key = player.botkey;
       req.data.dimension.storagePlugin.getDownloadURL(key).then((url) => {
@@ -193,7 +198,7 @@ router.get('/:tournamentID/player/:playerID/bot', requireAuth, async (req, res, 
       });
     }
     else {
-      // send a zipped up version of their bot
+      // send a zipped up version of their bot directly if no storage service is used 
       res.sendFile(player.zipFile);
     }
   }).catch(next);
@@ -241,6 +246,7 @@ router.post('/:tournamentID/upload/', requireAuth, async (req: Request, res: Res
     removeDirectorySync(path.dirname(bot.file));
   }
   else {
+    // store the zip file
     spawnSync('cp', [bot.originalFile, zipLoc]);
   }
   
