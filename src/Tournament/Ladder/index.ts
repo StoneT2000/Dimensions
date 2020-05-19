@@ -706,10 +706,19 @@ export class Ladder extends Tournament {
     this.removePlayersSafely();
   }
 
+  /**
+   * Handles match results.
+   * 
+   * If match result is {ranks: []}, nothing will happen, can be used to mark a match as having errored
+   */
   private async handleMatchWithTrueSkill() {
     let toProcess = this.resultProcessingQueue.shift();
     let mapAgentIDtoTournamentID = toProcess.mapAgentIDtoTournamentID;
     let result = <RankSystem.TRUESKILL.Results>toProcess.result;
+    
+    // stop if no ranks provided, meaning no match succesful
+    if (result.ranks.length === 0) return;
+    
     let playerRatings: Array<Array<Rating>> = [];
     let tourneyIDs: Array<{id: Tournament.ID, stats: any}> = [];
     let ranks: Array<number> = [];
@@ -770,6 +779,7 @@ export class Ladder extends Tournament {
     let toProcess = this.resultProcessingQueue.shift();
     let mapAgentIDtoTournamentID = toProcess.mapAgentIDtoTournamentID;
     let result = <RankSystem.ELO.Results>toProcess.result;
+    if (result.ranks.length === 0) return;
     let ratingsToChange: Array<ELORating> = [];
     let ranks = [];
     result.ranks.forEach((rankInfo) => {

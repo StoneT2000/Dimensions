@@ -312,11 +312,9 @@ export class Match {
           });
           this.results = await this.getResults();
 
-          // kill processes and clean up
-          // TODO: Perhaps add a cleanup status if cleaning up processes takes a long time
-          await this.killAndCleanUp();
-        
         }
+        // kill processes and clean up
+        await this.killAndCleanUp();
 
         this.finishDate = new Date();
         resolve(this.results);
@@ -458,6 +456,8 @@ export class Match {
 
   /**
    * Stop all agents through the match engine and clean up any other files and processes
+   * 
+   * Used by custom and dimensions based designs
    */
   private async killAndCleanUp() {
     await this.matchEngine.killAndClean(this);
