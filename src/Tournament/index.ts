@@ -168,7 +168,7 @@ export abstract class Tournament {
    * @param existingID - The optional id of the player 
    * 
    */
-  public async addplayer(file: string | {file: string, name: string, zipFile: string, botdir?: string, botkey?: string}, existingID?: NanoID): Promise<Player> {
+  public async addplayer(file: string | {file: string, name: string, zipFile?: string, botdir?: string, botkey?: string}, existingID?: NanoID): Promise<Player> {
     let id: NanoID;
     if (existingID) {
     
@@ -191,6 +191,8 @@ export abstract class Tournament {
           player.file = file.file;
           player.tournamentID.name = file.name;
           player.botDirPath = file.botdir;
+          player.zipFile = file.zipFile;
+          player.botkey = file.botkey;
         }
         // update bot instead and call a tournament's updateBot function
         await this.updatePlayer(player, oldname, oldfile)
