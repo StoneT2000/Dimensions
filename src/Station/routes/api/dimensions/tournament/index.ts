@@ -3,21 +3,18 @@
  */
 import express, { Request, Response, NextFunction } from 'express';
 import * as error from '../../../../error';
-import { Tournament } from '../../../../../Tournament';
-import { IncomingForm } from 'formidable';
-import extract from 'extract-zip';
-import { existsSync } from 'fs';
+import { Tournament, Player } from '../../../../../Tournament';
 import path from 'path';
-import ncp from 'ncp';
-import { spawn } from 'child_process';
 import matchAPI, { pickMatch } from '../match';
 import { pick } from '../../../../../utils';
-import { NanoID } from '../../../../../Dimension';
+
+import { requireAuth, requireAdmin } from '../auth';
+
 import { handleBotUpload, UploadData } from '../../../../handleBotUpload';
 import { TournamentPlayerDoesNotExistError } from '../../../../../DimensionError';
+import { removeDirectorySync } from '../../../../../utils/System';
+import { spawnSync } from 'child_process';
 
-const BOT_DIR = path.join(__dirname, '../../../../local/bots');
-const BOT_DIR_TEMP = path.join(__dirname, '../../../../local/botstemp');
 const router = express.Router();
 
 /**
@@ -34,7 +31,6 @@ const getTournament = (req: Request, res: Response, next: NextFunction) => {
 }
 
 router.use('/:tournamentID', getTournament);
-
 /**
  * Picks out relevant fields for a tournament
  */
@@ -70,6 +66,7 @@ router.get('/:tournamentID/match', (req: Request, res: Response) => {
 
 /**
  * GET
+ * 
  * Get the current match queue
  */
 router.get('/:tournamentID/matchQueue', (req, res) => {
@@ -78,27 +75,25 @@ router.get('/:tournamentID/matchQueue', (req, res) => {
 
 /**
  * POST
+ * 
  * Run a tournament if it is initialized or resume it if it was stopped
  */
-router.post('/:tournamentID/run', async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    if (req.data.tournament.status === Tournament.Status.INITIALIZED) {
-      await req.data.tournament.run();
-      res.json({error: null, msg:'Running Tournament'})
-    }
-    else if (req.data.tournament.status === Tournament.Status.STOPPED) {
-      await req.data.tournament.resume();
-      res.json({error: null, msg:'Running Tournament'})
-    }
-    else if (req.data.tournament.status === Tournament.Status.RUNNING) {
-      return next(new error.BadRequest('Tournament is already running'));
-    }
-    else {
-      return next(new error.BadRequest(`Tournament cannot be run. Status is ${req.data.tournament.status}`));
-    }
+router.post('/:tournamentID/run', requireAdmin, (req: Request, res: Response, next: NextFunction) => {
+  if (req.data.tournament.status === Tournament.Status.INITIALIZED) {
+    req.data.tournament.run().then(() => {
+      res.json({error: null, msg:'Running Tournament'});
+    }).catch(next);
   }
-  catch(error) {
-    return next(new error.InternalServerError('Tournament Failed to Run'));
+  else if (req.data.tournament.status === Tournament.Status.STOPPED) {
+    req.data.tournament.resume().then(() => {
+      res.json({error: null, msg:'Running Tournament'});
+    }).catch(next);
+  }
+  else if (req.data.tournament.status === Tournament.Status.RUNNING) {
+    return next(new error.BadRequest('Tournament is already running'));
+  }
+  else {
+    return next(new error.BadRequest(`Tournament cannot be run. Status is ${req.data.tournament.status}`));
   }
 });
 
@@ -106,7 +101,7 @@ router.post('/:tournamentID/run', async (req: Request, res: Response, next: Next
  * POST
  * Stops a tournament if it isn't stopped
  */
-router.post('/:tournamentID/stop', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/:tournamentID/stop', requireAdmin, (req: Request, res: Response, next: NextFunction) => {
   if (req.data.tournament.status !== Tournament.Status.RUNNING) {
     return next(new error.BadRequest(`Can't stop a tournament that isn't running`));
   }
@@ -123,7 +118,7 @@ router.post('/:tournamentID/stop', async (req: Request, res: Response, next: Nex
  * GET
  * Gets ranks for the tournament
  */
-router.get('/:tournamentID/ranks', async (req: Request, res: Response, next: NextFunction) => { 
+router.get('/:tournamentID/ranks', (req: Request, res: Response, next: NextFunction) => { 
   try {
     res.json({error: null, ranks: req.data.tournament.getRankings()});
   }
@@ -137,7 +132,7 @@ router.get('/:tournamentID/ranks', async (req: Request, res: Response, next: Nex
  * 
  * Deletes a match
  */
-router.delete('/:tournamentID/match/:matchID', (req, res, next) => {
+router.delete('/:tournamentID/match/:matchID', requireAdmin, (req, res, next) => {
   return req.data.tournament.removeMatch(req.params.matchID).then(() => {
     res.json({error: null});
   }).catch((err) => {
@@ -153,7 +148,10 @@ router.delete('/:tournamentID/match/:matchID', (req, res, next) => {
  * 
  * Removes a player with specified playerID
  */
-router.delete('/:tournamentID/player/:playerID', (req, res, next) => {
+router.delete('/:tournamentID/player/:playerID', requireAuth, (req, res, next) => {
+  if (!req.data.dimension.databasePlugin.isAdmin(req.data.user) && req.params.playerID !== req.data.user.playerID) {
+    return next(new error.Unauthorized(`Insufficient permissions to delete this player`));
+  }
   return req.data.tournament.removePlayer(req.params.playerID).then(() => {
     res.json({error: null});
   }).catch((err) => {
@@ -167,15 +165,60 @@ router.delete('/:tournamentID/player/:playerID', (req, res, next) => {
 });
 
 /**
+ * GET
+ * 
+ * Retrieves player data of the ongoing tournament
+ */
+router.get('/:tournamentID/player/:playerID', requireAuth, async (req, res, next) => {
+  if (!req.data.dimension.databasePlugin.isAdmin(req.data.user) && req.params.playerID !== req.data.user.playerID) {
+    return next(new error.Unauthorized(`Insufficient permissions to retrieve this player`));
+  }
+  let tournament = req.data.tournament;
+  res.json({error: null, player: tournament.competitors.get(req.params.playerID)});
+})
+
+/**
+ * GET
+ * 
+ * Returns a url to download the bot if a storage service is provided, otherwise directly returns the bot file
+ */
+router.get('/:tournamentID/player/:playerID/bot', requireAuth, async (req, res, next) => {
+  if (!req.data.dimension.databasePlugin.isAdmin(req.data.user) && req.params.playerID !== req.data.user.playerID) {
+    return next(new error.Unauthorized(`Insufficient permissions to retrieve this player`));
+  }
+  let tournament = req.data.tournament;
+  
+  req.data.dimension.databasePlugin.getUser(req.params.playerID).then((user) => {
+    let player: Player = user.statistics[tournament.getKeyName()].player;
+
+    if (req.data.dimension.hasStorage()) {
+      let key = player.botkey;
+      req.data.dimension.storagePlugin.getDownloadURL(key).then((url) => {
+        res.json({error: null, url: url});
+      });
+    }
+    else {
+      // send a zipped up version of their bot directly if no storage service is used 
+      res.sendFile(player.zipFile);
+    }
+  }).catch(next);
+  
+});
+
+/**
  * POST Route
  * Takes in form data of names: string[], files: File[], playerIDs: string[]
  * file must be a zip
  * id is a tournament ID string specified only if you want to upload a new bot to replace an existing one
+ * 
+ * TODO: This route can be kind of slow because it reuploads a users bot and also checks its integrity and then deletes
+ * it again
  */
-router.post('/:tournamentID/upload/', async (req: Request, res: Response, next: NextFunction) => { 
+router.post('/:tournamentID/upload/', requireAuth, async (req: Request, res: Response, next: NextFunction) => { 
   let data: Array<UploadData>;
+
   try {
-   data = await handleBotUpload(req);
+   data = await handleBotUpload(req, req.data.user);
   } catch(err) {
     return next(err);
   }
@@ -183,12 +226,36 @@ router.post('/:tournamentID/upload/', async (req: Request, res: Response, next: 
   if (data.length > 1) return next(new error.BadRequest('Can only upload one tournament bot at a time'));
   let bot = data[0];
   let id = bot.playerID;
+  
+  // if user is admin, get the actual user the upload is for
+  let user = req.data.user;
+  if (req.data.dimension.databasePlugin.isAdmin(req.data.user)) {
+    user = await req.data.dimension.databasePlugin.getUser(id);
+    if (!user) return next(new error.BadRequest('Invalid player ID'));
+  }
+
+  let zipLoc = path.join(path.dirname(bot.file), 'bot.zip');
+
+  // upload bot if storage is used
+  let botkey: string;
+  if (req.data.dimension.hasStorage()) {
+    let storage = req.data.dimension.storagePlugin;
+    botkey = await storage.uploadTournamentFile(bot.originalFile, user, req.data.tournament);
+    
+    // as we use storage, we can delete the extracted content safely
+    removeDirectorySync(path.dirname(bot.file));
+  }
+  else {
+    // store the zip file
+    spawnSync('cp', [bot.originalFile, zipLoc]);
+  }
+  
   // if no id given, we will generate an ID to use. Generated here using the below function to avoid duplicate ids
   if (!id) {
     id = req.data.tournament.generateNextTournamentIDString();
   }
-  if (bot.name) {
-    req.data.tournament.addplayer({file: bot.file, name: bot.name, botdir: bot.botdir}, id);
+  if (bot.name || bot.botdir || botkey) {
+    req.data.tournament.addplayer({file: bot.file, name: bot.name, zipFile: zipLoc, botdir: bot.botdir, botkey: botkey}, id);
   }
   else {
     req.data.tournament.addplayer(bot.file, id);

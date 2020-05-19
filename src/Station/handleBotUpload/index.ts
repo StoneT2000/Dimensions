@@ -8,18 +8,21 @@ import { spawn } from 'child_process';
 import { BOT_DIR } from '..';
 import { genID } from '../../utils';
 import { removeDirectory } from '../../utils/System';
+import { Database } from '../../Plugin/Database';
 
 export interface UploadData {
   file: string,
   name: string,
   playerID: string,
-  botdir: string
+  botdir: string,
+  originalFile: string
 }
 
 /**
- * Returns path to unzipped bot contents and the main file.
+ * Returns path to unzipped bot contents and the main file. If user provided, will only handle upload if user 
+ * matches playerID given
  */
-export const handleBotUpload = (req: Request): Promise<Array<UploadData>> => {
+export const handleBotUpload = (req: Request, user?: Database.PublicUser): Promise<Array<UploadData>> => {
   return new Promise((resolve, reject) => {
     //@ts-ignore
     const form = formidable({ multiples: true });
@@ -49,9 +52,21 @@ export const handleBotUpload = (req: Request): Promise<Array<UploadData>> => {
         let uploadProcessPromises: Array<Promise<UploadData>> = [];
         for (let i = 0; i < uploads.length; i++) {
           let upload = uploads[i];
-          let pathToFile =  paths[i];
+          let pathToFile = paths[i];
+          if ((<string>pathToFile).indexOf('/') !== -1 || (<string>pathToFile).indexOf('\\') !== -1) {
+            reject(new error.BadRequest('Path for file/directory cannot have / or \\ in them. File/directory must be in root directory after unzipping file'));
+            return;
+          }
+
           let botName = names[i];
           let playerID = playerIDs[i];
+          if (user) {
+            // if differrent playerID and isn't admin, throw insufficient permissions
+            if (user.playerID !== playerID && !req.data.dimension.databasePlugin.isAdmin(user)) {
+              reject(new error.Unauthorized('Insufficient permissions to upload bot for this player ID'));
+              return;
+            }
+          }
           uploadProcessPromises.push(processUpload(upload, pathToFile, botName, playerID));
         }
         Promise.all(uploadProcessPromises).then(resolve).catch(reject)
@@ -67,7 +82,7 @@ const processUpload = async (file: any, pathToFile: string, botName: string, pla
   // generate a 18 char length nano ID to store this bot
   let id = genID(18);
       
-  let botdir = BOT_DIR + '/bot-' + id;
+  let botdir = BOT_DIR + '/bot-' + playerID + '-' + id;
 
   // extract first
   try {
@@ -86,14 +101,15 @@ const processUpload = async (file: any, pathToFile: string, botName: string, pla
   if (!existsSync(pathToBotFile)) { 
     // remove folder if doesn't exist
     removeDirectory(botdir);
-    throw new error.BadRequest(`Extracted zip file to bot-${id} but path to file ${pathToFile} does not exist in the extracted directory`);
+    throw new error.BadRequest(`Extracted zip file to bot-${playerID}-${id} but path to file ${pathToFile} does not exist in the extracted directory`);
   }
   else {
     return {
       name: name,
       file: pathToBotFile,
       playerID: playerID,
-      botdir: botdir
+      botdir: botdir,
+      originalFile: file.path
     }
   }
 }

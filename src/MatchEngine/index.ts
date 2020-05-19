@@ -211,9 +211,11 @@ export class MatchEngine {
     });
 
     // log stderr from agents to this stderr if option active
-    p.stderr.on('data', (data) => {
-      this.log.error(`${agent.id}: ${data.slice(0, data.length - 1)}`);
-    });
+    if (!this.engineOptions.noStdErr) {
+      p.stderr.on('data', (data) => {
+        this.log.error(`${agent.id}: ${data.slice(0, data.length - 1)}`);
+      });
+    }
 
     // when process closes, print message
     p.on('close', (code) => {

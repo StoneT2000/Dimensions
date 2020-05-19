@@ -15,6 +15,7 @@ import { Tournament } from '../Tournament';
 import { BOT_USER } from '../MatchEngine';
 import { Plugin } from '../Plugin';
 import { Database } from '../Plugin/Database';
+import { Storage } from '../Plugin/Storage';
 
 
 
@@ -30,6 +31,16 @@ export enum DatabaseType {
    * Represents mongodb database used
    */
   MONGO = 'mongo'
+}
+export enum StorageType {
+  /**
+   * Represents no storage used, all files stored locally on devide
+   */
+  NONE = 'none',
+  /**
+   * Represents gcloud storage used
+   */
+  GCLOUD = 'gcloud'
 }
 
 /**
@@ -73,6 +84,12 @@ export interface DimensionConfigs {
    * @default {@link DatabaseType.NONE}
    */
   backingDatabase: string | DatabaseType
+
+  /**
+   * String denoting what kind of backing storage is being used
+   * @default {@link DatabaseType.NONE}
+   */
+  backingStorage: string | StorageType
 }
 /**
  * The Dimension framework for intiating a {@link Design} to then run instances of a {@link Match} or 
@@ -106,9 +123,16 @@ export class Dimension {
   public log = new Logger();
 
   /**
-   * The database plugin being used. Allows Dimensions to interact with a database and store {@link Match}, {@link Tournament}, and user data, allowing for data persistance across instances.
+   * The database plugin being used. Allows Dimensions to interact with a database and store {@link Match}, 
+   * {@link Tournament}, and user data, allowing for data persistance across instances.
    */
   public databasePlugin: Database;
+
+  /**
+   * The storage plugin being used. Allows Dimensions to interact with a storage service and store user object data,
+   * particuarly bot file uploads
+   */
+  public storagePlugin: Storage;
 
   /**
    * The Station associated with this Dimension and current node instance
@@ -136,6 +160,7 @@ export class Dimension {
     },
     secureMode: false,
     backingDatabase: DatabaseType.NONE,
+    backingStorage: StorageType.NONE,
     id: 'oLBptg'
   }
 
@@ -206,7 +231,7 @@ export class Dimension {
    * @param matchOptions - Options for the created match
    * @param configs - Configurations that are {@link Design} dependent
    */
-  public async createMatch(files: Array<string> | Array<{file: string, name: string}>, 
+  public async createMatch(files: Array<string> | Array<{file: string, name: string, botkey?: string}>, 
     configs?: DeepPartial<Match.Configs>): Promise<Match> {
 
     if (!files.length) {
@@ -220,9 +245,9 @@ export class Dimension {
     // create new match
     let match: Match;
     if (typeof files[0] === 'string') {
-      match = new Match(this.design, <Array<string>> files, matchConfigs);
+      match = new Match(this.design, <Array<string>> files, matchConfigs, this);
     } else {
-      match = new Match(this.design, <Array<{file: string, name: string}>> files, matchConfigs);
+      match = new Match(this.design, <Array<{file: string, name: string, botkey?: string}>> files, matchConfigs, this);
     }
     this.statistics.matchesCreated++;
 
@@ -248,7 +273,7 @@ export class Dimension {
    * `Design.update` and `Design.storeResults`
    */
   public async runMatch(
-    files: Array<string> | Array<{file: string, name: string}>, 
+    files: Array<string> | Array<{file: string, name: string, botkey?: string}>, 
     configs?: DeepPartial<Match.Configs>
   ): Promise<any> {
     if (!files.length) throw new MissingFilesError('No files provided for match');
@@ -259,9 +284,9 @@ export class Dimension {
 
     let match: Match;
     if (typeof files[0] === 'string') {
-      match = new Match(this.design, <Array<string>> files, matchConfigs);
+      match = new Match(this.design, <Array<string>> files, matchConfigs, this);
     } else {
-      match = new Match(this.design, <Array<{file: string, name: string}>> files, matchConfigs);
+      match = new Match(this.design, <Array<{file: string, name: string, botkey?: string}>> files, matchConfigs, this);
     }
     this.statistics.matchesCreated++;
 
@@ -435,10 +460,13 @@ export class Dimension {
         // set to unknown to tell dimensions that there is some kind of database, we dont what it is yet
         this.configs.backingDatabase = 'unknown';
         this.databasePlugin = <Database>plugin;
-        await this.databasePlugin.initialize();
+        await this.databasePlugin.initialize(this);
         break;
-      case Plugin.Type.FILE_STORE:
-        throw new NotSupportedError('FILE_STORE Not supported yet');
+      case Plugin.Type.STORAGE:
+        this.log.info('Attaching Storage Plugin ' + plugin.name);
+        this.configs.backingStorage = 'unknown;'
+        this.storagePlugin = <Storage>plugin;
+        await this.storagePlugin.initialize(this);
       default:
         break;
     }
@@ -450,6 +478,13 @@ export class Dimension {
    */
   public hasDatabase() {
     return this.databasePlugin && this.configs.backingDatabase !== DatabaseType.NONE;
+  }
+
+  /**
+   * Returns true if dimension has a storage plugin backing it
+   */
+  public hasStorage() {
+    return this.storagePlugin && this.configs.backingStorage !== StorageType.NONE;
   }
 
   /**

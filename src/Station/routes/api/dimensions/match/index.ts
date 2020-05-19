@@ -6,6 +6,7 @@ import * as error from '../../../../error';
 import { Match } from '../../../../../Match';
 import { pick } from '../../../../../utils';
 import agentRouter, { pickAgent } from './agent';
+import { requireAdmin } from '../auth';
 const router = express.Router();
 
 /**
@@ -84,7 +85,7 @@ router.get('/:matchID/state', (req, res) => {
  * POST
  * Run/resume a match if it hasn't initialiized, or was finished, or is currently stopped
  */
-router.post('/:matchID/run', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/:matchID/run', requireAdmin, async (req: Request, res: Response, next: NextFunction) => {
   try {
     if (req.data.match.matchStatus === Match.Status.FINISHED || 
       req.data.match.matchStatus === Match.Status.UNINITIALIZED) {
@@ -112,7 +113,7 @@ router.post('/:matchID/run', async (req: Request, res: Response, next: NextFunct
  * POST
  * Stop a match
  */
-router.post('/:matchID/stop', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/:matchID/stop', requireAdmin, async (req: Request, res: Response, next: NextFunction) => {
   if (req.data.match.matchStatus === Match.Status.STOPPED) {
     return next(new error.BadRequest('Match is already stopped'));
   }

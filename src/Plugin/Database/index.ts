@@ -1,6 +1,6 @@
 import { DeepPartial } from "../../utils/DeepPartial";
 import { deepMerge } from "../../utils/DeepMerge";
-import { NanoID } from "../../Dimension";
+import { NanoID, Dimension } from "../../Dimension";
 import { Match } from "../../Match";
 import { Plugin } from "..";
 
@@ -24,7 +24,7 @@ export abstract class Database extends Plugin {
    * Performs any intialization tasks
    * Resolves when done
    */
-  abstract async initialize(): Promise<any>
+  abstract async initialize(dimension: Dimension): Promise<any>
 
   /**
    * Stores any match related data. Typically will just store match results
@@ -59,7 +59,8 @@ export abstract class Database extends Plugin {
   abstract registerUser(username: string, password: string, userData?: any): Promise<any>
 
   /**
-   * Authenticates a user by a JWT, resolves if succesful, rejects otherwise
+   * Authenticates a user by a JWT, resolves with the token data signed in the {@link loginUser} function, 
+   * rejects otherwise
    * @param jwt - the token
    */
   abstract verifyToken(jwt: string): Promise<any>
@@ -78,8 +79,8 @@ export abstract class Database extends Plugin {
   abstract updateUser(usernameOrID: string, update: Partial<Database.User>): Promise<any>
 
   /**
-   * Gets user information. If publicView is `false`, will retrieve all information other than password. Resolves with
-   * null if no user found
+   * Gets user information. If publicView is `true`, will retrieve all non-sensitive information (so it should exclude 
+   * password. Resolves with null if no user found
    * @param usernameOrID 
    * @param publicView
    */
@@ -92,6 +93,11 @@ export abstract class Database extends Plugin {
    * @param publicView
    */
   abstract getUsersInTournament(tournamentKeyName: string): Promise<Array<Database.User>>
+
+  /**
+   * Returns true if the user info indicate the user is an admin
+   */
+  abstract isAdmin(user: Database.PublicUser): boolean
 }
 
 export module Database {
@@ -109,14 +115,11 @@ export module Database {
   }
 
   /**
-   * User interface for use by Database Plugins
+   * Public information retrievable about users
    */
-  export interface User {
-
+  export interface PublicUser {
     /** User's username */ 
     username: string,
-    /** Hashed password */
-    passwordHash: string,
 
     /** Related Statistics */
     statistics?: {
@@ -126,5 +129,20 @@ export module Database {
     creationDate?: Date,
     /** A Player ID generated using {@link Player.generatePlayerID}, returning a 12 char nanoid */
     playerID?: NanoID
+
+    /** any other user related meta data such as email, user statistics, etc. */
+    meta?: {
+      [x in string]: any
+    }
   }
+
+  /**
+   * User interface for use by Database Plugins
+   */
+  export interface User extends PublicUser{
+    /** Hashed password */
+    passwordHash: string
+  }
+
+  
 }

@@ -258,7 +258,7 @@ export class Ladder extends Tournament {
   private async updateDatabaseTrueskillPlayerStats(playerStat: LadderPlayerStat, user?: Database.User) {
     let player = playerStat.player;
     if (!player.anonymous) {
-      let safeName = this.getSafeName();
+      let keyName = this.getKeyName();
       let update = {
         statistics: {}
       }
@@ -269,11 +269,11 @@ export class Ladder extends Tournament {
       }
 
       // perform update
-      update.statistics[safeName] = playerStat;
-      let rankStateRating = update.statistics[safeName].rankState.rating;
+      update.statistics[keyName] = playerStat;
+      let rankStateRating = update.statistics[keyName].rankState.rating;
 
       // make sure to store mu and sigma
-      update.statistics[safeName].rankState = {
+      update.statistics[keyName].rankState = {
         rating: {...rankStateRating, mu: rankStateRating.mu, sigma: rankStateRating.sigma}
       }
       try {
@@ -298,14 +298,14 @@ export class Ladder extends Tournament {
 
     // get any existing rating data
     let user: Database.User;
-    let safeName = this.getSafeName();
+    let keyName = this.getKeyName();
     if (!player.anonymous && this.dimension.hasDatabase()) {
       user = await this.dimension.databasePlugin.getUser(player.tournamentID.id);
       if (user) {
 
         // if there are stats
         if (user.statistics) {
-          playerStat = user.statistics[safeName];
+          playerStat = user.statistics[keyName];
 
           // if there was a player stat stored before, fix up rankState to have the toJSON function
           if (playerStat) {
@@ -364,7 +364,7 @@ export class Ladder extends Tournament {
       user = await this.dimension.databasePlugin.getUser(player.tournamentID.id);
       if (user) {
         if (user.statistics) {
-          playerStat = user.statistics[`${this.getSafeName()}`];
+          playerStat = user.statistics[`${this.getKeyName()}`];
         }
       }
     }
@@ -386,7 +386,7 @@ export class Ladder extends Tournament {
         let update = {
           statistics: user ? user.statistics : {}
         }
-        update.statistics[this.getSafeName()] = playerStat;
+        update.statistics[this.getKeyName()] = playerStat;
         await this.dimension.databasePlugin.updateUser(player.tournamentID.id, update)
       }
     }
@@ -541,7 +541,7 @@ export class Ladder extends Tournament {
       if (this.dimension.hasDatabase()) {
         let user = await this.dimension.databasePlugin.getUser(playerID);
         if (user) {
-          let safeName = this.getSafeName();
+          let keyName = this.getKeyName();
           let update = {
             statistics: {}
           }
@@ -550,7 +550,7 @@ export class Ladder extends Tournament {
             update.statistics = user.statistics;
           }
           // delete stats for this tournament to remove player
-          delete update.statistics[safeName];
+          delete update.statistics[keyName];
           await this.dimension.databasePlugin.updateUser(playerID, update);
           this.log.info('Removed player ' + playerID + ' from DB');
         }
