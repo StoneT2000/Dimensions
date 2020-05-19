@@ -302,7 +302,7 @@ export class Dimension {
     // if database plugin is active and saveMatches is set to true, store match
     if (this.hasDatabase()) {
       if (this.databasePlugin.configs.saveMatches) {
-        this.databasePlugin.storeMatch(match);
+        this.databasePlugin.storeMatch(match, this.id);
       }
     }
 

@@ -847,10 +847,6 @@ export namespace Ladder {
       totalMatches: number
     }
     currentRanks: Array<{player: Player, rankState: any}>
-    /**
-     * Past results stored. Each element is what is returned by {@link Design.getResults}
-     */
-    results: Array<any>
   }
   /**
    * Player stat interface for ladder tournaments

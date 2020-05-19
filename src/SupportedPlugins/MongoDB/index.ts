@@ -11,6 +11,7 @@ import UserSchemaCreator from './models/user';
 import { generateToken, verify } from '../../Plugin/Database/utils';
 import { Tournament } from '../../Tournament';
 import { pick } from '../../utils';
+import { nanoid } from '../..';
 require('dotenv').config();
 const salt = bcrypt.genSaltSync();
 
@@ -57,13 +58,40 @@ export class MongoDB extends Database {
     return;
   }
 
-  public async storeMatch(match: Match): Promise<any> {
-    let data = pickMatch(match);
+  public async storeMatch(match: Match, governID: nanoid): Promise<any> {
+    let data = {...pickMatch(match), governID: governID};
     // store all relevant data
     return this.models.match.create(data);
   }
   public async getMatch(id: NanoID) {
     return this.models.match.findOne({id: id});
+  }
+
+  public async getPlayerMatches(
+    playerID: nanoid, governID: nanoid, offset: number = 0, limit: number = 10, order: number = -1
+  ): Promise<Array<Match>> {
+    return this.models.match.aggregate(
+      [
+        { 
+          "$match": {
+            "agents.tournamentID.id": {
+              "$eq": playerID
+            }
+          }
+        },
+        {
+          "$sort": {
+            "creationDate": order
+          }
+        },
+        {
+          "$skip": offset
+        },
+        {
+          "$limit": limit
+        }
+      ]
+    );
   }
 
   public async registerUser(username: string, password: string, userData?: any) {

@@ -3,6 +3,7 @@ import { deepMerge } from "../../utils/DeepMerge";
 import { NanoID, Dimension } from "../../Dimension";
 import { Match } from "../../Match";
 import { Plugin } from "..";
+import { nanoid } from "../..";
 
 /**
  * The database plugin class, of which Dimensions uses internally to store data onto the database
@@ -28,9 +29,13 @@ export abstract class Database extends Plugin {
 
   /**
    * Stores any match related data. Typically will just store match results
+   * @param match - the match to store
+   * @param governId - a form of identification. Indicates what created this match. This can be a dimension ID or tournament 
+   * ID, both of which are {@link nanoid | nanoids}
+   * 
    * Resolves when done
    */
-  abstract storeMatch(match: Match): Promise<any>;
+  abstract storeMatch(match: Match, governID: nanoid): Promise<any>;
 
   /**
    * Retrieves a match through its match ID
@@ -98,6 +103,16 @@ export abstract class Database extends Plugin {
    * Returns true if the user info indicate the user is an admin
    */
   abstract isAdmin(user: Database.PublicUser): boolean
+
+  /**
+   * Resolves with match data
+   * @param playerID - id of player to retrieve matches from
+   * @param governID - id of what created the matches. This can be a dimension ID or a tournament ID
+   * @param offset - offset
+   * @param limit - max number of matches to return
+   * @param order - 1 for ascending and -1 for descending in order of creation date
+   */
+  abstract getPlayerMatches(playerID: nanoid, governID: nanoid, offset: number, limit: number, order: number): Promise<Array<Match>>
 }
 
 export module Database {

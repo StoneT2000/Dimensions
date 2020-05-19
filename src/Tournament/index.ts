@@ -99,7 +99,7 @@ export abstract class Tournament {
   public status: Tournament.Status = Tournament.Status.UNINITIALIZED;
 
   /** Ongoing tournament state. Type dependent on Tournament Type chosen */
-  abstract state: unknown;
+  abstract state: Tournament.TournamentTypeState;
 
   /** Logger */
   public log = new Logger();
@@ -377,7 +377,7 @@ export abstract class Tournament {
     // if database plugin is active and saveTournamentMatches is set to true, store match
     if (this.dimension.hasDatabase()) {
       if (this.dimension.databasePlugin.configs.saveTournamentMatches) {
-        this.dimension.databasePlugin.storeMatch(match);
+        this.dimension.databasePlugin.storeMatch(match, this.id);
       }
     }
 
@@ -592,7 +592,11 @@ export module Tournament {
     storePastResults: boolean
   }
   export interface TournamentTypeState  {
-    
+
+    /**
+     * Past results stored. Each element is what is returned by {@link Design.getResults}
+     */
+    results: Array<any>
   }
 
   /**

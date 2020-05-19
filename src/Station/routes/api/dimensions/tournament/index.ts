@@ -62,8 +62,6 @@ router.get('/:tournamentID/match', (req: Request, res: Response) => {
   res.json({error: null, matches: matchData});
 });
 
-
-
 /**
  * GET
  * 
@@ -169,13 +167,33 @@ router.delete('/:tournamentID/player/:playerID', requireAuth, (req, res, next) =
  * 
  * Retrieves player data of the ongoing tournament
  */
-router.get('/:tournamentID/player/:playerID', requireAuth, async (req, res, next) => {
-  if (!req.data.dimension.databasePlugin.isAdmin(req.data.user) && req.params.playerID !== req.data.user.playerID) {
-    return next(new error.Unauthorized(`Insufficient permissions to retrieve this player`));
-  }
+router.get('/:tournamentID/player/:playerID', async (req, res, next) => {
   let tournament = req.data.tournament;
   res.json({error: null, player: tournament.competitors.get(req.params.playerID)});
-})
+});
+
+/**
+ * GET
+ * 
+ * Retrieves past player matches. Requires a backing database
+ */
+router.get('/:tournamentID/player/:playerID/match', async (req, res, next) => {
+  if (!req.query.offset || !req.query.limit || !req.query.order) return next(new error.BadRequest('Missing params'));
+  let tournament = req.data.tournament;
+  let db = req.data.dimension.databasePlugin;
+  if (req.data.dimension.hasDatabase()) {
+    try {
+      let matchData = await db.getPlayerMatches(req.params.playerID, req.params.tournamentID, parseInt(req.query.offset), parseInt(req.query.limit), parseInt(req.query.order));
+      res.json({error: null, matches: matchData});
+    } catch(err) {
+      return next(err);
+    }
+  }
+  else {
+    // TODO: configure tournament.state.results to store more match meta data
+    return next(new error.NotImplemented('Requires a database plugin in order to retrieve past matches'));
+  }
+});
 
 /**
  * GET

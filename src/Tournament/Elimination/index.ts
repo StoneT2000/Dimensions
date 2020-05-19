@@ -432,10 +432,6 @@ export namespace Elimination {
     }
 
     currentRound: number
-    /**
-     * Past results stored. Each element is what is returned by {@link Design.getResults}
-     */
-    results: Array<any>
 
     /**
      * A match hash in the tournament indicating what seeds are meant to compete against each other.

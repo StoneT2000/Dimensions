@@ -373,9 +373,5 @@ export namespace RoundRobin {
     statistics: {
       totalMatches: number
     }
-    /**
-     * Past results stored. Each element is what is returned by {@link Design.getResults}
-     */
-    results: Array<any>
   }
 }
