@@ -307,30 +307,16 @@ Agents for each match are spawned in a new child process of the main node proces
 
 ## Plugins
 
-Plugins intend to be a simple "drag and drop." Dimensions can `use` a plugin and the plugin will automatically configure the dimension as needed. See here for how to [develop a plugin](https://github.com/StoneT2000/Dimensions/wiki/Plugin)
+Plugins intend to be a simple "drag and drop." Dimensions can `use` a plugin and the plugin will automatically configure the dimension as needed. See here for more [info on the available plugins](https://github.com/StoneT2000/Dimensions/wiki/Plugin#supported-plugins). See here for how to [develop a plugin](https://github.com/StoneT2000/Dimensions/wiki/Plugin#developing-a-plugin)
 
-### MongoDB
-
-The MongoDB plugin is provided out of the box by Dimensions and you can opt in or not. First, you will need to obtain a [MongoDB connection string](https://docs.mongodb.com/manual/reference/connection-string/). On your local host, it might be something like
-
-```
-mongodb://localhost:27017/dimensions
-```
-
-To use MongoDB, do the following
+For example, here's two lines of code that integrate MongoDB as a database:
 
 ```js
 let mongo = new Dimension.MongoDB('mongodb://localhost:27017/dimensions');
-myDimension.use(mongo)
+await myDimension.use(mongo)
 ```
 
-And now you have the additional functionality of automatic saving of matches and tournament data to the database. Furthermore, player data is saved across sessions now provided you register a player through the authentication and login API that comes with using a backing database plugin like the MongoDB plugin.
 
-You will also need to provide a `.env` file in the same directory as the file, containing the keys `JWT_SECRET` and `ADMIN_PASSWORD`, e.g.
-```
-JWT_SECRET=my_secret_dont_share_this
-ADMIN_PASSWORD=admin_user_password
-```
 
 ## Contributing
 
