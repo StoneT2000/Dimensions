@@ -221,12 +221,20 @@ export class Dimension {
     
     // set up cleanup functions
     process.on("exit", async () => {
-      await this.cleanup();
+      try {
+        await this.cleanup();
+      } catch (err) {
+        console.error(err);
+      }
       process.exit();
     });
     
     process.on("SIGINT", async () => {
-      await this.cleanup();
+      try {
+        await this.cleanup();
+      } catch (err) {
+        console.error(err);
+      }
       process.exit();
     });
 

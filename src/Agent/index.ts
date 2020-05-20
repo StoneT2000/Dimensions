@@ -379,7 +379,7 @@ export class Agent {
       if (this.options.secureMode) {
         let p = spawn('sudo', ['-H', '-u', BOT_USER, command, ...args], {
           cwd: this.cwd,
-          detached: true,
+          detached: false,
         }).on('error', (err) => { reject(err) })
         resolve(p);
         
@@ -387,7 +387,7 @@ export class Agent {
       else {
         let p = spawn(command, args, {
           cwd: this.cwd,
-          detached: true
+          detached: false
         }).on('error', (err) => { reject(err) });
         resolve(p);
       }
@@ -419,10 +419,6 @@ export class Agent {
           resolve();
         }
       });
-      // kill it again for good measure, sometimes treekill doesn't do it
-      if (!this.process.killed) {
-        process.kill(this.process.pid, 'SIGKILL');
-      }
       
     });
   }
