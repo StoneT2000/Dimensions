@@ -90,4 +90,4 @@ class Agent {
   }
 }
 
-module.exports = Agent;
+module.exports = { Agent };
