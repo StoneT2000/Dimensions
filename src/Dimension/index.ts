@@ -225,13 +225,6 @@ export class Dimension {
       process.exit();
     });
     
-    process.on('uncaughtException', async (e) => {
-      console.log('Uncaught Exception: ');
-      console.log(e.stack);
-      await this.cleanup();
-      process.exit(99);
-    });
-
     process.on("SIGINT", async () => {
       await this.cleanup();
       process.exit();
