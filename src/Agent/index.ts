@@ -419,6 +419,8 @@ export class Agent {
           resolve();
         }
       });
+      // kill it again for good measure, sometimes treekill doesn't do it
+      process.kill(this.process.pid, 'SIGKILL');
     });
   }
 
