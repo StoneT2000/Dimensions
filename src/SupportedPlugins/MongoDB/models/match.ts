@@ -18,7 +18,9 @@ const MatchSchemaCreator = (options: DeepPartial<MongoDB.MatchSchemaOptions> = {
   let schema = new Schema({
     name: String,
     id: {type: String, index: true, unique: true, required: true },
-    governID: String
+    governID: String,
+    replayFile: {type: String, required: false},
+    replayFileKey: {type: String, required: false}
   });
 
   // TODO: This can be more streamlined. Perhaps in the MatchSchemaCreator we also store the kind of type they should be

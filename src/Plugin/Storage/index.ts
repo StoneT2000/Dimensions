@@ -31,12 +31,19 @@ export abstract class Storage extends Plugin {
   abstract async uploadTournamentFile(file: string, user: Database.User, tournament: Tournament): Promise<string>
 
   /**
-   * Upload a file
+   * Upload a file for a user. Resolves with a key to allow for future retrieval
    * @param file - path to file to upload
    * @param userID - id of user file belongs to
    * @param destinationName - destination name
    */
-  abstract async upload(file: string, userID: nanoid, destinationName: string): Promise<string>
+  abstract async uploadUserFile(file: string, userID: nanoid, destinationName: string): Promise<string>
+
+  /**
+   * Upload a file. Resolves with a key to allow for future retrieval
+   * @param file - path tto file to upload
+   * @param destinationName - destination name
+   */
+  abstract async upload(file: string, destinationName: string): Promise<string>
 
   /**
    * Download a file to a destination location

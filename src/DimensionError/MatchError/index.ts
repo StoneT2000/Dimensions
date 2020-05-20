@@ -1,5 +1,6 @@
 const MATCH_DESTROYED_ERROR = 'MatchDestroyedError';
 const MATCH_ERROR = 'MatchError';
+const MATCH_REPLAY_FILE_ERROR = 'MatchReplayFileError';
 
 /**
  * @class MatchError
@@ -21,5 +22,13 @@ export class MatchDestroyedError extends MatchError {
     super(m);
     this.name = MATCH_DESTROYED_ERROR;
     Object.setPrototypeOf(this, MatchDestroyedError.prototype);
+  }
+}
+
+export class MatchReplayFileError extends MatchError {
+  constructor(m: string) {
+    super(m);
+    this.name = MATCH_REPLAY_FILE_ERROR;
+    Object.setPrototypeOf(this, MatchReplayFileError.prototype);
   }
 }

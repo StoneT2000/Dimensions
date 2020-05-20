@@ -306,15 +306,10 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
 				<a href="#plugins" id="plugins" style="color: inherit; text-decoration: none;">
 					<h2>Plugins</h2>
 				</a>
-				<p>Plugins intend to be a simple &quot;drag and drop.&quot; Dimensions can <code>use</code> a plugin and the plugin will automatically configure the dimension as needed. See here for how to <a href="https://github.com/StoneT2000/Dimensions/wiki/Plugin">develop a plugin</a></p>
-				<a href="#mongodb" id="mongodb" style="color: inherit; text-decoration: none;">
-					<h3>MongoDB</h3>
-				</a>
-				<p>The MongoDB plugin is provided out of the box by Dimensions and you can opt in or not. First, you will need to obtain a <a href="https://docs.mongodb.com/manual/reference/connection-string/">MongoDB connection string</a>. On your local host, it might be something like</p>
-				<pre><code>mongodb:<span class="hljs-regexp">//</span>localhost:<span class="hljs-number">27017</span>/dimensions</code></pre><p>To use MongoDB, do the following</p>
+				<p>Plugins intend to be a simple &quot;drag and drop.&quot; Dimensions can <code>use</code> a plugin and the plugin will automatically configure the dimension as needed. See here for more <a href="https://github.com/StoneT2000/Dimensions/wiki/Plugin#supported-plugins">info on the available plugins</a>. See here for how to <a href="https://github.com/StoneT2000/Dimensions/wiki/Plugin#developing-a-plugin">develop a plugin</a></p>
+				<p>For example, here&#39;s two lines of code that integrate MongoDB as a database:</p>
 				<pre><code class="language-js"><span class="hljs-keyword">let</span> mongo = <span class="hljs-keyword">new</span> Dimension.MongoDB(<span class="hljs-string">'mongodb://localhost:27017/dimensions'</span>);
-myDimension.use(mongo)</code></pre>
-				<p>And now you have the additional functionality of automatic saving of matches and tournament data to the database. Furthermore, player data is saved across sessions now provided you register a player through the authentication and login API that comes with using a backing database plugin like the MongoDB plugin.</p>
+<span class="hljs-keyword">await</span> myDimension.use(mongo)</code></pre>
 				<a href="#contributing" id="contributing" style="color: inherit; text-decoration: none;">
 					<h2>Contributing</h2>
 				</a>
@@ -417,6 +412,9 @@ myDimension.use(mongo)</code></pre>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_plugin_index_.html">&quot;<wbr>Plugin/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_replay_index_.html">&quot;<wbr>Replay/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_supportedplugins_gcloudstorage_index_.html">&quot;<wbr>Supported<wbr>Plugins/GCloud<wbr>Storage/index&quot;</a>

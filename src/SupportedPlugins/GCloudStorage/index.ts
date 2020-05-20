@@ -44,7 +44,16 @@ export class GCloudStorage extends DStorage {
     });
   }
 
-  async upload(file: string, userID: nanoid, destination?: string) {
+  async upload(file: string, destination?: string) {
+    let dest = `${destination ? destination : path.basename(file)}`;
+    return this.dimensionBucket.upload(file, {
+      destination: dest
+    }).then(() => {
+      return dest;
+    });
+  }
+
+  async uploadUserFile(file: string, userID: nanoid, destination?: string) {
     let dest = `users/${userID}/${destination ? destination : path.basename(file)}`;
     return this.dimensionBucket.upload(file, {
       destination: dest

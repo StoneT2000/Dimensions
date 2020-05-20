@@ -51,7 +51,7 @@ export const getMatch = async (req: Request, res: Response, next: NextFunction) 
  * Pick relevant fields of a match
  */
 export const pickMatch = (match: Match) => {
-  let picked = pick(match,'configs', 'creationDate', 'id','log', 'mapAgentIDtoTournamentID', 'matchStatus','name', 'finishDate', 'results');
+  let picked = pick(match,'configs', 'creationDate', 'id','log', 'mapAgentIDtoTournamentID', 'matchStatus','name', 'finishDate', 'results', 'replayFileKey', 'replayFile');
   if (match.agents) {
     picked.agents = match.agents.map((agent) => pickAgent(agent));
   }
@@ -72,6 +72,31 @@ router.get('/:matchID', (req, res) => {
  */
 router.get('/:matchID/results', (req, res) => {
   res.json({error: null, results: req.data.match.results || null});
+});
+
+/**
+ * GET
+ * 
+ * Retrieves replay file
+ */
+router.get('/:matchID/replay', async (req, res, next) => {
+  if (req.data.dimension.hasStorage()) {
+    if (req.data.match.replayFileKey) {
+      let storage = req.data.dimension.storagePlugin;
+      res.send({ error:null, url: await storage.getDownloadURL(req.data.match.replayFileKey) });
+    }
+    else {
+      return next(new error.BadRequest('Replay for this match does not exist or was not stored'));
+    }
+  }
+  else {
+    if (req.data.match.replayFile) {
+      res.sendFile(req.data.match.replayFile);
+    }
+    else {
+      return next(new error.BadRequest('Replay file for this match does not exist or was not stored'));
+    }
+  }
 });
 
 /**

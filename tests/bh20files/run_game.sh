@@ -26,6 +26,7 @@ sudo -H -u dimensions_bot python3 ./tests/bh20files/run_game.py $w $b --seed $se
 echo D_MATCH_FINISHED
 WINNER=`awk '/./{line=$0} END{print line}' $replay_path`
 echo $WINNER
+echo $replay_path
 if [[ $WINNER == 'Team.WHITE wins!' ]]; then
   echo $wname
   echo $bname

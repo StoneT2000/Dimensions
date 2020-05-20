@@ -4,7 +4,7 @@ import { MatchEngine } from '../MatchEngine';
 import { Agent } from '../Agent';
 import { Logger } from '../Logger';
 import { Design } from '../Design';
-import { FatalError, MatchDestroyedError, MatchWarn, MatchError, NotSupportedError } from '../DimensionError';
+import { FatalError, MatchDestroyedError, MatchWarn, MatchError, NotSupportedError, MatchReplayFileError } from '../DimensionError';
 import { Tournament } from '../Tournament';
 
 import EngineOptions = MatchEngine.EngineOptions;
@@ -16,9 +16,9 @@ import { genID } from '../utils';
 import { deepCopy } from '../utils/DeepCopy';
 import path from 'path';
 import extract = require('extract-zip');
-import { removeFileSync, removeDirectory } from '../utils/System';
+import { removeFileSync, removeDirectory, removeFile } from '../utils/System';
 import { BOT_DIR } from '../Station';
-import { mkdirSync } from 'fs';
+import { mkdirSync, existsSync, statSync } from 'fs';
 
 /**
  * An match created using a {@link Design} and a list of Agents. The match can be stopped and resumed with 
@@ -112,7 +112,9 @@ export class Match {
     loggingLevel: Logger.LEVEL.INFO,
     engineOptions: {},
     secureMode: false,
-    agentOptions: Agent.OptionDefaults
+    agentOptions: Agent.OptionDefaults,
+    storeReplay: true,
+    storeReplayDirectory: 'replays'
   };
 
   /** Match process used to store the process governing a match running on a custom design */
@@ -135,6 +137,16 @@ export class Match {
 
   /** Rejecter for the run promise */
   private runReject: Function;
+
+  /**
+   * Path to the replay file for this match
+   */
+  public replayFile: string;
+
+  /**
+   * Key used to retrieve the replay file from a storage plugin
+   */
+  public replayFileKey: string;
 
   /**
    * Non local files that should be removed as they are stored somewhere else. Typically bot files are non local if 
@@ -316,6 +328,38 @@ export class Match {
         // kill processes and clean up
         await this.killAndCleanUp();
 
+        // upload replayfile if given and using storage plugin
+        if (this.results.replayFile) {
+          
+          // verify file exists and its a file
+          if (existsSync(this.results.replayFile)) {
+            if (!statSync(this.results.replayFile).isDirectory()) {
+              
+              if (this.configs.storeReplay) {
+                this.replayFile = this.results.replayFile;
+                if (this.dimension.hasStorage()) {
+                  let fileName = path.basename(this.results.replayFile);
+
+                  // store to storage and get key
+                  let key = await this.dimension.storagePlugin.upload(this.results.replayFile, `${path.join(this.configs.storeReplayDirectory, fileName)}`);
+                  this.replayFileKey = key;
+                  // once uploaded and meta data stored, remove old file
+                  removeFile(this.replayFile);
+                }
+              }
+              else {
+                removeFile(this.results.replayFile);
+              }
+            }
+            else {
+              reject(new MatchReplayFileError(`Replay file provided ${this.results.replayFile} is not a file`));
+            }
+          }
+          else {
+            reject(new MatchReplayFileError(`Replay file provided ${this.results.replayFile} does not exist`));
+          }
+        }
+
         this.finishDate = new Date();
         resolve(this.results);
       }
@@ -328,6 +372,8 @@ export class Match {
   /**
    * Next function. Moves match forward by one timestep. Resolves with the match status
    * This function should always used to advance forward a match unless a custom design is provided
+   * 
+   * Should not be called by user
    */
   public async next(): Promise<Match.Status> {
     const engineOptions = this.matchEngine.getEngineOptions()
@@ -612,6 +658,21 @@ export module Match {
      * Default Agent options to use for all agents in a match. Commonly used for setting resource use boundaries
      */
     agentOptions: DeepPartial<Agent.Options>
+
+    /**
+     * Whether or not to store a replay file if match results indicate a replay file was stored
+     * 
+     * @default `true`
+     */
+    storeReplay: boolean
+
+    /**
+     * Used only when a {@link Storage} plugin is used. Indicates the directory to use to store onto the storage. 
+     * (Typically some path in the bucket).
+     * 
+     * @default `replays`
+     */
+    storeReplayDirectory: string
 
     [key: string]: any
   }

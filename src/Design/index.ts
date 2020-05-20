@@ -295,6 +295,11 @@ export module Design {
 
     /**
      * The result handler to handle results returned by the command provided in the {@link OverrideOptions}.
+     * 
+     * If the result handler returns an object with the key `replayFile`, Dimensions will recognize the string 
+     * in that key as the replay file location.
+     * 
+     * If a {@link Storage} plugin is used, the replay file is uploaded and the local fle is deleted
      */
     resultHandler: (results: Array<string>) => any
 
