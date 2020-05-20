@@ -610,10 +610,11 @@ export class MatchEngine {
         case MatchEngine.DynamicDataStrings.D_NAMES:
           match.agents.forEach((agent) => {
             let parsedName = agent.name;
-            parsedName = parsedName.replace('/', '-');
-            parsedName = parsedName.replace(' ', '_');
+            parsedName = parsedName.replace(/\//g, '-');
+            parsedName = parsedName.replace(/ /g, '_');
             parsed.push(parsedName);
           });
+          break;
         default:
           parsed.push(args[i]);
           break;
