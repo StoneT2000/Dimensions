@@ -9,7 +9,7 @@ import { spawnSync, spawn } from "child_process";
  * @param file - file to remove
  */
 export const removeFileSync = (file: string) => {
-  spawnSync('rm -f', [file])
+  spawnSync('rm', ['-f', file])
 }
 
 /**
@@ -18,7 +18,7 @@ export const removeFileSync = (file: string) => {
  */
 export const removeFile = (file: string) => {
   return new Promise((resolve, reject) => {
-    let p = spawn('rm -f', [file]);
+    let p = spawn('rm', ['-f', file]);
     p.on('error', (err) => {
       reject(err);
     })
