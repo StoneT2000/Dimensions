@@ -339,11 +339,12 @@ export class Match {
                 this.replayFile = this.results.replayFile;
                 if (this.dimension.hasStorage()) {
                   let fileName = path.basename(this.results.replayFile);
-                  this.dimension.storagePlugin.upload(this.results.replayFile, `${path.join(this.configs.storeReplayDirectory, fileName)}`).then((key) => {
-                    this.replayFileKey = key;
-                    // once uploaded and meta data stored, remove old file
-                    removeFile(this.replayFile);
-                  });
+
+                  // store to storage and get key
+                  let key = await this.dimension.storagePlugin.upload(this.results.replayFile, `${path.join(this.configs.storeReplayDirectory, fileName)}`);
+                  this.replayFileKey = key;
+                  // once uploaded and meta data stored, remove old file
+                  removeFile(this.replayFile);
                 }
               }
               else {
