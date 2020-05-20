@@ -164,6 +164,11 @@ export class Dimension {
     id: 'oLBptg'
   }
 
+  /**
+   * Indicator of whether cleanup was called already or not
+   */
+  private cleaningUp: Promise<any> = null;
+
   constructor(public design: Design, configs: DeepPartial<DimensionConfigs> = {}) {
 
     // override configs with user provided configs
@@ -214,8 +219,26 @@ export class Dimension {
     // setting securemode in dimension config also sets it for default match configs
     this.configs.defaultMatchConfigs.secureMode = this.configs.secureMode;
     
+    // set up cleanup functions
+    process.on("exit", async () => {
+      await this.cleanup();
+      process.exit();
+    });
+    
+    process.on('uncaughtException', async (e) => {
+      console.log('Uncaught Exception: ');
+      console.log(e.stack);
+      await this.cleanup();
+      process.exit(99);
+    });
+
+    process.on("SIGINT", async () => {
+      await this.cleanup();
+      process.exit();
+    });
+
     // make the station observe this dimension when this dimension is created
-    if (this.configs.observe === true) Dimension.Station.observe(this);
+    if (this.configs.observe === true && Dimension.Station != null) Dimension.Station.observe(this);
 
     this.log.info(`Created Dimension - ID: ${this.id}, Name: ${this.name}`);
     this.log.detail('Dimension Configs', this.configs);
@@ -491,6 +514,10 @@ export class Dimension {
    * Cleanup function to run right before process exits
    */
   private async cleanup() {
+    if (this.cleaningUp) {
+      return this.cleaningUp;
+    }
+    this.log.info('Cleaning up');
     let cleanUpPromises: Array<Promise<void>> = [];
     this.matches.forEach((match) => {
       cleanUpPromises.push(match.destroy());
@@ -498,8 +525,11 @@ export class Dimension {
     this.tournaments.forEach((tournament) => {
       cleanUpPromises.push(tournament.destroy());
     });
-    cleanUpPromises.push(this.getStation().stop());
-    await Promise.all(cleanUpPromises);
+    if (this.getStation()) {
+      cleanUpPromises.push(this.getStation().stop());
+    }
+    this.cleaningUp = Promise.all(cleanUpPromises);
+    await this.cleaningUp;
   }
 
 }
