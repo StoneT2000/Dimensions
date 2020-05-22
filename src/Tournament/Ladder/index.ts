@@ -246,6 +246,20 @@ export class Ladder extends Tournament {
   }
 
   /**
+   * Performs a Fisher Yates Shuffle
+   * @param arr - the array to shuffle
+   */
+  private shuffle(arr: any[]) {
+    for (let i = arr.length - 1; i >= 1; i--) {
+      let j = Math.floor(Math.random() * i);
+      let tmp = arr[i];
+      arr[i] = arr[j];
+      arr[j] = tmp;
+    }
+    return arr;
+  }
+
+  /**
    * Updates database with trueskill player stats
    * Requires special handling because of the way the trueskill module works
    * 
@@ -429,13 +443,17 @@ export class Ladder extends Tournament {
     const matchCount = this.configs.tournamentConfigs.maxConcurrentMatches;
     // runs a round of scheduling
     // for every player, we schedule some m matches (TODO: configurable)
-    // let rankings = this.getRankings();
+    let rankings = this.getRankings();
     let compArray = Array.from(this.competitors.values());
-    for (let i = 0; i < matchCount; i++) {
+    let sortedPlayers = rankings.map((p) => p.player);
+    rankings.forEach((playerStat, rank) => {
+      let player = playerStat.player;
       let competitorCount = this.selectRandomAgentAmountForMatch();
-      let random = this.selectRandomplayersFromArray(compArray, competitorCount);
-      this.matchQueue.push([...random]);
-    }
+       // take random competitors from +/- competitorCount * 2.5 ranks near you
+      let randomPlayers = this.selectRandomplayersFromArray(
+        [...sortedPlayers.slice(rank - competitorCount * 2.5, rank - 1), ... sortedPlayers.slice(rank + 1, rank + competitorCount * 2.5)], competitorCount - 1);
+      this.matchQueue.push(this.shuffle([player, ...randomPlayers]));
+    });
   }
 
   private selectRandomAgentAmountForMatch(): number {
@@ -486,7 +504,7 @@ export class Ladder extends Tournament {
         let currState = <RankSystem.TRUESKILL.RankState>playerStats.rankState;
         
         // TODO: Give user option to define how to reset score
-        currState.rating = new Rating(rankSystemConfigs.initialMu, rankSystemConfigs.initialSigma)
+        currState.rating = new Rating(currState.rating.mu, rankSystemConfigs.initialSigma)
         break;
       }
     }
@@ -495,8 +513,10 @@ export class Ladder extends Tournament {
     playerStats.losses = 0;
     playerStats.wins = 0;
     playerStats.ties = 0;
-    let user = await this.dimension.databasePlugin.getUser(player.tournamentID.id);
-    await this.updateDatabaseTrueskillPlayerStats(playerStats, user);
+    if (this.dimension.hasDatabase()) {
+      let user = await this.dimension.databasePlugin.getUser(player.tournamentID.id);
+      await this.updateDatabaseTrueskillPlayerStats(playerStats, user);
+    }
   }
 
   /**

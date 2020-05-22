@@ -247,9 +247,11 @@ router.post('/:tournamentID/upload/', requireAuth, async (req: Request, res: Res
   
   // if user is admin, get the actual user the upload is for
   let user = req.data.user;
-  if (req.data.dimension.databasePlugin.isAdmin(req.data.user)) {
-    user = await req.data.dimension.databasePlugin.getUser(id);
-    if (!user) return next(new error.BadRequest('Invalid player ID'));
+  if (req.data.dimension.hasDatabase()) {
+    if (req.data.dimension.databasePlugin.isAdmin(req.data.user)) {
+      user = await req.data.dimension.databasePlugin.getUser(id);
+      if (!user) return next(new error.BadRequest('Invalid player ID'));
+    }
   }
 
   let zipLoc = path.join(path.dirname(bot.file), 'bot.zip');
