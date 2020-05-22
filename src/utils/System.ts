@@ -33,6 +33,15 @@ export const removeFile = (file: string) => {
   })
 }
 
+export const processIsRunning = (pid: number): boolean => {
+  try {
+    // this actually returns a boolean, not sure why its not in @types/node
+    return <boolean>(<unknown>(process.kill(pid, 0)));
+  }
+  catch (e) {
+    return e.code === 'EPERM'
+  }
+}
 
 /**
  * Removes files in the given directory synchronously

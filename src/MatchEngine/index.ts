@@ -13,6 +13,7 @@ import { Design } from '../Design';
 import { Logger } from '../Logger';
 import { Agent } from '../Agent';
 import { Match } from '../Match';
+import { processIsRunning } from '../utils/System';
 
 /** @ignore */
 type EngineOptions = MatchEngine.EngineOptions;
@@ -240,13 +241,15 @@ export class MatchEngine {
     if (this.engineOptions.memory.active) {
       const checkAgentMemoryUsage = () => {
         // setting { maxage: 0 } because otherwise pidusage leaves interval "memory leaks" and process doesn't exit fast
-        pidusage(agent.process.pid, { maxage: 0 }).then((stat) => {
-          if (stat.memory > this.engineOptions.memory.limit) {
-            agent.process.emit(MatchEngine.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, stat);
-          }
-        }).catch((err) => {
-          this.log.error(err);
-        });
+        if (processIsRunning(agent.process.pid)) {
+          pidusage(agent.process.pid, { maxage: 0 }).then((stat) => {
+            if (stat.memory > this.engineOptions.memory.limit) {
+              agent.process.emit(MatchEngine.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, stat);
+            }
+          }).catch((err) => {
+            this.log.error(err);
+          });
+        }
       }
       checkAgentMemoryUsage();
       agent.memoryWatchInterval = setInterval(() => {
