@@ -566,7 +566,13 @@ export class Match {
    */
   public async send(message: string, receiver: Agent | Agent.ID): Promise<boolean> {
     if (receiver instanceof Agent) {
-      return this.matchEngine.send(this, message, receiver.id);
+      try {
+        await this.matchEngine.send(this, message, receiver.id);
+      }
+      catch (err) {
+        this.log.error(err);
+        // kill agents we can't send messages to
+      }
     }
     else {
       return this.matchEngine.send(this, message, receiver);

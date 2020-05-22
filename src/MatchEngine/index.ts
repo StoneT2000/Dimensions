@@ -350,12 +350,14 @@ export class MatchEngine {
   public async killAndClean(match: Match) {
     // set to true to ensure no more processes are being spawned.
     this.killOffSignal = true; 
-    match.agents.forEach((agent) => {
-      // kill the process if it is not null
-      if (agent.process) {
-        this.kill(agent);
-      }
-    });
+    if (match.agents) { 
+      match.agents.forEach((agent) => {
+        // kill the process if it is not null
+        if (agent.process) {
+          this.kill(agent);
+        }
+      });
+    }
   }
 
   /**

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Agent {
-
+    public Scanner sc = new Scanner(System.in);
     public int id;
     public int maxRounds;
     public Agent() {
@@ -12,15 +12,14 @@ public class Agent {
     }
 
     public void initialize() {
-        id = Input.readInput().getInt();
-        maxRounds = Input.readInput().getInt();
+        
+        id = sc.nextInt();
+        maxRounds = sc.nextInt();
     }
 
     public void update() {
-      Input input = Input.readInput();
-      String result = input.getString();
-      input = Input.readInput();
-      String lastOpponentMove = input.getString();
+      String result = sc.nextLine();
+      String lastOpponentMove = sc.nextLine();
     }
 
     public void endTurn() {
