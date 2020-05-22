@@ -245,9 +245,7 @@ export class MatchEngine {
             agent.process.emit(MatchEngine.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, stat);
           }
         }).catch((err) => {
-          // ignore errors
-          // console.error(err);
-          // throw new FatalError(`Could not check PID usage of process ${agent.process.pid}`);
+          this.log.error(err);
         });
       }
       checkAgentMemoryUsage();
