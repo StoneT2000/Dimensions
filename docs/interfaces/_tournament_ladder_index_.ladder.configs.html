@@ -100,6 +100,7 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_ladder_index_.ladder.configs.html#enddate" class="tsd-kind-icon">end<wbr>Date</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_ladder_index_.ladder.configs.html#matchmake" class="tsd-kind-icon">match<wbr>Make</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_ladder_index_.ladder.configs.html#maxconcurrentmatches" class="tsd-kind-icon">max<wbr>Concurrent<wbr>Matches</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_ladder_index_.ladder.configs.html#maxtotalmatches" class="tsd-kind-icon">max<wbr>Total<wbr>Matches</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_tournament_ladder_index_.ladder.configs.html#storepastresults" class="tsd-kind-icon">store<wbr>Past<wbr>Results</a></li>
@@ -116,7 +117,7 @@
 					<div class="tsd-signature tsd-kind-icon">end<wbr>Date<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Date</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8d7db85/src/Tournament/Ladder/index.ts#L828">https://github.com/StoneT2000/Dimensions/blob/8d7db85/src/Tournament/Ladder/index.ts#L828</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/9ffaef9/src/Tournament/Ladder/index.ts#L855">https://github.com/StoneT2000/Dimensions/blob/9ffaef9/src/Tournament/Ladder/index.ts#L855</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -131,12 +132,61 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="matchmake" class="tsd-anchor"></a>
+					<h3>match<wbr>Make</h3>
+					<div class="tsd-signature tsd-kind-icon">match<wbr>Make<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>playerStats<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_tournament_ladder_index_.ladder.playerstat.html" class="tsd-signature-type">PlayerStat</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/_tournament_index_.player.html" class="tsd-signature-type">Player</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/9ffaef9/src/Tournament/Ladder/index.ts#L873">https://github.com/StoneT2000/Dimensions/blob/9ffaef9/src/Tournament/Ladder/index.ts#L873</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Custom match making scheduler function. User can provide a custom function here to create matches to store
+								into the matchqueue for <a href="../modules/_index_.html#match">Match</a> making. This function will be called every time the number of queued
+							matches is below a threshold of <a href="_tournament_ladder_index_.ladder.configs.html#maxconcurrentmatches">maxConcurrentMatches</a> * 2.</p>
+						</div>
+						<p>It should return an array of <a href="../modules/_index_.html#player"></a> arrays, a list of all the new matches to append to the matchQueue.
+						A player array represents a queued match and the players that will compete in that match.</p>
+						<p>Default function is described in <a href="../classes/_tournament_ladder_index_.ladder.html#schedule">schedule</a></p>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-signature">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>playerStats<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_tournament_ladder_index_.ladder.playerstat.html" class="tsd-signature-type">PlayerStat</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/_tournament_index_.player.html" class="tsd-signature-type">Player</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<div class="tsd-comment tsd-typography">
+										</div>
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>playerStats: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_tournament_ladder_index_.ladder.playerstat.html" class="tsd-signature-type">PlayerStat</a><span class="tsd-signature-symbol">&gt;</span></h5>
+												<div class="tsd-comment tsd-typography">
+													<div class="lead">
+														<p>an array of all player stats in the tournament. See <a href="_tournament_ladder_index_.ladder.playerstat.html">PlayerStat</a> for what variables
+														are exposed to use to help schedule matches</p>
+													</div>
+												</div>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/_tournament_index_.player.html" class="tsd-signature-type">Player</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="maxconcurrentmatches" class="tsd-anchor"></a>
 					<h3>max<wbr>Concurrent<wbr>Matches</h3>
 					<div class="tsd-signature tsd-kind-icon">max<wbr>Concurrent<wbr>Matches<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8d7db85/src/Tournament/Ladder/index.ts#L824">https://github.com/StoneT2000/Dimensions/blob/8d7db85/src/Tournament/Ladder/index.ts#L824</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/9ffaef9/src/Tournament/Ladder/index.ts#L851">https://github.com/StoneT2000/Dimensions/blob/9ffaef9/src/Tournament/Ladder/index.ts#L851</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -156,7 +206,7 @@
 					<div class="tsd-signature tsd-kind-icon">max<wbr>Total<wbr>Matches<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8d7db85/src/Tournament/Ladder/index.ts#L832">https://github.com/StoneT2000/Dimensions/blob/8d7db85/src/Tournament/Ladder/index.ts#L832</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/9ffaef9/src/Tournament/Ladder/index.ts#L859">https://github.com/StoneT2000/Dimensions/blob/9ffaef9/src/Tournament/Ladder/index.ts#L859</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -177,7 +227,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_tournament_ladder_index_.ladder.tournamenttypeconfig.html">TournamentTypeConfig</a>.<a href="_tournament_ladder_index_.ladder.tournamenttypeconfig.html#storepastresults">storePastResults</a></p>
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8d7db85/src/Tournament/index.ts#L592">https://github.com/StoneT2000/Dimensions/blob/8d7db85/src/Tournament/index.ts#L592</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/9ffaef9/src/Tournament/index.ts#L592">https://github.com/StoneT2000/Dimensions/blob/9ffaef9/src/Tournament/index.ts#L592</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -216,6 +266,9 @@
 								<ul>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
 										<a href="_tournament_ladder_index_.ladder.configs.html#enddate" class="tsd-kind-icon">end<wbr>Date</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="_tournament_ladder_index_.ladder.configs.html#matchmake" class="tsd-kind-icon">match<wbr>Make</a>
 									</li>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
 										<a href="_tournament_ladder_index_.ladder.configs.html#maxconcurrentmatches" class="tsd-kind-icon">max<wbr>Concurrent<wbr>Matches</a>

@@ -33,7 +33,8 @@ export class Ladder extends Tournament {
       maxConcurrentMatches: 1,
       endDate: null,
       storePastResults: true,
-      maxTotalMatches: null
+      maxTotalMatches: null,
+      matchMake: null
     },
     resultHandler: null,
     agentsPerMatch: [2],
@@ -434,15 +435,21 @@ export class Ladder extends Tournament {
   }
   
   /**
-   * Intended Matchmaking Algorithm Heuristics:
-   * 1. Pair players with similar scores (sigma - K * mu)
-   * 2. Pair similar varianced players (similar mu)
-   * For now, we do random pairing
+   * Schedules matches to play. Default function is to schedule randomly a player A with other players that are within
+   * 2.5 * competitorCount rank of that player A's rank. competitorCount is the number of agents chosen to compete
+   * in the particular match to schedule. See {@link Tournament.TournamentConfigs.agentsPerMatch}.
+   * 
+   * If a {@link Ladder.Configs.matchMake | matchMake} function is provided, that will be used instead of the default.
    */
   private schedule() {
-    const matchCount = this.configs.tournamentConfigs.maxConcurrentMatches;
+    if (this.configs.tournamentConfigs.matchMake) {
+      let newMatches = this.configs.tournamentConfigs.matchMake(Array.from(this.state.playerStats.values()));
+      this.matchQueue.push(...newMatches);
+      return;
+    }
+
     // runs a round of scheduling
-    // for every player, we schedule some m matches (TODO: configurable)
+    // for every player, we schedule a match
     let rankings = this.getRankings();
     let compArray = Array.from(this.competitors.values());
     let sortedPlayers = rankings.map((p) => p.player);
@@ -850,6 +857,25 @@ export namespace Ladder {
      * @default null
      */
     maxTotalMatches: number 
+
+    /**
+     * Custom match making scheduler function. User can provide a custom function here to create matches to store
+     * into the matchqueue for {@link Match} making. This function will be called every time the number of queued 
+     * matches is below a threshold of {@link maxConcurrentMatches} * 2.
+     * 
+     * It should return an array of {@link Player } arrays, a list of all the new matches to append to the matchQueue. 
+     * A player array represents a queued match and the players that will compete in that match. 
+     * 
+     * 
+     * Default function is described in {@link schedule}
+     * 
+     */
+    matchMake: 
+    /**
+     * @param playerStats - an array of all player stats in the tournament. See {@link PlayerStat} for what variables
+     * are exposed to use to help schedule matches
+     */
+      (playerStats: Array<PlayerStat>) => Array<Array<Player>>
   }
   /**
    * The {@link LadderTournament} state, consisting of the current player statistics and past results
@@ -872,11 +898,22 @@ export namespace Ladder {
    * Player stat interface for ladder tournaments
    */
   export interface PlayerStat {
+    /**
+     * the player the stats are for
+     */
     player: Player, 
     wins: number, 
     ties: number, 
     losses: number, 
+    /**
+     * total matches played
+     */
     matchesPlayed: number, 
+    /**
+     * the ranking statistics for the player. the type of this variable is dependent on the ranking system you use for
+     * the tournament. If the ranking system is {@link RankSystem.TRUESKILL | Trueskill}, then see 
+     * {@link RankSystem.TRUESKILL.RankState} for the rank state typings.
+     */
     rankState: any
   }
 }
