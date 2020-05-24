@@ -296,7 +296,7 @@ export class Agent {
           });
           break;
         case '.cpp':
-          p = spawn(`sudo`, ['g++', '-O3', '-o', `${this.srcNoExt}.out`, this.src], {
+          p = spawn(`sudo`, ['g++', '-std=c++11', '-O3', '-o', `${this.srcNoExt}.out`, this.src], {
             cwd: this.cwd
           })
           break;
