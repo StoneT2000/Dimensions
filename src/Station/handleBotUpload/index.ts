@@ -91,6 +91,8 @@ const processUpload = async (file: any, pathToFile: string, botName: string, pla
     });
   }
   catch (err) {
+    // clean up
+    removeDirectory(botdir);
     throw new error.InternalServerError(err);
   }
 
