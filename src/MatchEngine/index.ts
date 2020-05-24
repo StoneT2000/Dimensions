@@ -242,12 +242,12 @@ export class MatchEngine {
       const checkAgentMemoryUsage = () => {
         // setting { maxage: 0 } because otherwise pidusage leaves interval "memory leaks" and process doesn't exit fast
         if (processIsRunning(agent.process.pid)) {
-          pidusage(agent.process.pid, { maxage: 0 }).then((stat) => {
+          pidusage(agent.process.pid, { maxage: 0, usePs: this.engineOptions.memory.usePs }).then((stat) => {
             if (stat.memory > this.engineOptions.memory.limit) {
               agent.process.emit(MatchEngine.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, stat);
             }
           }).catch((err) => {
-            this.log.error(err);
+            this.log.warn(err);
           });
         }
       }
@@ -765,6 +765,14 @@ export module MatchEngine {
        * @default 100
        */
       checkRate: number
+
+      /**
+       * Whether or not to use `ps` instead of `procfile` for measuring memory through the 
+       * pidusage package.
+       * 
+       * @default true
+       */
+      usePs: boolean
     }
   }
 

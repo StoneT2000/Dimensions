@@ -222,6 +222,7 @@ export const DefaultDesignOptions: DesignOptions = {
     memory: {
       limit: 1000000000,
       active: true,
+      usePs: true,
       memoryCallback: (agent: Agent, match: Match, engineOptions: EngineOptions) => {
         match.kill(agent.id);
         match.log.error(
