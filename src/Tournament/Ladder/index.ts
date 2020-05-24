@@ -456,9 +456,12 @@ export class Ladder extends Tournament {
     rankings.forEach((playerStat, rank) => {
       let player = playerStat.player;
       let competitorCount = this.selectRandomAgentAmountForMatch();
-       // take random competitors from +/- competitorCount * 2.5 ranks near you
+       
+      // take random competitors from +/- competitorCount * 2.5 ranks near you
+      let lowerBound = 0;
+      if (rank == 0) lowerBound = 1;
       let randomPlayers = this.selectRandomplayersFromArray(
-        [...sortedPlayers.slice(rank - competitorCount * 2.5, rank - 1), ... sortedPlayers.slice(rank + 1, rank + competitorCount * 2.5)], competitorCount - 1);
+        [...sortedPlayers.slice(Math.max(rank - competitorCount * 2.5, lowerBound), rank), ... sortedPlayers.slice(rank + 1, rank + competitorCount * 2.5)], competitorCount - 1);
       this.matchQueue.push(this.shuffle([player, ...randomPlayers]));
     });
   }
