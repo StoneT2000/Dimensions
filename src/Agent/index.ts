@@ -278,41 +278,48 @@ export class Agent {
       let compileTimer = setTimeout(() => {
         reject(new AgentCompileTimeoutError('Agent went over compile time during the compile stage'));
       }, this.options.maxCompileTime);
-      switch(this.ext) {
-        case '.py':
-        case '.js':
-        case '.php':
-          resolve();
-          break;
-          // TODO: Make these compile options configurable
-        case '.ts':
-          p = spawn(`sudo`, [...`tsc --esModuleInterop --allowJs -m commonjs --lib es5`.split(' '), this.src], {
-            cwd: this.cwd
-          });
-          break;
-        case '.go':
-          p = spawn(`sudo`, ['go', 'build', '-o', `${this.srcNoExt}.out`, this.src], {
-            cwd: this.cwd
-          });
-          break;
-        case '.cpp':
-          p = spawn(`sudo`, ['g++', '-std=c++11', '-O3', '-o', `${this.srcNoExt}.out`, this.src], {
-            cwd: this.cwd
-          })
-          break;
-        case '.c':
-          p = spawn(`sudo`, ['gcc', '-O3', '-o', `${this.srcNoExt}.out`, this.src], {
-            cwd: this.cwd
-          });
-          break;
-        case '.java':
-          p = spawn(`sudo`, ['javac', this.src], {
-            cwd: this.cwd
-          });
-          break;
-        default:
-          reject(new NotSupportedError(`Language with extension ${this.ext} is not supported at the moment`));
-          break;
+      if (this.options.compileCommands[this.ext]) {
+        p = spawn(`sudo`, [...this.options.compileCommands[this.ext], this.src], {
+          cwd: this.cwd
+        });
+      }
+      else {
+        switch(this.ext) {
+          case '.py':
+          case '.js':
+          case '.php':
+            resolve();
+            break;
+            // TODO: Make these compile options configurable
+          case '.ts':
+            p = spawn(`sudo`, [...`tsc --esModuleInterop --allowJs -m commonjs --lib es5`.split(' '), this.src], {
+              cwd: this.cwd
+            });
+            break;
+          case '.go':
+            p = spawn(`sudo`, ['go', 'build', '-o', `${this.srcNoExt}.out`, this.src], {
+              cwd: this.cwd
+            });
+            break;
+          case '.cpp':
+            p = spawn(`sudo`, ['g++', '-std=c++11', '-O3', '-o', `${this.srcNoExt}.out`, this.src], {
+              cwd: this.cwd
+            })
+            break;
+          case '.c':
+            p = spawn(`sudo`, ['gcc', '-O3', '-o', `${this.srcNoExt}.out`, this.src], {
+              cwd: this.cwd
+            });
+            break;
+          case '.java':
+            p = spawn(`sudo`, ['javac', this.src], {
+              cwd: this.cwd
+            });
+            break;
+          default:
+            reject(new NotSupportedError(`Language with extension ${this.ext} is not supported at the moment`));
+            break;
+        }
       }
       if (p) {
         p.on('error', (err) => {
@@ -346,7 +353,11 @@ export class Agent {
    * Spawn the process and return the process
    */
   async _spawn(): Promise<ChildProcess> {
-
+    if (this.options.runCommands[this.ext]) {
+      let p = this._spawnProcess(this.options.runCommands[this.ext][0], [...this.options.runCommands[this.ext].slice(1), this.src]);
+      return p;
+    }
+    else {
       switch(this.ext) {
         case '.py':
         case '.js':
@@ -364,6 +375,7 @@ export class Agent {
         default:
           throw new NotSupportedError(`Language with extension ${this.ext} is not supported yet`)
       }
+    }
   }
 
 
@@ -587,6 +599,21 @@ export module Agent {
      */
     maxCompileTime: number
 
+    /**
+     * Map from extension type to set of commands used to compile this agent instead of the defaults. When there is no 
+     * mapping default is used
+     * 
+     * @default `null`
+     */
+    compileCommands: { [x in string]: Array<string> }
+
+    /**
+     * Map from extension type to set of commands used to run this agent instead of the defaults. When there is no 
+     * mapping default is used
+     * 
+     * @default `null`
+     */
+    runCommands: { [x in string]: Array<string> }
   }
 
   /**
@@ -599,6 +626,8 @@ export module Agent {
     tournamentID: null,
     name: null,
     maxInstallTime: 300000,
-    maxCompileTime: 60000
+    maxCompileTime: 60000,
+    runCommands: {},
+    compileCommands: {}
   };
 }

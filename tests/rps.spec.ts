@@ -106,7 +106,7 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
     });
   });
   describe('Testing Multi-language support', () => {
-    it('should support python', async () => {
+    it('should support python and python3', async () => {
       let results = await myDimension.runMatch(
         ['./tests/js-kit/rps/smarter.js', './tests/python-kit/rps/rock.py'],
         {
@@ -126,6 +126,18 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
         }
       )
       expect(results.scores).to.eql({'0': 3, '1': 1});
+      results = await myDimension.runMatch(
+        ['./tests/js-kit/rps/smarter.js', './tests/python-kit/rps/rock.py'],
+        {
+          name: 'mult-lang (py)',
+          bestOf: 5,
+          secureMode: false,
+          agentOptions: {
+            runCommands: {'.py': ['python3']}
+          }
+        }
+      );
+      expect(results.scores).to.eql({'0': 4, '1': 1});
     });
     it('should support java (run 3 times)', async () => {
       // TODO: look into why sometimes the java bot doesn't respond with any commands
