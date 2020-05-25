@@ -15,6 +15,7 @@ import { TournamentPlayerDoesNotExistError } from '../../../../../DimensionError
 import { removeDirectorySync } from '../../../../../utils/System';
 import { spawnSync } from 'child_process';
 import { Ladder } from '../../../../../Tournament/Ladder';
+import { TournamentType } from '../../../../../Tournament/TournamentTypes';
 
 const router = express.Router();
 
@@ -224,6 +225,16 @@ router.get('/:tournamentID/player/:playerID/bot', requireAuth, async (req, res, 
     }
   }).catch(next);
   
+});
+
+router.post('/:tournamentID/reset', requireAdmin, async (req: Request, res: Response, next: NextFunction) => {
+  if (req.data.tournament.configs.type !== TournamentType.LADDER) {
+    return (next(new error.BadRequest(`Can't reset a tournament that is not of the ladder type`)));
+  }
+  let tournament = <Tournament.Ladder>req.data.tournament;
+  tournament.resetRankings().then(() => {
+    res.json({error: null, message: 'ranks reset'});
+  }).catch(next)
 });
 
 /**

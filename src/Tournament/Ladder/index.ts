@@ -217,6 +217,62 @@ export class Ladder extends Tournament {
   }
 
   /**
+   * Resets rankings of all competitors loaded to initial scores
+   */
+  public async resetRankings() {
+    if (this.status == TournamentStatus.RUNNING) {
+      throw new TournamentError('Cannot reset while tournament is running!');
+    }
+    let updatePromises: Array<Promise<void>> = [];
+
+    this.competitors.forEach((player) => {
+      const resetPlayer = async (player) => {
+        let stats = this.state.playerStats.get(player.tournamentID.id);
+        switch (this.configs.rankSystem) {
+          case RankSystem.TRUESKILL:
+            stats.matchesPlayed = 0;
+            let trueskillConfigs: RankSystem.TRUESKILL.Configs = this.configs.rankSystemConfigs;
+
+            (<RankSystem.TRUESKILL.RankState>stats.rankState) = {
+              rating: new Rating(trueskillConfigs.initialMu, trueskillConfigs.initialSigma),
+              toJSON: () => {
+                let rating = this.state.playerStats.get(player.tournamentID.id).rankState.rating
+                return {
+                  rating: {...rating,
+                    mu: rating.mu,
+                    sigma: rating.sigma
+                  }
+                }
+              }
+            }
+            if (this.dimension.hasDatabase()) {
+              if (!player.anonymous) {
+                let user = await this.dimension.databasePlugin.getUser(player.tournamentID.id);
+                this.updateDatabaseTrueskillPlayerStats(stats, user);
+              }
+            }
+            break;
+          case RankSystem.ELO:
+            stats.matchesPlayed = 0;
+            stats.rankState = {
+              rating: this.elo.createRating()
+            }
+            if (this.dimension.hasDatabase()) {
+              if (!player.anonymous) {
+                let user = await this.dimension.databasePlugin.getUser(player.tournamentID.id);
+                this.updateDatabaseELOPlayerStats(stats, user);
+              }
+            }
+            break;
+        }
+        
+      }
+      updatePromises.push(resetPlayer(player));
+    });
+    await Promise.all(updatePromises);
+  }
+
+  /**
    * Stops the tournament if it was running.
    */
   public async stop() {
