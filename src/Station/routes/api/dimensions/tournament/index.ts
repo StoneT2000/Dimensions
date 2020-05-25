@@ -14,6 +14,7 @@ import { handleBotUpload, UploadData } from '../../../../handleBotUpload';
 import { TournamentPlayerDoesNotExistError } from '../../../../../DimensionError';
 import { removeDirectorySync } from '../../../../../utils/System';
 import { spawnSync } from 'child_process';
+import { Ladder } from '../../../../../Tournament/Ladder';
 
 const router = express.Router();
 
@@ -116,9 +117,11 @@ router.post('/:tournamentID/stop', requireAdmin, (req: Request, res: Response, n
  * GET
  * Gets ranks for the tournament
  */
-router.get('/:tournamentID/ranks', (req: Request, res: Response, next: NextFunction) => { 
+router.get('/:tournamentID/ranks', async (req: Request, res: Response, next: NextFunction) => { 
   try {
-    res.json({error: null, ranks: req.data.tournament.getRankings()});
+    let ranks = await req.data.tournament.getRankings();
+
+    res.json({error: null, ranks: ranks });
   }
   catch {
     return next(new error.InternalServerError('Couldn\'t retrieve rankings'));

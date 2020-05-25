@@ -4,6 +4,8 @@ import { NanoID, Dimension } from "../../Dimension";
 import { Match } from "../../Match";
 import { Plugin } from "..";
 import { nanoid } from "../..";
+import { Ladder } from "../../Tournament/Ladder";
+import { Tournament } from "../../Tournament";
 
 /**
  * The database plugin class, of which Dimensions uses internally to store data onto the database
@@ -44,9 +46,10 @@ export abstract class Database extends Plugin {
   abstract getMatch(id: NanoID): Promise<any>;
 
   /**
-   * TODO: Add user CRUD
-   * Add loginUser, authUser, registerUser, deleteUser, updateUser
+   * Returns a list of player stats based on their rankings from database. Used for Ladder Tournaments
+   * @param tournament - The tournament to retrieve rankings for
    */
+  abstract getRanks(tournament: Tournament.Ladder): Promise<Array<Ladder.PlayerStat>>
 
   /**
    * Logs in a user, resolves with a JWT (JSON Web Token), rejects otherwise

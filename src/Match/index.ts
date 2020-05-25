@@ -64,7 +64,7 @@ export class Match {
    * List of the agents currently involved in the match.
    * @See {@link Agent} for details on the agents.
    */
-  public agents: Array<Agent>;
+  public agents: Array<Agent> = [];
 
   /**
    * Map from an {@link Agent.ID} ID to the {@link Agent}

@@ -1,6 +1,6 @@
 import { Match } from '../Match';
 import { Design } from '../Design';
-import { FatalError, TournamentPlayerDoesNotExistError } from '../DimensionError'
+import { FatalError, TournamentPlayerDoesNotExistError, TournamentError } from '../DimensionError'
 
 import { DeepPartial } from '../utils/DeepPartial';
 import { Logger } from '../Logger';
@@ -106,6 +106,9 @@ export abstract class Tournament {
 
   /** Registered competitors in this tournament */
   public competitors: Map<NanoID, Player> = new Map();
+
+  /** All competitors that are anonymous competitors and not registered in database */
+  public anonymousCompetitors: Map<NanoID, Player> = new Map();
 
   private playerID = 0;
 
@@ -225,6 +228,10 @@ export abstract class Tournament {
         }
       }
       this.competitors.set(id, newPlayer);
+
+      if (newPlayer.anonymous) {
+        this.anonymousCompetitors.set(id, newPlayer);
+      }
   
       this.internalAddPlayer(newPlayer);
       return newPlayer;
@@ -244,6 +251,10 @@ export abstract class Tournament {
       }
 
       this.competitors.set(id, newPlayer);
+      
+      if (newPlayer.anonymous) {
+        this.anonymousCompetitors.set(id, newPlayer);
+      }
 
       this.internalAddPlayer(newPlayer);
       return newPlayer;
@@ -353,7 +364,7 @@ export abstract class Tournament {
    * @param players - the players to compete together
    * @returns a promise that resolves with the results and the associated match
    */
-  protected async runMatch(players: Array<Player>): Promise<{results: any, match: Match}> {
+  protected async runMatch(players: Array<Player>): Promise<{results: any, match: Match, err?: any}> {
     if (!players.length) throw new FatalError('No players provided for match');
 
     let matchConfigs = deepCopy(this.getConfigs().defaultMatchConfigs);
@@ -369,24 +380,33 @@ export abstract class Tournament {
     this.matches.set(match.id, match);
 
     // Initialize match with initialization configuration
-    await match.initialize();
+    try {
+      await match.initialize();
 
-    // Get results
-    let results = await match.run();
+      // Get results
+      let results = await match.run();
 
-    // if database plugin is active and saveTournamentMatches is set to true, store match
-    if (this.dimension.hasDatabase()) {
-      if (this.dimension.databasePlugin.configs.saveTournamentMatches) {
-        this.dimension.databasePlugin.storeMatch(match, this.id);
+      // if database plugin is active and saveTournamentMatches is set to true, store match
+      if (this.dimension.hasDatabase()) {
+        if (this.dimension.databasePlugin.configs.saveTournamentMatches) {
+          this.dimension.databasePlugin.storeMatch(match, this.id);
+        }
+      }
+
+      // remove the match from the active matches list
+      this.matches.delete(match.id);
+      // TODO: Add option to just archive matches instead
+      
+      // Resolve the results
+      return {results: results, match: match};
+    }
+    catch(err) {
+      return {
+        results: false,
+        err: err,
+        match: match
       }
     }
-
-    // remove the match from the active matches list
-    this.matches.delete(match.id);
-    // TODO: Add option to just archive matches instead
-    
-    // Resolve the results
-    return {results: results, match: match};
   }
   /**
    * Removes a match by id. Returns true if deleted, false if nothing was deleted

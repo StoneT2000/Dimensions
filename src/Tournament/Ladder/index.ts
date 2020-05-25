@@ -2,12 +2,13 @@ import { Tournament, Player } from "..";
 import { DeepPartial } from "../../utils/DeepPartial";
 import { Design } from '../../Design';
 import { deepMerge } from "../../utils/DeepMerge";
-import { MatchDestroyedError, TournamentError, NotSupportedError, TournamentPlayerDoesNotExistError } from "../../DimensionError";
+import { MatchDestroyedError, TournamentError, NotSupportedError, TournamentPlayerDoesNotExistError, AgentFileError } from "../../DimensionError";
 import { Agent } from "../../Agent";
 import { Rating, rate, quality, TrueSkill } from "ts-trueskill";
 import { sprintf } from 'sprintf-js';
 import { Logger } from "../../Logger";
 import { ELOSystem, ELORating } from "../ELO";
+import { Match } from "../../Match";
 import { Dimension, NanoID } from "../../Dimension";
 import { Database } from "../../Plugin/Database";
 import { TournamentStatus} from "../TournamentStatus";
@@ -123,36 +124,90 @@ export class Ladder extends Tournament {
   public setConfigs(configs: DeepPartial<Tournament.TournamentConfigs<LadderConfigs>> = {}) {
     this.configs = deepMerge(this.configs, configs, true);
   }
-  public getRankings(): Array<{player: Player, name: string, id: number, matchesPlayed: number, rankState: any}> {
+  public async getRankings(): Promise<Array<LadderPlayerStat>> {
     let rankings = [];
     switch(this.configs.rankSystem) {
       case RankSystem.TRUESKILL:
-        this.state.playerStats.forEach((stat) => {
-          let rankState = <RankSystem.TRUESKILL.RankState>stat.rankState;
-
-          rankings.push({
-            player: stat.player,
-            name: stat.player.tournamentID.name,
-            id: stat.player.tournamentID.id,
-            matchesPlayed: stat.matchesPlayed,
-            rankState: {rating: {...rankState.rating, mu: rankState.rating.mu, sigma: rankState.rating.sigma}, score: rankState.rating.mu - 3 * rankState.rating.sigma}
+        if (this.dimension.hasDatabase()) {
+          rankings = await this.dimension.databasePlugin.getRanks(this);
+          rankings = rankings.map((rank) => {
+            rank.rankState.score = rank.rankState.rating.mu - 3 * rank.rankState.rating.sigma
+            return rank;
           });
-        });
+          if (this.anonymousCompetitors.size > 0) {
+            // add in anonymous competitors in
+            this.anonymousCompetitors.forEach((player) => {
+              let stat = this.state.playerStats.get(player.tournamentID.id);
+              let rankState = <RankSystem.TRUESKILL.RankState>stat.rankState;
+    
+              rankings.push({
+                player: stat.player,
+                name: stat.player.tournamentID.name,
+                id: stat.player.tournamentID.id,
+                matchesPlayed: stat.matchesPlayed,
+                rankState: {rating: {...rankState.rating, mu: rankState.rating.mu, sigma: rankState.rating.sigma}, score: rankState.rating.mu - 3 * rankState.rating.sigma}
+              });
+            });
+            // re sort
+            rankings.sort((a, b) => {
+              return b.rankState.score - a.rankState.score
+            });
+          }
+          break;
+        }
+        else {
+          this.state.playerStats.forEach((stat) => {
+            let rankState = <RankSystem.TRUESKILL.RankState>stat.rankState;
+  
+            rankings.push({
+              player: stat.player,
+              name: stat.player.tournamentID.name,
+              id: stat.player.tournamentID.id,
+              matchesPlayed: stat.matchesPlayed,
+              rankState: {rating: {...rankState.rating, mu: rankState.rating.mu, sigma: rankState.rating.sigma}, score: rankState.rating.mu - 3 * rankState.rating.sigma}
+            });
+          });
+        }
         rankings.sort((a, b) => {
           return b.rankState.score - a.rankState.score
         });
         break;
       case RankSystem.ELO:
-        this.state.playerStats.forEach((stat) => {
-          let rankState = <RankSystem.ELO.RankState>stat.rankState;
-          rankings.push({
-            player: stat.player,
-            name: stat.player.tournamentID.name,
-            id: stat.player.tournamentID.id,
-            matchesPlayed: stat.matchesPlayed,
-            rankState: rankState
+        if (this.dimension.hasDatabase()) {
+          rankings = await this.dimension.databasePlugin.getRanks(this);
+          if (this.anonymousCompetitors.size > 0) {
+            // add in anonymous competitors in
+            this.anonymousCompetitors.forEach((player) => {
+              let stat = this.state.playerStats.get(player.tournamentID.id);
+              let rankState = <RankSystem.TRUESKILL.RankState>stat.rankState;
+    
+              rankings.push({
+                player: stat.player,
+                name: stat.player.tournamentID.name,
+                id: stat.player.tournamentID.id,
+                matchesPlayed: stat.matchesPlayed,
+                rankState: rankState
+              });
+            });
+            // re sort
+            rankings.sort((a, b) => {
+              return b.rankState.rating.score - a.rankState.rating.score
+            });
+          }
+          break;
+        }
+        else {
+          this.state.playerStats.forEach((stat) => {
+            let rankState = <RankSystem.ELO.RankState>stat.rankState;
+            rankings.push({
+              player: stat.player,
+              name: stat.player.tournamentID.name,
+              id: stat.player.tournamentID.id,
+              matchesPlayed: stat.matchesPlayed,
+              rankState: rankState
+            });
           });
-        });
+        }
         rankings.sort((a, b) => {
           return b.rankState.rating.score - a.rankState.rating.score
         });
@@ -193,12 +248,13 @@ export class Ladder extends Tournament {
     this.log.info('Running Tournament');
     this.configs = deepMerge(this.configs, configs, true);
     await this.initialize();
-    this.schedule();
+    await this.schedule();
     this.status = TournamentStatus.RUNNING;
     this.tourneyRunner();
   }
 
-  private tourneyRunner() {
+  private async tourneyRunner() {
+
     let maxTotalMatches = this.configs.tournamentConfigs.maxTotalMatches;
     if (this.configs.tournamentConfigs.endDate) { 
       let currDate = new Date();
@@ -219,7 +275,7 @@ export class Ladder extends Tournament {
 
     // if too little matches, schedule another set
     if (this.matchQueue.length < this.configs.tournamentConfigs.maxConcurrentMatches * 2) {
-      this.schedule();
+      await this.schedule();
     }
     // run as the minimum of the queued matches length, minimum to not go over maxConcurrent matches config, and not to go over a maxtTotalMatches limit if there is one
     for (let i = 0; i < Math.min(this.matchQueue.length, this.configs.tournamentConfigs.maxConcurrentMatches - this.matches.size); i++) {
@@ -239,6 +295,11 @@ export class Ladder extends Tournament {
       this.log.error(error);
       if (error instanceof MatchDestroyedError) {
         // keep running even if a match is destroyed and the tournament is marked as to keep running
+        if (this.status == TournamentStatus.RUNNING) {
+          this.tourneyRunner();
+        }
+      }
+      else {
         if (this.status == TournamentStatus.RUNNING) {
           this.tourneyRunner();
         }
@@ -430,7 +491,7 @@ export class Ladder extends Tournament {
     }
     await Promise.all(promises);
     if (this.configs.consoleDisplay) {
-      this.printTournamentStatus();
+      await this.printTournamentStatus();
     }
   }
   
@@ -441,7 +502,7 @@ export class Ladder extends Tournament {
    * 
    * If a {@link Ladder.Configs.matchMake | matchMake} function is provided, that will be used instead of the default.
    */
-  private schedule() {
+  private async schedule() {
     if (this.configs.tournamentConfigs.matchMake) {
       let newMatches = this.configs.tournamentConfigs.matchMake(Array.from(this.state.playerStats.values()));
       this.matchQueue.push(...newMatches);
@@ -450,9 +511,10 @@ export class Ladder extends Tournament {
 
     // runs a round of scheduling
     // for every player, we schedule a match
-    let rankings = this.getRankings();
+    let rankings = await this.getRankings();
     let compArray = Array.from(this.competitors.values());
     let sortedPlayers = rankings.map((p) => p.player);
+    let newQueue = [];
     rankings.forEach((playerStat, rank) => {
       let player = playerStat.player;
       let competitorCount = this.selectRandomAgentAmountForMatch();
@@ -462,8 +524,10 @@ export class Ladder extends Tournament {
       if (rank == 0) lowerBound = 1;
       let randomPlayers = this.selectRandomplayersFromArray(
         [...sortedPlayers.slice(Math.max(rank - competitorCount * 2.5, lowerBound), rank), ... sortedPlayers.slice(rank + 1, rank + competitorCount * 2.5)], competitorCount - 1);
-      this.matchQueue.push(this.shuffle([player, ...randomPlayers]));
+      newQueue.push(this.shuffle([player, ...randomPlayers]));
     });
+    this.shuffle(newQueue);
+    this.matchQueue.push(...newQueue);
   }
 
   private selectRandomAgentAmountForMatch(): number {
@@ -512,7 +576,7 @@ export class Ladder extends Tournament {
       case RankSystem.TRUESKILL: {
         let rankSystemConfigs = <RankSystem.TRUESKILL.Configs>this.configs.rankSystemConfigs;
         let currState = <RankSystem.TRUESKILL.RankState>playerStats.rankState;
-        
+
         // TODO: Give user option to define how to reset score
         currState.rating = new Rating(currState.rating.mu, rankSystemConfigs.initialSigma)
         break;
@@ -591,25 +655,25 @@ export class Ladder extends Tournament {
     }
   }
 
-  private printTournamentStatus() {
+  private async printTournamentStatus() {
     if (this.log.level > Logger.LEVEL.NONE) {
+      let ranks: Array<LadderPlayerStat> = await this.getRankings();
+
       console.clear();
       console.log(this.log.bar())
       console.log(`Tournament - ID: ${this.id}, Name: ${this.name} | Dimension - ID: ${this.dimension.id}, Name: ${this.dimension.name}\nStatus: ${this.status} | Competitors: ${this.competitors.size} | Rank System: ${this.configs.rankSystem}\n`);
       console.log('Total Matches: ' + this.state.statistics.totalMatches + ' | Matches Queued: '  + this.matchQueue.length);
-      let ranks;
+      
       switch(this.configs.rankSystem) {
         case RankSystem.TRUESKILL:
-          ranks = this.getRankings();
           console.log(sprintf(
             `%-30s | %-14s | %-15s | %-18s | %-8s`.underline, 'Name', 'ID', 'Score=(μ - 3σ)', 'Mu: μ, Sigma: σ', 'Matches'));
           ranks.forEach((info) => {
             console.log(sprintf(
-              `%-30s`.blue+ ` | %-14s | ` + `%-15s`.green + ` | ` + `μ=%-6s, σ=%-6s`.yellow +` | %-8s`, info.player.tournamentID.name, info.player.tournamentID.id, info.rankState.score.toFixed(7), info.rankState.rating.mu.toFixed(3), info.rankState.rating.sigma.toFixed(3), info.matchesPlayed));
+              `%-30s`.blue+ ` | %-14s | ` + `%-15s`.green + ` | ` + `μ=%-6s, σ=%-6s`.yellow +` | %-8s`, info.player.tournamentID.name, info.player.tournamentID.id, (info.rankState.rating.mu - info.rankState.rating.sigma * 3).toFixed(7), info.rankState.rating.mu.toFixed(3), info.rankState.rating.sigma.toFixed(3), info.matchesPlayed));
           });
           break;
         case RankSystem.ELO:
-          ranks = this.getRankings();
           console.log(sprintf(
             `%-30s | %-8s | %-15s | %-8s`.underline, 'Name', 'ID', 'ELO Score', 'Matches'));
           ranks.forEach((info) => {
@@ -618,7 +682,15 @@ export class Ladder extends Tournament {
           });
           break;
       }
-      
+      console.log();
+      console.log('Current Matches: ' + (this.matches.size));
+      this.matches.forEach((match) => {
+        let names = [];
+        match.agents.forEach((agent) => {
+          names.push(agent.name);
+        });
+        console.log(names);
+      });
       
     }
   }
@@ -673,26 +745,22 @@ export class Ladder extends Tournament {
     }
     
     if (this.configs.consoleDisplay) {
-      this.printTournamentStatus();
-      console.log();
-      console.log('Current Matches: ' + (this.matches.size + 1));
-      this.matches.forEach((match) => {
-        let names = [];
-        match.agents.forEach((agent) => {
-          names.push(agent.name);
-        });
-        console.log(names);
-      });
-      let names = [];
-      matchInfo.forEach((player) => {
-        names.push(player.tournamentID.name);
-      });
-      console.log(names);
+      await this.printTournamentStatus();
     }
 
     this.log.detail('Running match - Competitors: ', matchInfo.map((player) => {return player.tournamentID.name}));
-
-    let matchRes = await this.runMatch(matchInfo);
+    let matchRes: {results: any, match: Match, err?: any};
+    matchRes = await this.runMatch(matchInfo);
+    if (matchRes.err) {
+      this.log.error(`Match couldn't run, aborting`, matchRes.err);
+      matchInfo.forEach((player) => {
+        player.activeMatchCount--;
+      });
+      this.removePlayersSafely();
+      // remove the match from the active matches list
+      this.matches.delete(matchRes.match.id);
+      return;
+    }
 
     // update total matches
     this.state.statistics.totalMatches++;
@@ -736,6 +804,7 @@ export class Ladder extends Tournament {
     this.removePlayersSafely();
   }
 
+
   /**
    * Handles match results.
    * 
@@ -746,21 +815,40 @@ export class Ladder extends Tournament {
     let mapAgentIDtoTournamentID = toProcess.mapAgentIDtoTournamentID;
     let result = <RankSystem.TRUESKILL.Results>toProcess.result;
     
-    // stop if no ranks provided, meaning no match succesful
+    // stop if no ranks provided, meaning match not successful and we throw result away
     if (result.ranks.length === 0) return;
     
     let playerRatings: Array<Array<Rating>> = [];
     let tourneyIDs: Array<{id: Tournament.ID, stats: any}> = [];
     let ranks: Array<number> = [];
     result.ranks.sort((a, b) => a.rank - b.rank);
+    
+    let fetchingRatings: Array<Promise<void>> = [];
     result.ranks.forEach((rank) => {
-      let tournamentID = mapAgentIDtoTournamentID.get(rank.agentID);
-      let currentplayerStats = this.state.playerStats.get(tournamentID.id);
-      let currRankState = <RankSystem.TRUESKILL.RankState>currentplayerStats.rankState;
-      playerRatings.push([currRankState.rating]);
-      ranks.push(rank.rank);
-      tourneyIDs.push({id: tournamentID, stats: currentplayerStats});
+      const fetchRating = async () => {
+        let tournamentID = mapAgentIDtoTournamentID.get(rank.agentID);
+        let player = this.state.playerStats.get(tournamentID.id).player;
+        /** 
+         * Future TODO: Acquire and release locks on an DB entry. 
+         * realistically only matters if DB is slow or many matches run with a player 
+         */
+        let currentplayerStats: Ladder.PlayerStat;
+        // use DB stored stats
+        if (this.dimension.hasDatabase() && !player.anonymous) {
+          let user = await this.dimension.databasePlugin.getUser(player.tournamentID.id);
+          currentplayerStats = user.statistics[this.getKeyName()];
+        } else {
+          currentplayerStats = this.state.playerStats.get(tournamentID.id);
+        }
+        let currRankState = <RankSystem.TRUESKILL.RankState>currentplayerStats.rankState;
+        playerRatings.push([currRankState.rating]);
+        ranks.push(rank.rank);
+        tourneyIDs.push({id: tournamentID, stats: currentplayerStats});
+      }
+      fetchingRatings.push(fetchRating());
     });
+
+    await Promise.all(fetchingRatings);
 
     let newRatings = rate(playerRatings, ranks);
     tourneyIDs.forEach((info, i) => {
@@ -772,16 +860,7 @@ export class Ladder extends Tournament {
     
 
     if (this.configs.consoleDisplay) {
-      this.printTournamentStatus();
-      console.log();
-      console.log('Current Matches: ' + (this.matches.size));
-      this.matches.forEach((match) => {
-        let names = [];
-        match.agents.forEach((agent) => {
-          names.push(agent.name);
-        });
-        console.log(names);
-      });
+      await this.printTournamentStatus();
     }
 
     // TODO: Possibly minor race condition here. Might be that this update is outdated and may overwrite much more new 
@@ -797,7 +876,7 @@ export class Ladder extends Tournament {
           }
         }).catch((err: Error) => {
           // don't stop tourney if this happens
-          this.log.error(`Issue with using database`, err.message);
+          this.log.error(`Issue with using database`, err);
         });
       }
       
@@ -824,16 +903,8 @@ export class Ladder extends Tournament {
     this.elo.rate(ratingsToChange, ranks);
 
     if (this.configs.consoleDisplay) {
-      this.printTournamentStatus();
+      await this.printTournamentStatus();
       console.log();
-      console.log('Current Matches: ' + (this.matches.size));
-      this.matches.forEach((match) => {
-        let names = [];
-        match.agents.forEach((agent) => {
-          names.push(agent.name);
-        });
-        console.log(names);
-      });
     }
 
   }
