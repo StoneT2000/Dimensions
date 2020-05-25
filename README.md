@@ -272,8 +272,8 @@ let RPSTournament = myDimension.createTournament(botSources, {
   rankSystem: Tournament.RankSystem.TRUESKILL, // Use Trueskill to rank bots
   agentsPerMatch: [2], // specify how many bots can play at a time
   defaultMatchConfigs: {
-    bestOf: 329
-		loggingLevel: Dimension.Logger.LEVEL.NONE
+    bestOf: 329,
+    loggingLevel: Dimension.Logger.LEVEL.NONE
   }
   resultHandler: (results: any) => {
     let ranks = [];
