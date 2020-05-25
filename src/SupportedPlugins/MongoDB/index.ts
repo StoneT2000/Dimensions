@@ -135,9 +135,9 @@ export class MongoDB extends Database {
             }
           }
         ]);
-        return rankData.map((data) => {
-          return data.statistics[keyname];
-        });
+      return rankData.map((data) => {
+        return data.statistics[keyname];
+      });
 
     }
     else if (tournament.configs.rankSystem === Tournament.RANK_SYSTEM.ELO) {
@@ -157,15 +157,16 @@ export class MongoDB extends Database {
             }
           },
           {
-            "$project": {
+            "$addFields": {
               "score": `$statistics.${keyname}.rankState.rating.score`
             }
           },
           {
-            "$sort": -1
+            "$sort": {
+              "score": -1
+            }
           }
-        ]
-      );
+        ]);
       return rankData.map((data) => {
         return data.statistics[keyname];
       });

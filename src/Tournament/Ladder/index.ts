@@ -360,6 +360,40 @@ export class Ladder extends Tournament {
       }
     }
   }
+
+   /**
+   * Updates database with ELO player stats
+   * 
+   * If failure occurs, we ignore it and just log it as we will likely in the future perform an update operation
+   * on the database again anyway
+   * 
+   * @param playerStat 
+   * @param user 
+   */
+  private async updateDatabaseELOPlayerStats(playerStat: LadderPlayerStat, user?: Database.User) {
+    let player = playerStat.player;
+    if (!player.anonymous) {
+      let keyName = this.getKeyName();
+      let update = {
+        statistics: {}
+      }
+
+      // if there exists stats already, keep them
+      if (user && user.statistics) {
+        update.statistics = user.statistics;
+      }
+
+      // perform update
+      update.statistics[keyName] = playerStat;
+
+      try {
+        await this.dimension.databasePlugin.updateUser(player.tournamentID.id, update)
+      }
+      catch(err) {
+        this.log.error(`Failed to update user with player stats`, err);
+      }
+    }
+  }
   
   /**
    * Initialize trueskill player stats. Pulls data from database if it exists and uses past stats to fill in
@@ -764,12 +798,6 @@ export class Ladder extends Tournament {
 
     // update total matches
     this.state.statistics.totalMatches++;
-    // update matches played per player
-    matchInfo.forEach((player) => {
-      let oldplayerStat = this.state.playerStats.get(player.tournamentID.id);
-      oldplayerStat.matchesPlayed++;
-      this.state.playerStats.set(player.tournamentID.id, oldplayerStat);
-    });
 
     let resInfo = this.configs.resultHandler(matchRes.results);
     switch(this.configs.rankSystem) {
@@ -840,6 +868,9 @@ export class Ladder extends Tournament {
         } else {
           currentplayerStats = this.state.playerStats.get(tournamentID.id);
         }
+
+        currentplayerStats.matchesPlayed++;
+
         let currRankState = <RankSystem.TRUESKILL.RankState>currentplayerStats.rankState;
         playerRatings.push([currRankState.rating]);
         ranks.push(rank.rank);
@@ -891,13 +922,30 @@ export class Ladder extends Tournament {
     if (result.ranks.length === 0) return;
     let ratingsToChange: Array<ELORating> = [];
     let ranks = [];
+    let tourneyIDs: Array<{id: Tournament.ID, stats: any}> = [];
+    let fetchingRatings: Array<Promise<void>> = [];
     result.ranks.forEach((rankInfo) => {
-      let tournamentID = mapAgentIDtoTournamentID.get(rankInfo.agentID);
-      let currentplayerStats = this.state.playerStats.get(tournamentID.id);
-      let currRankState = <RankSystem.ELO.RankState>currentplayerStats.rankState;
-      ratingsToChange.push(currRankState.rating);
-      ranks.push(rankInfo.rank);
-    })
+      const fetchRating = async () => {
+        let tournamentID = mapAgentIDtoTournamentID.get(rankInfo.agentID);
+        let player = this.state.playerStats.get(tournamentID.id).player;
+        let currentplayerStats: Ladder.PlayerStat;
+        // use DB stored stats
+        if (this.dimension.hasDatabase() && !player.anonymous) {
+          let user = await this.dimension.databasePlugin.getUser(player.tournamentID.id);
+          currentplayerStats = user.statistics[this.getKeyName()];
+        } else {
+          currentplayerStats = this.state.playerStats.get(tournamentID.id);
+        }
+        currentplayerStats.matchesPlayed++;
+        let currRankState = <RankSystem.ELO.RankState>currentplayerStats.rankState;
+        ratingsToChange.push(currRankState.rating);
+        ranks.push(rankInfo.rank);
+        tourneyIDs.push({id: tournamentID, stats: currentplayerStats});
+      }
+      fetchingRatings.push(fetchRating());
+    });
+
+    await Promise.all(fetchingRatings);
 
     // re adjust rankings
     this.elo.rate(ratingsToChange, ranks);
@@ -907,6 +955,25 @@ export class Ladder extends Tournament {
       console.log();
     }
 
+    // update database if needed and store play stats
+    tourneyIDs.forEach((info, i) => {
+      
+      let tourneyID = info.id.id;
+      this.state.playerStats.set(tourneyID, info.stats);
+      let playerStat = this.state.playerStats.get(tourneyID);
+      let player = playerStat.player;
+      if (!player.anonymous) {
+        this.dimension.databasePlugin.getUser(player.tournamentID.id).then((user) => {
+          if (user) {
+            this.updateDatabaseELOPlayerStats(playerStat, user);
+          }
+        }).catch((err: Error) => {
+          // don't stop tourney if this happens
+          this.log.error(`Issue with using database`, err);
+        });
+      }
+      
+    });
   }
 }
 
