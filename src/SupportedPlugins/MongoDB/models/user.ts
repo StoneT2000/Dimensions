@@ -18,9 +18,9 @@ const UserSchemaCreator = (options: DeepPartial<MongoDB.UserSchemaOptions> = {})
     username: { type: String, index: true, required: true, unique: true },
     passwordHash: { type: String, required: true },
     playerID: { type: String, default: Player.generatePlayerID, index: true, unique: true },
-    statistics: { type: Schema.Types.Mixed, default: () => { return new Map(); } },
+    statistics: { type: Schema.Types.Mixed, default: {} },
     meta: { type: Schema.Types.Mixed, default: () => { return new Map(); } }
-  });
+  }, { minimize: false });
 
   // TODO: This can be more streamlined. Perhaps in the MatchSchemaCreator we also store the kind of type they should be
   if (schemaOptions.creationDate) {

@@ -654,6 +654,11 @@ export class Ladder extends Tournament {
 
   async updatePlayer(player: Player, oldname: string, oldfile: string) {
     let playerStats = this.state.playerStats.get(player.tournamentID.id);
+    playerStats.player = player;
+    playerStats.matchesPlayed = 0;
+    playerStats.losses = 0;
+    playerStats.wins = 0;
+    playerStats.ties = 0;
     switch(this.configs.rankSystem) {
       case RankSystem.ELO: {
         let rankSystemConfigs = <RankSystem.ELO.Configs>this.configs.rankSystemConfigs;
@@ -661,6 +666,12 @@ export class Ladder extends Tournament {
         
         // TODO: Give user option to define how to reset score
         currState.rating.score = rankSystemConfigs.startingScore;
+        if (this.dimension.hasDatabase()) {
+          if (!player.anonymous) {
+            let user = await this.dimension.databasePlugin.getUser(player.tournamentID.id);
+            await this.updateDatabaseELOPlayerStats(playerStats, user);
+          }
+        }
         break;
       }
       case RankSystem.TRUESKILL: {
@@ -669,18 +680,17 @@ export class Ladder extends Tournament {
 
         // TODO: Give user option to define how to reset score
         currState.rating = new Rating(currState.rating.mu, rankSystemConfigs.initialSigma)
+        if (this.dimension.hasDatabase()) {
+          if (!player.anonymous) {
+            let user = await this.dimension.databasePlugin.getUser(player.tournamentID.id);
+            await this.updateDatabaseTrueskillPlayerStats(playerStats, user);
+          }
+        }
         break;
       }
     }
-    playerStats.player = player;
-    playerStats.matchesPlayed = 0;
-    playerStats.losses = 0;
-    playerStats.wins = 0;
-    playerStats.ties = 0;
-    if (this.dimension.hasDatabase()) {
-      let user = await this.dimension.databasePlugin.getUser(player.tournamentID.id);
-      await this.updateDatabaseTrueskillPlayerStats(playerStats, user);
-    }
+    
+    
   }
 
   /**
