@@ -155,7 +155,6 @@ export abstract class Tournament {
     if (!tournamentConfigs.name && dimension.hasDatabase()) {
       this.log.error(`A name has to be specified for a tournament otherwise tournament player data will not be reused across runs of the tournament`)
     }
-  
   }
 
   /**
@@ -316,9 +315,13 @@ export abstract class Tournament {
   public abstract async resume();
 
   /**
-   * Retrieve some form of rankings from the tournament's current state
+   * Retrieve some form of rankings from the tournament's current state. The params offset and limit only apply to 
+   * {@link Tournament.Ladder | Ladder Tournaments}, used for scaling purposes.
+   * 
+   * @param offset - the starting ranking to retrieve from
+   * @param limit - the number of rankings to retrieve
    */
-  public abstract getRankings(): any;
+  public abstract getRankings(offset?: number, limit?: number): any;
 
   /**
    * Update function that is called whenever an existing player is updated
@@ -600,7 +603,7 @@ export module Tournament {
    * Internally used type.
    */
   export interface TournamentConfigs<ConfigType> extends TournamentConfigsBase {
-    tournamentConfigs: ConfigType    
+    tournamentConfigs: ConfigType
     rankSystemConfigs: any
   }
 

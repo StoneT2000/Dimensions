@@ -116,6 +116,7 @@ export class Ladder extends Tournament {
     }
 
     this.status = TournamentStatus.INITIALIZED;
+    
     this.log.info('Initialized Ladder Tournament');
   }
   public getConfigs(): Tournament.TournamentConfigs<LadderConfigs> {
@@ -124,12 +125,12 @@ export class Ladder extends Tournament {
   public setConfigs(configs: DeepPartial<Tournament.TournamentConfigs<LadderConfigs>> = {}) {
     this.configs = deepMerge(this.configs, configs, true);
   }
-  public async getRankings(): Promise<Array<LadderPlayerStat>> {
+  public async getRankings(offset: number, limit: number): Promise<Array<LadderPlayerStat>> {
     let rankings = [];
     switch(this.configs.rankSystem) {
       case RankSystem.TRUESKILL:
         if (this.dimension.hasDatabase()) {
-          rankings = await this.dimension.databasePlugin.getRanks(this);
+          rankings = await this.dimension.databasePlugin.getRanks(this, offset, limit);
           rankings = rankings.map((rank) => {
             rank.rankState.score = rank.rankState.rating.mu - 3 * rank.rankState.rating.sigma
             return rank;
@@ -174,7 +175,7 @@ export class Ladder extends Tournament {
         break;
       case RankSystem.ELO:
         if (this.dimension.hasDatabase()) {
-          rankings = await this.dimension.databasePlugin.getRanks(this);
+          rankings = await this.dimension.databasePlugin.getRanks(this, offset, limit);
           if (this.anonymousCompetitors.size > 0) {
             // add in anonymous competitors in
             this.anonymousCompetitors.forEach((player) => {
@@ -601,8 +602,8 @@ export class Ladder extends Tournament {
 
     // runs a round of scheduling
     // for every player, we schedule a match
-    let rankings = await this.getRankings();
-    let compArray = Array.from(this.competitors.values());
+    // TODO: For scalability, getrankings should handle just a subset at a time in order to not load too much at once.
+    let rankings = await this.getRankings(0, -1);
     let sortedPlayers = rankings.map((p) => p.player);
     let newQueue = [];
     rankings.forEach((playerStat, rank) => {
@@ -757,7 +758,7 @@ export class Ladder extends Tournament {
 
   private async printTournamentStatus() {
     if (this.log.level > Logger.LEVEL.NONE) {
-      let ranks: Array<LadderPlayerStat> = await this.getRankings();
+      let ranks: Array<LadderPlayerStat> = await this.getRankings(0, -1);
 
       console.clear();
       console.log(this.log.bar())
