@@ -683,23 +683,6 @@ export class Ladder extends Tournament {
   }
 
   /**
-   * Removes all players in {@link this.playersToRemove} when player is no longer in an active match
-   */
-  private async removePlayersSafely() {
-    this.playersToRemove.forEach((playerID) => {
-      // let player = await this.getPlayerStat(playerID)
-      // if (player.activeMatchCount === 0) {
-        try {
-          this._internalRemovePlayer(playerID);
-          this.playersToRemove.delete(playerID);
-        }
-        catch(err) {
-          this.log.error('could not find player with ID: ' + playerID);
-        }
-      // }
-    });
-  }
-  /**
    * Removes player from tournament. Removes from state and stats from database
    * @param playerID 
    */
@@ -708,42 +691,9 @@ export class Ladder extends Tournament {
     let { user, playerStat } = (await this.getPlayerStat(playerID));
     if (playerStat) {
       
-      // this.playersToRemove.add(playerID);
-      // this.removePlayersSafely();
       this.state.playerStats.delete(playerID);
       this.log.info('Removed player ' + playerID);
       if (this.dimension.hasDatabase()) {
-        if (user) {
-          let keyName = this.getKeyName();
-          let update = {
-            statistics: {}
-          }
-          // if there exists stats already, keep them
-          if (user && user.statistics) {
-            update.statistics = user.statistics;
-          }
-          // delete stats for this tournament to remove player
-          delete update.statistics[keyName];
-          await this.dimension.databasePlugin.updateUser(playerID, update);
-          this.log.info('Removed player ' + playerID + ' from DB');
-        }
-      }
-    }
-    else {
-      throw new TournamentPlayerDoesNotExistError(`Could not find player with ID: ${playerID}`);
-    }
-  }
-  /**
-   * 
-   * @param playerID 
-   */
-  private async _internalRemovePlayer(playerID: nanoid) {
-    let stat = this.getPlayerStat(playerID);
-    if (stat) {
-      this.state.playerStats.delete(playerID);
-      this.log.info('Removed player ' + playerID);
-      if (this.dimension.hasDatabase()) {
-        let user = await this.dimension.databasePlugin.getUser(playerID);
         if (user) {
           let keyName = this.getKeyName();
           let update = {
@@ -765,6 +715,9 @@ export class Ladder extends Tournament {
     }
   }
 
+  /**
+   * Print tournament status to display
+   */
   private async printTournamentStatus() {
     if (this.log.level > Logger.LEVEL.NONE) {
       let ranks: Array<LadderPlayerStat> = await this.getRankings(0, -1);
@@ -834,36 +787,14 @@ export class Ladder extends Tournament {
   }
 
   /**
-   * Change match counts of all players
-   */
-  private changeMatchCounts(matchInfo: Array<Player>, amount: number) {
-    for (let i = 0; i < matchInfo.length; i++) {
-      let playerStat = this.state.playerStats.get(matchInfo[i].tournamentID.id);
-      if (!playerStat) {
-        // undo changes
-        this.changeMatchCounts(matchInfo.slice(0, i), -amount);
-        return false;
-      }
-      playerStat.player.activeMatchCount += amount;
-    }
-  }
-
-  /**
    * Handles the start and end of a match, and updates state accrding to match results and the given result handler
    * @param matchInfo 
    */
   private async handleMatch(matchInfo: Array<Player>) {
     
-    matchInfo.forEach((player) => {
-      player.activeMatchCount++;
-    });
-
     if (!(await this.checkMatchIntegrity(matchInfo))) {
       // quit
       this.log.detail('Match queued cannot be run anymore');
-      matchInfo.forEach((player) => {
-        player.activeMatchCount--;
-      });
       return;
     }
     
@@ -876,10 +807,7 @@ export class Ladder extends Tournament {
     matchRes = await this.runMatch(matchInfo);
     if (matchRes.err) {
       this.log.error(`Match ${matchRes.match.id} couldn't run, aborting...`, matchRes.err);
-      matchInfo.forEach((player) => {
-        player.activeMatchCount--;
-      });
-      this.removePlayersSafely();
+
       // remove the match from the active matches list
       this.matches.delete(matchRes.match.id);
       return;
@@ -912,13 +840,7 @@ export class Ladder extends Tournament {
         this.state.results.push(matchRes.results);
       }
     }
-    matchInfo.forEach((player) => {
-      player.activeMatchCount--;
-    });
-    /**
-     * Remove players as needed
-     */
-    this.removePlayersSafely();
+
   }
 
   /**
@@ -996,7 +918,7 @@ export class Ladder extends Tournament {
     try {
       await Promise.all(fetchingRatings);
     } catch (err) {
-      this.log.error('Probably due to player being removed', err);
+      this.log.error('Probably due to player being removed: ', err);
       return;
     }
 
@@ -1034,6 +956,9 @@ export class Ladder extends Tournament {
         let tournamentID = mapAgentIDtoTournamentID.get(rankInfo.agentID);
 
         let { playerStat } = (await this.getPlayerStat(tournamentID.id));
+        if (!playerStat) {
+          throw new TournamentPlayerDoesNotExistError(`Player ${tournamentID.id} doesn't exist anymore, likely was removed`);
+        }
         let currentplayerStats = <Ladder.PlayerStat>playerStat;
         currentplayerStats.matchesPlayed++;
         
@@ -1045,7 +970,12 @@ export class Ladder extends Tournament {
       fetchingRatings.push(fetchRating());
     });
 
-    await Promise.all(fetchingRatings);
+    try {
+      await Promise.all(fetchingRatings);
+    } catch (err) {
+      this.log.error('Probably due to player being removed: ', err);
+      return;
+    }
 
     // re adjust rankings
     this.elo.rate(ratingsToChange, ranks);
@@ -1054,9 +984,8 @@ export class Ladder extends Tournament {
 
     let updatePlayerStatsPromises: Array<Promise<void>> = [];
     // update database if needed and store play stats
-    tourneyIDs.forEach((info, i) => {
+    tourneyIDs.forEach((info) => {
       const updateStat = async () => {
-        let tourneyID = info.id.id;
         let currentStats = info.stats;
         updatePlayerStatsPromises.push(this.updatePlayerStat(currentStats));
       }

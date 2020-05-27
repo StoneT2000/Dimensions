@@ -31,11 +31,6 @@ export class Player {
    */
   public anonymous: boolean = true;
 
-  /**
-   * Number of matches this player is involved in at the moment
-   */
-  public activeMatchCount: number = 0;
-
   /** Associated username if there is one */
   public username: string = undefined;
 
