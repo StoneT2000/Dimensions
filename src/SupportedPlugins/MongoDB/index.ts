@@ -102,74 +102,90 @@ export class MongoDB extends Database {
     );
   }
 
-  public async getRanks(tournament: Tournament.Ladder): Promise<Array<Ladder.PlayerStat>> {
+  public async getRanks(tournament: Tournament.Ladder, offset: number, limit: number): Promise<Array<Ladder.PlayerStat>> {
     let keyname = tournament.getKeyName();
     if (tournament.configs.rankSystem === Tournament.RANK_SYSTEM.TRUESKILL) {
-      let rankData = await this.models.user.aggregate(
-        [
-          {
-            // select all users with stats in this tournament, implying they are still in the tourney
-            "$match":  {
-              ["statistics." + keyname]: {
-                "$exists": true
-              }
-            }
-          },
-          {
-            "$project": {
-              ["statistics." + keyname]: 1
-            }
-          },
-          {
-            "$addFields": {
-              "score": {
-                "$subtract": [
-                  `$statistics.${keyname}.rankState.rating.mu`,
-                  {
-                    "$multiply": [`$statistics.${keyname}.rankState.rating.sigma`, 3]
-                  }
-                ]
-              }
-            }
-          },
-          {
-            "$sort": {
-              "score": -1
+      let agg: Array<Object> = [
+        {
+          // select all users with stats in this tournament, implying they are still in the tourney
+          "$match":  {
+            ["statistics." + keyname]: {
+              "$exists": true
             }
           }
-        ]);
+        },
+        {
+          "$project": {
+            ["statistics." + keyname]: 1
+          }
+        },
+        {
+          "$addFields": {
+            "score": {
+              "$subtract": [
+                `$statistics.${keyname}.rankState.rating.mu`,
+                {
+                  "$multiply": [`$statistics.${keyname}.rankState.rating.sigma`, 3]
+                }
+              ]
+            }
+          }
+        },
+        {
+          "$sort": {
+            "score": -1
+          }
+        },
+        {
+          "$skip": offset
+        }
+      ];
+      if (limit !== -1) {
+        agg.push({
+          "$limit": limit
+        });
+      }
+      let rankData = await this.models.user.aggregate(agg);
       return rankData.map((data) => {
         return data.statistics[keyname];
       });
 
     }
     else if (tournament.configs.rankSystem === Tournament.RANK_SYSTEM.ELO) {
-      let rankData = await this.models.user.aggregate(
-        [
-          {
-            // select all users with stats in this tournament, implying they are still in the tourney
-            "$match":  {
-              ["statistics." + keyname]: {
-                "$exists": true
-              }
-            }
-          },
-          {
-            "$project": {
-              ["statistics." + keyname]: 1
-            }
-          },
-          {
-            "$addFields": {
-              "score": `$statistics.${keyname}.rankState.rating.score`
-            }
-          },
-          {
-            "$sort": {
-              "score": -1
+      let agg: Array<Object> = [
+        {
+          // select all users with stats in this tournament, implying they are still in the tourney
+          "$match":  {
+            ["statistics." + keyname]: {
+              "$exists": true
             }
           }
-        ]);
+        },
+        {
+          "$project": {
+            ["statistics." + keyname]: 1
+          }
+        },
+        {
+          "$addFields": {
+            "score": `$statistics.${keyname}.rankState.rating.score`
+          }
+        },
+        {
+          "$sort": {
+            "score": -1
+          }
+        },
+        {
+          "$skip": offset
+        }
+      ];
+      if (limit !== -1) {
+        agg.push({
+          "$limit": limit
+        });
+      }
+      let rankData = await this.models.user.aggregate(agg);
       return rankData.map((data) => {
         return data.statistics[keyname];
       });
