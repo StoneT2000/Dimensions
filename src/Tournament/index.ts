@@ -316,8 +316,21 @@ export abstract class Tournament {
   abstract async updatePlayer(player: Player, oldname: string, oldfile: string): Promise<void>;
 
 
+  /**
+   * Disables the player with id playerID
+   * @param playerID - the player's id to disable
+   */
   public async disablePlayer(playerID: nanoid) {
-    
+    let { user, playerStat } = await this.getPlayerStat(playerID);
+    if (playerStat) {
+      playerStat.player.disabled = true;
+      if (this.dimension.hasDatabase() && user) {
+        await this.dimension.databasePlugin.updateUser(playerID, user)
+      }
+    }
+    else {
+      throw new TournamentPlayerDoesNotExistError(`Player ${playerID} was not found in this tournament`);
+    }
   }
 
   /**

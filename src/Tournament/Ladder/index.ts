@@ -589,13 +589,16 @@ export class Ladder extends Tournament {
     
     let sortedPlayers = rankings.map((p) => p.player).filter((p) => !p.disabled);
     let newQueue = [];
-    rankings.forEach((playerStat, rank) => {
-      let player = playerStat.player;
+    sortedPlayers.forEach((player, rank) => {
+
       let competitorCount = this.selectRandomAgentAmountForMatch();
        
       // take random competitors from +/- competitorCount * 2.5 ranks near you
       let lowerBound = 0;
       if (rank == 0) lowerBound = 1;
+      if (sortedPlayers.length < competitorCount) {
+        return;
+      }
       let randomPlayers = this.selectRandomplayersFromArray(
         [...sortedPlayers.slice(Math.max(rank - competitorCount * 2.5, lowerBound), rank), ... sortedPlayers.slice(rank + 1, rank + competitorCount * 2.5)], competitorCount - 1);
       newQueue.push(this.shuffle([player, ...randomPlayers]));
@@ -802,16 +805,19 @@ export class Ladder extends Tournament {
     matchRes = await this.runMatch(matchInfo);
     if (matchRes.err) {
       if (matchRes.err instanceof AgentCompileError) {
-        
+        let tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(matchRes.err.agentID)
+        this.log.warn(`Match couldn't run. Player ${tournamentID.id} got a compile error`);
+        await this.disablePlayer(tournamentID.id);
       }
       else if (matchRes.err instanceof AgentInstallError) {
-
+        let tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(matchRes.err.agentID)
+        this.log.warn(`Match couldn't run. Player ${tournamentID.id} got an install error`);
+        await this.disablePlayer(tournamentID.id);
       }
-      this.log.error(`Match couldn't run, aborting`, matchRes.err);
-      matchInfo.forEach((player) => {
-        player.activeMatchCount--;
-      });
-      this.removePlayersSafely();
+      else {
+        this.log.error(`Match couldn't run, aborting... `, matchRes.err);
+      }
+      
       // remove the match from the active matches list
       this.matches.delete(matchRes.match.id);
       return;

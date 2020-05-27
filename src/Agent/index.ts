@@ -128,12 +128,12 @@ export class Agent {
 
     // check if file exists
     if(!fs.existsSync(file)) {
-      throw new AgentFileError(`${file} does not exist, check if file path provided is correct`);
+      throw new AgentFileError(`${file} does not exist, check if file path provided is correct`, this.id);
     }
 
     // check if folder is valid
     if(!fs.existsSync(this.cwd)) {
-      throw new AgentDirectoryError(`${this.cwd} directory does not exist, check if directory provided through the file is correct`);
+      throw new AgentDirectoryError(`${this.cwd} directory does not exist, check if directory provided through the file is correct`, this.id);
     }
 
     this.file = file;
@@ -187,7 +187,7 @@ export class Agent {
         this.file = path.join(tempDir, this.src);
       }
       else {
-        throw new AgentDirectoryError(`${this.cwd} is not a directory`);
+        throw new AgentDirectoryError(`${this.cwd} is not a directory`, this.id);
       }
     }
     
@@ -195,7 +195,7 @@ export class Agent {
     if (this.options.id !== null) {
       this.id = options.id;
     } else {
-      throw new AgentMissingIDError(`No id provided for agent using ${file}`);
+      throw new AgentMissingIDError(`No id provided for agent using ${file}`, this.id);
     }
     if (this.options.name) {
       this.name = this.options.name;
@@ -227,7 +227,7 @@ export class Agent {
         // run in restricted bash if in secureMode
         let p: ChildProcess;
         let installTimer = setTimeout(() => {
-          reject(new AgentInstallTimeoutError('Agent went over install time during the install stage'));
+          reject(new AgentInstallTimeoutError('Agent went over install time during the install stage', this.id));
         }, this.options.maxInstallTime);
         if (this.options.secureMode) {
           p = spawn('sudo', ['-H' ,'-u', BOT_USER, 'rbash' ,'install.sh'], {
@@ -258,7 +258,11 @@ export class Agent {
             resolve();
           }
           else {
-            reject(new AgentInstallError(`A install time error occured. Install step for agent ${this.id} exited with code: ${code}; Installing ${path.join(this.cwd, 'install.sh')}; Install Output:\n${chunks.join('')}`))
+            reject(
+              new AgentInstallError(
+                `A install time error occured. Install step for agent ${this.id} exited with code: ${code}; Installing ${path.join(this.cwd, 'install.sh')}; Install Output:\n${chunks.join('')}`, this.id
+              )
+            )
           }
         });
       }
@@ -269,14 +273,14 @@ export class Agent {
   }
 
   /**
-   * Compile whatever is needed. Called by {@link MatchEngine} and has a timer set by the maxCompileTime option in
-   * {@link Agent.Options}
+   * Compile whatever is needed and validate files. Called by {@link MatchEngine} and has a timer set by the 
+   * maxCompileTime option in {@link Agent.Options}
    */
   _compile(): Promise<void> {
     return new Promise((resolve, reject) => {
       let p: ChildProcess;
       let compileTimer = setTimeout(() => {
-        reject(new AgentCompileTimeoutError('Agent went over compile time during the compile stage'));
+        reject(new AgentCompileTimeoutError('Agent went over compile time during the compile stage', this.id));
       }, this.options.maxCompileTime);
       if (this.options.compileCommands[this.ext]) {
         p = spawn(`sudo`, [...this.options.compileCommands[this.ext], this.src], {
@@ -286,11 +290,15 @@ export class Agent {
       else {
         switch(this.ext) {
           case '.py':
-          case '.js':
           case '.php':
             resolve();
             break;
             // TODO: Make these compile options configurable
+          case '.js':
+            p = spawn(`sudo`, ['node', '--check', this.src], {
+              cwd: this.cwd
+            })
+            break;
           case '.ts':
             p = spawn(`sudo`, [...`tsc --esModuleInterop --allowJs -m commonjs --lib es5`.split(' '), this.src], {
               cwd: this.cwd
@@ -339,7 +347,7 @@ export class Agent {
             resolve();
           }
           else {
-            reject(new AgentCompileError(`A compile time error occured. Compile step for agent ${this.id} exited with code: ${code}; Compiling ${this.file}; Compile Output:\n${chunks.join('')}`));
+            reject(new AgentCompileError(`A compile time error occured. Compile step for agent ${this.id} exited with code: ${code}; Compiling ${this.file}; Compile Output:\n${chunks.join('')}`, this.id));
           }
         });
       }
@@ -503,7 +511,7 @@ export class Agent {
    */
   static generateAgents(files: Array<String> | Array<{file: string, name: string}> | Array<{file: string, tournamentID: Tournament.ID}>, options: DeepPartial<Agent.Options>): Array<Agent> {
     if (files.length === 0) {
-      throw new AgentFileError('No files provided to generate agents with!');
+      throw new AgentFileError('No files provided to generate agents with!', -1);
     }
     let agents: Array<Agent> = [];
 

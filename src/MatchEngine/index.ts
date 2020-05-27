@@ -13,7 +13,7 @@ import { Design } from '../Design';
 import { Logger } from '../Logger';
 import { Agent } from '../Agent';
 import { Match } from '../Match';
-import { processIsRunning } from '../utils/System';
+import { processIsRunning, removeDirectory } from '../utils/System';
 
 /** @ignore */
 type EngineOptions = MatchEngine.EngineOptions;
@@ -220,19 +220,7 @@ export class MatchEngine {
 
     // when process closes, print message
     p.on('close', (code) => {
-      this.log.system(`${agent.name} | id: ${agent.id} - exited with code ${code}`);
-
-      // remove the agent files if on secureMode and double check it is the temporary directory
-      if (agent.options.secureMode) {
-        let tmpdir = os.tmpdir();
-        if (agent.cwd.slice(0, tmpdir.length) === tmpdir) {
-          exec(`sudo rm -rf ${agent.cwd}`);
-        }
-        else {
-          this.log.error('couldn\'t remove agent files while in secure mode');
-        }
-      }
-      
+      this.log.system(`${agent.name} | id: ${agent.id} - exited with code ${code}`);      
     });
 
     // store process
@@ -351,14 +339,26 @@ export class MatchEngine {
   public async killAndClean(match: Match) {
     // set to true to ensure no more processes are being spawned.
     this.killOffSignal = true; 
+    let cleanUpPromises: Array<Promise<any>> = [];
     if (match.agents) { 
       match.agents.forEach((agent) => {
         // kill the process if it is not null
         if (agent.process) {
-          this.kill(agent);
+          cleanUpPromises.push(this.kill(agent));
+        }
+        // remove the agent files if on secureMode and double check it is the temporary directory
+        if (agent.options.secureMode) {
+          let tmpdir = os.tmpdir();
+          if (agent.cwd.slice(0, tmpdir.length) === tmpdir) {
+            cleanUpPromises.push(removeDirectory(agent.cwd));
+          }
+          else {
+            this.log.error('couldn\'t remove agent files while in secure mode');
+          }
         }
       });
     }
+    await Promise.all(cleanUpPromises);
   }
 
   /**
