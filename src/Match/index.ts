@@ -206,69 +206,75 @@ export class Match {
    * @returns a promise that resolves true if initialized correctly
    */
   public async initialize(): Promise<boolean> {
-    this.log.infobar();
-    this.log.info(`Design: ${this.design.name} | Initializing match - ID: ${this.id}, Name: ${this.name}`);
+    try {
+      this.log.infobar();
+      this.log.info(`Design: ${this.design.name} | Initializing match - ID: ${this.id}, Name: ${this.name}`);
 
-    let overrideOptions = this.design.getDesignOptions().override;
+      let overrideOptions = this.design.getDesignOptions().override;
 
-    this.log.detail('Match Configs', this.configs);
-    
-    this.timeStep = 0;
-    
-    // copy over any agent bot files if dimension has a backing storage servicde and the agent has botkey specified
-    // copy them over the agent's specified file location to use
-    let retrieveBotFilePromises: Array<Promise<any>> = [];
-    let retrieveBotFileIndexes: Array<number> = [];
-    if (this.dimension.hasStorage()) {
-      this.agentFiles.forEach((agentFile, index) => {
-        if (agentFile.botkey && agentFile.file) {
-          
-          // we know that the directory of the file should be the "root" directory of the bot
-          retrieveBotFilePromises.push(
-            this.retrieveBot(agentFile.botkey, agentFile.file)
-          );
-          retrieveBotFileIndexes.push(index);
-          
+      this.log.detail('Match Configs', this.configs);
+      
+      this.timeStep = 0;
+      
+      // copy over any agent bot files if dimension has a backing storage servicde and the agent has botkey specified
+      // copy them over the agent's specified file location to use
+      let retrieveBotFilePromises: Array<Promise<any>> = [];
+      let retrieveBotFileIndexes: Array<number> = [];
+      if (this.dimension.hasStorage()) {
+        this.agentFiles.forEach((agentFile, index) => {
+          if (agentFile.botkey && agentFile.file) {
+            
+            // we know that the directory of the file should be the "root" directory of the bot
+            retrieveBotFilePromises.push(
+              this.retrieveBot(agentFile.botkey, agentFile.file)
+            );
+            retrieveBotFileIndexes.push(index);
+            
+          }
+        });
+      }
+      let retrievedBotFiles = await Promise.all(retrieveBotFilePromises);
+      retrieveBotFileIndexes.forEach((val, index) => {
+        if (!(typeof this.agentFiles[val] === "string")) {
+          //@ts-ignore
+          this.agentFiles[val].file = retrievedBotFiles[index];
+          // push them as non local files so they can be removed when match is done
+          this.nonLocalFiles.push(path.dirname(retrievedBotFiles[index]));
         }
       });
-    }
-    let retrievedBotFiles = await Promise.all(retrieveBotFilePromises);
-    retrieveBotFileIndexes.forEach((val, index) => {
-      if (!(typeof this.agentFiles[val] === "string")) {
-        //@ts-ignore
-        this.agentFiles[val].file = retrievedBotFiles[index];
-        // push them as non local files so they can be removed when match is done
-        this.nonLocalFiles.push(path.dirname(retrievedBotFiles[index]));
+
+      // Initialize agents with agent files
+      this.agents = Agent.generateAgents(this.agentFiles, this.configs.agentOptions);
+      this.agents.forEach((agent) => {
+        this.idToAgentsMap.set(agent.id, agent);
+        if (agent.tournamentID !== null) {
+          this.mapAgentIDtoTournamentID.set(agent.id, agent.tournamentID);
+        }
+      });
+
+      // if overriding with custom design, log some other info and use a different engine initialization function
+      if (overrideOptions.active) {
+        this.log.detail('Match Arguments', overrideOptions.arguments);
+        await this.matchEngine.initializeCustom(this);
       }
-    });
-
-    // Initialize agents with agent files
-    this.agents = Agent.generateAgents(this.agentFiles, this.configs.agentOptions);
-    this.agents.forEach((agent) => {
-      this.idToAgentsMap.set(agent.id, agent);
-      if (agent.tournamentID !== null) {
-        this.mapAgentIDtoTournamentID.set(agent.id, agent.tournamentID);
+      else {
+        // Initialize the matchEngine and get it ready to run and process I/O for agents
+        await this.matchEngine.initialize(this.agents, this);
       }
-    });
+      
+      // by now all agents should up and running, all compiled and ready
+      // Initialize match according to `design` by delegating intialization task to the enforced `design`
+      await this.design.initialize(this);
 
-    // if overriding with custom design, log some other info and use a different engine initialization function
-    if (overrideOptions.active) {
-      this.log.detail('Match Arguments', overrideOptions.arguments);
-      await this.matchEngine.initializeCustom(this);
+      // remove initialized status and set as READY
+      this.matchStatus = Match.Status.READY;
+      return true;
     }
-    else {
-      // Initialize the matchEngine and get it ready to run and process I/O for agents
-      await this.matchEngine.initialize(this.agents, this);
+    catch(err) {
+      // kill processes and clean up and then throw the error
+      await this.killAndCleanUp();
+      throw err;
     }
-    
-    // by now all agents should up and running, all compiled and ready
-    // Initialize match according to `design` by delegating intialization task to the enforced `design`
-    await this.design.initialize(this);
-
-    // remove initialized status and set as READY
-    this.matchStatus = Match.Status.READY;
-
-    return true;
   }
 
   /**
@@ -516,7 +522,7 @@ export class Match {
     this.nonLocalFiles.forEach((nonLocalFile) => {
       removeNonLocalFilesPromises.push(removeDirectory(nonLocalFile));
     });
-    Promise.all(removeNonLocalFilesPromises);
+    await Promise.all(removeNonLocalFilesPromises);
   }
 
   /**
