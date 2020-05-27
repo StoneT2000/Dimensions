@@ -51,11 +51,6 @@ export class Ladder extends Tournament {
   };
 
   /**
-   * Set of player IDs of players to remove
-   */
-  private playersToRemove: Set<nanoid> = new Set();
-
-  /**
    * ELO System used in this tournament
    */
   private elo: ELOSystem;
