@@ -77,8 +77,7 @@ export namespace RankSystem {
     /** The current rank state of a player */
     export interface RankState {
       /** The ELO Rating */
-      rating: ELORating,
-      toJSON?: Function
+      rating: ELORating
     }
   }
 
@@ -108,9 +107,7 @@ export namespace RankSystem {
        * 
        * rating.mu, rating.sigma returns the mu and sigma of the rank. 
        */
-      rating: Rating,
-      /** Function to return some internal data of rating when using API */
-      toJSON?: Function
+      rating: Rating
     }
   }
 }

@@ -102,6 +102,7 @@
 						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_dimensionerror_agenterror_index_.agentfileerror.html#agentid" class="tsd-kind-icon">agentID</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_dimensionerror_agenterror_index_.agentfileerror.html#message" class="tsd-kind-icon">message</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_dimensionerror_agenterror_index_.agentfileerror.html#name" class="tsd-kind-icon">name</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_dimensionerror_agenterror_index_.agentfileerror.html#stack" class="tsd-kind-icon">stack</a></li>
@@ -116,20 +117,23 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Agent<wbr>File<wbr>Error<span class="tsd-signature-symbol">(</span>m<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dimensionerror_agenterror_index_.agentfileerror.html" class="tsd-signature-type">AgentFileError</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Agent<wbr>File<wbr>Error<span class="tsd-signature-symbol">(</span>m<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, agentID<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dimensionerror_agenterror_index_.agentfileerror.html" class="tsd-signature-type">AgentFileError</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_dimensionerror_agenterror_index_.agenterror.html">AgentError</a>.<a href="_dimensionerror_agenterror_index_.agenterror.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/368060b/src/DimensionError/AgentError/index.ts#L73">https://github.com/StoneT2000/Dimensions/blob/368060b/src/DimensionError/AgentError/index.ts#L73</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/DimensionError/AgentError/index.ts#L81">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/DimensionError/AgentError/index.ts#L81</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>m: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>agentID: <span class="tsd-signature-type">number</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_dimensionerror_agenterror_index_.agentfileerror.html" class="tsd-signature-type">AgentFileError</a></h4>
@@ -140,11 +144,28 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="agentid" class="tsd-anchor"></a>
+					<h3>agentID</h3>
+					<div class="tsd-signature tsd-kind-icon">agentID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = -1</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="_dimensionerror_agenterror_index_.agenterror.html">AgentError</a>.<a href="_dimensionerror_agenterror_index_.agenterror.html#agentid">agentID</a></p>
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/DimensionError/AgentError/index.ts#L23">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/DimensionError/AgentError/index.ts#L23</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The id of the <a href="../modules/_index_.html#agent">Agent</a> that caused the error. If it is -1, then there is no one specific
+							agent that caused the agent error</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="message" class="tsd-anchor"></a>
 					<h3>message</h3>
 					<div class="tsd-signature tsd-kind-icon">message<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="_dimensionerror_agenterror_index_.agenterror.html">AgentError</a>.<a href="_dimensionerror_agenterror_index_.agenterror.html#message">message</a></p>
+						<p>Inherited from <a href="_station_error_index_.httperror.html">HttpError</a>.<a href="_station_error_index_.httperror.html#message">message</a></p>
 						<ul>
 						</ul>
 					</aside>
@@ -154,7 +175,7 @@
 					<h3>name</h3>
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="_dimensionerror_agenterror_index_.agenterror.html">AgentError</a>.<a href="_dimensionerror_agenterror_index_.agenterror.html#name">name</a></p>
+						<p>Inherited from <a href="_station_error_index_.httperror.html">HttpError</a>.<a href="_station_error_index_.httperror.html#name">name</a></p>
 						<ul>
 						</ul>
 					</aside>
@@ -164,7 +185,7 @@
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> stack</h3>
 					<div class="tsd-signature tsd-kind-icon">stack<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="_dimensionerror_agenterror_index_.agenterror.html">AgentError</a>.<a href="_dimensionerror_agenterror_index_.agenterror.html#stack">stack</a></p>
+						<p>Inherited from <a href="_station_error_index_.httperror.html">HttpError</a>.<a href="_station_error_index_.httperror.html#stack">stack</a></p>
 						<ul>
 						</ul>
 					</aside>
@@ -203,6 +224,9 @@
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 								<a href="_dimensionerror_agenterror_index_.agentfileerror.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="_dimensionerror_agenterror_index_.agentfileerror.html#agentid" class="tsd-kind-icon">agentID</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 								<a href="_dimensionerror_agenterror_index_.agentfileerror.html#message" class="tsd-kind-icon">message</a>
