@@ -1,14 +1,13 @@
 import mongoose from 'mongoose';
 import { Plugin } from '../../Plugin';
 import { Database } from '../../Plugin/Database';
-import { Dimension, DatabaseType, NanoID, DimensionConfigs } from '../../Dimension';
+import { Dimension, DatabaseType, NanoID } from '../../Dimension';
 import MatchSchemaCreator from './models/match';
 import { Match } from '../../Match';
 import { DeepPartial } from '../../utils/DeepPartial';
 import { pickMatch } from '../../Station/routes/api/dimensions/match';
 import bcrypt from 'bcryptjs';
 import UserSchemaCreator from './models/user';
-import configSchema from './models/configs';
 
 import { generateToken, verify } from '../../Plugin/Database/utils';
 import { Tournament } from '../../Tournament';
@@ -26,8 +25,7 @@ export class MongoDB extends Database {
 
   public models: MongoDB.Models = {
     user: null,
-    match: null,
-    configs: null
+    match: null
   }
 
   /** The MongoDB connection string used to connect to the database and read/write to it */
@@ -42,7 +40,6 @@ export class MongoDB extends Database {
     let userSchema = UserSchemaCreator();
     this.models.user = mongoose.model('User', userSchema);
 
-    this.models.configs = mongoose.model('Configs', configSchema);
   }
 
   /**
@@ -268,35 +265,6 @@ export class MongoDB extends Database {
     dimension.configs.backingDatabase = DatabaseType.MONGO;
     return;
   }
-
-  public async getTournamentConfigs(tournamentID: nanoid) {
-    return this.models.configs.findOne({ id: tournamentID }).then((config) => {
-      if (config) return config.toObject();
-      return null;
-    });
-  }
-  public async getDimensionConfigs(dimensionID: nanoid) {
-    return this.models.configs.findOne({ id: dimensionID }).then((config) => {
-      if (config) return config.toObject();
-      return null;
-    });
-
-  }
-  public async storeDimensionConfigs(dimensionID: nanoid, configs: DimensionConfigs) {
-    // perform upsert
-    return this.models.configs.findOneAndUpdate({id: dimensionID}, {id: dimensionID, configs: configs}, {upsert: true});
-  }
-  public async storeTournamentConfigs(
-    tournamentID: nanoid, 
-    configs: Tournament.TournamentConfigsBase,
-    status: Tournament.Status
-  ) {
-    return this.models.configs.findOneAndUpdate(
-      {id: tournamentID}, 
-      {id: tournamentID, configs: configs, status: status}, 
-      {upsert: true}
-    );
-  }
 }
 export module MongoDB {
 
@@ -322,7 +290,6 @@ export module MongoDB {
 
   export interface Models {
     user: mongoose.Model<mongoose.Document, {}>,
-    match: mongoose.Model<mongoose.Document, {}>,
-    configs: mongoose.Model<mongoose.Document, {}>
+    match: mongoose.Model<mongoose.Document, {}>
   }
 }
