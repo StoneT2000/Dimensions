@@ -29,7 +29,6 @@ export class Ladder extends Tournament {
     type: TournamentType.LADDER,
     rankSystem: null,
     rankSystemConfigs: null,
-    addDatabasePlayers: true,
     tournamentConfigs: {
       maxConcurrentMatches: 1,
       endDate: null,
@@ -111,12 +110,9 @@ export class Ladder extends Tournament {
         this.initialAddPlayerPromises.push(this.addplayer(file, file.existingID));
       }
     });
-    if (this.configs.addDatabasePlayers) {
-      this.initialAddPlayerPromises.push(this.addExistingDatabasePlayers());
-    }
 
     this.status = TournamentStatus.INITIALIZED;
-    
+
     this.log.info('Initialized Ladder Tournament');
   }
   public getConfigs(): Tournament.TournamentConfigs<LadderConfigs> {
@@ -226,31 +222,31 @@ export class Ladder extends Tournament {
     }
     let updatePromises: Array<Promise<void>> = [];
 
-    this.competitors.forEach((player) => {
-      const resetPlayer = async (player) => {
-        let stats = this.state.playerStats.get(player.tournamentID.id);
+    let playerStatsList: Array<Ladder.PlayerStat> = [];
+    let userList: Array<Database.User> = [];
+    if (this.dimension.hasDatabase()) {
+      userList = (await this.dimension.databasePlugin.getUsersInTournament(this.getKeyName()));
+      playerStatsList = userList.map((user) => user.statistics[this.getKeyName()]);
+      
+      // add anonymous users
+      playerStatsList.push(...(Array.from(this.state.playerStats.values())));
+    }
+    else {
+      playerStatsList = Array.from(this.state.playerStats.values());
+    }
+
+    playerStatsList.forEach((stats, i) => {
+      const resetPlayer = async () => {
         switch (this.configs.rankSystem) {
           case RankSystem.TRUESKILL:
             stats.matchesPlayed = 0;
             let trueskillConfigs: RankSystem.TRUESKILL.Configs = this.configs.rankSystemConfigs;
 
             (<RankSystem.TRUESKILL.RankState>stats.rankState) = {
-              rating: new Rating(trueskillConfigs.initialMu, trueskillConfigs.initialSigma),
-              toJSON: () => {
-                let rating = this.state.playerStats.get(player.tournamentID.id).rankState.rating
-                return {
-                  rating: {...rating,
-                    mu: rating.mu,
-                    sigma: rating.sigma
-                  }
-                }
-              }
+              rating: new Rating(trueskillConfigs.initialMu, trueskillConfigs.initialSigma)
             }
             if (this.dimension.hasDatabase()) {
-              if (!player.anonymous) {
-                let user = await this.dimension.databasePlugin.getUser(player.tournamentID.id);
-                this.updateDatabaseTrueskillPlayerStats(stats, user);
-              }
+              this.updateDatabaseTrueskillPlayerStats(stats, userList[i]);
             }
             break;
           case RankSystem.ELO:
@@ -259,16 +255,13 @@ export class Ladder extends Tournament {
               rating: this.elo.createRating()
             }
             if (this.dimension.hasDatabase()) {
-              if (!player.anonymous) {
-                let user = await this.dimension.databasePlugin.getUser(player.tournamentID.id);
-                this.updateDatabaseELOPlayerStats(stats, user);
-              }
+              this.updateDatabaseELOPlayerStats(stats, userList[i]);
             }
             break;
         }
         
       }
-      updatePromises.push(resetPlayer(player));
+      updatePromises.push(resetPlayer());
     });
     await Promise.all(updatePromises);
   }
@@ -316,7 +309,7 @@ export class Ladder extends Tournament {
     if (this.configs.tournamentConfigs.endDate) { 
       let currDate = new Date();
       if (currDate.getTime() > this.configs.tournamentConfigs.endDate.getTime()) {
-        this.log.info('Reached past Tournament marked End Date, shutting down tournament and returning final results')
+        this.log.info('Reached past Tournament marked End Date, shutting down tournament...')
         // stop the tournament
         this.stop();
         return;
@@ -473,20 +466,9 @@ export class Ladder extends Tournament {
         // if there are stats
         if (user.statistics) {
           playerStat = user.statistics[keyName];
-
-          // if there was a player stat stored before, fix up rankState to have the toJSON function
           if (playerStat) {
             playerStat.rankState = {
-              rating: new Rating(playerStat.rankState.rating.mu, playerStat.rankState.rating.sigma),
-              toJSON: () => {
-                let rating = this.state.playerStats.get(player.tournamentID.id).rankState.rating
-                return {
-                  rating: {...rating,
-                    mu: rating.mu,
-                    sigma: rating.sigma
-                  }
-                }
-              }
+              rating: new Rating(playerStat.rankState.rating.mu, playerStat.rankState.rating.sigma)
             }
             // make sure its referenced to right player object still
             playerStat.player = player;
@@ -504,22 +486,16 @@ export class Ladder extends Tournament {
         losses: 0,
         matchesPlayed: 0,
         rankState: {
-          rating: new Rating(trueskillConfigs.initialMu, trueskillConfigs.initialSigma),
-          toJSON: () => {
-            let rating = this.state.playerStats.get(player.tournamentID.id).rankState.rating
-            return {
-              rating: {...rating,
-                mu: rating.mu,
-                sigma: rating.sigma
-              }
-            }
-          }
+          rating: new Rating(trueskillConfigs.initialMu, trueskillConfigs.initialSigma)
         }
       }
       this.updateDatabaseTrueskillPlayerStats(playerStat, user);
     }
 
-    this.state.playerStats.set(player.tournamentID.id, playerStat);
+    // only store locally if not in DB
+    if (!user) {
+      this.state.playerStats.set(player.tournamentID.id, playerStat);
+    }
   }
 
   private async initializeELOPlayerStats(player: Player) {
@@ -558,8 +534,17 @@ export class Ladder extends Tournament {
       }
     }
 
-    this.state.playerStats.set(player.tournamentID.id, playerStat);
+    // only store locally if not in DB
+    if (!user) {
+      this.state.playerStats.set(player.tournamentID.id, playerStat);
+    }
   }
+
+  /**
+   * Initialize competition with local competitors given and store player stats locally
+   * 
+   * Does not read in any DB players
+   */
   async initialize() {
     
     // wait for all players to add in.
@@ -594,8 +579,9 @@ export class Ladder extends Tournament {
    * If a {@link Ladder.Configs.matchMake | matchMake} function is provided, that will be used instead of the default.
    */
   private async schedule() {
+    let rankings = await this.getRankings(0, -1);
     if (this.configs.tournamentConfigs.matchMake) {
-      let newMatches = this.configs.tournamentConfigs.matchMake(Array.from(this.state.playerStats.values()));
+      let newMatches = this.configs.tournamentConfigs.matchMake(rankings);
       this.matchQueue.push(...newMatches);
       return;
     }
@@ -603,7 +589,7 @@ export class Ladder extends Tournament {
     // runs a round of scheduling
     // for every player, we schedule a match
     // TODO: For scalability, getrankings should handle just a subset at a time in order to not load too much at once.
-    let rankings = await this.getRankings(0, -1);
+    
     let sortedPlayers = rankings.map((p) => p.player);
     let newQueue = [];
     rankings.forEach((playerStat, rank) => {
@@ -653,8 +639,9 @@ export class Ladder extends Tournament {
     }
   }
 
+  // should be called only for DB users
   async updatePlayer(player: Player, oldname: string, oldfile: string) {
-    let playerStats = this.state.playerStats.get(player.tournamentID.id);
+    let playerStats = <Ladder.PlayerStat>(await this.getPlayerStat(player.tournamentID.id));
     playerStats.player = player;
     playerStats.matchesPlayed = 0;
     playerStats.losses = 0;
@@ -716,7 +703,8 @@ export class Ladder extends Tournament {
    * @param playerID 
    */
   async internalRemovePlayer(playerID: nanoid) {
-    if (this.state.playerStats.has(playerID)) {
+    if (this.getPlayerStat(playerID)) {
+      
       this.playersToRemove.add(playerID);
       this.removePlayersSafely();
     }
@@ -729,8 +717,8 @@ export class Ladder extends Tournament {
    * @param playerID 
    */
   private async _internalRemovePlayer(playerID: nanoid) {
-    if (this.state.playerStats.has(playerID)) {
-      // let playerStats = this.state.playerStats.get(playerID);
+    let stat = this.getPlayerStat(playerID);
+    if (stat) {
       this.state.playerStats.delete(playerID);
       this.log.info('Removed player ' + playerID);
       if (this.dimension.hasDatabase()) {
@@ -802,10 +790,7 @@ export class Ladder extends Tournament {
   private checkMatchIntegrity(matchInfo: Array<Player>) {
     for (let i = 0; i < matchInfo.length; i++) {
       let player = matchInfo[i];
-      if (!this.competitors.has(player.tournamentID.id)) {
-        return false;
-      }
-      if (this.competitors.get(player.tournamentID.id).locked) {
+      if (!this.getPlayerStat(player.tournamentID.id)) {
         return false;
       }
     }
@@ -853,7 +838,7 @@ export class Ladder extends Tournament {
     let matchRes: {results: any, match: Match, err?: any};
     matchRes = await this.runMatch(matchInfo);
     if (matchRes.err) {
-      this.log.error(`Match couldn't run, aborting`, matchRes.err);
+      this.log.error(`Match ${matchRes.match.id} couldn't run, aborting...`, matchRes.err);
       matchInfo.forEach((player) => {
         player.activeMatchCount--;
       });
@@ -899,6 +884,35 @@ export class Ladder extends Tournament {
     this.removePlayersSafely();
   }
 
+  /**
+   * Update player stats for whoever stats owns this. Determined by checking the player field of 
+   * {@link Ladder.PlayerStat}
+   */
+  private async updatePlayerStat(currentStats: Ladder.PlayerStat) {
+    // store locally if not in db
+    if (currentStats.player.anonymous) {
+      this.state.playerStats.set(currentStats.player.tournamentID.id, currentStats);
+    }
+    else {
+      try {
+        let user = await this.dimension.databasePlugin.getUser(currentStats.player.tournamentID.id)
+        if (user) {
+          switch(this.configs.rankSystem) {
+            case RankSystem.TRUESKILL:
+              this.updateDatabaseTrueskillPlayerStats(currentStats, user);
+              break;
+            case RankSystem.ELO:
+              this.updateDatabaseELOPlayerStats(currentStats, user);
+              break;
+          }
+        }
+      }
+      catch (err){
+        // don't stop tourney if this happens
+        this.log.error(`Issue with using database`, err);
+      };
+    } 
+  }
 
   /**
    * Handles match results.
@@ -922,19 +936,12 @@ export class Ladder extends Tournament {
     result.ranks.forEach((rank) => {
       const fetchRating = async () => {
         let tournamentID = mapAgentIDtoTournamentID.get(rank.agentID);
-        let player = this.state.playerStats.get(tournamentID.id).player;
+        
         /** 
          * Future TODO: Acquire and release locks on an DB entry. 
          * realistically only matters if DB is slow or many matches run with a player 
          */
-        let currentplayerStats: Ladder.PlayerStat;
-        // use DB stored stats
-        if (this.dimension.hasDatabase() && !player.anonymous) {
-          let user = await this.dimension.databasePlugin.getUser(player.tournamentID.id);
-          currentplayerStats = user.statistics[this.getKeyName()];
-        } else {
-          currentplayerStats = this.state.playerStats.get(tournamentID.id);
-        }
+        let currentplayerStats = <Ladder.PlayerStat>(await this.getPlayerStat(tournamentID.id));
 
         currentplayerStats.matchesPlayed++;
 
@@ -949,36 +956,22 @@ export class Ladder extends Tournament {
     await Promise.all(fetchingRatings);
 
     let newRatings = rate(playerRatings, ranks);
+    let updatePlayerStatsPromises: Array<Promise<void>> = [];
     tourneyIDs.forEach((info, i) => {
-      let tourneyID = info.id.id;
-      let currentStats = info.stats;
-      (<RankSystem.TRUESKILL.RankState>currentStats.rankState).rating = newRatings[i][0];
-      this.state.playerStats.set(tourneyID, currentStats);
+      const updateStat = async () => {
+        let currentStats: Ladder.PlayerStat = info.stats;
+        (<RankSystem.TRUESKILL.RankState>currentStats.rankState).rating = newRatings[i][0];
+        // store locally if not in db
+        this.updatePlayerStat(currentStats);
+      }
+      updatePlayerStatsPromises.push(updateStat());
     });
     
+    await Promise.all(updatePlayerStatsPromises);
 
     if (this.configs.consoleDisplay) {
       await this.printTournamentStatus();
     }
-
-    // TODO: Possibly minor race condition here. Might be that this update is outdated and may overwrite much more new 
-    // data
-    tourneyIDs.forEach((info, i) => {
-      let tourneyID = info.id.id;
-      let playerStat = this.state.playerStats.get(tourneyID);
-      let player = playerStat.player;
-      if (!player.anonymous) {
-        this.dimension.databasePlugin.getUser(player.tournamentID.id).then((user) => {
-          if (user) {
-            this.updateDatabaseTrueskillPlayerStats(playerStat, user);
-          }
-        }).catch((err: Error) => {
-          // don't stop tourney if this happens
-          this.log.error(`Issue with using database`, err);
-        });
-      }
-      
-    });
     
   }
 
@@ -994,15 +987,7 @@ export class Ladder extends Tournament {
     result.ranks.forEach((rankInfo) => {
       const fetchRating = async () => {
         let tournamentID = mapAgentIDtoTournamentID.get(rankInfo.agentID);
-        let player = this.state.playerStats.get(tournamentID.id).player;
-        let currentplayerStats: Ladder.PlayerStat;
-        // use DB stored stats
-        if (this.dimension.hasDatabase() && !player.anonymous) {
-          let user = await this.dimension.databasePlugin.getUser(player.tournamentID.id);
-          currentplayerStats = user.statistics[this.getKeyName()];
-        } else {
-          currentplayerStats = this.state.playerStats.get(tournamentID.id);
-        }
+        let currentplayerStats = <Ladder.PlayerStat>(await this.getPlayerStat(tournamentID.id));
         currentplayerStats.matchesPlayed++;
         let currRankState = <RankSystem.ELO.RankState>currentplayerStats.rankState;
         ratingsToChange.push(currRankState.rating);
@@ -1017,30 +1002,23 @@ export class Ladder extends Tournament {
     // re adjust rankings
     this.elo.rate(ratingsToChange, ranks);
 
-    if (this.configs.consoleDisplay) {
-      await this.printTournamentStatus();
-      console.log();
-    }
+    
 
+    let updatePlayerStatsPromises: Array<Promise<void>> = [];
     // update database if needed and store play stats
     tourneyIDs.forEach((info, i) => {
-      
-      let tourneyID = info.id.id;
-      this.state.playerStats.set(tourneyID, info.stats);
-      let playerStat = this.state.playerStats.get(tourneyID);
-      let player = playerStat.player;
-      if (!player.anonymous) {
-        this.dimension.databasePlugin.getUser(player.tournamentID.id).then((user) => {
-          if (user) {
-            this.updateDatabaseELOPlayerStats(playerStat, user);
-          }
-        }).catch((err: Error) => {
-          // don't stop tourney if this happens
-          this.log.error(`Issue with using database`, err);
-        });
+      const updateStat = async () => {
+        let tourneyID = info.id.id;
+        let currentStats = <Ladder.PlayerStat>(await this.getPlayerStat(tourneyID));
+        updatePlayerStatsPromises.push(this.updatePlayerStat(currentStats));
       }
-      
+      updatePlayerStatsPromises.push(updateStat());
     });
+    await Promise.all(updatePlayerStatsPromises);
+
+    if (this.configs.consoleDisplay) {
+      await this.printTournamentStatus();
+    }
   }
 }
 
@@ -1105,11 +1083,8 @@ export namespace Ladder {
   /**
    * Player stat interface for ladder tournaments
    */
-  export interface PlayerStat {
-    /**
-     * the player the stats are for
-     */
-    player: Player, 
+  export interface PlayerStat extends Tournament.PlayerStatBase {
+
     wins: number, 
     ties: number, 
     losses: number, 

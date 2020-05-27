@@ -12,14 +12,13 @@ import { Dimension, NanoID } from "../../Dimension";
 /**
  * The Round Robin Tournament Class
  * 
- * Only supports two agent matches at the moment
+ * Only supports two agent matches at the moment and is meant for single instance use only 
  */
 export class RoundRobin extends Tournament {
   configs: Tournament.TournamentConfigs<Tournament.RoundRobin.Configs> = {
     defaultMatchConfigs: {},
     type: Tournament.Type.ROUND_ROBIN,
     rankSystem: null,
-    addDatabasePlayers: false,
     rankSystemConfigs: null,
     tournamentConfigs: {
       times: 2,
@@ -330,7 +329,7 @@ export class RoundRobin extends Tournament {
       console.log('Total Matches: ' + this.state.statistics.totalMatches);
       let ranks = this.getRankings();
       switch(this.configs.rankSystem) {
-        case RankSystem.WINS:
+        case Tournament.RankSystem.WINS:
           console.log(sprintf(
             `%-20s | %-8s | %-15s | %-6s | %-6s | %-8s | %-8s`.underline, 'Name', 'ID', 'Score', 'Wins', 'Ties', 'Losses', 'Matches'));
           ranks.forEach((info) => {

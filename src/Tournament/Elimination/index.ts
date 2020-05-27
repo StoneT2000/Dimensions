@@ -13,13 +13,14 @@ import { RankSystem } from "../RankSystem";
 
 /**
  * The Elimination Tournament Class. Runs a single-elimination tournament.
+ * 
+ * Meant for single instance use only
  */
 export class Elimination extends Tournament {
   configs: Tournament.TournamentConfigs<EliminationConfigs> = {
     defaultMatchConfigs: {},
     type: Tournament.Type.ELIMINATION,
     rankSystem: null,
-    addDatabasePlayers: false,
     rankSystemConfigs: null,
     tournamentConfigs: {
       times: 1,

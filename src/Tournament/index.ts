@@ -36,11 +36,6 @@ export class Player {
    */
   public activeMatchCount: number = 0;
 
-  /**
-   * Lock player from playing matches
-   */
-  public locked: boolean = false;
-
   /** Associated username if there is one */
   public username: string = undefined;
 
@@ -55,6 +50,13 @@ export class Player {
   public botkey: string = undefined;
 
   /**
+   * Whether or not this player is disabled and won't be used in in the default match scheduling for 
+   * {@link Tournament.Ladder | Ladder Tournaments}. Is set to true if this player's bot throws an error during 
+   * the initialization stage of a {@link Match}.
+   */
+  public disabled: boolean = false;
+
+  /**
    * Path to the zip file for the bot
    */
   public zipFile: string = undefined;
@@ -62,13 +64,6 @@ export class Player {
   constructor(public tournamentID: Tournament.ID, public file: string, zipFile: string, botkey?: string) {
     this.botkey = botkey;
     this.zipFile = zipFile;
-  }
-
-  lock() {
-    this.locked = true;
-  }
-  unlock() {
-    this.locked = false;
   }
 
   /**
@@ -82,7 +77,12 @@ export class Player {
 
 /**
  * The tournament class and module extended by all concrete Tournament Classes. Tournament Types available now are
- * {@link RoundRobin}, {@link Ladder}, {@link Elimination}
+ * {@link RoundRobin}, {@link Ladder}, {@link Elimination}. A tournament is composed of players, which can either be 
+ * all locally stored, or a split between locally stored anonymous players and database stored user owned players.
+ * 
+ * Notes: `this.competitors` map is used when no DB is used. When a DB is used, locally stored players are only in
+ * `this.anonymousCompetitors` and other players are pulled from DB. Hence, a lot of code requires checking if database
+ * exists and if so, pull from there and the anonymous competitors map, other wise use this.state or this.competitors
  */
 export abstract class Tournament {
 
@@ -173,18 +173,17 @@ export abstract class Tournament {
   public async addplayer(file: string | {file: string, name: string, zipFile?: string, botdir?: string, botkey?: string}, existingID?: NanoID): Promise<Player> {
     let id: NanoID;
     if (existingID) {
-    
-      if (this.competitors.has(existingID)) {
-        // bot exists in tournament already
-        
-        let player = this.competitors.get(existingID);
+      let playerStat = await this.getPlayerStat(existingID);
+      if (playerStat) {
+        // bot has stats in tournament already
+        let player = playerStat.player
         let oldname = player.tournamentID.name;
         let oldfile = player.file;
         // remove the oldfile
         if (player.botDirPath) {
-          player.lock();
+          // player.lock();
           removeDirectorySync(player.botDirPath);
-          player.unlock();
+          // player.unlock();
         }
         if (typeof file === 'string') {
           player.file = file;
@@ -225,8 +224,13 @@ export abstract class Tournament {
           newPlayer.anonymous = false;
           newPlayer.username = user.username;
         }
+        else {
+          this.competitors.set(id, newPlayer);
+        }
       }
-      this.competitors.set(id, newPlayer);
+      else {
+        this.competitors.set(id, newPlayer);
+      }
 
       if (newPlayer.anonymous) {
         this.anonymousCompetitors.set(id, newPlayer);
@@ -247,9 +251,14 @@ export abstract class Tournament {
           newPlayer.anonymous = false;
           newPlayer.username = user.username;
         }
+        else {
+          this.competitors.set(id, newPlayer);
+        }
       }
-
-      this.competitors.set(id, newPlayer);
+      else {
+        this.competitors.set(id, newPlayer);
+      }
+      
       
       if (newPlayer.anonymous) {
         this.anonymousCompetitors.set(id, newPlayer);
@@ -257,30 +266,6 @@ export abstract class Tournament {
 
       this.internalAddPlayer(newPlayer);
       return newPlayer;
-    }
-  }
-
-  /**
-   * Adds existing database players
-   * 
-   * This is always needed when running a tournament on a single server
-   */
-  protected async addExistingDatabasePlayers(): Promise<void> {
-    if (this.dimension.hasDatabase()) {
-      return this.dimension.databasePlugin.getUsersInTournament(this.getKeyName()).then((users) => {
-        users.forEach((user) => {
-
-          let p: Player = user.statistics[this.getKeyName()].player;
-          // use existing id, name, and *FILE*
-          let newPlayer = new Player({id: p.tournamentID.id, name: p.tournamentID.name}, p.file, p.zipFile, p.botkey);
-          newPlayer.anonymous = false;
-          newPlayer.username = user.username
-          newPlayer.botDirPath = p.botDirPath;
-          this.competitors.set(newPlayer.tournamentID.id, newPlayer);
-          this.internalAddPlayer(newPlayer);
-        });
-        return;
-      });
     }
   }
 
@@ -373,13 +358,14 @@ export abstract class Tournament {
     let matchConfigs = deepCopy(this.getConfigs().defaultMatchConfigs);
     
     let match: Match;
-    let filesAndNamesAndIDs = players.map((player) => {
-      // if player has a botkey, download their bot file and update player.file, otherwise use whats in player.file
+    let filesAndNamesAndIDs: Array<{file: string, tournamentID: Tournament.ID, botkey?: string}> 
+      = players.map((player) => {
+      // if player has a botkey, use that, otherwise use whats in player.file
       return {file: player.file, tournamentID: player.tournamentID, botkey: player.botkey}
     });
-    match = new Match(this.design, <Array<{file: string, tournamentID: Tournament.ID, botkey?: string}>>(filesAndNamesAndIDs), matchConfigs, this.dimension);
+    match = new Match(this.design, filesAndNamesAndIDs, matchConfigs, this.dimension);
 
-    // store match into the tournament
+    // store match into the tournament locally
     this.matches.set(match.id, match);
 
     // Initialize match with initialization configuration
@@ -411,6 +397,7 @@ export abstract class Tournament {
       }
     }
   }
+
   /**
    * Removes a match by id. Returns true if deleted, false if nothing was deleted
    */
@@ -477,6 +464,26 @@ export abstract class Tournament {
   public getKeyName() {
     return `${this.getSafeName()}_${this.id}`;
   }
+
+  /**
+   * Resolves with player stats if player with the id exists. otherwise resolves with null
+   * @param id - id of player to get
+   */
+  public async getPlayerStat(id: nanoid): Promise<Tournament.PlayerStatBase> {
+    if (!this.competitors.has(id)) {
+      if (this.dimension.hasDatabase()) {
+        let user = await this.dimension.databasePlugin.getUser(id);
+        if (user && user.statistics[this.getKeyName()]) {
+          return user.statistics[this.getKeyName()];
+        }
+      }
+    }
+    else {
+      return this.state.playerStats.get(id);
+    }
+    return null;
+  }
+
 }
 
 // some imports moved to here to avoid circular issues with using values
@@ -590,14 +597,12 @@ export module Tournament {
      */
     id?: string
 
-    /**
-     * Auto add all database players with statistics in this tournament (has entered into the tournament at some time)
-     * upon creation of tournament
-     * @default `true` when tournament type is {@link Ladder}. `false` otherwise as it is not supported on 
-     * {@link RoundRobin} and {@link Elimination} variants
-     */
-    addDatabasePlayers?: boolean
   }
+
+  /**
+   * Queued match information, consisting of player IDs of players to compete
+   */
+  export type QueuedMatchInfo = Array<nanoid>
 
   /**
    * Internally used type.
@@ -620,6 +625,11 @@ export module Tournament {
      * Past results stored. Each element is what is returned by {@link Design.getResults}
      */
     results: Array<any>
+
+    /**
+     * Map from player ID to player stats
+     */
+    playerStats: Map<NanoID, PlayerStatBase>
   }
 
   /**
@@ -630,6 +640,11 @@ export module Tournament {
     readonly id: NanoID
     /** A display name */
     name: string
+  }
+
+  export interface PlayerStatBase {
+    player: Player,
+    matchesPlayed: number
   }
 
   // Re-export tournament classes/namespaces
