@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>TournamentTypeState | dimensions-ai</title>
+	<title>PlayerStatBase | dimensions-ai</title>
 	<meta name="description" content="Documentation for dimensions-ai">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -62,10 +62,10 @@
 					<a href="../classes/_tournament_roundrobin_index_.roundrobin.html">RoundRobin</a>
 				</li>
 				<li>
-					<a href="_tournament_roundrobin_index_.roundrobin.tournamenttypestate.html">TournamentTypeState</a>
+					<a href="_tournament_roundrobin_index_.roundrobin.playerstatbase.html">PlayerStatBase</a>
 				</li>
 			</ul>
-			<h1>Interface TournamentTypeState</h1>
+			<h1>Interface PlayerStatBase</h1>
 		</div>
 	</div>
 </header>
@@ -76,7 +76,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">TournamentTypeState</span>
+						<span class="target">PlayerStatBase</span>
 					</li>
 				</ul>
 			</section>
@@ -87,8 +87,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_roundrobin_index_.roundrobin.tournamenttypestate.html#playerstats" class="tsd-kind-icon">player<wbr>Stats</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_roundrobin_index_.roundrobin.tournamenttypestate.html#results" class="tsd-kind-icon">results</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_roundrobin_index_.roundrobin.playerstatbase.html#matchesplayed" class="tsd-kind-icon">matches<wbr>Played</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_roundrobin_index_.roundrobin.playerstatbase.html#player" class="tsd-kind-icon">player</a></li>
 							</ul>
 						</section>
 					</div>
@@ -97,34 +97,24 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="playerstats" class="tsd-anchor"></a>
-					<h3>player<wbr>Stats</h3>
-					<div class="tsd-signature tsd-kind-icon">player<wbr>Stats<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_dimension_index_.html#nanoid" class="tsd-signature-type">NanoID</a><span class="tsd-signature-symbol">, </span><a href="_tournament_ladder_index_.ladder.playerstatbase.html" class="tsd-signature-type">PlayerStatBase</a><span class="tsd-signature-symbol">&gt;</span></div>
+					<a name="matchesplayed" class="tsd-anchor"></a>
+					<h3>matches<wbr>Played</h3>
+					<div class="tsd-signature tsd-kind-icon">matches<wbr>Played<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L662">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L662</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L677">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L677</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Map from player ID to player stats</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="results" class="tsd-anchor"></a>
-					<h3>results</h3>
-					<div class="tsd-signature tsd-kind-icon">results<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<a name="player" class="tsd-anchor"></a>
+					<h3>player</h3>
+					<div class="tsd-signature tsd-kind-icon">player<span class="tsd-signature-symbol">:</span> <a href="../classes/_tournament_index_.player.html" class="tsd-signature-type">Player</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L657">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L657</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L676">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L676</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Past results stored. Each element is what is returned by <a href="../classes/_design_index_.design.html#getresults">Design.getResults</a></p>
-						</div>
-					</div>
 				</section>
 			</section>
 		</div>
@@ -147,13 +137,13 @@
 						<a href="../classes/_tournament_roundrobin_index_.roundrobin.html" class="tsd-kind-icon">Round<wbr>Robin</a>
 						<ul>
 							<li class="current tsd-kind-interface tsd-parent-kind-class">
-								<a href="_tournament_roundrobin_index_.roundrobin.tournamenttypestate.html" class="tsd-kind-icon">Tournament<wbr>Type<wbr>State</a>
+								<a href="_tournament_roundrobin_index_.roundrobin.playerstatbase.html" class="tsd-kind-icon">Player<wbr>Stat<wbr>Base</a>
 								<ul>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="_tournament_roundrobin_index_.roundrobin.tournamenttypestate.html#playerstats" class="tsd-kind-icon">player<wbr>Stats</a>
+										<a href="_tournament_roundrobin_index_.roundrobin.playerstatbase.html#matchesplayed" class="tsd-kind-icon">matches<wbr>Played</a>
 									</li>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="_tournament_roundrobin_index_.roundrobin.tournamenttypestate.html#results" class="tsd-kind-icon">results</a>
+										<a href="_tournament_roundrobin_index_.roundrobin.playerstatbase.html#player" class="tsd-kind-icon">player</a>
 									</li>
 								</ul>
 							</li>
