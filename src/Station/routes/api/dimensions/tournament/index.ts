@@ -120,7 +120,15 @@ router.post('/:tournamentID/stop', requireAdmin, (req: Request, res: Response, n
  */
 router.get('/:tournamentID/ranks', async (req: Request, res: Response, next: NextFunction) => { 
   try {
-    let ranks = await req.data.tournament.getRankings();
+    let ranks = [];
+    let offset = req.query.offset ? req.query.offset : 0;
+    let limit = req.query.limit ? req.query.limit : -1;
+    if (req.data.tournament.configs.type === TournamentType.LADDER) {
+      ranks = await req.data.tournament.getRankings(offset, limit);
+    }
+    else {
+      ranks = await req.data.tournament.getRankings();
+    }
 
     res.json({error: null, ranks: ranks });
   }

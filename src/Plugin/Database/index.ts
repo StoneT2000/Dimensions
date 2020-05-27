@@ -48,8 +48,10 @@ export abstract class Database extends Plugin {
   /**
    * Returns a list of player stats based on their rankings from database. Used for Ladder Tournaments
    * @param tournament - The tournament to retrieve rankings for
+   * @param offset - offset ranking to start retreiving ranks from
+   * @param limit - number of players to retrieve. If -1, retrieve all players past offset rank
    */
-  abstract getRanks(tournament: Tournament.Ladder): Promise<Array<Ladder.PlayerStat>>
+  abstract getRanks(tournament: Tournament.Ladder, offset: number, limit: number): Promise<Array<Ladder.PlayerStat>>
 
   /**
    * Logs in a user, resolves with a JWT (JSON Web Token), rejects otherwise
@@ -62,7 +64,7 @@ export abstract class Database extends Plugin {
    * Registers a user, resolves when succesful, rejects otherwise
    * @param username - username to register with
    * @param password - the password for the user
-   * @param userData - any other kind of user data (not used)
+   * @param userData - any other kind of user data, (e.g email)
    */
   abstract registerUser(username: string, password: string, userData?: any): Promise<any>
 
@@ -96,11 +98,13 @@ export abstract class Database extends Plugin {
 
   /**
    * Gets all users with statistics in a tournament specified by the tournamentKeyName, which is a string that is the 
-   * key stored in the user's statistics property mapping to the tournament's statistics
+   * key stored in the user's statistics property mapping to the tournament's statistics. This is also the number of 
+   * rankings.
    * @param tournamentKeyName 
-   * @param publicView
+   * @param offset - offset of the users
+   * @param limit - how many users to retrieve
    */
-  abstract getUsersInTournament(tournamentKeyName: string): Promise<Array<Database.User>>
+  abstract getUsersInTournament(tournamentKeyName: string, offset: number, limit: number): Promise<Array<Database.User>>
 
   /**
    * Returns true if the user info indicate the user is an admin
