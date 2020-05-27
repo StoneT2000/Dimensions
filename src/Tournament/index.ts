@@ -173,7 +173,7 @@ export abstract class Tournament {
   public async addplayer(file: string | {file: string, name: string, zipFile?: string, botdir?: string, botkey?: string}, existingID?: NanoID): Promise<Player> {
     let id: NanoID;
     if (existingID) {
-      let playerStat = await this.getPlayerStat(existingID);
+      let { playerStat } = await this.getPlayerStat(existingID);
       if (playerStat) {
         // bot has stats in tournament already
         let player = playerStat.player
@@ -323,10 +323,16 @@ export abstract class Tournament {
    * @param playerID - ID of the player to remove
    */
   public async removePlayer(playerID: nanoid) {
-    let playerStat = this.getPlayerStat(playerID);
+    let { user, playerStat } = await this.getPlayerStat(playerID);
     if (playerStat) {
       this.competitors.delete(playerID);
       this.anonymousCompetitors.delete(playerID);
+      // disable player
+      playerStat.player.disabled = true;
+      if (this.dimension.hasDatabase() && user) {
+        
+        await this.dimension.databasePlugin.updateUser(playerID, user)
+      }
       await this.internalRemovePlayer(playerID);
     }
     else {
@@ -469,22 +475,25 @@ export abstract class Tournament {
   }
 
   /**
-   * Resolves with player stats if player with the id exists. otherwise resolves with null
+   * Resolves with player stats if player with the id exists. Includes database user if db contains the player
+   * Fields are null if they don't exist. If playerStat field is null, then this player does not exist
+   * 
    * @param id - id of player to get
    */
-  public async getPlayerStat(id: nanoid): Promise<Tournament.PlayerStatBase> {
-    if (!this.competitors.has(id)) {
+  public async getPlayerStat(id: nanoid): Promise<{user: Database.User, playerStat: Tournament.PlayerStatBase}> {
+    // TODO: Add caching as an option
+    if (!this.state.playerStats.has(id)) {
       if (this.dimension.hasDatabase()) {
         let user = await this.dimension.databasePlugin.getUser(id);
         if (user && user.statistics[this.getKeyName()]) {
-          return user.statistics[this.getKeyName()];
+          return {user: user, playerStat: user.statistics[this.getKeyName()]};
         }
       }
     }
     else {
-      return this.state.playerStats.get(id);
+      return {user: null, playerStat: this.state.playerStats.get(id)};
     }
-    return null;
+    return {user: null, playerStat: null};
   }
 
 }
@@ -501,6 +510,7 @@ import EliminationDefault = require('./Elimination');
 import EliminationTournament = EliminationDefault.Elimination;
 import { nanoid } from '..';
 import { removeDirectory, removeDirectorySync } from '../utils/System';
+import { Database } from '../Plugin/Database';
 
 export module Tournament {
 
