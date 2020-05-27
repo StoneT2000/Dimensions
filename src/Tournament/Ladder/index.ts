@@ -584,10 +584,10 @@ export class Ladder extends Tournament {
     }
 
     // runs a round of scheduling
-    // for every player, we schedule a match
+    // for every not disabled player, we schedule a match
     // TODO: For scalability, getrankings should handle just a subset at a time in order to not load too much at once.
     
-    let sortedPlayers = rankings.map((p) => p.player);
+    let sortedPlayers = rankings.map((p) => p.player).filter((p) => !p.disabled);
     let newQueue = [];
     rankings.forEach((playerStat, rank) => {
       let player = playerStat.player;
@@ -728,7 +728,7 @@ export class Ladder extends Tournament {
             `%-30s | %-14s | %-15s | %-18s | %-8s`.underline, 'Name', 'ID', 'Score=(μ - 3σ)', 'Mu: μ, Sigma: σ', 'Matches'));
           ranks.forEach((info) => {
             console.log(sprintf(
-              `%-30s`.blue+ ` | %-14s | ` + `%-15s`.green + ` | ` + `μ=%-6s, σ=%-6s`.yellow +` | %-8s`, info.player.tournamentID.name, info.player.tournamentID.id, (info.rankState.rating.mu - info.rankState.rating.sigma * 3).toFixed(7), info.rankState.rating.mu.toFixed(3), info.rankState.rating.sigma.toFixed(3), info.matchesPlayed));
+              `%-30s`.blue+ ` | %-14s | ` + `%-15s`.green + ` | ` + `μ=%-6s, σ=%-6s`.yellow +` | %-8s`, info.player.tournamentID.name + (info.player.disabled ? ' X': ''), info.player.tournamentID.id, (info.rankState.rating.mu - info.rankState.rating.sigma * 3).toFixed(7), info.rankState.rating.mu.toFixed(3), info.rankState.rating.sigma.toFixed(3), info.matchesPlayed));
           });
           break;
         case RankSystem.ELO:

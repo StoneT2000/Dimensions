@@ -172,6 +172,10 @@ export abstract class Tournament {
       if (playerStat) {
         // bot has stats in tournament already
         let player = playerStat.player
+        
+        // undisable the player
+        player.disabled = false;
+        
         let oldname = player.tournamentID.name;
         let oldfile = player.file;
         // remove the oldfile
