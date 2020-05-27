@@ -1,3 +1,5 @@
+import { nanoid } from "../..";
+
 const AGENT_ERROR = 'AgentError';
 const AGENT_INSTALL_ERROR = 'AgentInstallError';
 const AGENT_INSTALL_TIMEOUT_ERROR = 'AgentInstallTimeoutError';
@@ -13,9 +15,15 @@ const AGENT_MISSING_ID_ERROR = 'AgentMissingIDError';
 /**
  * Any errors thrown by the {@link Agent} class
  */
-export class AgentError extends Error{
-  constructor(m: string) {
+export class AgentError extends Error {
+  /**
+   * The id of the {@link Agent} that caused the error. If it is -1, then there is no one specific 
+   * agent that caused the agent error
+   */
+  public agentID = -1;
+  constructor(m: string, agentID: number) {
     super(m);
+    this.agentID = agentID;
     this.name = AGENT_ERROR;
     Object.setPrototypeOf(this, AgentError.prototype);
   }
@@ -26,8 +34,8 @@ export class AgentError extends Error{
  * provided to run any necessary installation to setup the bot
  */
 export class AgentInstallError extends AgentError {
-  constructor(m: string) {
-    super(m);
+  constructor(m: string, agentID: number) {
+    super(m, agentID);
     this.name = AGENT_INSTALL_ERROR;
     Object.setPrototypeOf(this, AgentInstallError.prototype);
   }
@@ -37,8 +45,8 @@ export class AgentInstallError extends AgentError {
  * An error thrown when an Agent's install step times out
  */
 export class AgentInstallTimeoutError extends AgentInstallError {
-  constructor(m: string) {
-    super(m);
+  constructor(m: string, agentID: number) {
+    super(m, agentID);
     this.name = AGENT_INSTALL_TIMEOUT_ERROR;
     Object.setPrototypeOf(this, AgentInstallTimeoutError.prototype);
   }
@@ -50,8 +58,8 @@ export class AgentInstallTimeoutError extends AgentInstallError {
  */
 
 export class AgentCompileError extends AgentError {
-  constructor(m: string) {
-    super(m);
+  constructor(m: string, agentID: number) {
+    super(m, agentID);
     this.name = AGENT_COMPILE_ERROR;
     Object.setPrototypeOf(this, AgentCompileError.prototype);
   }
@@ -60,8 +68,8 @@ export class AgentCompileError extends AgentError {
  * An error thrown when an Agent's compile step times out
  */
 export class AgentCompileTimeoutError extends AgentCompileError {
-  constructor(m: string) {
-    super(m);
+  constructor(m: string, agentID: number) {
+    super(m, agentID);
     this.name = AGENT_COMPILE_TIMEOUT_ERROR;
     Object.setPrototypeOf(this, AgentCompileTimeoutError.prototype);
   }
@@ -71,8 +79,8 @@ export class AgentCompileTimeoutError extends AgentCompileError {
  * An error thrown when an Agent is supplied with an invalid file
  */
 export class AgentFileError extends AgentError {
-  constructor(m: string) {
-    super(m);
+  constructor(m: string, agentID: number) {
+    super(m, agentID);
     this.name = AGENT_FILE_ERROR;
     Object.setPrototypeOf(this, AgentFileError.prototype);
   }
@@ -82,8 +90,8 @@ export class AgentFileError extends AgentError {
  * An error thrown when an Agent is supplied with an invalid file
  */
 export class AgentDirectoryError extends AgentError {
-  constructor(m: string) {
-    super(m);
+  constructor(m: string, agentID: number) {
+    super(m, agentID);
     this.name = AGENT_DIRECTORY_ERROR;
     Object.setPrototypeOf(this, AgentDirectoryError.prototype);
   }
@@ -93,8 +101,8 @@ export class AgentDirectoryError extends AgentError {
  * An error thrown when an id is not provided to an Agent in the constructor
  */
 export class AgentMissingIDError extends AgentError {
-  constructor(m: string) {
-    super(m);
+  constructor(m: string, agentID: number) {
+    super(m, agentID);
     this.name = AGENT_MISSING_ID_ERROR;
     Object.setPrototypeOf(this, AgentMissingIDError.prototype);
   }
