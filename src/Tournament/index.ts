@@ -315,6 +315,11 @@ export abstract class Tournament {
    */
   abstract async updatePlayer(player: Player, oldname: string, oldfile: string): Promise<void>;
 
+
+  public async disablePlayer(playerID: nanoid) {
+    
+  }
+
   /**
    * Removes the competitor/player with id `playerID` (a {@link nanoid}). Resolves if succesful, otherwise rejects if
    * player doesn't exist or couldn't be removed

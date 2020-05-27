@@ -197,8 +197,13 @@ export class Match {
   }
 
   /**
-   * Initializes this match using its configurations and using the {@link Design.initialize} function
-   * @returns a promise that resolves true/false if initialized correctly
+   * Initializes this match using its configurations and using the {@link Design.initialize} function. This can
+   * throw error with agent generation, design initialization, or with engine initialization. In engine initialization,
+   * errors that can be thrown can be {@link AgentCompileError | AgentCompileErrors}, 
+   * {@link AgentInstallError | AgentInstallErrors}, etc.
+   * 
+   * 
+   * @returns a promise that resolves true if initialized correctly
    */
   public async initialize(): Promise<boolean> {
     this.log.infobar();

@@ -2,7 +2,7 @@ import { Tournament, Player } from "..";
 import { DeepPartial } from "../../utils/DeepPartial";
 import { Design } from '../../Design';
 import { deepMerge } from "../../utils/DeepMerge";
-import { MatchDestroyedError, TournamentError, NotSupportedError, TournamentPlayerDoesNotExistError, AgentFileError } from "../../DimensionError";
+import { MatchDestroyedError, TournamentError, NotSupportedError, TournamentPlayerDoesNotExistError, AgentFileError, AgentCompileError, AgentInstallError } from "../../DimensionError";
 import { Agent } from "../../Agent";
 import { Rating, rate, quality, TrueSkill } from "ts-trueskill";
 import { sprintf } from 'sprintf-js';
@@ -801,8 +801,17 @@ export class Ladder extends Tournament {
     let matchRes: {results: any, match: Match, err?: any};
     matchRes = await this.runMatch(matchInfo);
     if (matchRes.err) {
-      this.log.error(`Match ${matchRes.match.id} couldn't run, aborting...`, matchRes.err);
+      if (matchRes.err instanceof AgentCompileError) {
+        
+      }
+      else if (matchRes.err instanceof AgentInstallError) {
 
+      }
+      this.log.error(`Match couldn't run, aborting`, matchRes.err);
+      matchInfo.forEach((player) => {
+        player.activeMatchCount--;
+      });
+      this.removePlayersSafely();
       // remove the match from the active matches list
       this.matches.delete(matchRes.match.id);
       return;
