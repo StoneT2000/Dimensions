@@ -225,7 +225,8 @@ export class Ladder extends Tournament {
     let playerStatsList: Array<Ladder.PlayerStat> = [];
     let userList: Array<Database.User> = [];
     if (this.dimension.hasDatabase()) {
-      userList = (await this.dimension.databasePlugin.getUsersInTournament(this.getKeyName()));
+      // get every user
+      userList = (await this.dimension.databasePlugin.getUsersInTournament(this.getKeyName(), 0, -1));
       playerStatsList = userList.map((user) => user.statistics[this.getKeyName()]);
       
       // add anonymous users
@@ -703,6 +704,7 @@ export class Ladder extends Tournament {
    * @param playerID 
    */
   async internalRemovePlayer(playerID: nanoid) {
+    // TODO: we sometimes do a redudant call to get player stats when we really just need to check for existence
     if (this.getPlayerStat(playerID)) {
       
       this.playersToRemove.add(playerID);

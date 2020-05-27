@@ -323,7 +323,10 @@ export abstract class Tournament {
    * @param playerID - ID of the player to remove
    */
   public async removePlayer(playerID: nanoid) {
-    if (this.competitors.delete(playerID)) {
+    let playerStat = this.getPlayerStat(playerID);
+    if (playerStat) {
+      this.competitors.delete(playerID);
+      this.anonymousCompetitors.delete(playerID);
       await this.internalRemovePlayer(playerID);
     }
     else {

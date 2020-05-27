@@ -101,9 +101,10 @@ export abstract class Database extends Plugin {
    * key stored in the user's statistics property mapping to the tournament's statistics. This is also the number of 
    * rankings.
    * @param tournamentKeyName 
-   * @param publicView
+   * @param offset - offset of the users
+   * @param limit - how many users to retrieve
    */
-  abstract getUsersInTournament(tournamentKeyName: string): Promise<Array<Database.User>>
+  abstract getUsersInTournament(tournamentKeyName: string, offset: number, limit: number): Promise<Array<Database.User>>
 
   /**
    * Returns true if the user info indicate the user is an admin

@@ -269,9 +269,15 @@ export class MongoDB extends Database {
     return false;
   }
 
-  public async getUsersInTournament(tournamentKey: string) {
+  public async getUsersInTournament(tournamentKey: string, offset: number = 0, limit: number = -1) {
     let key = `statistics.${tournamentKey}`;
-    return this.models.user.find({ [key]: {$exists: true}}).then((users) => {
+    if (limit == -1) {
+      limit = 0;
+    }
+    else if (limit == 0) {
+      return [];
+    }
+    return this.models.user.find({ [key]: {$exists: true} }).skip(offset).limit(limit).then((users) => {
       let mapped = users.map(user => user.toObject());
       return mapped;
     });
