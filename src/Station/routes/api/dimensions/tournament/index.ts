@@ -106,12 +106,12 @@ router.post('/:tournamentID/configs', requireAdmin, async (req: Request, res: Re
  */
 router.post('/:tournamentID/run', requireAdmin, (req: Request, res: Response, next: NextFunction) => {
   if (req.data.tournament.status === Tournament.Status.INITIALIZED) {
-    req.data.tournament.run().then(() => {
+    req.data.tournament.run({}, true).then(() => {
       res.json({error: null, msg:'Running Tournament'});
     }).catch(next);
   }
   else if (req.data.tournament.status === Tournament.Status.STOPPED) {
-    req.data.tournament.resume().then(() => {
+    req.data.tournament.resume(true).then(() => {
       res.json({error: null, msg:'Running Tournament'});
     }).catch(next);
   }
@@ -132,7 +132,7 @@ router.post('/:tournamentID/stop', requireAdmin, (req: Request, res: Response, n
     return next(new error.BadRequest(`Can't stop a tournament that isn't running`));
   }
   // stop the tournament
-  req.data.tournament.stop().then(() => {
+  req.data.tournament.stop(true).then(() => {
     res.json({error: null, msg:'Stopped Tournament'})
   }).catch(next);
 });

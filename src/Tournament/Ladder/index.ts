@@ -72,7 +72,7 @@ export class Ladder extends Tournament {
   /**
    * Last modification date of configs
    */
-  private configLastModificationDate = null;
+  private configLastModificationDate = new Date(0);
 
 
   // queue of the results to process
@@ -130,12 +130,13 @@ export class Ladder extends Tournament {
     
     // setup config syncing if DB is enabled and store configs if not stored already
     if (this.dimension.hasDatabase()) {
+      this.syncConfigs();
       this.setupConfigSyncInterval();
       this.dimension.databasePlugin.getTournamentConfigs(this.id).then((data) => {
         if (!data) {
           this.configLastModificationDate = new Date();
           this.dimension.databasePlugin.storeTournamentConfigs(this.id, this.configs, this.status).then(() => {
-            this.log.info('Storing initial tournament configuration data');
+            this.log.error('Storing initial tournament configuration data');
           })
         }
       });
@@ -149,21 +150,29 @@ export class Ladder extends Tournament {
    */
   private async syncConfigs() {
     let modDate = await this.dimension.databasePlugin.getTournamentConfigsModificationDate(this.id);
-    if (modDate && !this.configLastModificationDate) {
-      this.configLastModificationDate = modDate;
-    }
+    
+    // if modDate exists, and mod date is past the last mode date.
     if (modDate && modDate.getTime() > this.configLastModificationDate.getTime()) {
       let { configs, status } = await this.dimension.databasePlugin.getTournamentConfigs(this.id);
       this.log.info(`Received new configurations, mod date - ${modDate}`);
       this.log.detail(configs);
       this.configLastModificationDate = modDate;
       this.configs = deepMerge(this.configs, configs);
+
+      // update status and run/stop/resume tourney as needed
       if (status !== this.status) {
         if (status === Tournament.Status.STOPPED) {
-          this.stop();
+          if (this.status === Tournament.Status.RUNNING) {
+            this.stop();
+          }
         }
         else if (status === Tournament.Status.RUNNING) {
-          this.run();
+          if (this.status === Tournament.Status.INITIALIZED) {
+            this.run();
+          }
+          else if (this.status === Tournament.Status.STOPPED) {
+            this.resume();
+          }
         }
       }
     }
@@ -182,7 +191,7 @@ export class Ladder extends Tournament {
   }
 
   /**
-   * Set tournament status and updates DB
+   * Set tournament status and updates DB / propagates the message to every other tournament instance
    */
   public async setStatus(status: Tournament.Status) {
     if (this.dimension.hasDatabase()) {
@@ -195,7 +204,7 @@ export class Ladder extends Tournament {
     }
   }
   /**
-   * Sets configs and updates DB
+   * Sets configs and updates DB / propagates the message to every other tournament instance
    */
   public async setConfigs(configs: DeepPartial<Tournament.TournamentConfigs<LadderConfigs>> = {}) {
     if (configs.id) {
@@ -366,25 +375,37 @@ export class Ladder extends Tournament {
 
   /**
    * Stops the tournament if it was running.
+   * @param master - whether or not the instance calling stop was the first one, the "master" instance
    */
-  public async stop() {
+  public async stop(master = false) {
     if (this.status !== TournamentStatus.RUNNING) {
       throw new TournamentError(`Can't stop a tournament that isn't running`);
     }
     this.log.info('Stopping Tournament...');
     clearInterval(this.runInterval);
-    await this.setStatus(TournamentStatus.STOPPED);
+    if (master) {
+      await this.setStatus(TournamentStatus.STOPPED);
+    }
+    else {
+      this.status = TournamentStatus.STOPPED;
+    }
   }
   
   /**
    * Resumes the tournament if it was stopped.
+   * @param master - whether or not the instance calling stop was the first one, the "master" instance
    */
-  public async resume() {
+  public async resume(master = false) {
     if (this.status !== TournamentStatus.STOPPED) {
       throw new TournamentError(`Can't resume a tournament that isn't stopped`);
     }
     this.log.info('Resuming Tournament...');
-    await this.setStatus(TournamentStatus.RUNNING);
+    if (master) {
+      await this.setStatus(TournamentStatus.RUNNING);
+    }
+    else {
+      this.status = TournamentStatus.RUNNING;
+    }
     this.tourneyRunner();
     this.runInterval = setInterval(() => {
       this.tourneyRunner();
@@ -394,15 +415,20 @@ export class Ladder extends Tournament {
   /**
    * Begin the tournament. Resolves once the tournament is started
    * @param configs - tournament configurations to use
+   * @param master - whether or not the instance calling stop was the first one, the "master" instance
    */
-  public async run(configs?: DeepPartial<Tournament.TournamentConfigs<LadderConfigs>>) {
+  public async run(configs?: DeepPartial<Tournament.TournamentConfigs<LadderConfigs>>, master = false) {
     
     this.log.info('Running Tournament');
     this.configs = deepMerge(this.configs, configs, true);
     await this.initialize();
     await this.schedule();
-    // not calling this.setStatus here because only stop and resume change DB status.
-    this.status = TournamentStatus.RUNNING;
+    if (master) {
+      this.setStatus(TournamentStatus.RUNNING);
+    }
+    else {
+      this.status = TournamentStatus.RUNNING;
+    }
     this.tourneyRunner();
     this.runInterval = setInterval(() => {
       this.tourneyRunner();
