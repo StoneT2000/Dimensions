@@ -287,18 +287,24 @@ export abstract class Tournament {
   /**
    * Start the tournament
    * @param configs - the configs to use for the tournament
+   * @param master - whether or not the instance calling stop was the first one, the "master" instance. Used only in
+   * distributed scenarios
    */
-  public abstract async run(configs?: DeepPartial<Tournament.TournamentConfigsBase>): Promise<any>;
+  public abstract async run(configs?: DeepPartial<Tournament.TournamentConfigsBase>, master?: boolean): Promise<any>;
 
   /**
    * Stops the tournament while running
+   * @param master - whether or not the instance calling stop was the first one, the "master" instance. Used only in
+   * distributed scenarios
    */
-  public abstract async stop(): Promise<any>;
+  public abstract async stop(master?: boolean): Promise<any>;
 
   /**
    * Resumes the tournament
+   * @param master - whether or not the instance calling stop was the first one, the "master" instance. Used only in
+   * distributed scenarios
    */
-  public abstract async resume(): Promise<any>;
+  public abstract async resume(master?: boolean): Promise<any>;
 
   /**
    * Retrieve some form of rankings from the tournament's current state. The params offset and limit only apply to 

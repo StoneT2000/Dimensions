@@ -294,7 +294,7 @@ export class MongoDB extends Database {
   }
 
   public async storeTournamentConfigs(tournamentID: nanoid, tournamentConfigs: Tournament.TournamentConfigsBase, status: TournamentStatus) {
-    await this.models.tournamentConfigs.updateOne({ id: tournamentID }, { configs: tournamentConfigs, id: tournamentID, status: status, modificationDate: new Date()}, { upsert: true });
+    return this.models.tournamentConfigs.updateOne({ id: tournamentID }, { configs: tournamentConfigs, id: tournamentID, status: status, modificationDate: new Date()}, { upsert: true });
   }
 
   public async getTournamentConfigsModificationDate(tournamentID: nanoid) {
