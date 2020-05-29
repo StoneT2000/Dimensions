@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>DatabaseType | dimensions-ai</title>
+	<title>&quot;SupportedPlugins/MongoDB/models/tournamentConfig&quot; | dimensions-ai</title>
 	<meta name="description" content="Documentation for dimensions-ai">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,71 +56,51 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_dimension_index_.html">&quot;Dimension/index&quot;</a>
-				</li>
-				<li>
-					<a href="_dimension_index_.databasetype.html">DatabaseType</a>
+					<a href="_supportedplugins_mongodb_models_tournamentconfig_.html">&quot;SupportedPlugins/MongoDB/models/tournamentConfig&quot;</a>
 				</li>
 			</ul>
-			<h1>Enumeration DatabaseType</h1>
+			<h1>Module &quot;SupportedPlugins/MongoDB/models/tournamentConfig&quot;</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>Some standard database type strings</p>
-					</div>
-				</div>
-			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Enumeration members</h3>
+							<h3>Variables</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_dimension_index_.databasetype.html#mongo" class="tsd-kind-icon">MONGO</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_dimension_index_.databasetype.html#none" class="tsd-kind-icon">NONE</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported"><a href="_supportedplugins_mongodb_models_tournamentconfig_.html#schema" class="tsd-kind-icon">Schema</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module"><a href="_supportedplugins_mongodb_models_tournamentconfig_.html#tournamentconfigschema" class="tsd-kind-icon">Tournament<wbr>Config<wbr>Schema</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Enumeration members</h2>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="mongo" class="tsd-anchor"></a>
-					<h3>MONGO</h3>
-					<div class="tsd-signature tsd-kind-icon">MONGO<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;mongo&quot;</span></div>
+				<h2>Variables</h2>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+					<a name="schema" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagLet">Let</span> Schema</h3>
+					<div class="tsd-signature tsd-kind-icon">Schema<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Schema</span><span class="tsd-signature-symbol"> = mongoose.Schema</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Dimension/index.ts#L33">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Dimension/index.ts#L33</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/SupportedPlugins/MongoDB/models/tournamentConfig.ts#L2">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/SupportedPlugins/MongoDB/models/tournamentConfig.ts#L2</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Represents mongodb database used</p>
-						</div>
-					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="none" class="tsd-anchor"></a>
-					<h3>NONE</h3>
-					<div class="tsd-signature tsd-kind-icon">NONE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;none&quot;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module">
+					<a name="tournamentconfigschema" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagLet">Let</span> Tournament<wbr>Config<wbr>Schema</h3>
+					<div class="tsd-signature tsd-kind-icon">Tournament<wbr>Config<wbr>Schema<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Schema</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Schema({id:  { type: String, index: true, required: true, unique: true },configs: { type: Schema.Types.Mixed, required: true },status: { type: String, required: true },modificationDate: { type: Date, required: true },}, { minimize: false })</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Dimension/index.ts#L29">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Dimension/index.ts#L29</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/SupportedPlugins/MongoDB/models/tournamentConfig.ts#L4">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/SupportedPlugins/MongoDB/models/tournamentConfig.ts#L4</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Represents no database used</p>
-						</div>
-					</div>
 				</section>
 			</section>
 		</div>
@@ -131,41 +111,17 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="../modules/_dimension_index_.html">&quot;<wbr>Dimension/index&quot;</a>
+						<a href="_supportedplugins_mongodb_models_tournamentconfig_.html">&quot;<wbr>Supported<wbr>Plugins/<wbr>MongoDB/models/tournament<wbr>Config&quot;</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-enum tsd-parent-kind-module">
-						<a href="_dimension_index_.databasetype.html" class="tsd-kind-icon">Database<wbr>Type</a>
-						<ul>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_dimension_index_.databasetype.html#mongo" class="tsd-kind-icon">MONGO</a>
-							</li>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_dimension_index_.databasetype.html#none" class="tsd-kind-icon">NONE</a>
-							</li>
-						</ul>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="_supportedplugins_mongodb_models_tournamentconfig_.html#schema" class="tsd-kind-icon">Schema</a>
 					</li>
-				</ul>
-				<ul class="after-current">
-					<li class=" tsd-kind-enum tsd-parent-kind-module">
-						<a href="_dimension_index_.storagetype.html" class="tsd-kind-icon">Storage<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_dimension_index_.dimension.html" class="tsd-kind-icon">Dimension</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/_dimension_index_.dimensionconfigs.html" class="tsd-kind-icon">Dimension<wbr>Configs</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/_dimension_index_.html#nanoid" class="tsd-kind-icon">NanoID</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="../modules/_dimension_index_.html#create" class="tsd-kind-icon">create</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-module">
+						<a href="_supportedplugins_mongodb_models_tournamentconfig_.html#tournamentconfigschema" class="tsd-kind-icon">Tournament<wbr>Config<wbr>Schema</a>
 					</li>
 				</ul>
 			</nav>
