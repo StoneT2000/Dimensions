@@ -73,7 +73,9 @@ export class Player {
 /**
  * The tournament class and module extended by all concrete Tournament Classes. Tournament Types available now are
  * {@link RoundRobin}, {@link Ladder}, {@link Elimination}. A tournament is composed of players, which can either be 
- * all locally stored, or a split between locally stored anonymous players and database stored user owned players.
+ * all locally stored, or a split between locally stored anonymous players and database stored user owned players. 
+ * Ladder is the only tournament where it can be made distributed, other tournament types may only be run as a single
+ * instance
  * 
  * Notes: `this.competitors` map is used when no DB is used. When a DB is used, locally stored players are only in
  * `this.anonymousCompetitors` and other players are pulled from DB. Hence, a lot of code requires checking if database
@@ -291,12 +293,12 @@ export abstract class Tournament {
   /**
    * Stops the tournament while running
    */
-  public abstract async stop();
+  public abstract async stop(): Promise<any>;
 
   /**
    * Resumes the tournament
    */
-  public abstract async resume();
+  public abstract async resume(): Promise<any>;
 
   /**
    * Retrieve some form of rankings from the tournament's current state. The params offset and limit only apply to 

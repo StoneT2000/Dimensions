@@ -73,6 +73,32 @@ router.get('/:tournamentID/matchQueue', (req, res) => {
   res.json({error: null, matchQueue: req.data.tournament.matchQueue});
 });
 
+
+/**
+ * POST
+ * 
+ * Set configs by specifying in a configs field of the body. This does a deep merge that overwrites only the fields
+ * specified. Note that functions in the fields are always constant, and can never change.
+ */
+router.post('/:tournamentID/configs', requireAdmin, async (req: Request, res: Response, next: NextFunction) => {
+  if (!req.body.configs) return next(new error.BadRequest('Missing configs'));
+  try {
+    // ladder types have asynchronous config setting when using DB
+    if (req.data.tournament.configs.type === TournamentType.LADDER) {
+      let tournament = <Tournament.Ladder>req.data.tournament;
+      await tournament.setConfigs(req.body.configs);
+      res.json({error: null});
+    }
+    else {
+      req.data.tournament.setConfigs(req.body.configs);
+    }
+  
+  }
+  catch(err) {
+    return next(err);
+  }
+});
+
 /**
  * POST
  * 
@@ -106,12 +132,9 @@ router.post('/:tournamentID/stop', requireAdmin, (req: Request, res: Response, n
     return next(new error.BadRequest(`Can't stop a tournament that isn't running`));
   }
   // stop the tournament
-  if (req.data.tournament.stop()) {
+  req.data.tournament.stop().then(() => {
     res.json({error: null, msg:'Stopped Tournament'})
-  }
-  else {
-    return next(new error.InternalServerError('Couldn\'t stop the Tournament'));
-  }
+  }).catch(next);
 });
 
 /**

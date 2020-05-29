@@ -15,6 +15,8 @@ import { pick } from '../../utils';
 import { nanoid } from '../..';
 import { Ladder } from '../../Tournament/Ladder';
 import { TournamentError } from '../../DimensionError';
+import TournamentConfigSchema from './models/tournamentConfig';
+import { TournamentStatus } from '../../Tournament/TournamentStatus';
 require('dotenv').config();
 const salt = bcrypt.genSaltSync();
 
@@ -25,7 +27,8 @@ export class MongoDB extends Database {
 
   public models: MongoDB.Models = {
     user: null,
-    match: null
+    match: null,
+    tournamentConfigs: null
   }
 
   /** The MongoDB connection string used to connect to the database and read/write to it */
@@ -39,6 +42,8 @@ export class MongoDB extends Database {
     this.models.match = mongoose.model('Match', matchSchema);
     let userSchema = UserSchemaCreator();
     this.models.user = mongoose.model('User', userSchema);
+
+    this.models.tournamentConfigs = mongoose.model('TournamentConfigs', TournamentConfigSchema);
 
   }
 
@@ -287,6 +292,32 @@ export class MongoDB extends Database {
     dimension.configs.backingDatabase = DatabaseType.MONGO;
     return;
   }
+
+  public async storeTournamentConfigs(tournamentID: nanoid, tournamentConfigs: Tournament.TournamentConfigsBase, status: TournamentStatus) {
+    await this.models.tournamentConfigs.updateOne({ id: tournamentID }, { configs: tournamentConfigs, id: tournamentID, status: status, modificationDate: new Date()}, { upsert: true });
+  }
+
+  public async getTournamentConfigsModificationDate(tournamentID: nanoid) {
+    return this.models.tournamentConfigs.findOne({ id: tournamentID }).select({ modificationDate: 1 }).then((date) => {
+      if (date) {
+        return new Date(date.toObject().modificationDate);
+      }
+      else {
+        return null;
+      }
+      
+    });
+  }
+  public async getTournamentConfigs(tournamentID: nanoid) {
+    return this.models.tournamentConfigs.findOne({ id: tournamentID }).then((data) => {
+      if (data) {
+        return data.toObject();
+      }
+      else {
+        return null;
+      }
+    });
+  }
 }
 export module MongoDB {
 
@@ -312,6 +343,7 @@ export module MongoDB {
 
   export interface Models {
     user: mongoose.Model<mongoose.Document, {}>,
-    match: mongoose.Model<mongoose.Document, {}>
+    match: mongoose.Model<mongoose.Document, {}>,
+    tournamentConfigs: mongoose.Model<mongoose.Document, {}>
   }
 }
