@@ -74,7 +74,9 @@
 					<div class="lead">
 						<p>The tournament class and module extended by all concrete Tournament Classes. Tournament Types available now are
 							<a href="_tournament_index_.tournament.html#roundrobin">RoundRobin</a>, <a href="_tournament_index_.tournament.html#ladder">Ladder</a>, <a href="_tournament_index_.tournament.html#elimination">Elimination</a>. A tournament is composed of players, which can either be
-						all locally stored, or a split between locally stored anonymous players and database stored user owned players.</p>
+							all locally stored, or a split between locally stored anonymous players and database stored user owned players.
+							Ladder is the only tournament where it can be made distributed, other tournament types may only be run as a single
+						instance</p>
 					</div>
 					<p>Notes: <code>this.competitors</code> map is used when no DB is used. When a DB is used, locally stored players are only in
 						<code>this.anonymousCompetitors</code> and other players are pulled from DB. Hence, a lot of code requires checking if database
@@ -193,7 +195,7 @@
 					<div class="tsd-signature tsd-kind-icon">Queued<wbr>Match<wbr>Info<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_index_.html#nanoid" class="tsd-signature-type">nanoid</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L635">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L635</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L643">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L643</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -215,7 +217,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L124">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L124</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L126">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L126</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -249,7 +251,7 @@
 					<div class="tsd-signature tsd-kind-icon">anonymous<wbr>Competitors<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_dimension_index_.html#nanoid" class="tsd-signature-type">NanoID</a><span class="tsd-signature-symbol">, </span><a href="_tournament_index_.player.html" class="tsd-signature-type">Player</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L106">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L106</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L108">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L108</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -264,7 +266,7 @@
 					<div class="tsd-signature tsd-kind-icon">competitors<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_dimension_index_.html#nanoid" class="tsd-signature-type">NanoID</a><span class="tsd-signature-symbol">, </span><a href="_tournament_index_.player.html" class="tsd-signature-type">Player</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L103">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L103</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L105">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L105</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -279,7 +281,7 @@
 					<div class="tsd-signature tsd-kind-icon">configs<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_tournament_ladder_index_.ladder.tournamentconfigsbase.html" class="tsd-signature-type">TournamentConfigsBase</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L85">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L85</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L87">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L87</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -294,7 +296,7 @@
 					<div class="tsd-signature tsd-kind-icon">design<span class="tsd-signature-symbol">:</span> <a href="_design_index_.design.html" class="tsd-signature-type">Design</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L127">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L127</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L129">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L129</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -304,7 +306,7 @@
 					<div class="tsd-signature tsd-kind-icon">dimension<span class="tsd-signature-symbol">:</span> <a href="_dimension_index_.dimension.html" class="tsd-signature-type">Dimension</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L111">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L111</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L113">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L113</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -319,7 +321,7 @@
 					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <a href="../modules/_dimension_index_.html#nanoid" class="tsd-signature-type">NanoID</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L114">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L114</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L116">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L116</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -334,7 +336,7 @@
 					<div class="tsd-signature tsd-kind-icon">initial<wbr>Add<wbr>Player<wbr>Promises<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = []</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L124">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L124</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L126">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L126</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -349,7 +351,7 @@
 					<div class="tsd-signature tsd-kind-icon">log<span class="tsd-signature-symbol">:</span> <a href="_logger_index_.logger.html" class="tsd-signature-type">Logger</a><span class="tsd-signature-symbol"> = new Logger()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L100">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L100</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L102">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L102</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -364,7 +366,7 @@
 					<div class="tsd-signature tsd-kind-icon">match<wbr>Queue<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_tournament_index_.player.html" class="tsd-signature-type">Player</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = []</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L91">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L91</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L93">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L93</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -379,7 +381,7 @@
 					<div class="tsd-signature tsd-kind-icon">matches<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_dimension_index_.html#nanoid" class="tsd-signature-type">NanoID</a><span class="tsd-signature-symbol">, </span><a href="_match_index_.match.html" class="tsd-signature-type">Match</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L88">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L88</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L90">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L90</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -394,7 +396,7 @@
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L119">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L119</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L121">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L121</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -409,7 +411,7 @@
 					<div class="tsd-signature tsd-kind-icon">playerID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L108">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L108</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L110">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L110</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -419,7 +421,7 @@
 					<div class="tsd-signature tsd-kind-icon">state<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_tournament_ladder_index_.ladder.tournamenttypestate.html" class="tsd-signature-type">TournamentTypeState</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L97">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L97</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L99">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L99</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -434,7 +436,7 @@
 					<div class="tsd-signature tsd-kind-icon">status<span class="tsd-signature-symbol">:</span> <a href="_tournament_index_.tournament.html#status-1" class="tsd-signature-type">Status</a><span class="tsd-signature-symbol"> = Tournament.Status.UNINITIALIZED</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L94">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L94</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L96">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L96</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -449,7 +451,7 @@
 					<div class="tsd-signature tsd-kind-icon">Elimination<span class="tsd-signature-symbol">:</span> <a href="_tournament_elimination_index_.elimination.html" class="tsd-signature-type">Elimination</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L683">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L683</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L691">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L691</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -459,7 +461,7 @@
 					<div class="tsd-signature tsd-kind-icon">Ladder<span class="tsd-signature-symbol">:</span> <a href="_tournament_ladder_index_.ladder.html" class="tsd-signature-type">Ladder</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L681">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L681</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L689">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L689</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -469,7 +471,7 @@
 					<div class="tsd-signature tsd-kind-icon">RANK_<wbr>SYSTEM<span class="tsd-signature-symbol">:</span> <a href="../enums/_tournament_ranksystem_index_.ranksystem.html" class="tsd-signature-type">RankSystem</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L544">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L544</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L552">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L552</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -487,7 +489,7 @@
 					<div class="tsd-signature tsd-kind-icon">Rank<wbr>System<span class="tsd-signature-symbol">:</span> <a href="../enums/_tournament_ranksystem_index_.ranksystem.html" class="tsd-signature-type">RankSystem</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L537">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L537</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L545">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L545</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -497,7 +499,7 @@
 					<div class="tsd-signature tsd-kind-icon">Round<wbr>Robin<span class="tsd-signature-symbol">:</span> <a href="_tournament_roundrobin_index_.roundrobin.html" class="tsd-signature-type">RoundRobin</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L682">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L682</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L690">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L690</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -507,7 +509,7 @@
 					<div class="tsd-signature tsd-kind-icon">Status<span class="tsd-signature-symbol">:</span> <a href="../enums/_tournament_tournamentstatus_index_.tournamentstatus.html" class="tsd-signature-type">TournamentStatus</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L536">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L536</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L544">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L544</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -517,7 +519,7 @@
 					<div class="tsd-signature tsd-kind-icon">TOURNAMENT_<wbr>TYPE<span class="tsd-signature-symbol">:</span> <a href="../enums/_tournament_tournamenttypes_index_.tournamenttype.html" class="tsd-signature-type">TournamentType</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L551">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L551</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L559">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L559</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -535,7 +537,7 @@
 					<div class="tsd-signature tsd-kind-icon">Tournament<wbr>Status<span class="tsd-signature-symbol">:</span> <a href="../enums/_tournament_tournamentstatus_index_.tournamentstatus.html" class="tsd-signature-type">TournamentStatus</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L558">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L558</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L566">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L566</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -553,7 +555,7 @@
 					<div class="tsd-signature tsd-kind-icon">Type<span class="tsd-signature-symbol">:</span> <a href="../enums/_tournament_tournamenttypes_index_.tournamenttype.html" class="tsd-signature-type">TournamentType</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L535">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L535</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L543">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L543</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -570,7 +572,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L168">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L168</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L170">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L170</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -611,7 +613,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L442">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L442</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L450">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L450</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -633,7 +635,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L323">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L323</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L331">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L331</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -664,7 +666,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L281">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L281</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L283">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L283</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -687,7 +689,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L374">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L374</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L382">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L382</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -709,7 +711,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L490">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L490</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L498">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L498</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -731,7 +733,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L500">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L500</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L508">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L508</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -763,7 +765,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L308">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L308</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L316">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L316</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -801,7 +803,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L483">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L483</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L491">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L491</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -823,7 +825,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L275">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L275</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L277">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L277</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -853,7 +855,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L360">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L360</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L368">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L368</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -876,7 +878,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L468">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L468</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L476">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L476</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -898,7 +900,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L461">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L461</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L469">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L469</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -920,7 +922,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L430">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L430</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L438">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L438</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -948,7 +950,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L342">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L342</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L350">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L350</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -974,13 +976,13 @@
 					<a name="resume" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagAbstract">Abstract</span> resume</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">resume<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+						<li class="tsd-signature tsd-kind-icon">resume<span class="tsd-signature-symbol">(</span>master<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L299">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L299</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L307">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L307</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -988,7 +990,17 @@
 									<p>Resumes the tournament</p>
 								</div>
 							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> master: <span class="tsd-signature-type">boolean</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>whether or not the instance calling stop was the first one, the &quot;master&quot; instance. Used only in
+										distributed scenarios</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -996,13 +1008,13 @@
 					<a name="run" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagAbstract">Abstract</span> run</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">(</span>configs<span class="tsd-signature-symbol">?: </span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_tournament_ladder_index_.ladder.tournamentconfigsbase.html" class="tsd-signature-type">TournamentConfigsBase</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">run<span class="tsd-signature-symbol">(</span>configs<span class="tsd-signature-symbol">?: </span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_tournament_ladder_index_.ladder.tournamentconfigsbase.html" class="tsd-signature-type">TournamentConfigsBase</a><span class="tsd-signature-symbol">&gt;</span>, master<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L289">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L289</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L293">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L293</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1016,6 +1028,13 @@
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> configs: <a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_tournament_ladder_index_.ladder.tournamentconfigsbase.html" class="tsd-signature-type">TournamentConfigsBase</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>the configs to use for the tournament</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> master: <span class="tsd-signature-type">boolean</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>whether or not the instance calling stop was the first one, the &quot;master&quot; instance. Used only in
+										distributed scenarios</p>
 									</div>
 								</li>
 							</ul>
@@ -1033,7 +1052,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L381">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L381</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L389">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L389</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1065,7 +1084,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L368">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L368</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L376">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L376</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1090,13 +1109,13 @@
 					<a name="stop" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagAbstract">Abstract</span> stop</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">stop<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+						<li class="tsd-signature tsd-kind-icon">stop<span class="tsd-signature-symbol">(</span>master<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L294">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L294</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L300">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L300</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1104,7 +1123,17 @@
 									<p>Stops the tournament while running</p>
 								</div>
 							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> master: <span class="tsd-signature-type">boolean</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>whether or not the instance calling stop was the first one, the &quot;master&quot; instance. Used only in
+										distributed scenarios</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1118,7 +1147,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L316">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L316</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L324">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L324</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1161,7 +1190,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L476">https://github.com/StoneT2000/Dimensions/blob/8cb8632/src/Tournament/index.ts#L476</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L484">https://github.com/StoneT2000/Dimensions/blob/aa4b037/src/Tournament/index.ts#L484</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
