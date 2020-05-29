@@ -157,7 +157,7 @@ export class Ladder extends Tournament {
       this.log.info(`Received new configurations, mod date - ${modDate}`);
       this.log.detail(configs);
       this.configLastModificationDate = modDate;
-      this.configs = deepMerge(this.configs, configs);
+      this.configs = deepMerge(this.configs, configs, true);
 
       // update status and run/stop/resume tourney as needed
       if (status !== this.status) {
