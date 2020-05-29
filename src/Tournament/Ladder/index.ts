@@ -20,6 +20,8 @@ import LadderConfigs = Ladder.Configs;
 import LadderPlayerStat = Ladder.PlayerStat;
 import { nanoid } from "../..";
 
+const REFRESH_RATE = 10000
+
 /**
  * The Ladder Tournament class and namespace. 
  */
@@ -54,6 +56,11 @@ export class Ladder extends Tournament {
    * ELO System used in this tournament
    */
   private elo: ELOSystem;
+
+  /**
+   * tournament runner interval, periodically calls tourneyRunner to start up new matches
+   */
+  private runInterval = null;
 
   // queue of the results to process
   resultProcessingQueue: Array<{result: any, mapAgentIDtoTournamentID: Map<Agent.ID, Tournament.ID>}> = [];
@@ -270,6 +277,7 @@ export class Ladder extends Tournament {
       throw new TournamentError(`Can't stop a tournament that isn't running`);
     }
     this.log.info('Stopping Tournament...');
+    clearInterval(this.runInterval);
     this.status = TournamentStatus.STOPPED;
   }
   
@@ -283,6 +291,9 @@ export class Ladder extends Tournament {
     this.log.info('Resuming Tournament...');
     this.status = TournamentStatus.RUNNING;
     this.tourneyRunner();
+    this.runInterval = setInterval(() => {
+      this.tourneyRunner();
+    }, REFRESH_RATE);
   }
 
   /**
@@ -297,9 +308,14 @@ export class Ladder extends Tournament {
     await this.schedule();
     this.status = TournamentStatus.RUNNING;
     this.tourneyRunner();
+    this.runInterval = setInterval(() => {
+      this.tourneyRunner();
+    }, REFRESH_RATE);
   }
 
   private async tourneyRunner() {
+
+    if (this.matches.size >= this.configs.tournamentConfigs.maxConcurrentMatches) return;
 
     let maxTotalMatches = this.configs.tournamentConfigs.maxTotalMatches;
     if (this.configs.tournamentConfigs.endDate) { 
@@ -313,6 +329,7 @@ export class Ladder extends Tournament {
     }
     if (maxTotalMatches) {
       if (this.state.statistics.totalMatches >= maxTotalMatches) {
+        this.log.info('Reached max matches, shutting down tournament...');
         this.stop();
         return;
       }
@@ -1006,6 +1023,10 @@ export class Ladder extends Tournament {
     if (this.configs.consoleDisplay) {
       await this.printTournamentStatus();
     }
+  }
+
+  protected async preInternalDestroy() {
+    if (this.runInterval) clearInterval(this.runInterval);
   }
 }
 
