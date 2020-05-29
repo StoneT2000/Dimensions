@@ -19,6 +19,7 @@ import LadderState = Ladder.State;
 import LadderConfigs = Ladder.Configs;
 import LadderPlayerStat = Ladder.PlayerStat;
 import { nanoid } from "../..";
+import { deepCopy } from "../../utils/DeepCopy";
 
 const REFRESH_RATE = 10000
 
@@ -36,7 +37,8 @@ export class Ladder extends Tournament {
       endDate: null,
       storePastResults: true,
       maxTotalMatches: null,
-      matchMake: null
+      matchMake: null,
+      configSyncRefreshRate: 6000
     },
     resultHandler: null,
     agentsPerMatch: [2],
@@ -61,6 +63,17 @@ export class Ladder extends Tournament {
    * tournament runner interval, periodically calls tourneyRunner to start up new matches
    */
   private runInterval = null;
+
+  /**
+   * Configuration synchronization interval. Periodically makes a request to the DB if there is one and changes configs
+   */
+  private configSyncInterval = null;
+
+  /**
+   * Last modification date of configs
+   */
+  private configLastModificationDate = null;
+
 
   // queue of the results to process
   resultProcessingQueue: Array<{result: any, mapAgentIDtoTournamentID: Map<Agent.ID, Tournament.ID>}> = [];
@@ -114,14 +127,96 @@ export class Ladder extends Tournament {
     });
 
     this.status = TournamentStatus.INITIALIZED;
+    
+    // setup config syncing if DB is enabled and store configs if not stored already
+    if (this.dimension.hasDatabase()) {
+      this.setupConfigSyncInterval();
+      this.dimension.databasePlugin.getTournamentConfigs(this.id).then((data) => {
+        if (!data) {
+          this.configLastModificationDate = new Date();
+          this.dimension.databasePlugin.storeTournamentConfigs(this.id, this.configs, this.status).then(() => {
+            this.log.info('Storing initial tournament configuration data');
+          })
+        }
+      });
+    }
 
     this.log.info('Initialized Ladder Tournament');
   }
+
+  /**
+   * Sync configs from DB
+   */
+  private async syncConfigs() {
+    let modDate = await this.dimension.databasePlugin.getTournamentConfigsModificationDate(this.id);
+    if (modDate && !this.configLastModificationDate) {
+      this.configLastModificationDate = modDate;
+    }
+    if (modDate && modDate.getTime() > this.configLastModificationDate.getTime()) {
+      let { configs, status } = await this.dimension.databasePlugin.getTournamentConfigs(this.id);
+      this.log.info(`Received new configurations, mod date - ${modDate}`);
+      this.log.detail(configs);
+      this.configLastModificationDate = modDate;
+      this.configs = deepMerge(this.configs, configs);
+      if (status !== this.status) {
+        if (status === Tournament.Status.STOPPED) {
+          this.stop();
+        }
+        else if (status === Tournament.Status.RUNNING) {
+          this.run();
+        }
+      }
+    }
+  }
+
+  private setupConfigSyncInterval() {
+    this.configSyncInterval = setInterval(() => {
+      this.syncConfigs();
+    }, this.configs.tournamentConfigs.configSyncRefreshRate);
+  }
+  /**
+   * Retrieves the local configurations
+   */
   public getConfigs(): Tournament.TournamentConfigs<LadderConfigs> {
     return this.configs;
   }
-  public setConfigs(configs: DeepPartial<Tournament.TournamentConfigs<LadderConfigs>> = {}) {
-    this.configs = deepMerge(this.configs, configs, true);
+
+  /**
+   * Set tournament status and updates DB
+   */
+  public async setStatus(status: Tournament.Status) {
+    if (this.dimension.hasDatabase()) {
+      await this.syncConfigs()
+      await this.dimension.databasePlugin.storeTournamentConfigs(this.id, this.configs, status);
+      this.status = status;
+    }
+    else {
+      this.status = status;
+    }
+  }
+  /**
+   * Sets configs and updates DB
+   */
+  public async setConfigs(configs: DeepPartial<Tournament.TournamentConfigs<LadderConfigs>> = {}) {
+    if (configs.id) {
+      throw new TournamentError('You cannot change the tournament ID after constructing the tournament');
+    }
+
+    if (this.dimension.hasDatabase()) {
+      let plugin = this.dimension.databasePlugin
+      // ensure configs are up to date first, then set configs
+      this.syncConfigs().then(() => {
+        let newconfigs = deepMerge(deepCopy(this.configs), configs, true);
+        plugin.storeTournamentConfigs(this.id, newconfigs, this.status).then(() => {
+          // set configs locally as well if we succesfully store into DB
+          this.configs = newconfigs;
+        });
+      });
+    }
+    else {
+      this.configs = deepMerge(this.configs, configs, true);
+    }
+    // update DB
   }
   public async getRankings(offset: number = 0, limit: number = -1): Promise<Array<LadderPlayerStat>> {
     let rankings = [];
@@ -278,7 +373,7 @@ export class Ladder extends Tournament {
     }
     this.log.info('Stopping Tournament...');
     clearInterval(this.runInterval);
-    this.status = TournamentStatus.STOPPED;
+    await this.setStatus(TournamentStatus.STOPPED);
   }
   
   /**
@@ -289,7 +384,7 @@ export class Ladder extends Tournament {
       throw new TournamentError(`Can't resume a tournament that isn't stopped`);
     }
     this.log.info('Resuming Tournament...');
-    this.status = TournamentStatus.RUNNING;
+    await this.setStatus(TournamentStatus.RUNNING);
     this.tourneyRunner();
     this.runInterval = setInterval(() => {
       this.tourneyRunner();
@@ -306,6 +401,7 @@ export class Ladder extends Tournament {
     this.configs = deepMerge(this.configs, configs, true);
     await this.initialize();
     await this.schedule();
+    // not calling this.setStatus here because only stop and resume change DB status.
     this.status = TournamentStatus.RUNNING;
     this.tourneyRunner();
     this.runInterval = setInterval(() => {
@@ -1027,6 +1123,7 @@ export class Ladder extends Tournament {
 
   protected async preInternalDestroy() {
     if (this.runInterval) clearInterval(this.runInterval);
+    if (this.configSyncInterval) clearInterval(this.configSyncInterval);
   }
 }
 
@@ -1069,7 +1166,15 @@ export namespace Ladder {
      * @param playerStats - an array of all player stats in the tournament. See {@link PlayerStat} for what variables
      * are exposed to use to help schedule matches
      */
-      (playerStats: Array<PlayerStat>) => Array<Array<Player>>
+      (playerStats: Array<PlayerStat>) => Array<Array<Player>>,
+
+    /**
+     * Rate in ms of how fast to sync the configs. Used for synchronizing configs in a distributed system.
+     * 
+     * @default `6000`
+     */
+    configSyncRefreshRate: number
+
   }
   /**
    * The {@link LadderTournament} state, consisting of the current player statistics and past results

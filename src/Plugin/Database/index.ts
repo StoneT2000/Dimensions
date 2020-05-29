@@ -6,6 +6,7 @@ import { Plugin } from "..";
 import { nanoid } from "../..";
 import { Ladder } from "../../Tournament/Ladder";
 import { Tournament } from "../../Tournament";
+import { TournamentStatus } from "../../Tournament/TournamentStatus";
 
 /**
  * The database plugin class, of which Dimensions uses internally to store data onto the database
@@ -120,6 +121,26 @@ export abstract class Database extends Plugin {
    * @param order - 1 for ascending and -1 for descending in order of creation date
    */
   abstract getPlayerMatches(playerID: nanoid, governID: nanoid, offset: number, limit: number, order: number): Promise<Array<Match>>
+
+  /**
+   * Get configs for a tournament. Resolves with `{ configs: null, status: null }` if no configs exist
+   * @param tournamentID - id of the tournament to get configs for
+   */
+  abstract getTournamentConfigs(tournamentID: nanoid): Promise<{ configs: Tournament.TournamentConfigsBase, status: Tournament.Status }>
+  
+  /**
+   * Gets the last modification date of the configs for the tournament with id tournamentID
+   * @param tournamentID - id of tournament
+   */
+  abstract getTournamentConfigsModificationDate(tournamentID: nanoid): Promise<Date>
+
+  /**
+   * Store configs and status for a tournament. Should overwrite any existing config data. Resolves if successful
+   * @param tournamentID - id of the tournament to store for
+   * @param tournamentConfigs - configs to store
+   * @param status - the status to store
+   */
+  abstract storeTournamentConfigs(tournamentID: nanoid, tournamentConfigs: Tournament.TournamentConfigsBase, status: TournamentStatus): Promise<void>
 }
 
 export module Database {
