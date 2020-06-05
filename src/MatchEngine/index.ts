@@ -220,6 +220,11 @@ export class MatchEngine {
 
     // when process closes, print message
     p.on('close', (code) => {
+      // terminate agent with API if it hasn't been marked as terminated yet, indicating process likely exited
+      // prematurely
+      if (!agent.isTerminated()) {
+        this.kill(agent);
+      }
       this.log.system(`${agent.name} | id: ${agent.id} - exited with code ${code}`);      
     });
 
