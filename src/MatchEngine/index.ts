@@ -434,6 +434,7 @@ export class MatchEngine {
       }
       else {
         this.log.error(`Agent ${agentID} - ${agent.name} - has been killed off already, can't send messages now`);
+        resolve(false);
       }
     });
   }

@@ -575,18 +575,24 @@ export class Match {
    * @param message - the string message to send
    * @param receiver - receiver of message can be specified by the {@link Agent} or it's {@link Agent.ID} (a number)
    */
-  public async send(message: string, receiver: Agent | Agent.ID): Promise<boolean> {
+  public async send(message: string, receiver: Agent | Agent.ID): Promise<void> {
     if (receiver instanceof Agent) {
       try {
         await this.matchEngine.send(this, message, receiver.id);
       }
       catch (err) {
         this.log.error(err);
-        // kill agents we can't send messages to
+        this.kill(receiver);
       }
     }
     else {
-      return this.matchEngine.send(this, message, receiver);
+      try {
+        await this.matchEngine.send(this, message, receiver);
+      }
+      catch (err) {
+        this.log.error(err);
+        this.kill(receiver);
+      }
     }
   }
 
