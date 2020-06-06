@@ -216,7 +216,7 @@ export abstract class Tournament {
     // addition of a new player
     if (typeof file === 'string') {
       let name = `player-${id}`;
-      let newPlayer = new Player({id: id, name: name}, file, undefined);
+      let newPlayer = new Player({id: id, name: name, username: undefined}, file, undefined);
 
       // check database
       if (this.dimension.hasDatabase()) {
@@ -224,6 +224,7 @@ export abstract class Tournament {
         if (user) {
           newPlayer.anonymous = false;
           newPlayer.username = user.username;
+          newPlayer.tournamentID.username = user.username;
         }
         else {
           this.competitors.set(id, newPlayer);
@@ -241,7 +242,7 @@ export abstract class Tournament {
       return newPlayer;
     }
     else {
-      let newPlayer = new Player({id: id, name: file.name}, file.file, file.zipFile, file.botkey);
+      let newPlayer = new Player({id: id, name: file.name, username: undefined}, file.file, file.zipFile, file.botkey);
       newPlayer.botDirPath = file.botdir;
       // check database
       if (this.dimension.hasDatabase()) {
@@ -251,6 +252,7 @@ export abstract class Tournament {
           newPlayer.tournamentID.name = file.name;
           newPlayer.anonymous = false;
           newPlayer.username = user.username;
+          newPlayer.tournamentID.username = user.username;
         }
         else {
           this.competitors.set(id, newPlayer);
@@ -678,6 +680,9 @@ export module Tournament {
     readonly id: NanoID
     /** A display name */
     name: string
+
+    /** Associated username if there is one. */
+    username: string
   }
 
   export interface PlayerStatBase {
