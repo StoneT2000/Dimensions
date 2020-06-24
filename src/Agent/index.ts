@@ -236,8 +236,7 @@ export class Agent {
         }
         else {
           p = spawn('bash' ,['install.sh'], {
-            cwd: this.cwd,
-            stdio: 'ignore'
+            cwd: this.cwd
           });
         }
         let chunks = [];
