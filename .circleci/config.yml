@@ -4,7 +4,7 @@ orbs:
 executors:
   language-build:
     docker:
-      - image: docker.io/stonezt2000/dimensons_langs
+      - image: stonezt2000/dimensions_langs:latest
 jobs:
   build-and-test:
     executor:
