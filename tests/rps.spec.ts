@@ -93,7 +93,7 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
         }
       )
       expect(results.scores).to.eql({'0': 0, '1': 100});
-    }).timeout(5000);
+    })
     it('should erase extraneous output part 2', async () => {
       let results = await myDimension.runMatch(
         ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/paper.js'],
