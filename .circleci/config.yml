@@ -9,7 +9,7 @@ jobs:
       - checkout
       - node/with-cache:
           steps:
-            - run: useradd dimensions_bot
+            - run: sudo useradd dimensions_bot
             - run: npm install
             - run: sudo npm run test
 workflows:
