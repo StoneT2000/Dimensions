@@ -8,7 +8,7 @@ executors:
 jobs:
   build-and-test:
     executor:
-      name: node/default
+      name: language-build
     steps:
       - checkout
       - node/with-cache:
