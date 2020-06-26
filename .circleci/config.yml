@@ -1,0 +1,21 @@
+version: 2.1
+orbs:
+  node: circleci/node@1.1.6
+executors:
+  language-build:
+    docker:
+      - image: stonezt2000/dimensions_langs:latest
+jobs:
+  build-and-test:
+    executor:
+      name: language-build
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: npm install
+            - run: sudo npm run test
+workflows:
+    build-and-test:
+      jobs:
+        - build-and-test

@@ -100,45 +100,8 @@ describe('Testing Match Running with Domination Game', () => {
     expect(myDimension.design.name).to.equal('Domination');
     expect(myDimension.log).to.be.instanceOf(Dimension.Logger);
   })
-  describe('Receive MatchErrors and FatalErrors from a match of Domination', () => {
+  describe('Receive FatalErrors from a match of Domination', () => {
   
-    it('Match Errors', async () => {
-      let jsSource = "./tests/js-kit/domination/errorProvokingBot.js";
-      let botSources = [];
-
-      // sets up a deterministic game where all bots will end up expanding down
-      for (let i = 0; i < 3; i++) {
-        botSources.push(jsSource);
-      }
-      botSources.push("./tests/js-kit/domination/deterministic.js")
-      let expectedResultMap = [ [ 0, 1, 2, 3 ], [ -1, -1, -1, 3 ], [ -1, -1, -1, -1 ], [ -1, -1, -1, -1 ] ];
-      let expectedScore = 2; 
-
-      
-      let match: any = await myDimension.createMatch(
-        botSources,
-        {
-          name: 'test-domination-match-matcherrors',
-          initializeConfig:{
-            
-            size: 4,
-            maxRounds: 2
-          },
-          loggingLevel: Dimension.Logger.LEVEL.WARN
-        }
-      );
-
-      let status: Dimension.Match.Status;
-      
-      
-      // Store results
-      let results = await match.run();
-
-      expect(results.finalMap).to.eql(expectedResultMap)
-      expect(results.winningScore).to.eql(expectedScore);
-
-      // expect(matchEngineLogSpy).to.equal(3);
-    });
 
     it('should throw fatal Errors', async () => {
       let botSources = [];

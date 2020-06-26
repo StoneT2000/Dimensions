@@ -214,7 +214,7 @@ export class Dimension {
       }
     }
     else {
-      this.log.error(`WARNING: Running in non-secure mode. You will not be protected against malicious bots`);
+      this.log.warn(`WARNING: Running in non-secure mode. You will not be protected against malicious bots`);
     }
     // setting securemode in dimension config also sets it for default match configs
     this.configs.defaultMatchConfigs.secureMode = this.configs.secureMode;
