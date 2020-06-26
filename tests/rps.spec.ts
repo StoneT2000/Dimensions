@@ -111,32 +111,14 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
         ['./tests/js-kit/rps/smarter.js', './tests/python-kit/rps/rock.py'],
         {
           name: 'mult-lang (py)',
-          bestOf: 4,
-        }
-      )
-      expect(results.scores).to.eql({'0': 3, '1': 1});
-
-      // randomly test not secure mode
-      results = await myDimension.runMatch(
-        ['./tests/js-kit/rps/smarter.js', './tests/python-kit/rps/rock.py'],
-        {
-          name: 'mult-lang (py)',
-          bestOf: 4,
-          secureMode: false
-        }
-      )
-      expect(results.scores).to.eql({'0': 3, '1': 1});
-      results = await myDimension.runMatch(
-        ['./tests/js-kit/rps/smarter.js', './tests/python-kit/rps/rock.py'],
-        {
-          name: 'mult-lang (py)',
           bestOf: 5,
-          secureMode: false,
           agentOptions: {
-            runCommands: {'.py': ['python3']}
+            runCommands: {
+              ".py": ["python3"]
+            }
           }
         }
-      );
+      )
       expect(results.scores).to.eql({'0': 4, '1': 1});
     });
     it('should support java (run 3 times)', async () => {
@@ -327,10 +309,10 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
         ['./tests/js-kit/rps/paper.js', './tests/js-kit/rps/delaybotrock.js'],
         {
           bestOf: 5,
-          loggingLevel: Dimension.Logger.LEVEL.ERROR,
+          loggingLevel: Dimension.Logger.LEVEL.NONE,
           engineOptions: {
             timeout: {
-              max: 500
+              max: 400
             }
           }
         }
@@ -343,10 +325,10 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
         ['./tests/js-kit/rps/delaybotrock.js', './tests/js-kit/rps/delaybotrock.js'],
         {
           bestOf: 5,
-          loggingLevel: Dimension.Logger.LEVEL.ERROR,
+          loggingLevel: Dimension.Logger.LEVEL.NONE,
           engineOptions: {
             timeout: {
-              max: 500
+              max: 400
             }
           }
         }
@@ -361,7 +343,7 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
         {
           name: 'check-timeout-handler',
           bestOf: 5,
-          loggingLevel: Dimension.Logger.LEVEL.ERROR,
+          loggingLevel: Dimension.Logger.LEVEL.NONE,
           engineOptions: {
             timeout: {
               max: 100,
@@ -382,7 +364,7 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
         ['./tests/js-kit/rps/delaybotpaper.js', './tests/js-kit/rps/rock.js'],
         {
           bestOf: 2,
-          loggingLevel: Dimension.Logger.LEVEL.ERROR,
+          loggingLevel: Dimension.Logger.LEVEL.NONE,
           engineOptions: {
             timeout: {
               active: false
@@ -399,7 +381,7 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
         ['./tests/js-kit/rps/delaybotpaper.js', './tests/js-kit/rps/delaybotrock.js'],
         {
           bestOf: 11,
-          loggingLevel: Dimension.Logger.LEVEL.ERROR,
+          loggingLevel: Dimension.Logger.LEVEL.NONE,
           engineOptions: {
             timeout: {
               active: false

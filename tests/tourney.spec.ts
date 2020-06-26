@@ -59,7 +59,7 @@ describe('Tournament Testing with RPS', () => {
         name: 'RPS',
         activateStation: false,
         observe: false,
-        loggingLevel: Dimension.Logger.LEVEL.WARN
+        loggingLevel: Dimension.Logger.LEVEL.ERROR
       });
     });
     beforeEach(() => {
@@ -79,7 +79,7 @@ describe('Tournament Testing with RPS', () => {
         consoleDisplay: false,
         defaultMatchConfigs: {
           bestOf: 3,
-          loggingLevel: Dimension.Logger.LEVEL.WARN
+          loggingLevel: Dimension.Logger.LEVEL.NONE
         },
         resultHandler: RockPaperScissorsDesign.winsResultHandler
       });
@@ -100,7 +100,7 @@ describe('Tournament Testing with RPS', () => {
         });
         
         // should be same as dimension
-        expect(DefaultRPSTournament.log.level).to.equal(Logger.LEVEL.WARN);
+        expect(DefaultRPSTournament.log.level).to.equal(Logger.LEVEL.ERROR);
         expect(DefaultRPSTournament.configs.consoleDisplay).to.equal(true);
       });
       it('should have correct overriden parameters', async () => {
@@ -163,7 +163,7 @@ describe('Tournament Testing with RPS', () => {
         name: 'RPS',
         activateStation: false,
         observe: false,
-        loggingLevel: Dimension.Logger.LEVEL.WARN
+        loggingLevel: Dimension.Logger.LEVEL.ERROR
       });
       EliminationTourney = myDimension.createTournament(filesAndNames, {
         type: Dimension.Tournament.Type.ELIMINATION,
@@ -201,7 +201,7 @@ describe('Tournament Testing with RPS', () => {
     let trueskillConfigs: DeepPartial<Tournament.RankSystem.TRUESKILL.Configs> = {};
     let defaultMatchConfigsTests = {
       bestOf: 1000,
-      loggingLevel: Dimension.Logger.LEVEL.WARN
+      loggingLevel: Dimension.Logger.LEVEL.ERROR
     }
     before(() => {
       RPSDesign = new RockPaperScissorsDesign('RPS!', {
@@ -215,7 +215,7 @@ describe('Tournament Testing with RPS', () => {
         name: 'RPS',
         activateStation: false,
         observe: false,
-        loggingLevel: Dimension.Logger.LEVEL.WARN
+        loggingLevel: Dimension.Logger.LEVEL.ERROR
       });
       
       trueskillConfigs.initialMu = 100;

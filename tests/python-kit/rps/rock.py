@@ -1,11 +1,12 @@
 from kit import Agent
-
+import sys
 # Create new agent
 agent = Agent()
 
 # initialize agent
 agent.initialize()
 
+# print("HEY!", file=sys.stderr)
 # Once initialized, we enter an infinite loop
 while True:
 
