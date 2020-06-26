@@ -1,6 +1,10 @@
 version: 2.1
 orbs:
   node: circleci/node@1.1.6
+executors:
+  language-build:
+    docker:
+      - image: stonezt2000/dimensons_langs
 jobs:
   build-and-test:
     executor:
