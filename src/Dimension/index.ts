@@ -263,7 +263,7 @@ export class Dimension {
     }
 
     // override dimension defaults with provided configs
-    let matchConfigs = deepCopy(this.configs.defaultMatchConfigs);
+    let matchConfigs: Match.Configs = deepCopy(this.configs.defaultMatchConfigs);
     matchConfigs = deepMerge(matchConfigs, configs);
 
     // create new match
@@ -300,26 +300,9 @@ export class Dimension {
     files: Array<string> | Array<{file: string, name: string, botkey?: string}>, 
     configs?: DeepPartial<Match.Configs>
   ): Promise<any> {
-    if (!files.length) throw new MissingFilesError('No files provided for match');
 
-    // override dimension defaults with provided configs
-    let matchConfigs: Match.Configs = deepCopy(this.configs.defaultMatchConfigs);
-    matchConfigs = deepMerge(matchConfigs, configs);
-
-    let match: Match;
-    if (typeof files[0] === 'string') {
-      match = new Match(this.design, <Array<string>> files, matchConfigs, this);
-    } else {
-      match = new Match(this.design, <Array<{file: string, name: string, botkey?: string}>> files, matchConfigs, this);
-    }
-    this.statistics.matchesCreated++;
-
-    // store match into dimension (caching)
-    this.matches.set(match.id, match);
-
-    // Initialize match with initialization configuration
-    await match.initialize();
-
+    let match = await this.createMatch(files, configs);
+    
     // Get results
     let results = await match.run();
 

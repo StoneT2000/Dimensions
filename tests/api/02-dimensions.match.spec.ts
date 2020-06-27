@@ -7,6 +7,7 @@ import sinonChai from "sinon-chai";
 import 'mocha';
 import { Logger, Match } from '../../src';
 import { RockPaperScissorsDesign } from '../rps';
+import MatchSchemaCreator from '../../src/SupportedPlugins/MongoDB/models/match';
 chai.should()
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -137,11 +138,78 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
     });
   });
 
+  it(`POST ${base}/match/:matchID/stop - should stop match with id matchID`, async () => {
+    let match = await dimension.createMatch(botList, {
+      bestOf: 9
+    });
+    match.run().catch(() => {});
+    let res = await chai.request(endpoint)
+    .post(`/match/${match.id}/stop`);
+    expect(res.status).to.equal(200)
+  });
+
+  it(`POST ${base}/match/:matchID/stop - should return 400, match can't be stopped while in uninitialized, ready, stopped, or finished conditions`, async () => {
+    let match = await dimension.createMatch(botList, {
+      bestOf: 9
+    });
+
+    match.matchStatus = Match.Status.UNINITIALIZED;
+    let res = await chai.request(endpoint)
+    .post(`/match/${match.id}/stop`);
+    expect(res.status).to.equal(400)
+    expect(res.body).to.be.eql({
+      error: {
+        message: "Can\'t stop an uninitialized match",
+        status: 400,
+      }
+    });
+    expect(match.matchStatus).to.equal(Match.Status.UNINITIALIZED);
+
+    match.matchStatus = Match.Status.READY;
+    res = await chai.request(endpoint)
+    .post(`/match/${match.id}/stop`);
+    expect(res.status).to.equal(400)
+    expect(match.matchStatus).to.equal(Match.Status.READY);
+    expect(res.body).to.be.eql({
+      error: {
+        message: "Match hasn\'t started and can\'t be stopped as a result",
+        status: 400,
+      }
+    });
+    let runPromise = match.run().catch(() => {});
+    await match.stop();
+    expect(match.matchStatus).to.equal(Match.Status.STOPPED);
+    res = await chai.request(endpoint)
+    .post(`/match/${match.id}/stop`);
+    expect(res.status).to.equal(400)
+    expect(match.matchStatus).to.equal(Match.Status.STOPPED);
+    expect(res.body).to.be.eql({
+      error: {
+        message: "Match is already stopped",
+        status: 400,
+      }
+    });
+    await match.resume();
+    expect(match.matchStatus).to.equal(Match.Status.RUNNING);
+    await runPromise;
+    expect(match.matchStatus).to.equal(Match.Status.FINISHED);
+    res = await chai.request(endpoint)
+    .post(`/match/${match.id}/stop`);
+    expect(res.status).to.equal(400);
+    expect(match.matchStatus).to.equal(Match.Status.FINISHED);
+    expect(res.body).to.be.eql({
+      error: {
+        message: "Match is already finished",
+        status: 400,
+      }
+    });
+  });
+
   // TODO
   // it(`GET ${base}/match/:matchID/replay - should return match replay for match with id matchID`, async () => {
   // });
 
-  after(async () => {
+  afterEach( async () => {
     await dimension.cleanupMatches();
   });
 });

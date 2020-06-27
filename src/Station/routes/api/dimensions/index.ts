@@ -57,11 +57,6 @@ const pickDimension = (d: Dimension) => {
   let picked = {...pick(d, 'configs', 'id', 'log', 'name', 'statistics')};
   let pickedDesign = pickDesign(d.design);
   picked.design = pickedDesign;
-  let pickedTournaments = {}
-  d.tournaments.forEach((t) => {
-    pickedTournaments[t.id] = pickTournament(t);
-  });
-  picked.tournaments = pickedTournaments;
   return picked;
 }
 
