@@ -86,6 +86,10 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
   // TODO
   // it(`GET ${base}/match/:matchID/replay - should return match replay for match with id matchID`, async () => {
   // });
+
+  after(() => {
+    dimension.cleanupMatches();
+  });
 });
 
 const verifyMatchWithResponse = (match: Match, responseMatch: any) => {

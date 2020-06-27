@@ -520,18 +520,30 @@ export class Dimension {
       return this.cleaningUp;
     }
     this.log.info('Cleaning up');
-    let cleanUpPromises: Array<Promise<void>> = [];
-    this.matches.forEach((match) => {
-      cleanUpPromises.push(match.destroy());
-    });
-    this.tournaments.forEach((tournament) => {
-      cleanUpPromises.push(tournament.destroy());
-    });
+    let cleanUpPromises: Array<Promise<any>> = [];
+    cleanUpPromises.push(this.cleanupMatches())
+    cleanUpPromises.push(this.cleanupTournaments())
     if (this.getStation()) {
       cleanUpPromises.push(this.getStation().stop());
     }
     this.cleaningUp = Promise.all(cleanUpPromises);
     await this.cleaningUp;
+  }
+
+  async cleanupMatches() {
+    let cleanUpPromises: Array<Promise<void>> = [];
+    this.matches.forEach((match) => {
+      cleanUpPromises.push(match.destroy());
+    });
+    return Promise.all(cleanUpPromises);
+  }
+
+  async cleanupTournaments() {
+    let cleanUpPromises: Array<Promise<void>> = [];
+    this.tournaments.forEach((tournament) => {
+      cleanUpPromises.push(tournament.destroy());
+    });
+    return Promise.all(cleanUpPromises);
   }
 
 }
