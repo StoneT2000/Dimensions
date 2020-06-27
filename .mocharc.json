@@ -2,7 +2,7 @@
   "reporter": "spec",
   "r": "ts-node/register",
   "slow": "3000",
-  "timeout": "2000",
+  "timeout": "30000",
   "check-leaks": true,
   "full-trace": true
 }

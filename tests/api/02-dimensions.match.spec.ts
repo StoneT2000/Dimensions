@@ -73,9 +73,18 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
     expect(match.results).to.eql(res.body.results)
   });
 
-  // TODO
-  it(`GET ${base}/match/:matchID/replay - should return match replay for match with id matchID`, async () => {
+  it(`GET ${base}/match/:matchID/state - should return match results for match with id matchID`, async () => {
+    let match = await dimension.createMatch(botList)
+    await match.run();
+    const res = await chai.request(endpoint)
+    .get(`/match/${match.id}/state`);
+    expect(res.status).to.equal(200)
+    expect(match.state).to.eql(res.body.state)
   });
+
+  // TODO
+  // it(`GET ${base}/match/:matchID/replay - should return match replay for match with id matchID`, async () => {
+  // });
 
   after(() => {
     dimension.cleanup();

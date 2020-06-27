@@ -108,6 +108,7 @@ router.get('/:matchID/state', (req, res) => {
 
 /**
  * POST
+ * 
  * Run/resume a match if it hasn't initialiized, or was finished, or is currently stopped
  */
 router.post('/:matchID/run', requireAdmin, async (req: Request, res: Response, next: NextFunction) => {
