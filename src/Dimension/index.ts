@@ -512,9 +512,10 @@ export class Dimension {
   }
 
   /**
-   * Cleanup function to run right before process exits
+   * Cleanup function that cleans up any resources used and related to this dimension. For use right before
+   * process exits and during testing.
    */
-  private async cleanup() {
+  async cleanup() {
     if (this.cleaningUp) {
       return this.cleaningUp;
     }

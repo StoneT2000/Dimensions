@@ -5,11 +5,9 @@ import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
 import sinonChai from "sinon-chai";
 import 'mocha';
-import { Station, Logger } from '../../src';
-import { NanoID } from '../../src/Dimension';
+import { Logger } from '../../src';
 import { RockPaperScissorsDesign } from '../rps';
-// const RockPaperScissorsDesign = require('./rps').RockPaperScissorsDesign;
-let should = chai.should();
+chai.should()
 const expect = chai.expect;
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
@@ -37,28 +35,25 @@ describe('Testing /api/dimensions API', () => {
   });
   it("GET /api/dimensions should retrieve all dimensions", (done) => {
     chai.request(origin + "/api/dimensions")
-      .get("/")
-      .end((err, res) => {
-        res.should.have.status(200);
-        // res.body.should.containSubset(dimension)
-        expect({
-          "abcdef": dimension,
-          "abcdef2": dimension2
-      }).to.be.containSubset(res.body.dimensions)
-        done();
-      });
-    // expect(true).to.equal(true)
+    .get("/")
+    .end((err, res) => {
+      res.should.have.status(200);
+      expect({
+        "abcdef": dimension,
+        "abcdef2": dimension2
+      }).to.containSubset(res.body.dimensions)
+      done();
+    });
   });
 
-  it("GET /api/dimensions/:dimensionID - should retrieve dimension with dimensionID", (done) => {
+  it("GET /api/dimensions/:dimensionID - should retrieve dimension with id dimensionID", (done) => {
     chai.request(origin + "/api/dimensions")
-      .get(`/${dimension.id}`)
-      .end((err, res) => {
-        res.should.have.status(200);
-        // res.body.should.containSubset(dimension)
-        expect(dimension).to.be.containSubset(res.body.dimension)
-        done();
-      });
+    .get(`/${dimension.id}`)
+    .end((err, res) => {
+      res.should.have.status(200);
+      expect(dimension).to.containSubset(res.body.dimension)
+      done();
+    });
   });
 
   it("GET /api/dimensions/:dimensionID - should return 400, no dimension found, if fake id provided", (done) => {
@@ -74,9 +69,5 @@ describe('Testing /api/dimensions API', () => {
         });
         done();
       });
-  });
-  
-  after(() => {
-    dimension.getStation().stop();
   });
 });
