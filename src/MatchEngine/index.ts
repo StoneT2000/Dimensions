@@ -199,7 +199,7 @@ export class MatchEngine {
             strs[0] = agent._buffer.join('').concat(strs[0]);
             agent._buffer = [];
           }
-          // this.log.systemIO(`${agent.name} - stdout: ${strs}`);
+
           for (let i = 0; i < strs.length; i++) {
             if (strs[i] === '') continue;
             if (agent.isAllowedToSendCommands()) {
@@ -396,7 +396,8 @@ export class MatchEngine {
         
         this.log.system(`All move promises resolved`);
         match.agents.forEach((agent: Agent) => {
-          // TODO: Add option to store sets of commands delimited by '\n' for an Agent as different sets of commands /// for that Agent. Default right now is store every command delimited by the delimiter
+          // TODO: Add option to store sets of commands delimited by '\n' for an Agent as different sets of commands 
+          // for that Agent. Default right now is store every command delimited by the delimiter
 
           // for each set of commands delimited by '\n' in stdout of process, split it by delimiter and push to 
           // commands
@@ -410,8 +411,8 @@ export class MatchEngine {
           });
         });
 
-        this.log.system2(`Agent commands at end of time step ${match.timeStep} to be sent to match on time step ${match.timeStep + 1} `);
-        this.log.system2(commands.length ? JSON.stringify(commands) : 'No commands');
+        this.log.systemIO(`Agent commands at end of time step ${match.timeStep} to be sent to match on time step ${match.timeStep + 1} `);
+        this.log.systemIO(commands.length ? JSON.stringify(commands) : 'No commands');
         resolve(commands);
       });
     });
