@@ -1,13 +1,13 @@
-import Dimension = require('../src');
+import * as Dimension from '../../../src'
 let MatchStatus = Dimension.Match.Status;
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import 'mocha';
-import { Logger, MatchWarn, Design, Match } from '../src';
+import { Logger, MatchWarn, Design, Match } from '../../../src';
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
-const RockPaperScissorsDesign = require('./rps').RockPaperScissorsDesign;
+import { RockPaperScissorsDesign } from '../../rps';
 
 describe('Rock Paper Scissors Testing - Testing engine and match', () => {
   let RPSDesign: Design;
@@ -34,7 +34,7 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
     it('should be able to use line count based engine', async () => {
       let RPSDesign_line_count = new RockPaperScissorsDesign('RPS!', {
         engineOptions: {
-          commandFinishPolicy: 'line_count'
+          commandFinishPolicy: Dimension.MatchEngine.COMMAND_FINISH_POLICIES.LINE_COUNT
         }
       });
       let myDimension_line_count = Dimension.create(RPSDesign_line_count, {
@@ -58,7 +58,7 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
     it('should allow for premature finish of message', async () => {
       let RPSDesign_line_count = new RockPaperScissorsDesign('RPS!', {
         engineOptions: {
-          commandFinishPolicy: 'line_count',
+          commandFinishPolicy: Dimension.MatchEngine.COMMAND_FINISH_POLICIES.LINE_COUNT,
           commandLines: {
             max: 2
           }
@@ -393,6 +393,10 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
       await myDimension.removeMatch(match.id);
 
     });
+  });
+
+  after(() => {
+    myDimension.getStation().stop()
   })
 });
 

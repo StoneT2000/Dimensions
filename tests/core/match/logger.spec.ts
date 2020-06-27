@@ -1,10 +1,10 @@
-import * as Dimension from '../src';
+import * as Dimension from '../../../src';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import sinon, { SinonSandbox } from "sinon";
 import sinonChai from "sinon-chai";
 import 'mocha';
-import { Logger } from '../src';
+import { Logger } from '../../../src';
 import colors from 'colors';
 const expect = chai.expect;
 chai.use(sinonChai);

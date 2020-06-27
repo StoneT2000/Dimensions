@@ -3,7 +3,7 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import sinonChai from "sinon-chai";
 import 'mocha';
-import { ELOSystem } from '../src/Tournament/ELO';
+import { ELOSystem } from '../../../src/Tournament/ELO';
 const expect = chai.expect;
 chai.use(sinonChai);
 chai.use(chaiAsPromised);

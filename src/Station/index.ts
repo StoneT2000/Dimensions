@@ -21,7 +21,7 @@ import { Plugin } from '../Plugin';
 export const BOT_DIR = path.join(__dirname, '../../../../local/bots');
 export const BOT_DIR_TEMP = path.join(__dirname, '../../../../local/botstemp');
 
-// declare global and merge declaration with Express Request to allow storage of data across middlewhere in typescript 
+// declare global and merge declaration with Express Request to allow storage of data across middleware in typescript 
 declare global {
   namespace Express {
     interface Request {
