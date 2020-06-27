@@ -59,8 +59,23 @@ describe('Testing Agent', () => {
   });
 
   describe("Testing Agent Initialization", () => {
+    it("should work in non-securemode", () => {
+      let a = new Dimension.Agent("./tests/js-kit/rps/rock.js", {id: 0, secureMode: false})
+      validateAgent(a, {id: 0, secureMode: false});
+    });
     it("should work in securemode", () => {
       let a = new Dimension.Agent("./tests/js-kit/rps/rock.js", {id: 0, secureMode: true})
+      validateAgent(a, {id: 0, secureMode: true});
     });
   });
+
 });
+
+const validateAgent = (a: Dimension.Agent, providedConfigs: any) => {
+  let vals = Dimension.Agent.OptionDefaults;
+  for (let key in providedConfigs) {
+    vals[key] = providedConfigs[key];
+  }
+  expect(a.isTerminated()).to.equal(false)
+  expect(a.options).to.containSubset(vals)
+}
