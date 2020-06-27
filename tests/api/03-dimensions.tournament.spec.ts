@@ -24,7 +24,7 @@ describe('Testing /api/dimensions/:dimensionID/tournament API', () => {
       activateStation: true,
       observe: true,
       loggingLevel: Logger.LEVEL.NONE,
-      id: "abcdef3"
+      id: "abcdef4"
     });
     origin += dimension.getStation().port
     endpoint = origin + `/api/dimensions/${dimension.id}`
@@ -40,6 +40,6 @@ describe('Testing /api/dimensions/:dimensionID/tournament API', () => {
     done();
   });
   after(() => {
-    dimension.getStation().stop();
+    dimension.cleanup();
   });
 });
