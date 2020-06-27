@@ -6,3 +6,4 @@ rm -fv $(find "./tests/ts-kit"  -name "*.js")
 
 rm -rf ./.nyc_output
 rm -rf ./coverage
+rm -rf /tmp/dbot

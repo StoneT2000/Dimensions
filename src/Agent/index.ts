@@ -125,15 +125,15 @@ export class Agent {
     this.cwd = pathparts.slice(0, -1).join('/');
     this.src = pathparts.slice(-1).join('/');
     this.srcNoExt = this.src.slice(0, -this.ext.length);
+    
+    // check if folder is valid
+    if(!fs.existsSync(this.cwd)) {
+      throw new AgentDirectoryError(`${this.cwd} directory does not exist, check if directory provided through the file is correct`, this.id);
+    }
 
     // check if file exists
     if(!fs.existsSync(file)) {
       throw new AgentFileError(`${file} does not exist, check if file path provided is correct`, this.id);
-    }
-
-    // check if folder is valid
-    if(!fs.existsSync(this.cwd)) {
-      throw new AgentDirectoryError(`${this.cwd} directory does not exist, check if directory provided through the file is correct`, this.id);
     }
 
     this.file = file;
