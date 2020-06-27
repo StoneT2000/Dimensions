@@ -44,7 +44,7 @@ export class MatchEngine {
    * send a match destroy signal, we spawn some processes and haven't spawned some others for the agents. As a result, 
    * all processes eventually get spawned but not all are cleaned up and killed.
    */
-  private killOffSignal = false;
+  killOffSignal = false;
   
   /** approx extra buffer time given to agents due to engine processing for timeout mechanism */
   static timeoutBuffer: number = 25; 

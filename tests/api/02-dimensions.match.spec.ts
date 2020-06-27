@@ -73,7 +73,7 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
     expect(match.results).to.eql(res.body.results)
   });
 
-  it(`GET ${base}/match/:matchID/state - should return match results for match with id matchID`, async () => {
+  it(`GET ${base}/match/:matchID/state - should return match state for match with id matchID`, async () => {
     let match = await dimension.createMatch(botList)
     await match.run();
     const res = await chai.request(endpoint)
@@ -82,13 +82,67 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
     expect(match.state).to.eql(res.body.state)
   });
 
+  it(`POST ${base}/match/:matchID/run - should run/resume match with id matchID if match is ready or stopped`, async () => {
+    let match = await dimension.createMatch(botList, {
+      bestOf: 101
+    })
+    expect(match.matchStatus).to.equal(Match.Status.READY);
+    const res = await chai.request(endpoint)
+    .post(`/match/${match.id}/run`);
+    expect(res.status).to.equal(200)
+    expect(match.matchStatus).to.equal(Match.Status.RUNNING);
+    
+    await match.stop();
+    expect(match.matchStatus).to.equal(Match.Status.STOPPED);
+    const res2 = await chai.request(endpoint)
+    .post(`/match/${match.id}/run`);
+    expect(res2.status).to.equal(200)
+    expect(match.matchStatus).to.equal(Match.Status.RUNNING);
+  });
+
+  it(`POST ${base}/match/:matchID/run - should run/resume match with id matchID if match is finished`, async () => {
+    let match = await dimension.createMatch(botList, {
+      bestOf: 9
+    })
+    try {
+      await match.run()
+    } catch (err) {
+
+    }
+    expect(match.matchStatus).to.equal(Match.Status.FINISHED);
+    match.configs.bestOf = 101
+    const res = await chai.request(endpoint)
+    .post(`/match/${match.id}/run`);
+
+    expect(res.status).to.equal(200)
+    expect(match.matchStatus).to.equal(Match.Status.RUNNING);
+  });
+
+  it(`POST ${base}/match/:matchID/run - should return 400, match already running, if match already running`, async () => {
+    let match = await dimension.createMatch(botList, {
+      bestOf: 101
+    });
+
+    // run match and ignore error if it is destroyed
+    match.run().catch(() => {})
+    const res = await chai.request(endpoint)
+    .post(`/match/${match.id}/run`);
+    expect(res.status).to.equal(400)
+    expect(match.matchStatus).to.equal(Match.Status.RUNNING);
+    expect(res.body).to.be.eql({
+      error: {
+        message: "Match is already running",
+        status: 400,
+      }
+    });
+  });
 
   // TODO
   // it(`GET ${base}/match/:matchID/replay - should return match replay for match with id matchID`, async () => {
   // });
 
-  after(() => {
-    dimension.cleanupMatches();
+  after(async () => {
+    await dimension.cleanupMatches();
   });
 });
 
