@@ -173,7 +173,7 @@ describe('Tournament Testing with RPS', () => {
         agentsPerMatch: [2],
         consoleDisplay: false,
         defaultMatchConfigs: {
-          bestOf: 329,
+          bestOf: 9,
           loggingLevel: Dimension.Logger.LEVEL.NONE
         },
         resultHandler: RockPaperScissorsDesign.winsResultHandler
@@ -242,7 +242,7 @@ describe('Tournament Testing with RPS', () => {
         agentsPerMatch: [2],
         consoleDisplay: false,
         defaultMatchConfigs: {
-          bestOf: 329,
+          bestOf: 9,
           loggingLevel: Dimension.Logger.LEVEL.NONE
         },
         resultHandler: RockPaperScissorsDesign.trueskillResultHandler
