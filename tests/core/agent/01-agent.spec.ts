@@ -1,6 +1,5 @@
 import * as Dimension from '../../../src';
 import chai from 'chai';
-import chaiHttp from 'chai-http'
 import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
 import sinonChai from "sinon-chai";
@@ -13,7 +12,6 @@ const expect = chai.expect;
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.use(chaiSubset)
-chai.use(chaiHttp)
 
 describe('Testing Agent', () => {
   let dimension: Dimension.DimensionType;
