@@ -94,4 +94,10 @@ describe('Testing Dimension Class', () => {
   it('should not be able to remove non-existent matches', () => {
     expect(d.removeMatch('j13k2m')).to.eventually.equal(false);
   });
+  after(() => {
+    ddefault.cleanupMatches();
+    ddefault.cleanupTournaments();
+    d.cleanupMatches();
+    d.cleanupTournaments();
+  });
 });

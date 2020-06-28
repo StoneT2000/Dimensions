@@ -292,6 +292,8 @@ describe('Tournament Testing with RPS', () => {
       testTournamentStopResume(RPSTrueskillLadder, done);
     });
   });
-  
+  after(() => {
+    myDimension.cleanup();
+  })
 
 });

@@ -54,6 +54,7 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
       // we test this by ensuring the score is correct, otherwise the extraneous output would make line count bot win
       // sometimes.
       expect(results.scores).to.eql({'0': 0, '1': 10});
+      myDimension_line_count.cleanup();
     });
     it('should allow for premature finish of message', async () => {
       let RPSDesign_line_count = new RockPaperScissorsDesign('RPS!', {
@@ -81,6 +82,7 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
       // we test this by ensuring the score is correct, otherwise the extraneous output would make line count bot win
       // sometimes.
       expect(results.scores).to.eql({'0': 0, '1': 10});
+      myDimension_line_count.cleanup();
     });
   });
   describe('Testing erasing extraneous output', () => {
@@ -375,28 +377,5 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
       expect(res.winner).to.equal('agent_0');
     });
   });
-  describe('Testing removing matches', () => {
-    it('should remove matches from dimension', async () => {
-      let match = await myDimension.createMatch(
-        ['./tests/js-kit/rps/delaybotpaper.js', './tests/js-kit/rps/delaybotrock.js'],
-        {
-          bestOf: 11,
-          loggingLevel: Dimension.Logger.LEVEL.NONE,
-          engineOptions: {
-            timeout: {
-              active: false
-            }
-          }
-        }
-      );
-      expect(match.run()).to.eventually.be.rejectedWith('Match was destroyed');
-      await myDimension.removeMatch(match.id);
-
-    });
-  });
-
-  after(() => {
-    myDimension.getStation().stop()
-  })
 });
 
