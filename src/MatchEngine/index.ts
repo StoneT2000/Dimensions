@@ -96,39 +96,6 @@ export class MatchEngine {
     return;
   }
 
-
-  /**
-   * Returns a promise that resolves once the process succesfully spawned and rejects if error occurs
-   * @param pid - process id to check
-   */
-  private async spawnedPromise(pid: number) {
-    const refreshRate = 10;
-    const checkSpawn = () => {
-      return new Promise((resolve, reject) => {
-        exec(`ps -p ${pid}`, (err, stdout) => {
-          if (err) reject(err);
-          if (stdout.split('\n').length > 2) {
-            resolve();
-          }
-          reject();
-        });
-      })
-    }
-    const setSpawnCheckTimer = (resolve, reject) => {
-      setTimeout(() => {
-        checkSpawn().then(() => {
-          resolve();
-        }).catch((err) => {
-          if (err) reject(err);
-          setSpawnCheckTimer(resolve, reject);
-        })
-      }, refreshRate);
-    }
-    return new Promise((resolve, reject) => {
-      setSpawnCheckTimer(resolve, reject);
-    });
-  }
-
   /**
    * Initializes a single agent, called by {@link initialize}
    * @param agent - agent to initialize
@@ -355,10 +322,11 @@ export class MatchEngine {
         if (agent.options.secureMode) {
           let tmpdir = os.tmpdir();
           if (agent.cwd.slice(0, tmpdir.length) === tmpdir) {
-            cleanUpPromises.push(removeDirectory(agent.cwd));
+            // ignore error if directory doesn't exist
+            cleanUpPromises.push(removeDirectory(agent.cwd).catch(() => {}));
           }
           else {
-            this.log.error('couldn\'t remove agent files while in secure mode');
+            this.log.error('couldn\'t remove agent files while in secure mode as it was not in the temporary directory');
           }
         }
       });

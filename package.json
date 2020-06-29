@@ -9,7 +9,7 @@
     "prepublishOnly": "npm run test",
     "test": "npm run clean && npm run test-api && npm run test-core",
     "test-api": "nyc --reporter=html --no-clean mocha tests/api/**/*.spec.ts",
-    "test-core": "nyc --reporter=html --no-clean mocha tests/core/**/*.spec.ts ",
+    "test-core": "nyc --reporter=html --no-clean mocha tests/core/**/*.spec.ts",
     "report": "nyc report",
     "docs": "typedoc --theme ./theme/dimensions/ --mode modules --exclude ./src/Station/ --out docs ./src && touch ./docs/.nojekyll ",
     "watch": "tsc -w",

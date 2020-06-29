@@ -76,6 +76,7 @@ export class RockPaperScissorsDesign extends Dimension.Design {
     // each command in commands is an object with an agentID field and a command field, containing the string the agent sent
     let agent0Command = null;
     let agent1Command = null;
+    
 
     // there isn't a gurantee in the command order, so we need to loop over the commands and assign them correctly
     for (let i = 0; i < commands.length; i++) {
