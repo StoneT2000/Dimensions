@@ -103,7 +103,7 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
 
   it(`POST ${base}/match/:matchID/run - should run/resume match with id matchID if match is finished`, async () => {
     let match = await dimension.createMatch(botList, {
-      bestOf: 9
+      bestOf: 91
     })
     try {
       await match.run()
