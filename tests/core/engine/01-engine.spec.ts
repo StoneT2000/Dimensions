@@ -4,12 +4,11 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
 import sinonChai from "sinon-chai";
+import sinon from "sinon";
 import 'mocha';
-import { Tournament, Logger, MatchEngine, Design, Match, Agent } from '../../../src';
-import { match } from 'sinon';
+import { Logger, MatchEngine, Match, Agent } from '../../../src';
 import { deepCopy } from '../../../src/utils/DeepCopy';
 import { stripFunctions } from '../utils/stripfunctions';
-import { DeepPartial } from '../../../src/utils/DeepPartial';
 const expect = chai.expect;
 chai.should()
 chai.use(sinonChai);
@@ -19,7 +18,7 @@ chai.use(chaiSubset)
 describe('Testing MatchEngine', () => {
   let ddefault: Dimension.DimensionType;
   let d: Dimension.DimensionType;
-  let botList = ['./tests/js-kit/rps/rock.js', './tests/js-kit/rps/paper.js']
+  let botList = ['./tests/kits/js/normal/rock.js', './tests/kits/js/normal/paper.js']
   let lineCountBotList = ['./tests/kits/js/linecount/rock.js', './tests/kits/js/linecount/paper.js']
   let twoLineCountBotList = ['./tests/kits/js/linecount/rock.2line.js', './tests/kits/js/linecount/paper.2line.js']
   let changedOptions = {
@@ -167,6 +166,20 @@ describe('Testing MatchEngine', () => {
         expect(results.scores).to.eql({'0': 11, '1': 0});
       });
     });
+    it("should allow stderr output from agents", async () => {
+      let match = await d.createMatch(["./tests/kits/js/normal/rock.withstderr.js", "./tests/kits/js/normal/paper.js"], {
+        bestOf: 11,
+        engineOptions: {
+          noStdErr: false
+        }
+      });
+      let sandbox = sinon.createSandbox();
+      let stderrSpy = sandbox.spy(match.matchEngine.getLogger(), 'error');
+
+      let results = await match.run();
+      expect(stderrSpy).to.be.calledWith("0: test");
+      expect(results.scores).to.eql({'0': 0, '1': 11});
+    });
   });
 
   describe("Test secureMode", () => {
@@ -184,15 +197,14 @@ describe('Testing MatchEngine', () => {
     it("should run correctly", async () => {
       let match = await d.createMatch(botList, {
         bestOf: 11,
-        secureMode: true,
-        // loggingLevel: 10
+        secureMode: true
       });
       let results = await match.run();
       expect(results.scores).to.eql({'0': 0, '1': 11});
     });
   });
 
-  after( async () => {
+  after(() => {
     d.cleanupMatches();
     ddefault.cleanupMatches();
   });

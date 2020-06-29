@@ -604,6 +604,12 @@ export class MatchEngine {
     return parsed;
   }
 
+  /**
+   * Returns the logger for this match engine
+   */
+  public getLogger() {
+    return this.log;
+  }
 }
 
 export module MatchEngine {
