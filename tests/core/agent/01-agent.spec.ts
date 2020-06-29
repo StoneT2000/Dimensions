@@ -15,7 +15,6 @@ chai.use(chaiSubset)
 
 describe('Testing Agent', () => {
   let dimension: Dimension.DimensionType;
-  let RPSTournament: Dimension.Tournament.RoundRobin
   before(() => {
     let rpsDesign = new RockPaperScissorsDesign('RPS');
     dimension = Dimension.create(rpsDesign, {
@@ -23,19 +22,6 @@ describe('Testing Agent', () => {
       observe: false,
       loggingLevel: Logger.LEVEL.NONE,
       id: "abcdef"
-    });
-    RPSTournament = <Dimension.Tournament.RoundRobin>dimension.createTournament(['./tests/js-kit/rps/rock.js', './tests/js-kit/rps/paper.js'], {
-      type: Dimension.Tournament.Type.ROUND_ROBIN,
-      rankSystem: Dimension.Tournament.RankSystem.WINS,
-      name: 'Rock Paper Scissors',
-      loggingLevel: Dimension.Logger.LEVEL.NONE,
-      agentsPerMatch: [2],
-      consoleDisplay: false,
-      defaultMatchConfigs: {
-        bestOf: 3,
-        loggingLevel: Dimension.Logger.LEVEL.NONE
-      },
-      resultHandler: RockPaperScissorsDesign.winsResultHandler
     });
   });
   

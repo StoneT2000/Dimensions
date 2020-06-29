@@ -85,15 +85,10 @@ describe('Testing Dimension Class', () => {
     let match = await d.createMatch(botList)
     expect(d.removeMatch(match.id)).to.eventually.equal(true)
   });
-
-  // it('should be able to remove tournaments', async () => {
-  //   let match = await d.createMatch(botList)
-  //   expect(d.removeMatch(match.id)).to.eventually.equal(true)
-  // });
-
   it('should not be able to remove non-existent matches', () => {
     expect(d.removeMatch('j13k2m')).to.eventually.equal(false);
   });
+  
   after(() => {
     ddefault.cleanupMatches();
     ddefault.cleanupTournaments();
