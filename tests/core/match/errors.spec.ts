@@ -1,5 +1,5 @@
-import {create, FatalError, Design, DimensionType, Logger, Agent, DError} from '../src';
-import { DominationDesign } from './domination';
+import {create, FatalError, Design, DimensionType, Logger, Agent, DError} from '../../../src';
+import { DominationDesign } from '../../domination';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import sinonChai from "sinon-chai";
@@ -21,12 +21,7 @@ describe('Testing Errors', () => {
     });
   });
   describe('Errors from agent class', () => {
-    it('should throw fatal if no id provided for agent', () => {
-      let shouldThrow = () => {
-        new Agent('./tests/rps.js', {});
-      }
-      return expect(shouldThrow).to.throw(DError.AgentMissingIDError);
-    });
+
     it('should throw fatal if unrecognizeed file provided for agent to spawn', () => {
       let agent = new Agent('./tests/testingfiles/fakebot.fakeext', {name: 'fake', id: 2});
       return expect(agent._spawn()).to.be

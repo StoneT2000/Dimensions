@@ -108,6 +108,7 @@ router.get('/:matchID/state', (req, res) => {
 
 /**
  * POST
+ * 
  * Run/resume a match if it hasn't initialiized, or was finished, or is currently stopped
  */
 router.post('/:matchID/run', requireAdmin, async (req: Request, res: Response, next: NextFunction) => {
@@ -117,7 +118,7 @@ router.post('/:matchID/run', requireAdmin, async (req: Request, res: Response, n
       await req.data.match.initialize();
     }
     else if (req.data.match.matchStatus === Match.Status.RUNNING) {
-      return next(new error.BadRequest('Match is already riunning'));
+      return next(new error.BadRequest('Match is already running'));
     }
     // run or resume the match
     if (req.data.match.matchStatus === Match.Status.STOPPED) {
@@ -125,6 +126,7 @@ router.post('/:matchID/run', requireAdmin, async (req: Request, res: Response, n
     }
     else {
       // run and do nothing with the error
+      // match should be in ready state
       req.data.match.run().catch(() => {});
     }
     res.json({error: null, msg:'Running Match'})

@@ -16,14 +16,9 @@ const router = express.Router();
  */
 export const getAgent = (req: Request, res: Response, next: NextFunction) => {
   let agent: Agent;
-  if (req.data.match.idToAgentsMap) {
-    agent = req.data.match.idToAgentsMap.get(parseInt(req.params.agentID));
-  }
-  else {
-    agent = req.data.match.agents[parseInt(req.params.agentID)];
-  }
+  agent = req.data.match.idToAgentsMap.get(parseInt(req.params.agentID));
   if (!agent) {
-    return next(new error.BadRequest(`No match found with name or id of '${req.params.matchID}' in dimension ${req.data.dimension.id} - '${req.data.dimension.name}'`));
+    return next(new error.BadRequest(`No agent found with id of '${req.params.agentID}' in match '${req.data.match.id}' in dimension ${req.data.dimension.id} - '${req.data.dimension.name}'`));
   }
   req.data.agent = agent;
   next();

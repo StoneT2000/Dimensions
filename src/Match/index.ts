@@ -215,6 +215,9 @@ export class Match {
       this.log.detail('Match Configs', this.configs);
       
       this.timeStep = 0;
+
+      // this allows engine to be reused after it ran once
+      this.matchEngine.killOffSignal = false;
       
       // copy over any agent bot files if dimension has a backing storage servicde and the agent has botkey specified
       // copy them over the agent's specified file location to use
@@ -311,8 +314,8 @@ export class Match {
         
         this.matchStatus = Match.Status.RUNNING
 
-        // check if our design is a javascript/typescript based design or custom and to be executed with a provided command
-        
+        // check if our design is a javascript/typescript based design or custom and to be executed with a 
+        // provided command
         let overrideOptions = this.design.getDesignOptions().override;
         if (overrideOptions.active) {
           this.log.system('Running custom');

@@ -41,12 +41,6 @@ export class Logger {
   systemIO(...message: any[]) {
     if (this.level >= Logger.LEVEL.SYSTEM_IO) console.log(`${colors.red('[SYSTEM I/O]')} (${this.identifier}) -`, ...message);
   }
-  systembar2() {
-    if (this.level >= Logger.LEVEL.SYSTEM2) console.log(this.bar(colors.red('[SYSTEM 2]')));
-  }
-  system2(...message: any[]) {
-    if (this.level >= Logger.LEVEL.SYSTEM2) console.log(`${colors.red('[SYSTEM 2]')} (${this.identifier}) -`, ...message);
-  }
   systembar() {
     if (this.level >= Logger.LEVEL.SYSTEM) console.log(this.bar(colors.red('[SYSTEM]')));
   }
@@ -95,8 +89,6 @@ export module Logger {
     DETAIL,
     /** System level logs */
     SYSTEM,
-    /** System level 2 logs */
-    SYSTEM2,
     /** System IO logs. All I/O related details */
     SYSTEM_IO,
     /** All logs */

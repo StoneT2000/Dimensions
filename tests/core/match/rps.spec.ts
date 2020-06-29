@@ -1,13 +1,13 @@
-import Dimension = require('../src');
+import * as Dimension from '../../../src'
 let MatchStatus = Dimension.Match.Status;
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import 'mocha';
-import { Logger, MatchWarn, Design, Match } from '../src';
+import { Logger, MatchWarn, Design, Match } from '../../../src';
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
-const RockPaperScissorsDesign = require('./rps').RockPaperScissorsDesign;
+import { RockPaperScissorsDesign } from '../../rps';
 
 describe('Rock Paper Scissors Testing - Testing engine and match', () => {
   let RPSDesign: Design;
@@ -34,7 +34,7 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
     it('should be able to use line count based engine', async () => {
       let RPSDesign_line_count = new RockPaperScissorsDesign('RPS!', {
         engineOptions: {
-          commandFinishPolicy: 'line_count'
+          commandFinishPolicy: Dimension.MatchEngine.COMMAND_FINISH_POLICIES.LINE_COUNT
         }
       });
       let myDimension_line_count = Dimension.create(RPSDesign_line_count, {
@@ -54,11 +54,12 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
       // we test this by ensuring the score is correct, otherwise the extraneous output would make line count bot win
       // sometimes.
       expect(results.scores).to.eql({'0': 0, '1': 10});
+      myDimension_line_count.cleanup();
     });
     it('should allow for premature finish of message', async () => {
       let RPSDesign_line_count = new RockPaperScissorsDesign('RPS!', {
         engineOptions: {
-          commandFinishPolicy: 'line_count',
+          commandFinishPolicy: Dimension.MatchEngine.COMMAND_FINISH_POLICIES.LINE_COUNT,
           commandLines: {
             max: 2
           }
@@ -81,6 +82,7 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
       // we test this by ensuring the score is correct, otherwise the extraneous output would make line count bot win
       // sometimes.
       expect(results.scores).to.eql({'0': 0, '1': 10});
+      myDimension_line_count.cleanup();
     });
   });
   describe('Testing erasing extraneous output', () => {
@@ -375,24 +377,5 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
       expect(res.winner).to.equal('agent_0');
     });
   });
-  describe('Testing removing matches', () => {
-    it('should remove matches from dimension', async () => {
-      let match = await myDimension.createMatch(
-        ['./tests/js-kit/rps/delaybotpaper.js', './tests/js-kit/rps/delaybotrock.js'],
-        {
-          bestOf: 11,
-          loggingLevel: Dimension.Logger.LEVEL.NONE,
-          engineOptions: {
-            timeout: {
-              active: false
-            }
-          }
-        }
-      );
-      expect(match.run()).to.eventually.be.rejectedWith('Match was destroyed');
-      await myDimension.removeMatch(match.id);
-
-    });
-  })
 });
 

@@ -1,13 +1,13 @@
-import * as Dimension from '../src';
+import * as Dimension from '../../../src';
 let MatchStatus = Dimension.Match.Status;
-const RockPaperScissorsDesign = require('./rps').RockPaperScissorsDesign;
+import { RockPaperScissorsDesign } from '../../rps';
 
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import 'mocha';
-import { Tournament, Logger, DError, Player } from '../src';
+import { Tournament, Logger, DError, Player } from '../../../src';
 import TournamentError = DError.TournamentError;
-import { DeepPartial } from '../src/utils/DeepPartial';
+import { DeepPartial } from '../../../src/utils/DeepPartial';
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -173,7 +173,7 @@ describe('Tournament Testing with RPS', () => {
         agentsPerMatch: [2],
         consoleDisplay: false,
         defaultMatchConfigs: {
-          bestOf: 329,
+          bestOf: 9,
           loggingLevel: Dimension.Logger.LEVEL.NONE
         },
         resultHandler: RockPaperScissorsDesign.winsResultHandler
@@ -242,7 +242,7 @@ describe('Tournament Testing with RPS', () => {
         agentsPerMatch: [2],
         consoleDisplay: false,
         defaultMatchConfigs: {
-          bestOf: 329,
+          bestOf: 9,
           loggingLevel: Dimension.Logger.LEVEL.NONE
         },
         resultHandler: RockPaperScissorsDesign.trueskillResultHandler
@@ -292,6 +292,8 @@ describe('Tournament Testing with RPS', () => {
       testTournamentStopResume(RPSTrueskillLadder, done);
     });
   });
-  
+  after(() => {
+    myDimension.cleanup();
+  })
 
 });

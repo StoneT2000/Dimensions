@@ -18,7 +18,8 @@ import { removeDirectory } from '../../../../utils/System';
 const router = express.Router();
 
 /**
- * GEt
+ * GET
+ * 
  * Gets all observed dimensions
  */
 router.get('/', (req:Request, res: Response) => {
@@ -31,10 +32,13 @@ router.get('/', (req:Request, res: Response) => {
 });
 
 /**
+ * GET
+ * 
  * Get a dimension from id 
  */
 const getDimension = (req: Request, res, next: express.NextFunction) => {
   let id = req.params.id;
+  // TODO: the following line may never occur actually
   if (!id) return next(new error.BadRequest('ID must be provided'));
   let dimension: Dimension = req.app.get('dimensions').get(id);
   if (!dimension) {
@@ -53,17 +57,14 @@ const pickDimension = (d: Dimension) => {
   let picked = {...pick(d, 'configs', 'id', 'log', 'name', 'statistics')};
   let pickedDesign = pickDesign(d.design);
   picked.design = pickedDesign;
-  let pickedTournaments = {}
-  d.tournaments.forEach((t) => {
-    pickedTournaments[t.id] = pickTournament(t);
-  });
-  picked.tournaments = pickedTournaments;
   return picked;
 }
 
 router.use('/:id', getDimension);
 
 /**
+ * GET
+ * 
  * Get the dimension and relevant data
  */
 router.get('/:id', (req, res) => {
@@ -88,6 +89,7 @@ router.get('/:id/match', (req: Request, res: Response) => {
 
 /**
  * POST
+ * 
  * Creates a match using the provided zip files of bots.
  * Requires files: Array<zip files>, paths: JSON encoding of array of paths to the main file in the zip file, 
  * names?: Array<string>
@@ -115,6 +117,8 @@ router.post('/:id/match', async (req: Request, res: Response, next: NextFunction
 });
 
 /**
+ * DELETE
+ * 
  * Deletes a match
  */
 router.delete('/:id/match/:matchID', async (req, res, next) => {
@@ -132,6 +136,7 @@ router.delete('/:id/match/:matchID', async (req, res, next) => {
 
 /**
  * GET
+ * 
  * Gets all tournaments in a dimension
  */
 router.get('/:id/tournament', (req: Request, res: Response) => {

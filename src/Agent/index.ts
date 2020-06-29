@@ -125,15 +125,15 @@ export class Agent {
     this.cwd = pathparts.slice(0, -1).join('/');
     this.src = pathparts.slice(-1).join('/');
     this.srcNoExt = this.src.slice(0, -this.ext.length);
+    
+    // check if folder is valid
+    if(!fs.existsSync(this.cwd)) {
+      throw new AgentDirectoryError(`${this.cwd} directory does not exist, check if directory provided through the file is correct`, this.id);
+    }
 
     // check if file exists
     if(!fs.existsSync(file)) {
       throw new AgentFileError(`${file} does not exist, check if file path provided is correct`, this.id);
-    }
-
-    // check if folder is valid
-    if(!fs.existsSync(this.cwd)) {
-      throw new AgentDirectoryError(`${this.cwd} directory does not exist, check if directory provided through the file is correct`, this.id);
     }
 
     this.file = file;
@@ -275,8 +275,8 @@ export class Agent {
    * Compile whatever is needed and validate files. Called by {@link MatchEngine} and has a timer set by the 
    * maxCompileTime option in {@link Agent.Options}
    */
-  _compile(): Promise<void> {
-    return new Promise((resolve, reject) => {
+  async _compile(): Promise<void> {
+    return new Promise( async (resolve, reject) => {
       let p: ChildProcess;
       let compileTimer = setTimeout(() => {
         reject(new AgentCompileTimeoutError('Agent went over compile time during the compile stage', this.id));
@@ -294,34 +294,22 @@ export class Agent {
             break;
             // TODO: Make these compile options configurable
           case '.js':
-            p = spawn(`sudo`, ['node', '--check', this.src], {
-              cwd: this.cwd
-            })
+            p = await this._spawnCompileProcess('node', ['--check', this.src])
             break;
           case '.ts':
-            p = spawn(`sudo`, [...`tsc --esModuleInterop --allowJs -m commonjs --lib es5`.split(' '), this.src], {
-              cwd: this.cwd
-            });
+            p = await this._spawnCompileProcess('tsc', ['--esModuleInterop', '--allowJs', '-m', 'commonjs', '--lib', 'es5', this.src])
             break;
           case '.go':
-            p = spawn(`sudo`, ['go', 'build', '-o', `${this.srcNoExt}.out`, this.src], {
-              cwd: this.cwd
-            });
+            p = await this._spawnCompileProcess('go', ['build', '-o', `${this.srcNoExt}.out`, this.src])
             break;
           case '.cpp':
-            p = spawn(`sudo`, ['g++', '-std=c++11', '-O3', '-o', `${this.srcNoExt}.out`, this.src], {
-              cwd: this.cwd
-            })
+            p = await this._spawnCompileProcess('g++', ['-std=c++11', '-O3', '-o', `${this.srcNoExt}.out`, this.src])
             break;
           case '.c':
-            p = spawn(`sudo`, ['gcc', '-O3', '-o', `${this.srcNoExt}.out`, this.src], {
-              cwd: this.cwd
-            });
+            p = await this._spawnCompileProcess('gcc', ['-O3', '-o', `${this.srcNoExt}.out`, this.src])
             break;
           case '.java':
-            p = spawn(`sudo`, ['javac', this.src], {
-              cwd: this.cwd
-            });
+            p = await this._spawnCompileProcess('javac', [this.src])
             break;
           default:
             reject(new NotSupportedError(`Language with extension ${this.ext} is not supported at the moment`));
@@ -352,6 +340,23 @@ export class Agent {
       }
       else {
         clearTimeout(compileTimer);
+      }
+    });
+  }
+
+  async _spawnCompileProcess(command: string, args: Array<string>): Promise<ChildProcess> {
+    return new Promise((resolve, reject) => {
+      if (this.options.secureMode) {
+        let p = spawn('sudo', [command, ...args], {
+          cwd: this.cwd
+        }).on('error', (err) => { reject(err) })
+        resolve(p);
+      }
+      else {
+        let p = spawn(command, [...args], {
+          cwd: this.cwd
+        }).on('error', (err) => { reject(err) })
+        resolve(p);
       }
     });
   }
