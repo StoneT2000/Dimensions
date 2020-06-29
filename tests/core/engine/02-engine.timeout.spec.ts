@@ -30,7 +30,7 @@ describe('Testing MatchEngine', () => {
         bestOf: 11,
         engineOptions: {
           timeout: {
-            max: 100
+            max: 150
           }
         }
       });
@@ -41,7 +41,7 @@ describe('Testing MatchEngine', () => {
         bestOf: 11,
         engineOptions: {
           timeout: {
-            max: 100
+            max: 150
           }
         }
       });
@@ -54,7 +54,7 @@ describe('Testing MatchEngine', () => {
       const someMessage = "some message";
       const customEngineOptions = {
         timeout: {
-          max: 100,
+          max: 150,
           timeoutCallback: (agent: Agent, match: Match, engineOptions: MatchEngine.EngineOptions) => {
             match.kill(agent.id);
             match.log.detail(`custom message! - agent ${agent.id} - '${agent.name}' timed out after ${engineOptions.timeout.max} ms`);
