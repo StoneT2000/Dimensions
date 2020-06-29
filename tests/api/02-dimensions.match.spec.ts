@@ -150,7 +150,7 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
 
   it(`POST ${base}/match/:matchID/stop - should return 400, match can't be stopped while in uninitialized, ready, stopped, or finished conditions`, async () => {
     let match = await dimension.createMatch(botList, {
-      bestOf: 9
+      bestOf: 101
     });
 
     match.matchStatus = Match.Status.UNINITIALIZED;
