@@ -30,61 +30,7 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
     
     
   });
-  describe('Test line count match engine', () => {
-    it('should be able to use line count based engine', async () => {
-      let RPSDesign_line_count = new RockPaperScissorsDesign('RPS!', {
-        engineOptions: {
-          commandFinishPolicy: Dimension.MatchEngine.COMMAND_FINISH_POLICIES.LINE_COUNT
-        }
-      });
-      let myDimension_line_count = Dimension.create(RPSDesign_line_count, {
-        name: 'RPS_line_count',
-        activateStation: false,
-        observe: false,
-        loggingLevel: Dimension.Logger.LEVEL.NONE
-      });
-      let results = await myDimension_line_count.runMatch(
-        ['./tests/js-kit/rps/line_countbot.js', './tests/js-kit/rps/line_countbotpaper.js'],
-        {
-          name: 'line-count (0)',
-          bestOf: 10
-        }
-      )
-      // line count bot also sends extraneous output of 's': scissors, which should all be erased by matchengine
-      // we test this by ensuring the score is correct, otherwise the extraneous output would make line count bot win
-      // sometimes.
-      expect(results.scores).to.eql({'0': 0, '1': 10});
-      myDimension_line_count.cleanup();
-    });
-    it('should allow for premature finish of message', async () => {
-      let RPSDesign_line_count = new RockPaperScissorsDesign('RPS!', {
-        engineOptions: {
-          commandFinishPolicy: Dimension.MatchEngine.COMMAND_FINISH_POLICIES.LINE_COUNT,
-          commandLines: {
-            max: 2
-          }
-        }
-      });
-      let myDimension_line_count = Dimension.create(RPSDesign_line_count, {
-        name: 'RPS_line_count',
-        activateStation: false,
-        observe: false,
-        loggingLevel: Dimension.Logger.LEVEL.NONE
-      });
-      let results = await myDimension_line_count.runMatch(
-        ['./tests/js-kit/rps/line_countbotrock.js', './tests/js-kit/rps/line_countbotpaper_2lines.js'],
-        {
-          name: 'line-count (1)',
-          bestOf: 10
-        }
-      )
-      // line count bot also sends extraneous output of 's': scissors, which should all be erased by matchengine
-      // we test this by ensuring the score is correct, otherwise the extraneous output would make line count bot win
-      // sometimes.
-      expect(results.scores).to.eql({'0': 0, '1': 10});
-      myDimension_line_count.cleanup();
-    });
-  });
+  
   describe('Testing erasing extraneous output', () => {
     it('should erase extraneous output', async () => {
       let results = await myDimension.runMatch(

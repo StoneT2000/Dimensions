@@ -6,9 +6,10 @@ import chaiSubset from 'chai-subset';
 import sinonChai from "sinon-chai";
 import sinon from "sinon";
 import 'mocha';
-import { Logger, MatchEngine, Match, Agent } from '../../../src';
+import { Logger, MatchEngine, Match, Agent, Design } from '../../../src';
 import { deepCopy } from '../../../src/utils/DeepCopy';
 import { stripFunctions } from '../utils/stripfunctions';
+import { createCustomDesign } from '../utils/createCustomDesign';
 const expect = chai.expect;
 chai.should()
 chai.use(sinonChai);
@@ -201,6 +202,27 @@ describe('Testing MatchEngine', () => {
       });
       let results = await match.run();
       expect(results.scores).to.eql({'0': 0, '1': 11});
+    });
+  });
+
+  describe("Test custom designs", () => {
+    let custom: Design;
+    let d: Dimension.DimensionType;
+    before(() => {
+      custom = createCustomDesign();
+      d = Dimension.create(custom, {
+        activateStation: false,
+        observe: false,
+        loggingLevel: Logger.LEVEL.NONE
+      });
+    });
+    it("should initialize correctly", () => {
+
+    });
+
+    it("should run correctly", async () => {
+      let results = await d.runMatch(botList);
+      expect(results).to.eql({ranks: [{agentID: 0, rank: 1}, {agentID: 1, rank: 2}] })
     });
   });
 
