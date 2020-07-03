@@ -16,7 +16,7 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.use(chaiSubset)
 
-describe('Testing MatchEngine', () => {
+describe('Testing MatchEngine Core', () => {
   let ddefault: Dimension.DimensionType;
   let d: Dimension.DimensionType;
   let botList = ['./tests/kits/js/normal/rock.js', './tests/kits/js/normal/paper.js']

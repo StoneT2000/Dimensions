@@ -31,28 +31,6 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
     
   });
   
-  describe('Testing erasing extraneous output', () => {
-    it('should erase extraneous output', async () => {
-      let results = await myDimension.runMatch(
-        ['./tests/js-kit/rps/rock.js', './tests/js-kit/rps/paper.js'],
-        {
-          name: 'erasure of output (1)',
-          bestOf: 100
-        }
-      )
-      expect(results.scores).to.eql({'0': 0, '1': 100});
-    })
-    it('should erase extraneous output part 2', async () => {
-      let results = await myDimension.runMatch(
-        ['./tests/js-kit/rps/smarter.js', './tests/js-kit/rps/paper.js'],
-        {
-          name: 'erasure of output (3)',
-          bestOf: 30
-        }
-      )
-      expect(results.scores).to.eql({'0': 30, '1': 0});
-    });
-  });
   describe('Testing Multi-language support', () => {
     it('should support python and python3', async () => {
       let results = await myDimension.runMatch(

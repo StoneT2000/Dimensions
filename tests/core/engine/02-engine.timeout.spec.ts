@@ -13,7 +13,7 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.use(chaiSubset)
 
-describe('Testing MatchEngine', () => {
+describe('Testing MatchEngine Timeout Mechanism', () => {
   let d: Dimension.DimensionType;
   let rpsDesign = new RockPaperScissorsDesign('RPS');
   before( async () => {
