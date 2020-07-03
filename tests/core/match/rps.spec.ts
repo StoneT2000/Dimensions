@@ -93,41 +93,5 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
       await match.resume();
     });
   });
-
-  describe('Testing memory limit mechanism', () => {
-    it('should kill off bots by default if they go over memory', async () => {
-      let res = await myDimension.runMatch(
-        ['./tests/js-kit/rps/paper.js', './tests/js-kit/rps/rock.js'],
-        {
-          bestOf: 5,
-          loggingLevel: Dimension.Logger.LEVEL.ERROR,
-          engineOptions: {
-            memory: {
-              limit: 1000
-            }
-          }
-        }
-      );
-      expect(res.terminated[0]).to.equal('terminated');
-      expect(res.terminated[1]).to.equal('terminated');
-      return expect(res.winner).to.equal('Tie');
-    });
-    it('should not kill off bots if mechanism turned off', async () => {
-      let res = await myDimension.runMatch(
-        ['./tests/js-kit/rps/paper.js', './tests/js-kit/rps/rock.js'],
-        {
-          bestOf: 5,
-          loggingLevel: Dimension.Logger.LEVEL.ERROR,
-          engineOptions: {
-            memory: {
-              active: false,
-              limit: 1000
-            }
-          }
-        }
-      );
-      return expect(res.winner).to.equal('agent_0');
-    });
-  });
 });
 
