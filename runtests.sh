@@ -1,12 +1,11 @@
-#!/bin/bash -eo pipefail
+#!/bin/bash
 
 # clean out test artifacts
 sudo npm run clean
 
 
-# TODO, split core into parts
-nyc --reporter=html --no-clean mocha tests/core/**/*.spec.ts && \
-nyc --reporter=html --no-clean mocha tests/api/**/*.spec.ts
+# test core, then api
+nyc --reporter=html --no-clean mocha tests/core/**/*.spec.ts tests/api/**/*.spec.ts
 
 
 
