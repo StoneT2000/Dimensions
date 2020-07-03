@@ -11,7 +11,7 @@ tests/run.*.js
 *.DS_Store
 *.out
 *.class
-tests/ts-kit/**/*.js
+tests/kits/ts/**/*.js
 .nyc_output
 src/Station/local/bots
 .devcontainer
