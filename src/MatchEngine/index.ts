@@ -204,9 +204,7 @@ export class MatchEngine {
         }
       }
       checkAgentMemoryUsage();
-      agent.memoryWatchInterval = setInterval(() => {
-        checkAgentMemoryUsage();
-      }, this.engineOptions.memory.checkRate);
+      agent.memoryWatchInterval = setInterval(checkAgentMemoryUsage, this.engineOptions.memory.checkRate);
     }
 
 

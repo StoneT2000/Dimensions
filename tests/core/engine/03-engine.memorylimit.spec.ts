@@ -7,6 +7,7 @@ import sinonChai from "sinon-chai";
 import sinon from "sinon";
 import 'mocha';
 import { Logger, Match, MatchEngine, Agent } from '../../../src';
+import { DeepPartial } from '../../../src/utils/DeepPartial';
 const expect = chai.expect;
 chai.should()
 chai.use(sinonChai);
@@ -39,14 +40,14 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
       expect(results.terminated[1]).to.equal('terminated');
     });
 
-    it("should allow for custom timeout functions", async () => {
+    it("should allow for custom memory limit reached functions", async () => {
       const someMessage = "some message";
-      const customEngineOptions = {
-        timeout: {
-          max: 150,
-          timeoutCallback: (agent: Agent, match: Match, engineOptions: MatchEngine.EngineOptions) => {
+      const customEngineOptions: DeepPartial<MatchEngine.EngineOptions> = {
+        memory: {
+          limit: 100,
+          memoryCallback: (agent: Agent, match: Match, engineOptions: MatchEngine.EngineOptions) => {
             match.kill(agent.id);
-            match.log.detail(`custom message! - agent ${agent.id} - '${agent.name}' timed out after ${engineOptions.timeout.max} ms`);
+            match.log.detail(`custom message! - agent ${agent.id} - '${agent.name}' reached max memory!`);
             match.log.detail(someMessage)
             // engine options provided should be the same as the match itself
             expect(match.matchEngine.getEngineOptions()).to.be.equal(engineOptions);
@@ -55,7 +56,7 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
       }
       let sandbox = sinon.createSandbox();
       
-      let match = await d.createMatch(['./tests/kits/js/normal/rockdelayed.js', './tests/kits/js/normal/paper.js'], {
+      let match = await d.createMatch(['./tests/kits/js/normal/rock.js', './tests/kits/js/normal/paper.js'], {
         bestOf: 11,
         engineOptions: customEngineOptions
       });
@@ -63,17 +64,20 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
       let logspy = sandbox.spy(match.log, 'detail');
       let results = await match.run();
       expect(results.terminated[0]).to.equal('terminated');
-      expect(killSpy).to.be.calledWithExactly(0);
-      expect(logspy).to.be.callCount(2);
+      expect(results.terminated[1]).to.equal('terminated');
+      expect(killSpy).to.be.calledWith(0);
+      expect(killSpy).to.be.calledWith(1);
+      expect(logspy).to.be.callCount(4);
       expect(logspy).to.be.calledWith(someMessage);
     });
 
-    it("should allow for turning off timeout", async () => {
-      let match = await d.createMatch(['./tests/kits/js/normal/rockdelayed.js', './tests/kits/js/normal/paper.js'], {
-        bestOf: 3,
+    it("should allow for turning off memory limit", async () => {
+      let match = await d.createMatch(['./tests/kits/js/normal/rock.js', './tests/kits/js/normal/paper.js'], {
+        bestOf: 9,
         engineOptions: {
-          timeout: {
-            active: false
+          memory: {
+            active: false,
+            limit: 100
           }
         }
       });
@@ -82,7 +86,7 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
       let results = await match.run();
       // match.kill should never get called
       expect(killSpy).to.be.callCount(0);
-      expect(results.scores).to.eql({'0': 0, '1': 3});
+      expect(results.scores).to.eql({'0': 0, '1': 9});
     });
   });
   after(() => {
