@@ -167,14 +167,20 @@ export abstract class Tournament {
    * @param existingID - The optional id of the player 
    * 
    */
-  public async addplayer(file: string | {file: string, name: string, zipFile?: string, botdir?: string, botkey?: string}, existingID?: NanoID): Promise<Player> {
+  public async addplayer(file: string | {file: string, name: string, zipFile?: string, botdir?: string, botkey?: string, existingID?: NanoID}, existingID?: NanoID): Promise<Player> {
     let id: NanoID;
+    
+    if (typeof file !== 'string') {
+      if (!existingID) {
+        existingID = file.existingID;
+      }
+    }
+    
     if (existingID) {
       let { playerStat } = await this.getPlayerStat(existingID);
       if (playerStat) {
         // bot has stats in tournament already
         let player = playerStat.player
-        
         // undisable the player
         player.disabled = false;
         

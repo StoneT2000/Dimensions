@@ -6,11 +6,10 @@ import chaiSubset from 'chai-subset';
 import sinonChai from "sinon-chai";
 import sinon from "sinon";
 import 'mocha';
-import { Logger, MatchEngine, Match, Agent, Design } from '../../../src';
+import { Logger, Match, Design } from '../../../src';
 import { deepCopy } from '../../../src/utils/DeepCopy';
 import { stripFunctions } from '../utils/stripfunctions';
 import { createCustomDesign } from '../utils/createCustomDesign';
-import { pickMatch } from '../../../src/Station/routes/api/dimensions/match';
 const expect = chai.expect;
 chai.should()
 chai.use(sinonChai);
@@ -98,7 +97,7 @@ describe('Testing Match Core', () => {
         bestOf: 1001
       });
       expect(match.matchStatus).to.equal(Match.Status.READY);
-      expect(match.resume()).to.be.rejectedWith(Dimension.MatchWarn);
+      await expect(match.resume()).to.be.rejectedWith(Dimension.MatchWarn);
       match.run().catch(() => {});
 
       const timer = () => {
@@ -106,10 +105,10 @@ describe('Testing Match Core', () => {
           setTimeout(async () => {
             try {
               expect(match.matchStatus).to.equal(Match.Status.RUNNING);
-              expect(match.resume()).to.be.rejectedWith(Dimension.MatchWarn);
+              await expect(match.resume()).to.be.rejectedWith(Dimension.MatchWarn);
               await match.stop();
       
-              expect(match.stop()).to.be.rejectedWith(Dimension.MatchWarn);
+              await expect(match.stop()).to.be.rejectedWith(Dimension.MatchWarn);
               expect(match.matchStatus).to.equal(Match.Status.STOPPED);
               await match.resume();
               
