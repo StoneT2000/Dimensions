@@ -96,4 +96,7 @@ describe('Testing MatchEngine Timeout Mechanism', () => {
       expect(results.scores).to.eql({'0': 0, '1': 3});
     });
   });
+  after(() => {
+    d.cleanup();
+  });
 });

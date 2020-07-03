@@ -94,22 +94,6 @@ describe('Rock Paper Scissors Testing - Testing engine and match', () => {
     });
   });
 
-  describe('Testing _buffer store and split up readable emits from process to engine', () => {
-    it('should allow for delayed newline characters and split up stdout', async () => {
-      let match = await myDimension.createMatch(
-        ['./tests/js-kit/rps/delaynewlinepaper.js', './tests/js-kit/rps/delaynewlinerock.js'],
-        {
-          name: 'using _buffer match',
-          bestOf: 3,
-          loggingLevel: Dimension.Logger.LEVEL.WARN,
-        }
-      );
-      let results = await match.run();
-      expect(results.scores).to.eql({'0': 3, '1': 0});
-      expect(match.matchEngine.getEngineOptions().timeout.max).to.equal(2000)
-    });
-  });
-
   describe('Testing memory limit mechanism', () => {
     it('should kill off bots by default if they go over memory', async () => {
       let res = await myDimension.runMatch(

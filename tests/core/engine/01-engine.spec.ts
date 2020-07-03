@@ -197,6 +197,21 @@ describe('Testing MatchEngine Core', () => {
     });
   });
 
+  describe('Testing _buffer store and split up readable emits from process to engine', () => {
+    // specifically tests matchengine part with handling newlines in various places.
+    it('should allow for delayed newline characters and split up stdout', async () => {
+      let match = await d.createMatch(
+        ['./tests/kits/js/normal/rock.delaynewline.js', './tests/kits/js/normal/paper.delaynewline.js'],
+        {
+          name: 'using _buffer match',
+          bestOf: 9,
+        }
+      );
+      let results = await match.run();
+      expect(results.scores).to.eql({'0': 0, '1': 9});
+    });
+  });
+
   describe("Test secureMode", () => {
     it("should run initialize correctly", async () => {
       let match = await d.createMatch(botList, {
@@ -239,9 +254,11 @@ describe('Testing MatchEngine Core', () => {
       expect(results).to.eql({ranks: [{agentID: 0, rank: 1}, {agentID: 1, rank: 2}] })
     });
   });
+  
 
   after(() => {
     d.cleanupMatches();
     ddefault.cleanupMatches();
   });
+  
 });

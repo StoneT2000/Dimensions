@@ -3,14 +3,10 @@ import { RockPaperScissorsDesign } from '../../rps';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
-import sinonChai from "sinon-chai";
-import sinon from "sinon";
 import 'mocha';
-import { Logger, Match, MatchEngine, Agent } from '../../../src';
-import { fail } from 'assert';
+import { Logger } from '../../../src';
 const expect = chai.expect;
 chai.should()
-chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.use(chaiSubset);
 
@@ -102,5 +98,5 @@ describe('Testing MatchEngine Multi Language Support', () => {
   });
   after(() => {
     d.cleanup();
-  })
+  });
 });
