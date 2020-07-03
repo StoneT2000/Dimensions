@@ -4,12 +4,13 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
 import sinonChai from "sinon-chai";
-import sinon from "sinon";
+import sinon, { SinonSandbox, SinonSpy } from "sinon";
 import 'mocha';
 import { Logger, Match, Design } from '../../../src';
 import { deepCopy } from '../../../src/utils/DeepCopy';
 import { stripFunctions } from '../utils/stripfunctions';
 import { createCustomDesign } from '../utils/createCustomDesign';
+import { fail } from 'assert';
 const expect = chai.expect;
 chai.should()
 chai.use(sinonChai);
@@ -39,19 +40,22 @@ describe('Testing Match Core', () => {
     });
   });
 
-  describe("Test initialization", async () => {
-    let match = await d.createMatch(botList);
-    let sandbox = sinon.createSandbox();
-    let matchEngineInitializeSpy = sandbox.spy(match.matchEngine, 'initialize');
-    let designInitializeSpy = sandbox.spy(d.design, 'initialize');
-    it("should generate 2 agents for a 2 agent RPS match", async () => {
+  describe("Test initialization", () => {
+    let match: Match;
+    let sandbox: SinonSandbox;
+    let designInitializeSpy: SinonSpy;
+    before(async () => {
+      sandbox = sinon.createSandbox();
+      designInitializeSpy = sandbox.spy(d.design, 'initialize');
+      match = await d.createMatch(botList);
+    });
+    it("should generate 2 agents for a 2 agent RPS match", () => {
       expect(match.agents.length).to.equal(2);
     });
-    it("should call initialization functions of the matchEngine and design", async () => {
-      expect(matchEngineInitializeSpy).to.callCount(1);
+    it("should call initialization function of the design", () => {
       expect(designInitializeSpy).to.callCount(1);
     });
-    it("match should have ready status", async () => {
+    it("match should have ready status", () => {
       expect(match.matchStatus).to.equal(Match.Status.READY);
     });
   });
@@ -179,9 +183,6 @@ describe('Testing Match Core', () => {
       let match = await d.createMatch(botList);
       await testRunStopMatch(match);
     });
-    after(() => {
-      d.cleanupMatches();
-    })
   });
   
 
