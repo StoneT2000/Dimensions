@@ -1,5 +1,5 @@
 import kit.*;
-public class Rock {
+public class Bot {
     public static void main(final String[] args) throws Exception {
         Agent agent = new Agent();
         agent.initialize();

@@ -91,6 +91,7 @@ describe('Testing MatchEngine Timeout Mechanism', () => {
       let sandbox = sinon.createSandbox();
       let killSpy = sandbox.spy(match, 'kill');
       let results = await match.run();
+      // match.kill should never get called
       expect(killSpy).to.be.callCount(0);
       expect(results.scores).to.eql({'0': 0, '1': 3});
     });

@@ -297,7 +297,8 @@ export class Agent {
             p = await this._spawnCompileProcess('node', ['--check', this.src])
             break;
           case '.ts':
-            p = await this._spawnCompileProcess('tsc', ['--esModuleInterop', '--allowJs', '-m', 'commonjs', '--lib', 'es5', this.src])
+            // expect user to provide a tsconfig.json
+            p = await this._spawnCompileProcess('tsc', [])
             break;
           case '.go':
             p = await this._spawnCompileProcess('go', ['build', '-o', `${this.srcNoExt}.out`, this.src])
