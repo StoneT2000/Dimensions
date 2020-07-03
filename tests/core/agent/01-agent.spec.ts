@@ -13,6 +13,8 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.use(chaiSubset)
 
+process.setMaxListeners(20);
+
 describe('Testing Agent', () => {
   let dimension: Dimension.DimensionType;
   before(() => {

@@ -90,7 +90,7 @@ describe('Testing Tournament Core', () => {
       });
     });
 
-    describe("test add/update/remove anonymous players", async () => {
+    describe("Test add/update/remove anonymous players", async () => {
       it("should add players", async () => {
         let tourney = createLadderTourney(d, [...botList, testbot]);
         await Promise.all(tourney.initialAddPlayerPromises);
