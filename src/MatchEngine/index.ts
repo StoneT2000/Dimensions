@@ -154,7 +154,7 @@ export class MatchEngine {
           for (let i = 0; i < strs.length - 1; i++) {
             if (strs[i] === '') continue;
             if (agent.isAllowedToSendCommands()) {
-              this.handleCommmand(agent, strs[i]);
+              this.handleCommand(agent, strs[i]);
             }
           }
           // push whatever didn't have a newline into buffer
@@ -170,7 +170,7 @@ export class MatchEngine {
           for (let i = 0; i < strs.length; i++) {
             if (strs[i] === '') continue;
             if (agent.isAllowedToSendCommands()) {
-              this.handleCommmand(agent, strs[i]);
+              this.handleCommand(agent, strs[i]);
             }
           }
         }
@@ -230,7 +230,7 @@ export class MatchEngine {
    * @param agent - the agent to process the command for
    * @param str - the string the agent sent
    */
-  private async handleCommmand(agent: Agent, str: string) {
+  private async handleCommand(agent: Agent, str: string) {
 
     // TODO: Implement parallel command stream type
     if (this.engineOptions.commandStreamType === MatchEngine.COMMAND_STREAM_TYPE.SEQUENTIAL) {

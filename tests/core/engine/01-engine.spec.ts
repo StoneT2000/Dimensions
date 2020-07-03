@@ -114,6 +114,20 @@ describe('Testing MatchEngine', () => {
         let results = await match.run();
         expect(results.scores).to.eql({'0': 0, '1': 11});
       });
+
+      it("should erase extraneous output after finish symbol", async () => {
+        let results = await d.runMatch(
+          
+          ['./tests/kits/js/normal/rock.withextra.js', './tests/kits/js/normal/paper.js'],
+          {
+            name: 'erasure of output (1)',
+            bestOf: 9
+          }
+        )
+        // rock.withextra.js outputs an scissor afte ending turn, which if not erased would win game
+        // expect paper to still win
+        expect(results.scores).to.eql({'0': 0, '1': 9});
+      });
     });
 
     describe("Test LINE_COUNT policy ", () => {
