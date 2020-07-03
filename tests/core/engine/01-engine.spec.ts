@@ -14,7 +14,7 @@ const expect = chai.expect;
 chai.should()
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
-chai.use(chaiSubset)
+chai.use(chaiSubset);
 
 describe('Testing MatchEngine Core', () => {
   let ddefault: Dimension.DimensionType;
@@ -256,7 +256,7 @@ describe('Testing MatchEngine Core', () => {
   
 
   describe("Test secureMode", () => {
-    it("should run initialize correctly", async () => {
+    it("should initialize correctly", async () => {
       let match = await d.createMatch(botList, {
         bestOf: 11,
         secureMode: true

@@ -463,7 +463,6 @@ export class Match {
    * - If design uses a PARALLEL match engine, stopping behavior can be a little unpredictable
    * - If design uses a SEQUENTIAL match engine, a stop will result in ensuring all agents complete all their actions up
    *   to a coordinated stopping `timeStep`
-   * @returns true if successfully stopped
    */
   public stop() {
     
@@ -475,7 +474,11 @@ export class Match {
       }  
       // if override is on, we stop using the matchEngine stop function
       if (this.design.getDesignOptions().override.active) {
-        return this.matchEngine.stopCustom(this);
+        this.matchEngine.stopCustom(this).then(() => {
+          this.matchStatus = Match.Status.STOPPED;
+          resolve();
+        }).catch(reject);
+        return;
       }
       else {
         this.resolveStopPromise = resolve;
@@ -503,7 +506,10 @@ export class Match {
       
       // if override is on, we resume using the matchEngine resume function
       if (this.design.getDesignOptions().override.active) {
-        return this.matchEngine.resumeCustom(this);
+        this.matchEngine.resumeCustom(this).then(() => {
+          this.matchStatus = Match.Status.RUNNING;
+          resolve();
+        }).catch(reject);
       }
       else {
         // set back to running and resolve
