@@ -140,39 +140,31 @@ export class MatchEngine {
         let strs = `${data}`.split('\n');
 
         // first store data into a buffer and process later if no newline character is detected
+        
         // if final char in the strs array is not '', then \n is not at the end
-        if (this.engineOptions.commandLines.waitForNewline && strs.length >= 1 && strs[strs.length - 1] != '') {
-          // using split with \n should make any existing final \n character to be set as '' in strs array
-          
-          // if there is an existing buffer from the previous 'readable' event, 
-          // concat it to the first strs element as it belongs with that
-          if (strs.length > 1) {
-            // greater than 1 implies the first strs element is delimited by a \n
-            strs[0] = agent._buffer.join('').concat(strs[0])
-            agent._buffer = [];
-          }
-          for (let i = 0; i < strs.length - 1; i++) {
-            if (strs[i] === '') continue;
-            if (agent.isAllowedToSendCommands()) {
-              this.handleCommand(agent, strs[i]);
-            }
-          }
-          // push whatever didn't have a newline into buffer
-          agent._buffer.push(strs[strs.length - 1]);
-        }
-        else {
-          if (strs.length > 1) {
-            // greater than 1 implies the first strs element is delimited by a \n
-            strs[0] = agent._buffer.join('').concat(strs[0]);
-            agent._buffer = [];
-          }
+        const endsWithNewline = strs[strs.length - 1] === '';
+        // if strs when split up by \n, is greater than one in length, must have at least 1 newline char
+        const agentOutputContainsNewline = strs.length > 1;
 
-          for (let i = 0; i < strs.length; i++) {
-            if (strs[i] === '') continue;
-            if (agent.isAllowedToSendCommands()) {
-              this.handleCommand(agent, strs[i]);
-            }
+        if (agentOutputContainsNewline) {
+          // if there is a newline, take whatever was stored in the buffer and 
+          // concat it with the output before the newline as they are part of the same line of commands
+          strs[0] = agent._buffer.join('').concat(strs[0]);
+          agent._buffer = [];
+        }
+
+        // handle each complete line of commands
+        for (let i = 0; i < strs.length - 1; i++) {
+          if (strs[i] === '') continue; // skip empty lines caused by adjacent \n chars
+          // handle commands from this agent provided it is allowed to send commands
+          if (agent.isAllowedToSendCommands()) {
+            this.handleCommand(agent, strs[i]);
           }
+        }
+
+        // push final command that didn't have a newline into buffer
+        if (this.engineOptions.commandLines.waitForNewline && strs.length >= 1 && !endsWithNewline) {
+          agent._buffer.push(strs[strs.length - 1]);
         }
         
       }

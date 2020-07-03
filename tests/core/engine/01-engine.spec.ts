@@ -19,9 +19,11 @@ chai.use(chaiSubset)
 describe('Testing MatchEngine Core', () => {
   let ddefault: Dimension.DimensionType;
   let d: Dimension.DimensionType;
-  let botList = ['./tests/kits/js/normal/rock.js', './tests/kits/js/normal/paper.js']
-  let lineCountBotList = ['./tests/kits/js/linecount/rock.js', './tests/kits/js/linecount/paper.js']
-  let twoLineCountBotList = ['./tests/kits/js/linecount/rock.2line.js', './tests/kits/js/linecount/paper.2line.js']
+  const paper = './tests/kits/js/normal/paper.js';
+  const rock = './tests/kits/js/normal/rock.js'
+  const botList = [rock, paper]
+  const lineCountBotList = ['./tests/kits/js/linecount/rock.js', './tests/kits/js/linecount/paper.js']
+  const twoLineCountBotList = ['./tests/kits/js/linecount/rock.2line.js', './tests/kits/js/linecount/paper.2line.js']
   let changedOptions = {
     engineOptions: {
       timeout: {
@@ -29,15 +31,14 @@ describe('Testing MatchEngine Core', () => {
       }
     }
   }
-  let rpsDesign = new RockPaperScissorsDesign('RPS');
-  let rpsDesignChanged = new RockPaperScissorsDesign('RPS changed', changedOptions);
-  let rpsDesignLineCount = new RockPaperScissorsDesign('RPS changed', {
+  const rpsDesign = new RockPaperScissorsDesign('RPS');
+  const rpsDesignChanged = new RockPaperScissorsDesign('RPS changed', changedOptions);
+  const rpsDesignLineCount = new RockPaperScissorsDesign('RPS changed', {
     engineOptions: {
       commandFinishPolicy: MatchEngine.COMMAND_FINISH_POLICIES.LINE_COUNT
     }
   })
   before( async () => {
-    
     ddefault = Dimension.create(rpsDesign, {
       activateStation: false,
       observe: false,
@@ -195,22 +196,64 @@ describe('Testing MatchEngine Core', () => {
       expect(stderrSpy).to.be.calledWith("0: test");
       expect(results.scores).to.eql({'0': 0, '1': 11});
     });
-  });
-
-  describe('Testing _buffer store and split up readable emits from process to engine', () => {
-    // specifically tests matchengine part with handling newlines in various places.
-    it('should allow for delayed newline characters and split up stdout', async () => {
+    it('should call matchEngine kill twice only for 2 agent matches', async () => {
       let match = await d.createMatch(
-        ['./tests/kits/js/normal/rock.delaynewline.js', './tests/kits/js/normal/paper.delaynewline.js'],
+        ['./tests/kits/js/normal/rock.js', './tests/kits/js/normal/paper.js'],
         {
-          name: 'using _buffer match',
           bestOf: 9,
         }
       );
-      let results = await match.run();
-      expect(results.scores).to.eql({'0': 0, '1': 9});
+      let sandbox = sinon.createSandbox();
+      let matchEngineKillSpy = sandbox.spy(match.matchEngine, 'kill');
+      await match.run();
+      expect(matchEngineKillSpy).to.callCount(2);
     });
+
+    describe('Testing engine processing of agent output commands', () => {
+      // specifically tests line with `agent._buffer.push(strs[strs.length - 1]);`
+      it('should allow for delayed newline characters and use the _buffer store in agent correctly', async () => {
+        let match = await d.createMatch(
+          ['./tests/kits/js/normal/rock.delaynewline.js', './tests/kits/js/normal/paper.delaynewline.js'],
+          {
+            bestOf: 9,
+          }
+        );
+        let results = await match.run();
+        expect(results.scores).to.eql({'0': 0, '1': 9});
+      });
+  
+      it('should ignore extra newlines if newline was already sent', async () => {
+        let match = await d.createMatch(
+          ['./tests/kits/js/normal/rock.extranewlines.js', './tests/kits/js/normal/paper.delaynewline.js'],
+          {
+            bestOf: 9,
+          }
+        );
+        let results = await match.run();
+        expect(results.scores).to.eql({'0': 0, '1': 9});
+      });
+    });
+  
+    describe(`Testing engine handling of agent 'close' event`, () => {
+      it('should terminate the agent internally as well if agent prematurely exits', async () => {
+        let match = await d.createMatch(
+          ['./tests/kits/js/normal/rock.prematureexit.js', paper],
+          {
+            bestOf: 9,
+          }
+        );
+        let sandbox = sinon.createSandbox();
+        let matchEngineKillSpy = sandbox.spy(match.matchEngine, 'kill');
+        let results = await match.run();
+        expect(results.scores).to.eql({'0': 0, '1': 1});
+        // 3 kill calls, one for premature termination and 2 are always called
+        expect(matchEngineKillSpy).to.be.callCount(3); 
+      });
+    });
+
   });
+
+  
 
   describe("Test secureMode", () => {
     it("should run initialize correctly", async () => {
