@@ -417,10 +417,10 @@ export class Match {
         logkeys.forEach((val) => {
           this.idToAgentsMap.get(val.agentID).logkey = val.key;
         });
-        fileLogsToRemove.forEach((filepath) => {
-          removeFile(filepath);
-        });
-        
+
+        if (fileLogsToRemove.length > 0) {
+          removeDirectory(this.getMatchErrorLogDirectory());
+        }
 
         this.finishDate = new Date();
         resolve(this.results);
