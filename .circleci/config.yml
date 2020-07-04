@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   node: circleci/node@1.1.6
+  codecov: codecov/codecov@1.0.2
 
 executors:
   language-build:
@@ -24,7 +25,8 @@ jobs:
           path: coverage.lcov
           destination: coverage.lcov
 
-      - run: <($CURL -s https://codecov.io/bash) -t $CODE_COV_TOKEN -f coverage.lcov
+      - codecov/upload:
+          file: coverage.lcov
 
 workflows:
     build-and-test:
