@@ -17,12 +17,12 @@ jobs:
             - run: npm install
             - run: npm install --only=dev
             - run: sudo npm run test
-            - run:
-              name: Sending coverage to Code Cov
-              command: |
-                cmd='bash <($CURL -s https://codecov.io/bash) -t $CODE_COV_TOKEN -f ./coverage/coverage-final.json'
-                eval "$cmd" || (sleep 1; eval "$cmd")  # try twice because it sometimes fails
-              when: always
+      - run:
+        name: Sending coverage to Code Cov
+        command: |
+          cmd='bash <($CURL -s https://codecov.io/bash) -t $CODE_COV_TOKEN -f ./coverage/coverage-final.json'
+          eval "$cmd" || (sleep 1; eval "$cmd")  # try twice because it sometimes fails
+        when: always
 workflows:
     build-and-test:
       jobs:
