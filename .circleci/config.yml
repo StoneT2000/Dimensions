@@ -18,7 +18,7 @@ jobs:
             - run: npm install --only=dev
             - run: sudo npm run test
       - codecov/upload:
-        file: {{ coverage_report_filepath }}
+        file: {{ './coverage/coverage-final.json' }}
 workflows:
     build-and-test:
       jobs:
