@@ -33,7 +33,7 @@ describe('Testing /api/dimensions API', () => {
       id: "abcdef2"
     });
     origin += dimension.getStation().port
-    RPSTournament = <Dimension.Tournament.RoundRobin>dimension.createTournament(['./tests/js-kit/rps/rock.js', './tests/js-kit/rps/paper.js'], {
+    RPSTournament = <Dimension.Tournament.RoundRobin>dimension.createTournament(['./tests/kits/js/normal/rock.js', './tests/kits/js/normal/paper.js'], {
       type: Dimension.Tournament.Type.ROUND_ROBIN,
       rankSystem: Dimension.Tournament.RankSystem.WINS,
       name: 'Rock Paper Scissors',

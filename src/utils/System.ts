@@ -59,6 +59,7 @@ export const removeDirectory = (dir: string) => {
   return new Promise((resolve, reject) => {
     let p = spawn('find', [dir, '-exec', 'rm', '-rf', '{}', '+']);
     p.on('error', (err) => {
+      
       reject(err);
     })
     p.on('close', (code) => {
@@ -66,7 +67,7 @@ export const removeDirectory = (dir: string) => {
         resolve();
       }
       else {
-        reject('exited with code ' + code);
+        reject(`removeDirectory on ${dir} exited with code ${code}`);
       }
     })
   })

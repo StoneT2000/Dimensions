@@ -323,6 +323,8 @@ export class Ladder extends Tournament {
    * Resets rankings of all competitors loaded to initial scores
    */
   public async resetRankings() {
+    // TODO: Some instances of tournament might still be running once this one is stopped, and reset won't work 
+    // correctly
     if (this.status == TournamentStatus.RUNNING) {
       throw new TournamentError('Cannot reset while tournament is running!');
     }
@@ -855,6 +857,7 @@ export class Ladder extends Tournament {
   /**
    * Print tournament status to display
    */
+  /* istanbul ignore next */
   private async printTournamentStatus() {
     if (this.log.level > Logger.LEVEL.NONE) {
       let ranks: Array<LadderPlayerStat> = await this.getRankings(0, -1);

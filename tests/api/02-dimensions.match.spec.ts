@@ -20,7 +20,7 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
   let origin = "http://localhost:"
   let endpoint = '';
   let dimension: Dimension.DimensionType;
-  let botList = ['./tests/js-kit/rps/rock.js', './tests/js-kit/rps/paper.js']
+  let botList = ['./tests/kits/js/normal/rock.js', './tests/kits/js/normal/paper.js']
   before(() => {
     let rpsDesign = new RockPaperScissorsDesign('RPS');
     dimension = Dimension.create(rpsDesign, {
