@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   node: circleci/node@1.1.6
+  codecov: codecov/codecov@1.0.2
 executors:
   language-build:
     docker:
@@ -16,7 +17,11 @@ jobs:
             - run: npm install
             - run: npm install --only=dev
             - run: sudo npm run test
+  coverage:
+    - codecov/upload:
+      file: {{ coverage_report_filepath }}
 workflows:
     build-and-test:
       jobs:
         - build-and-test
+        - coverage
