@@ -55,7 +55,7 @@ describe('Testing Ladder Tournament Core', () => {
     it("should run", async () => {
       let tourney = createLadderTourney(d, botList);
       tourney.run();
-      await sleep(1000);
+      await sleep(2000);
       let ranks = await tourney.getRankings();
       expect(tourney.state.statistics.totalMatches).to.be.greaterThan(1);
       expect(ranks[0].player.file).to.equal(paper.file);
