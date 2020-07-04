@@ -19,7 +19,6 @@ jobs:
             - run: sudo npm run test
       - codecov/upload:
         file: {{ coverage_report_filepath }}
-      
 workflows:
     build-and-test:
       jobs:
