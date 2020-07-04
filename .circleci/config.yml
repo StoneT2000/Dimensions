@@ -18,10 +18,7 @@ jobs:
             - run: npm install
             - run: npm install --only=dev
             - run: sudo npm run test
-            - run:
-              name: Sending coverage to Code Cov
-              command: |
-                bash <($CURL -s https://codecov.io/bash) -t $CODE_COV_TOKEN -f ./coverage/coverage-final.json
+            - run: bash <($CURL -s https://codecov.io/bash) -t $CODE_COV_TOKEN -f ./coverage/coverage-final.json
 
 workflows:
     build-and-test:
