@@ -387,13 +387,40 @@ export class Match {
           }
         }
 
+        let uploadLogPromises: Array<Promise<{key: string, agentID: number}>> = [];
+        let fileLogsToRemove: Array<string> = [];
+
         // upload error logs if stored
         if (this.configs.storeErrorLogs) {
           // upload each agent error log
-          this.agents.forEach((agent) => {
-            path.join(this.getMatchErrorLogDirectory(), agent.getAgentErrorLogFilename());
-          });
+          for (let agent of this.agents) {
+            let filepath = path.join(this.getMatchErrorLogDirectory(), agent.getAgentErrorLogFilename());
+            if (!existsSync(this.results.replayFile)) {
+              if (this.dimension.hasStorage()) {
+                let uploadKeyPromise = 
+                  this.dimension.storagePlugin
+                    .upload(filepath, filepath)
+                    .then((key) => {
+                      return { key: key, agentID: agent.id }
+                    });
+                uploadLogPromises.push(uploadKeyPromise);
+                fileLogsToRemove.push(filepath);
+              }
+            }
+            else {
+              // this shouldn't happen
+              this.log.error(`Agent ${this.id} log file at ${filepath} does not exist`);
+            }
+          }
         }
+        let logkeys = await Promise.all(uploadLogPromises);
+        logkeys.forEach((val) => {
+          this.idToAgentsMap.get(val.agentID).logkey = val.key;
+        });
+        fileLogsToRemove.forEach((filepath) => {
+          removeFile(filepath);
+        });
+        
 
         this.finishDate = new Date();
         resolve(this.results);

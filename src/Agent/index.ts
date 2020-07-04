@@ -111,6 +111,11 @@ export class Agent {
 
   private log = new Logger();
 
+  /**
+   * Key used to retrieve the error logs of this agent
+   */
+  public logkey: string = null;
+
   /** whether agent is allowed to send commands. Used to help ignore extra output from agents */
   private allowedToSendCommands = true;
   
