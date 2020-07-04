@@ -34,7 +34,7 @@ describe('Testing MatchEngine Multi Language Support', () => {
     });
   });
   
-  describe.only("Test python", () => {
+  describe("Test python", () => {
     it("should run", async () => {
       let results = await d.runMatch([bots.python, bots.js], {
         bestOf: 9,

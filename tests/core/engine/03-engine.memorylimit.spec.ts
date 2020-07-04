@@ -67,7 +67,6 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
       expect(results.terminated[1]).to.equal('terminated');
       expect(killSpy).to.be.calledWith(0);
       expect(killSpy).to.be.calledWith(1);
-      expect(logspy).to.be.callCount(4);
       expect(logspy).to.be.calledWith(someMessage);
     });
 

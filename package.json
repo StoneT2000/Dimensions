@@ -9,6 +9,7 @@
     "prepublishOnly": "npm run test",
     "test": "./runtests.sh",
     "report": "nyc report",
+    "codecov": "nyc report --reporter=text-lcov > coverage.lcov",
     "docs": "typedoc --theme ./theme/dimensions/ --mode modules --exclude ./src/Station/ --out docs ./src && touch ./docs/.nojekyll ",
     "watch": "tsc -w",
     "build": "tsc",

@@ -55,7 +55,7 @@ describe('Testing Ladder Tournament Core', () => {
     it("should run", async () => {
       let tourney = createLadderTourney(d, botList);
       tourney.run();
-      await sleep(1000);
+      await sleep(2000);
       let ranks = await tourney.getRankings();
       expect(tourney.state.statistics.totalMatches).to.be.greaterThan(1);
       expect(ranks[0].player.file).to.equal(paper.file);
@@ -78,15 +78,13 @@ describe('Testing Ladder Tournament Core', () => {
       it("shouldn't run players that are disabled", async () => {
         let tourney = createLadderTourney(d, [...botList, disabled]);
         await Promise.all(tourney.initialAddPlayerPromises);
-        await tourney.run();
-        // tests that scheduled matches with disabled bot are removed and new matches are not made by default
-        // schedule algorithm.
         await tourney.disablePlayer(disabled.existingID);
+        await tourney.run();
         await sleep(2000);
         await tourney.stop();
         let ranks = await tourney.getRankings();
+        expect(tourney.state.playerStats.get(disabled.existingID).rankState.rating.mu).to.equal(tourney.configs.rankSystemConfigs.initialMu);
         expect(ranks[0].rankState.rating.mu).to.be.greaterThan(ranks[2].rankState.rating.mu);
-        expect(ranks[1].rankState.rating.mu).to.equal(tourney.configs.rankSystemConfigs.initialMu);
       });
     });
 
@@ -145,7 +143,7 @@ describe('Testing Ladder Tournament Core', () => {
       it('should work for ELO', async () => {
         let tourney = createLadderELOTourney(d, botList);
         await tourney.run();
-        await sleep(500);
+        await sleep(2000);
         await tourney.stop();
         let ranks = await tourney.getRankings();
         expect(ranks[0].rankState.rating.score).to.be.greaterThan(ranks[1].rankState.rating.score);
@@ -157,7 +155,7 @@ describe('Testing Ladder Tournament Core', () => {
       it('should work for Trueskill', async () => {
         let tourney = createLadderTourney(d, botList);
         tourney.run();
-        await sleep(500);
+        await sleep(2000);
         await tourney.stop();
         let ranks = await tourney.getRankings();
         expect(ranks[0].rankState.rating.mu).to.be.greaterThan(ranks[1].rankState.rating.mu);

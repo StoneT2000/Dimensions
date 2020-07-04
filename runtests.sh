@@ -5,7 +5,5 @@ npm run clean
 
 
 # test core, then api
-nyc --reporter=html --reporter=json --no-clean mocha tests/core/**/*.spec.ts tests/api/**/*.spec.ts
-
-
+nyc --reporter=html --no-clean mocha tests/core/**/*.spec.ts tests/api/**/*.spec.ts
 
