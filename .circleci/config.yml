@@ -19,10 +19,7 @@ jobs:
             - run: sudo npm run test
       - run:
         name: Sending coverage to Code Cov
-        command: |
-          cmd='bash <($CURL -s https://codecov.io/bash) -t $CODE_COV_TOKEN -f ./coverage/coverage-final.json'
-          eval "$cmd" || (sleep 1; eval "$cmd")  # try twice because it sometimes fails
-        when: always
+        command: 'bash <($CURL -s https://codecov.io/bash) -t $CODE_COV_TOKEN -f ./coverage/coverage-final.json'
 workflows:
     build-and-test:
       jobs:
