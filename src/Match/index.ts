@@ -395,7 +395,7 @@ export class Match {
           // upload each agent error log
           for (let agent of this.agents) {
             let filepath = path.join(this.getMatchErrorLogDirectory(), agent.getAgentErrorLogFilename());
-            if (!existsSync(this.results.replayFile)) {
+            if (existsSync(filepath)) {
               if (this.dimension.hasStorage()) {
                 let uploadKeyPromise = 
                   this.dimension.storagePlugin
