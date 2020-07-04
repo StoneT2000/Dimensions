@@ -17,12 +17,10 @@ jobs:
             - run: npm install
             - run: npm install --only=dev
             - run: sudo npm run test
-  coverage:
-    steps:
       - codecov/upload:
         file: {{ coverage_report_filepath }}
+      
 workflows:
     build-and-test:
       jobs:
         - build-and-test
-        - coverage
