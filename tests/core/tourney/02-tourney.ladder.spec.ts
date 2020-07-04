@@ -82,7 +82,7 @@ describe('Testing Ladder Tournament Core', () => {
         // tests that scheduled matches with disabled bot are removed and new matches are not made by default
         // schedule algorithm.
         await tourney.disablePlayer(disabled.existingID);
-        await sleep(500);
+        await sleep(2000);
         await tourney.stop();
         let ranks = await tourney.getRankings();
         expect(ranks[0].rankState.rating.mu).to.be.greaterThan(ranks[2].rankState.rating.mu);
@@ -109,7 +109,7 @@ describe('Testing Ladder Tournament Core', () => {
       it("should update players mid tourney", async () => {
         let tourney = createLadderTourney(d, [...botList, testbot]);
         await tourney.run();
-        await sleep(500);
+        await sleep(1000);
         await tourney.addplayer(testbot);
         expect(tourney.competitors.size).to.equal(3);
         expect(tourney.anonymousCompetitors.size).to.equal(3);
@@ -124,7 +124,7 @@ describe('Testing Ladder Tournament Core', () => {
       it("should remove players mid tourney", async () => {
         let tourney = createLadderTourney(d, [...botList, testbot]);
         await tourney.run();
-        await sleep(500);
+        await sleep(1000);
         await tourney.removePlayer(testbot.existingID);
         expect(tourney.competitors.size).to.equal(2);
       });
@@ -132,10 +132,10 @@ describe('Testing Ladder Tournament Core', () => {
         let tourney = createLadderTourney(d, botList);
         await tourney.run();
         expect(tourney.competitors.size).to.equal(2);
-        await sleep(500);
+        await sleep(1000);
         await tourney.addplayer(testbot);
         expect(tourney.competitors.size).to.equal(3);
-        await sleep(500);
+        await sleep(1000);
         await tourney.removePlayer(testbot.existingID);
         expect(tourney.competitors.size).to.equal(2);
       });

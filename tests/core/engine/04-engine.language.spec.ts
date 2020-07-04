@@ -34,10 +34,15 @@ describe('Testing MatchEngine Multi Language Support', () => {
     });
   });
   
-  describe("Test python", () => {
+  describe.only("Test python", () => {
     it("should run", async () => {
       let results = await d.runMatch([bots.python, bots.js], {
-        bestOf: 9
+        bestOf: 9,
+        agentOptions: {
+          runCommands: {
+            '.py': ['python3']
+          }
+        }
       });
       expect(results.scores).to.eql({'0': 0, '1': 9});
     });
