@@ -20,7 +20,7 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.use(chaiSubset);
 
-describe('Testing Tournament Core', () => {
+describe('Testing Ladder Tournament Core', () => {
   const paper = {file: './tests/kits/js/normal/paper.js', name: 'paper'};
   const rock = {file: './tests/kits/js/normal/rock.js', name: 'rock'};
   const disabled = {file: './tests/kits/js/normal/rock.js', name: 'disabled', existingID:'disabled'};

@@ -4,27 +4,19 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
 import sinonChai from "sinon-chai";
-import sinon from "sinon";
 import 'mocha';
-import { Logger, MatchEngine, Match, Agent, Design, Tournament, DError } from '../../../src';
-import { createRoundRobinTourney, createLadderTourney, createElimTourney, createLadderELOTourney } from './utils';
-import { deepCopy } from '../../../src/utils/DeepCopy';
-import { stripFunctions } from '../utils/stripfunctions';
-import { createCustomDesign } from '../utils/createCustomDesign';
+import { Logger, Tournament } from '../../../src';
+import { createRoundRobinTourney } from './utils';
 import { sleep } from '../utils/sleep';
-import { Ladder } from '../../../src/Tournament/Ladder';
-import { TournamentError } from '../../../src/DimensionError';
 const expect = chai.expect;
 chai.should()
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.use(chaiSubset);
 
-describe('Testing Tournament Core', () => {
+describe('Testing Roundrobin Tournament Core', () => {
   const paper = {file: './tests/kits/js/normal/paper.js', name: 'paper'};
   const rock = {file: './tests/kits/js/normal/rock.js', name: 'rock'};
-  const disabled = {file: './tests/kits/js/normal/rock.js', name: 'disabled', existingID:'disabled'};
-  const testbot = {file: './tests/kits/js/normal/paper.js', name: 'test', existingID: 'test'};
   const botList = [rock, paper];
   const rpsDesign = new RockPaperScissorsDesign('RPS');
   const d = Dimension.create(rpsDesign, {

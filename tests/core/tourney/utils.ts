@@ -39,7 +39,7 @@ export const createLadderELOTourney = (d: Dimension.DimensionType, botList: Arra
   return tourney;
 }
 
-export const createElimTourney = (d: Dimension.DimensionType, botList: Array<string>, tournamentConfigs: DeepPartial<Tournament.TournamentConfigsBase> = {}) => {
+export const createElimTourney = (d: Dimension.DimensionType, botList: Array<any>, tournamentConfigs: DeepPartial<Tournament.TournamentConfigsBase> = {}) => {
   let tourney = <Dimension.Tournament.Elimination>d.createTournament(botList, {
     type: Dimension.Tournament.Type.ELIMINATION,
     rankSystem: Dimension.Tournament.RankSystem.WINS,
