@@ -13,7 +13,7 @@ while True:
     commands = []
 
     # AI Code goes here #
-a
+
     # push some commands in to be processed by the `MatchEngine` working under a `Design`
     commands.append('R')
 

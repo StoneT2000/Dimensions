@@ -249,10 +249,14 @@ export class Agent {
         });
         
         if (stderrWritestream) {
-          p.stderr.pipe(stderrWritestream);
+          p.stderr.pipe(stderrWritestream, {
+            end: false,
+          });
         }
         if (stdoutWritestream) {
-          p.stdout.pipe(stdoutWritestream);
+          p.stdout.pipe(stdoutWritestream, {
+            end: false,
+          });
         }
 
         p.on('error', (err) => {
@@ -338,10 +342,14 @@ export class Agent {
           chunks.push(chunk);
         });
         if (stderrWritestream) {
-          p.stderr.pipe(stderrWritestream);
+          p.stderr.pipe(stderrWritestream, {
+            end: false
+          });
         }
         if (stdoutWritestream) {
-          p.stdout.pipe(stdoutWritestream);
+          p.stdout.pipe(stdoutWritestream, {
+            end: false
+          });
         }
         p.on('close', (code) => {
           clearTimeout(compileTimer);

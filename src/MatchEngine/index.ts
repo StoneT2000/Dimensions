@@ -117,14 +117,14 @@ export class MatchEngine {
     // wait for install step
     await agent._install(errorLogWriteStream, errorLogWriteStream);
     this.log.system('Succesfully ran install step for agent ' + agent.id);
-
+    
     if (match.configs.storeErrorLogs) {
       errorLogWriteStream.write('=== Agent Compile Log ===\n');
     }
     // wait for compilation step
     await agent._compile(errorLogWriteStream, errorLogWriteStream);
     this.log.system('Succesfully ran compile step for agent ' + agent.id);
-
+    
     // spawn the agent process
     let p: ChildProcess = await agent._spawn();
     this.log.system('Spawned agent ' + agent.id);

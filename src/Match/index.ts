@@ -387,6 +387,14 @@ export class Match {
           }
         }
 
+        // upload error logs if stored
+        if (this.configs.storeErrorLogs) {
+          // upload each agent error log
+          this.agents.forEach((agent) => {
+            path.join(this.getMatchErrorLogDirectory(), agent.getAgentErrorLogFilename());
+          });
+        }
+
         this.finishDate = new Date();
         resolve(this.results);
       }
