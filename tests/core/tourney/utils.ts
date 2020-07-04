@@ -3,12 +3,13 @@ import { RockPaperScissorsDesign } from '../../rps';
 import { Tournament } from '../../../src';
 import { DeepPartial } from '../../../src/utils/DeepPartial';
 
-export const createRoundRobinTourney = (d: Dimension.DimensionType, botList: Array<string>, tournamentConfigs: DeepPartial<Tournament.TournamentConfigsBase> = {}) => {
+export const createRoundRobinTourney = (d: Dimension.DimensionType, botList: Array<any>, tournamentConfigs: DeepPartial<Tournament.TournamentConfigsBase> = {}) => {
   let tourney = <Dimension.Tournament.RoundRobin>d.createTournament(botList, {
     type: Dimension.Tournament.Type.ROUND_ROBIN,
     rankSystem: Dimension.Tournament.RankSystem.WINS,
     resultHandler: RockPaperScissorsDesign.winsResultHandler,
     agentsPerMatch: [2],
+    consoleDisplay: false,
     ...tournamentConfigs
   });
   return tourney;
@@ -20,6 +21,7 @@ export const createLadderTourney = (d: Dimension.DimensionType, botList: Array<a
     rankSystem: Dimension.Tournament.RankSystem.TRUESKILL,
     resultHandler: RockPaperScissorsDesign.trueskillResultHandler,
     agentsPerMatch: [2],
+    consoleDisplay: false,
     ...tournamentConfigs
   });
   return tourney;
@@ -31,6 +33,7 @@ export const createLadderELOTourney = (d: Dimension.DimensionType, botList: Arra
     rankSystem: Dimension.Tournament.RankSystem.ELO,
     resultHandler: RockPaperScissorsDesign.eloResultHandler,
     agentsPerMatch: [2],
+    consoleDisplay: false,
     ...tournamentConfigs
   });
   return tourney;
