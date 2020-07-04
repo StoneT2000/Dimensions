@@ -1,0 +1,22 @@
+version: '2.0'
+services:
+  dimensions:
+    image: stonezt2000/dimensions_langs:latest
+    ports:
+      - 9000:9000
+    volumes:
+      - ../../:/dimensions
+    entrypoint: /bin/bash
+    tty: true # docker run -i
+    stdin_open: true # docker run -t
+  mongodb_container:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    ports:
+      - 27018:27017
+    volumes:
+      - mongodb_data_container:/data/db
+volumes:
+  mongodb_data_container:
