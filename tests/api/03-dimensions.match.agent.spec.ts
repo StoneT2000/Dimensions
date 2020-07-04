@@ -21,7 +21,7 @@ describe('Testing /api/dimensions/:dimensionID/match/:matchID/agent API', () => 
   let endpoint = '';
   let dimension: Dimension.DimensionType;
   let match: Dimension.Match;
-  let botList = ['./tests/js-kit/rps/rock.js', './tests/js-kit/rps/paper.js']
+  let botList = ['./tests/kits/js/normal/rock.js', './tests/kits/js/normal/paper.js']
   before( async () => {
     let rpsDesign = new RockPaperScissorsDesign('RPS');
     dimension = Dimension.create(rpsDesign, {

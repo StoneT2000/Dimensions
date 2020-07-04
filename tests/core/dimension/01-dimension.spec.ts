@@ -16,7 +16,7 @@ chai.use(chaiSubset)
 describe('Testing Dimension Class', () => {
   let ddefault: Dimension.DimensionType;
   let d: Dimension.DimensionType;
-  let botList = ['./tests/js-kit/rps/rock.js', './tests/js-kit/rps/paper.js']
+  let botList = ['./tests/kits/js/normal/rock.js', './tests/kits/js/normal/paper.js']
   before( async () => {
     let rpsDesign = new RockPaperScissorsDesign('RPS');
     ddefault = Dimension.create(rpsDesign, {

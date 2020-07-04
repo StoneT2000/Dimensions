@@ -46,11 +46,11 @@ describe('Testing Agent', () => {
 
   describe("Testing Agent Initialization", () => {
     it("should work in non-securemode", () => {
-      let a = new Dimension.Agent("./tests/js-kit/rps/rock.js", {id: 0, secureMode: false})
+      let a = new Dimension.Agent("./tests/kits/js/normal/rock.js", {id: 0, secureMode: false})
       validateAgent(a, {id: 0, secureMode: false});
     });
     it("should work in securemode", () => {
-      let a = new Dimension.Agent("./tests/js-kit/rps/rock.js", {id: 0, secureMode: true})
+      let a = new Dimension.Agent("./tests/kits/js/normal/rock.js", {id: 0, secureMode: true})
       validateAgent(a, {id: 0, secureMode: true});
     });
   });
