@@ -1,18 +1,30 @@
 node_modules
-build
+
 lib
+
+# match outputs
+errorlogs
 *.log
 replays
+
 *.code-workspace
+
+# test files
 coverage
-__pycache__
 tests/run.*.ts
 tests/run.*.js
-*.DS_Store
+.nyc_output
+
+# generated
 *.out
 *.class
 tests/kits/ts/**/*.js
-.nyc_output
+__pycache__
+
+# other files
+*.DS_Store
+
+
 src/Station/local/bots
 .devcontainer
 tests/keys

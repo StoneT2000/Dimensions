@@ -1,6 +1,8 @@
 import os from 'os';
 import { spawn, ChildProcess, exec } from 'child_process';
 import pidusage from 'pidusage';
+import fs, { WriteStream } from 'fs';
+import path from 'path';
 
 // Import utilities
 import { deepCopy } from '../utils/DeepCopy';
@@ -104,12 +106,23 @@ export class MatchEngine {
   private async initializeAgent(agent: Agent, match: Match): Promise<void> {
     this.log.system("Setting up and spawning " + agent.name + ` | Command: ${agent.cmd} ${agent.src}`);
 
+    let errorLogFilepath = path.join(match.getMatchErrorLogDirectory(), agent.getAgentErrorLogFilename());
+    let errorLogWriteStream: WriteStream = null;
+
+    if (match.configs.storeErrorLogs) {
+      errorLogWriteStream = fs.createWriteStream(errorLogFilepath);
+      errorLogWriteStream.write('=== Agent Install Log ===\n')
+    }
+    
     // wait for install step
-    await agent._install();
+    await agent._install(errorLogWriteStream, errorLogWriteStream);
     this.log.system('Succesfully ran install step for agent ' + agent.id);
 
+    if (match.configs.storeErrorLogs) {
+      errorLogWriteStream.write('=== Agent Compile Log ===\n');
+    }
     // wait for compilation step
-    await agent._compile();
+    await agent._compile(errorLogWriteStream, errorLogWriteStream);
     this.log.system('Succesfully ran compile step for agent ' + agent.id);
 
     // spawn the agent process
@@ -175,6 +188,12 @@ export class MatchEngine {
       p.stderr.on('data', (data) => {
         this.log.error(`${agent.id}: ${data.slice(0, data.length - 1)}`);
       });
+    }
+
+    // pipe stderr of agent process to error log file if enabled
+    if (match.configs.storeErrorLogs) {
+      errorLogWriteStream.write('=== Agent Error Log ===\n');
+      p.stderr.pipe(errorLogWriteStream);
     }
 
     // when process closes, print message

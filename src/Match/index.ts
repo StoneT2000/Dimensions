@@ -114,7 +114,9 @@ export class Match {
     secureMode: false,
     agentOptions: Agent.OptionDefaults,
     storeReplay: true,
-    storeReplayDirectory: 'replays'
+    storeReplayDirectory: 'replays',
+    storeErrorLogs: true,
+    storeErrorDirectory: 'errorlogs'
   };
 
   /** Match process used to store the process governing a match running on a custom design */
@@ -215,6 +217,17 @@ export class Match {
       this.log.detail('Match Configs', this.configs);
       
       this.timeStep = 0;
+
+      if (this.configs.storeErrorLogs) {
+        // create error log folder if it does not exist
+        if (!existsSync(this.configs.storeErrorDirectory)) {
+          mkdirSync(this.configs.storeErrorDirectory);
+        }
+        let matchErrorLogDirectory = this.getMatchErrorLogDirectory();
+        if (!existsSync(matchErrorLogDirectory)) {
+          mkdirSync(matchErrorLogDirectory);
+        }
+      }
 
       // this allows engine to be reused after it ran once
       this.matchEngine.killOffSignal = false;
@@ -657,6 +670,10 @@ export class Match {
   public static genMatchID() {
     return genID(12);
   }
+
+  public getMatchErrorLogDirectory() {
+    return path.join(this.configs.storeErrorDirectory, `match_${this.id}`);
+  }
 }
 
 export module Match {
@@ -705,6 +722,21 @@ export module Match {
      * @default `replays`
      */
     storeReplayDirectory: string
+
+    /**
+     * Whether to store error output for each {@link Match}
+     * 
+     * @default true
+     */
+    storeErrorLogs: boolean
+
+    /**
+     * Directory to store error logs locally. When a {@link Storage} plugin is used, this indicates the path in the 
+     * bucket to store the log in, and removes the local copy.
+     * 
+     * @default `errorlogs`
+     */
+    storeErrorDirectory: string
 
     [key: string]: any
   }
