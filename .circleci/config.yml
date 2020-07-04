@@ -20,8 +20,7 @@ jobs:
       - run:
         name: Sending coverage to Code Cov
         command: |
-          bash <($CURL -s https://codecov.io/bash) -t \
-          $CODE_COV_TOKEN -f ./coverage/coverage-final.json
+          echo Running test
 workflows:
     build-and-test:
       jobs:
