@@ -6,6 +6,7 @@ executors:
   language-build:
     docker:
       - image: stonezt2000/dimensions_langs:latest
+
 jobs:
   build-and-test:
     executor:
@@ -17,10 +18,7 @@ jobs:
             - run: npm install
             - run: npm install --only=dev
             - run: sudo npm run test
-      - run:
-        name: Sending coverage to Code Cov
-        command: |
-          echo Running test
+
 workflows:
     build-and-test:
       jobs:
