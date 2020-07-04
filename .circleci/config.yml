@@ -18,8 +18,9 @@ jobs:
             - run: npm install --only=dev
             - run: sudo npm run test
   coverage:
-    - codecov/upload:
-      file: {{ coverage_report_filepath }}
+    steps:
+      - codecov/upload:
+        file: {{ coverage_report_filepath }}
 workflows:
     build-and-test:
       jobs:
