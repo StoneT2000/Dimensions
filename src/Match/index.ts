@@ -114,7 +114,9 @@ export class Match {
     secureMode: false,
     agentOptions: Agent.OptionDefaults,
     storeReplay: true,
-    storeReplayDirectory: 'replays'
+    storeReplayDirectory: 'replays',
+    storeErrorLogs: true,
+    storeErrorDirectory: 'errorlogs'
   };
 
   /** Match process used to store the process governing a match running on a custom design */
@@ -215,6 +217,17 @@ export class Match {
       this.log.detail('Match Configs', this.configs);
       
       this.timeStep = 0;
+
+      if (this.configs.storeErrorLogs) {
+        // create error log folder if it does not exist
+        if (!existsSync(this.configs.storeErrorDirectory)) {
+          mkdirSync(this.configs.storeErrorDirectory);
+        }
+        let matchErrorLogDirectory = this.getMatchErrorLogDirectory();
+        if (!existsSync(matchErrorLogDirectory)) {
+          mkdirSync(matchErrorLogDirectory);
+        }
+      }
 
       // this allows engine to be reused after it ran once
       this.matchEngine.killOffSignal = false;
@@ -372,6 +385,41 @@ export class Match {
           else {
             reject(new MatchReplayFileError(`Replay file provided ${this.results.replayFile} does not exist`));
           }
+        }
+
+        let uploadLogPromises: Array<Promise<{key: string, agentID: number}>> = [];
+        let fileLogsToRemove: Array<string> = [];
+
+        // upload error logs if stored
+        if (this.configs.storeErrorLogs) {
+          // upload each agent error log
+          for (let agent of this.agents) {
+            let filepath = path.join(this.getMatchErrorLogDirectory(), agent.getAgentErrorLogFilename());
+            if (!existsSync(this.results.replayFile)) {
+              if (this.dimension.hasStorage()) {
+                let uploadKeyPromise = 
+                  this.dimension.storagePlugin
+                    .upload(filepath, filepath)
+                    .then((key) => {
+                      return { key: key, agentID: agent.id }
+                    });
+                uploadLogPromises.push(uploadKeyPromise);
+                fileLogsToRemove.push(filepath);
+              }
+            }
+            else {
+              // this shouldn't happen
+              this.log.error(`Agent ${this.id} log file at ${filepath} does not exist`);
+            }
+          }
+        }
+        let logkeys = await Promise.all(uploadLogPromises);
+        logkeys.forEach((val) => {
+          this.idToAgentsMap.get(val.agentID).logkey = val.key;
+        });
+
+        if (fileLogsToRemove.length > 0) {
+          removeDirectory(this.getMatchErrorLogDirectory());
         }
 
         this.finishDate = new Date();
@@ -657,6 +705,10 @@ export class Match {
   public static genMatchID() {
     return genID(12);
   }
+
+  public getMatchErrorLogDirectory() {
+    return path.join(this.configs.storeErrorDirectory, `match_${this.id}`);
+  }
 }
 
 export module Match {
@@ -705,6 +757,21 @@ export module Match {
      * @default `replays`
      */
     storeReplayDirectory: string
+
+    /**
+     * Whether to store error output for each {@link Match}
+     * 
+     * @default true
+     */
+    storeErrorLogs: boolean
+
+    /**
+     * Directory to store error logs locally. When a {@link Storage} plugin is used, this indicates the path in the 
+     * bucket to store the log in, and removes the local copy.
+     * 
+     * @default `errorlogs`
+     */
+    storeErrorDirectory: string
 
     [key: string]: any
   }

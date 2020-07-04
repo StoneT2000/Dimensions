@@ -16,7 +16,7 @@ const router = express.Router();
  */
 export const getAgent = (req: Request, res: Response, next: NextFunction) => {
   let agent: Agent;
-  agent = req.data.match.idToAgentsMap.get(parseInt(req.params.agentID));
+  agent = req.data.match.agents[parseInt(req.params.agentID)];
   if (!agent) {
     return next(new error.BadRequest(`No agent found with id of '${req.params.agentID}' in match '${req.data.match.id}' in dimension ${req.data.dimension.id} - '${req.data.dimension.name}'`));
   }
@@ -28,7 +28,7 @@ export const getAgent = (req: Request, res: Response, next: NextFunction) => {
  * Picks out relevant fields of the agent
  */
 export const pickAgent = (agent: Agent) => {
-  let picked = pick(agent, 'creationDate', 'id', 'name', 'src', 'status', 'tournamentID');
+  let picked = pick(agent, 'creationDate', 'id', 'name', 'src', 'status', 'tournamentID', 'logkey');
   return picked;
 };
 
@@ -47,6 +47,26 @@ router.get('/', (req: Request, res: Response) => {
  */
 router.get('/:agentID', (req, res) => {
   res.json({error: null, agent: pickAgent(req.data.agent)});
+});
+
+/**
+ * Get agent error logs
+ */
+router.get('/:agentID/logs', async (req, res, next) => {
+  let agent = req.data.agent;
+  if (agent.logkey) {
+    if (req.data.dimension.hasStorage()) {
+      let url = await req.data.dimension.storagePlugin.getDownloadURL(agent.logkey);
+      res.json({error: null, url: url});
+    }
+    else {
+      res.sendFile(agent.logkey);
+    }
+  }
+  else {
+    return next(new error.BadRequest(`No agent logs found`));
+  }
+  
 });
 
 export default router;

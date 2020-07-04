@@ -11,6 +11,7 @@ import { deepMerge } from "../utils/DeepMerge";
 import { genID } from "../utils";
 import { deepCopy } from "../utils/DeepCopy";
 import { DeepPartial } from "../utils/DeepPartial";
+import { Writable } from "stream";
 
 /**
  * @class Agent
@@ -109,6 +110,11 @@ export class Agent {
   public _clearTimer: Function = () => {};
 
   private log = new Logger();
+
+  /**
+   * Key used to retrieve the error logs of this agent
+   */
+  public logkey: string = null;
 
   /** whether agent is allowed to send commands. Used to help ignore extra output from agents */
   private allowedToSendCommands = true;
@@ -218,7 +224,7 @@ export class Agent {
   /**
    * Install whatever is needed through a `install.sh` file in the root of the bot folder
    */
-  _install(): Promise<void> {
+  _install(stderrWritestream?: Writable, stdoutWritestream?: Writable): Promise<void> {
     return new Promise((resolve, reject) => {
 
       // if there is a install.sh file, use it
@@ -246,6 +252,17 @@ export class Agent {
         p.stderr.on('data', (chunk) => {
           chunks.push(chunk);
         });
+        
+        if (stderrWritestream) {
+          p.stderr.pipe(stderrWritestream, {
+            end: false,
+          });
+        }
+        if (stdoutWritestream) {
+          p.stdout.pipe(stdoutWritestream, {
+            end: false,
+          });
+        }
 
         p.on('error', (err) => {
           clearTimeout(installTimer);
@@ -275,7 +292,7 @@ export class Agent {
    * Compile whatever is needed and validate files. Called by {@link MatchEngine} and has a timer set by the 
    * maxCompileTime option in {@link Agent.Options}
    */
-  async _compile(): Promise<void> {
+  async _compile(stderrWritestream?: Writable, stdoutWritestream?: Writable): Promise<void> {
     return new Promise( async (resolve, reject) => {
       let p: ChildProcess;
       let compileTimer = setTimeout(() => {
@@ -329,6 +346,16 @@ export class Agent {
         p.stderr.on('data', (chunk) => {
           chunks.push(chunk);
         });
+        if (stderrWritestream) {
+          p.stderr.pipe(stderrWritestream, {
+            end: false
+          });
+        }
+        if (stdoutWritestream) {
+          p.stdout.pipe(stdoutWritestream, {
+            end: false
+          });
+        }
         p.on('close', (code) => {
           clearTimeout(compileTimer);
           if (code === 0) {
@@ -545,6 +572,10 @@ export class Agent {
       })
     }
     return agents;
+  }
+
+  getAgentErrorLogFilename() {
+    return `agent_${this.id}.log`
   }
 }
 
