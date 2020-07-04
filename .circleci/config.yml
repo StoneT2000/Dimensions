@@ -19,9 +19,11 @@ jobs:
             - run: npm install --only=dev
             - run: sudo npm run test
       - run: npm run codecov
+
       - store_artifacts:
-        path: coverage.lcov
-        destination: coverage.lcov
+          path: coverage.lcov
+          destination: coverage.lcov
+
       - run: <($CURL -s https://codecov.io/bash) -t $CODE_COV_TOKEN -f coverage.lcov
 
 workflows:
