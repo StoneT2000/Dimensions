@@ -19,7 +19,7 @@ jobs:
             - run: npm install --only=dev
             - run: sudo npm run test
       - run: npm run codecov
-      - run: bash <($CURL -s https://codecov.io/bash) -t $CODE_COV_TOKEN -f coverage.lcov
+      - run: <($CURL -s https://codecov.io/bash) -t $CODE_COV_TOKEN -f coverage.lcov
 
 workflows:
     build-and-test:
