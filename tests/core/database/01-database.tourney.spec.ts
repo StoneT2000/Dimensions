@@ -15,15 +15,21 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.use(chaiSubset);
 
-describe('Testing Database with Tournament', () => {
+describe.only('Testing Database with Tournament', () => {
   const paper = {file: './tests/kits/js/normal/paper.js', name: 'paper'};
   const rock = {file: './tests/kits/js/normal/rock.js', name: 'rock'};
   const disabled = {file: './tests/kits/js/normal/rock.js', name: 'disabled', existingID:'disabled'};
-  const rockBot = {file: './tests/kits/js/normal/rock.js', name: 'rockid', existingID:'rockid'};
-  const rockBot2 = {file: './tests/kits/js/normal/rock.js', name: 'rockid2', existingID:'rockid2'};
-  const paperBot = {file: './tests/kits/js/normal/paper.js', name: 'test', existingID: 'test'};
+
+  const users = {
+    rock1: {file: './tests/kits/js/normal/rock.js', name: 'rock1', existingID:'rock1'},
+    rock2: {file: './tests/kits/js/normal/rock.js', name: 'rock2', existingID:'rock2'},
+    rock3: {file: './tests/kits/js/normal/rock.js', name: 'rock3', existingID:'rock3'},
+  }
+
+  const paperBot = {file: './tests/kits/js/normal/paper.js', name: 'paperbot', existingID: 'paperbot'};
   const botList = [rock, paper];
-  const userBotList = [disabled, rockBot, paperBot]
+  const userBotList = [disabled, users.rock1, users.rock2, paperBot];
+
   const rpsDesign = new RockPaperScissorsDesign('RPS');
   const d = Dimension.create(rpsDesign, {
     activateStation: false,
@@ -38,7 +44,6 @@ describe('Testing Database with Tournament', () => {
   
   before( async () => {
     await d.use(mongo);
-
   });
   describe("Test running", () => {
     it("should run", async () => {

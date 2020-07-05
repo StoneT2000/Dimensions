@@ -1,0 +1,79 @@
+[{
+  "_id": {
+    "$oid": "5f0253b4c3993e451da3bb1c"
+  },
+  "username": "admin",
+  "passwordHash": "$2a$10$1K2qFYljbAfcm8NQog6z0O0gNDu2XexaGFEDPgUlyRsRZyXIe8sji",
+  "statistics": {},
+  "meta": {},
+  "playerID": "qEMkyh2Ailt4",
+  "creationDate": {
+    "$date": "2020-07-05T22:27:00.544Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5f0256323bb9c84f715b7028"
+  },
+  "username": "disabled",
+  "passwordHash": "$2a$10$IhNzsInlg.tb9GxYScPj1uuv6RmMV0NfyRYk0irZ1AfNCkj8ODZ7O",
+  "statistics": {},
+  "meta": {},
+  "playerID": "disabled",
+  "creationDate": {
+    "$date": "2020-07-05T22:37:38.082Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5f0256323bb9c84f715b7029"
+  },
+  "username": "rock1",
+  "passwordHash": "$2a$10$IhNzsInlg.tb9GxYScPj1uuv6RmMV0NfyRYk0irZ1AfNCkj8ODZ7O",
+  "statistics": {},
+  "meta": {},
+  "playerID": "rock1",
+  "creationDate": {
+    "$date": "2020-07-05T22:37:38.156Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5f0256323bb9c84f715b702a"
+  },
+  "username": "rock2",
+  "passwordHash": "$2a$10$IhNzsInlg.tb9GxYScPj1uuv6RmMV0NfyRYk0irZ1AfNCkj8ODZ7O",
+  "statistics": {},
+  "meta": {},
+  "playerID": "rock2",
+  "creationDate": {
+    "$date": "2020-07-05T22:37:38.224Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5f0256323bb9c84f715b702b"
+  },
+  "username": "rock3",
+  "passwordHash": "$2a$10$IhNzsInlg.tb9GxYScPj1uuv6RmMV0NfyRYk0irZ1AfNCkj8ODZ7O",
+  "statistics": {},
+  "meta": {},
+  "playerID": "rock3",
+  "creationDate": {
+    "$date": "2020-07-05T22:37:38.292Z"
+  },
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5f0256323bb9c84f715b702c"
+  },
+  "username": "paperbot",
+  "passwordHash": "$2a$10$IhNzsInlg.tb9GxYScPj1uuv6RmMV0NfyRYk0irZ1AfNCkj8ODZ7O",
+  "statistics": {},
+  "meta": {},
+  "playerID": "paperbot",
+  "creationDate": {
+    "$date": "2020-07-05T22:37:38.365Z"
+  },
+  "__v": 0
+}]
