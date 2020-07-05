@@ -1,6 +1,8 @@
-version: '2.0'
+version: '2.1'
+
 services:
   dimensions:
+    userns_mode: 'host'
     image: stonezt2000/dimensions_langs:latest
     ports:
       - 9000:9000
