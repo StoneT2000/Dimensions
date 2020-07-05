@@ -7,6 +7,7 @@ executors:
   language-build:
     docker:
       - image: stonezt2000/dimensions_langs:latest
+      - image: circleci/mongo:latest
 
 jobs:
   build-and-test:

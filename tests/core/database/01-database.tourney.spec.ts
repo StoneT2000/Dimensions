@@ -15,7 +15,7 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.use(chaiSubset);
 
-describe('Testing Database with Tournament', () => {
+describe.only('Testing Database with Tournament', () => {
   const paper = {file: './tests/kits/js/normal/paper.js', name: 'paper'};
   const rock = {file: './tests/kits/js/normal/rock.js', name: 'rock'};
   const disabled = {file: './tests/kits/js/normal/rock.js', name: 'disabled', existingID:'disabled'};
@@ -31,7 +31,7 @@ describe('Testing Database with Tournament', () => {
       bestOf: 21
     }
   });
-  let mongo = new MongoDB('mongodb://root:rootpassword@mongodb_container:27017/test?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&ssl=false');
+  let mongo = new MongoDB('mongodb://root:rootpassword@localhost:27017/test?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&ssl=false');
   
   before( async () => {
     await d.use(mongo);
