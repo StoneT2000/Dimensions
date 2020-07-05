@@ -7,6 +7,10 @@ executors:
   language-build:
     docker:
       - image: stonezt2000/dimensions_langs:latest
+      - image: circleci/mongo:latest
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: rootpassword
 
 jobs:
   build-and-test:
@@ -14,13 +18,21 @@ jobs:
       name: language-build
     steps:
       - checkout
+      - run:
+          name: install dockerize
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          environment:
+            DOCKERIZE_VERSION: v0.3.0
+      - run:
+          name: Wait for db
+          command: |
+            dockerize -timeout 1m \
+              -wait tcp://localhost:27017 `# mongo` 
       - node/with-cache:
           steps:
             - run: npm install
-            - run: npm install --only=dev
             - run: sudo npm run test
       - run: npm run codecov
-
       - store_artifacts:
           path: coverage.lcov
           destination: coverage.lcov
