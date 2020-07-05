@@ -8,6 +8,9 @@ executors:
     docker:
       - image: stonezt2000/dimensions_langs:latest
       - image: circleci/mongo:latest
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: rootpassword
 
 jobs:
   build-and-test:
