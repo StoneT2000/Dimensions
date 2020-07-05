@@ -15,7 +15,7 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.use(chaiSubset);
 
-describe.only('Testing Database with Tournament', () => {
+describe('Testing Database with Tournament', () => {
   const paper = {file: './tests/kits/js/normal/paper.js', name: 'paper'};
   const rock = {file: './tests/kits/js/normal/rock.js', name: 'rock'};
   const disabled = {file: './tests/kits/js/normal/rock.js', name: 'disabled', existingID:'disabled'};
@@ -53,7 +53,7 @@ describe.only('Testing Database with Tournament', () => {
       expect(ranks[0].player.file).to.equal(paper.file);
       expect(ranks[1].player.file).to.equal(rock.file);
     });
-    it.only("should initialize with users and add users", async () => {
+    it("should initialize with users and add users", async () => {
       let tourney = createLadderTourney(d, userBotList, {
         name: "Ladder Tournament with users",
         id: "12345"
