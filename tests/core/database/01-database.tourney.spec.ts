@@ -31,7 +31,7 @@ describe.only('Testing Database with Tournament', () => {
       bestOf: 21
     }
   });
-  let mongo = new MongoDB('mongodb://root:rootpassword@localhost:27017/test');
+  let mongo = new MongoDB('mongodb://root:rootpassword@localhost:27017/test?authSource=admin&readPreference=primary');
   
   before( async () => {
     await d.use(mongo);
