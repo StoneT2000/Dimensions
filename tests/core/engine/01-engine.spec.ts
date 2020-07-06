@@ -86,15 +86,15 @@ describe('Testing MatchEngine Core', () => {
     })
     it("should store relevant processes", () => {
       for (let agent of match.agents) {
-        expect(agent.process).to.not.equal(null);
-        expect(agent.process.stdin.destroyed).to.equal(false)
-        expect(agent.process.stdout.destroyed).to.equal(false)
-        expect(agent.process.stderr.destroyed).to.equal(false)
+        expect(agent.process).to.not.equal(null, "process should be stored");
+        expect(agent.process.stdin.destroyed).to.equal(false, "stdin should not be destroyed")
+        expect(agent.process.stdout.destroyed).to.equal(false, "stdout should not be destroyed")
+        expect(agent.process.stderr.destroyed).to.equal(false, "stderr should not be destroyed")
       }
     });
     it("should store relevant memory watcher intervals", () => {
       for (let agent of match.agents) {
-        expect(agent.memoryWatchInterval).to.not.equal(null);
+        expect(agent.memoryWatchInterval).to.not.equal(null, "memory watch interval should be stored and active");
       }
     });
     it("should store idToAgents map in match", () => {
