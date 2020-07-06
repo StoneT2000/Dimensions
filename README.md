@@ -145,7 +145,7 @@ let RPSTournament = myDimension.createTournament(botSources, {
   defaultMatchConfigs: {
     bestOf: 329,
   },
-  resultHandler: (results: any) => {
+  resultHandler: (results) => {
     let ranks = [];
     if (results.winner === 'Tie') {
       ranks = [{rank: 1, agentID: 0}, {rank: 1, agentID: 1}]
