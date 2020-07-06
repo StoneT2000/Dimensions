@@ -37,7 +37,7 @@ router.use('/:tournamentID', getTournament);
  * Picks out relevant fields for a tournament
  */
 export const pickTournament = (t: Tournament) => {
-  return pick(t, 'competitors', 'configs', 'id', 'log', 'name', 'status');
+  return pick(t, 'configs', 'id', 'log', 'name', 'status');
 }
 
 /**
