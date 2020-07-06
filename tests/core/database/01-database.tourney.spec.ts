@@ -62,7 +62,7 @@ describe.only('Testing Database with Tournament Singletons (no distribution)', (
         }
       });
       await tourney.run();
-      await sleep(2000);
+      await sleep(5000);
 
       let ranks = await tourney.getRankings();
       expect(tourney.state.statistics.totalMatches).to.be.greaterThan(1);
@@ -82,7 +82,7 @@ describe.only('Testing Database with Tournament Singletons (no distribution)', (
         }
       });
       await tourney.run();
-      await sleep(2000);
+      await sleep(5000);
 
       let ranks = await tourney.getRankings();
       expect(tourney.state.statistics.totalMatches).to.be.greaterThan(1, "run more than 1 match");
@@ -104,7 +104,7 @@ describe.only('Testing Database with Tournament Singletons (no distribution)', (
       });
       it("should run with users and store user data + match data", async () => {
         await t.run();
-        await sleep(5000);
+        await sleep(10000);
         
         let ranks = await t.getRankings();
         expect(t.state.statistics.totalMatches).to.be.greaterThan(1, "run more than 1 match");
@@ -126,7 +126,7 @@ describe.only('Testing Database with Tournament Singletons (no distribution)', (
       });
       it("should allow new bots and bot updates that the bot stats", async () => {
         await t.run();
-        await sleep(4000);
+        await sleep(5000);
         
         let { playerStat } = await t.getPlayerStat(paperBot.existingID);
         let paperbotMatchCount = playerStat.matchesPlayed;
