@@ -15,7 +15,7 @@ chai.use(chaiSubset)
 chai.use(chaiAsPromised);
 chai.use(chaiHttp)
 
-describe.only('Testing /api/dimensions/:dimensionID/user API', () => {
+describe('Testing /api/dimensions/:dimensionID/user API', () => {
   const base = '/api/dimensions/:dimensionID/user';
   let origin = "http://localhost:"
   let endpoint = '';
