@@ -86,7 +86,7 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
       expect(ranks[1].player.file).to.equal(rock.file);
 
     });
-    describe.only("Test on Trueskill", () => {
+    describe("Test on Trueskill", () => {
       let t: Ladder;
       before(() => {
         t = createLadderTourney(d, userBotList, {
@@ -111,7 +111,6 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
 
       it("should reset rankings", async () => {
         await t.stop();
-        await sleep(2000);
         await t.resetRankings();
         let ranks = await t.getRankings();
         let { user } = await t.getPlayerStat(paperBot.existingID)
@@ -120,15 +119,37 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
       });
     });
 
-    describe("Test on ELO", async () => {
-      let tourney = createLadderELOTourney(d, userBotList, {
-        name: "Ladder Tournament",
-        id: "12345elo",
-        tournamentConfigs: {
-          syncConfigs: false
-        }
+    describe("Test on ELO", () => {
+      let t: Ladder;
+      before(() => {
+        t = createLadderELOTourney(d, userBotList, {
+          name: "Ladder Tournament",
+          id: "12345elo",
+          tournamentConfigs: {
+            syncConfigs: false
+          }
+        });
       });
-      // testLadderTourneyWithDatabase(tourney);
+      it("should run with users and store user data + match data", async () => {
+        await t.run();
+        await sleep(5000);
+        
+        let ranks = await t.getRankings();
+        expect(t.state.statistics.totalMatches).to.be.greaterThan(1);
+        expect(ranks[0].player.tournamentID.id).to.equal(paperBot.existingID);
+        let { user } = await t.getPlayerStat(paperBot.existingID)
+        // check database stored value is same
+        expect(user.statistics[t.getKeyName()].rankState.rating.score).to.equal(ranks[0].rankState.rating.score);
+      });
+
+      it("should reset rankings", async () => {
+        await t.stop();
+        await t.resetRankings();
+        let ranks = await t.getRankings();
+        let { user } = await t.getPlayerStat(paperBot.existingID)
+        expect(user.statistics[t.getKeyName()].rankState.rating.score).to.equal(ranks[0].rankState.rating.score)
+        expect(ranks[0].rankState.rating.score).to.equal(t.configs.rankSystemConfigs.startingScore);
+      });
     });
   });
     
