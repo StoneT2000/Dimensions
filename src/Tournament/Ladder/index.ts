@@ -358,7 +358,7 @@ export class Ladder extends Tournament {
               rating: new Rating(trueskillConfigs.initialMu, trueskillConfigs.initialSigma)
             }
             if (this.dimension.hasDatabase()) {
-              this.updateDatabaseTrueskillPlayerStats(stats, userList[i]);
+              await this.updateDatabaseTrueskillPlayerStats(stats, userList[i]);
             }
             break;
           case RankSystem.ELO:
@@ -367,7 +367,7 @@ export class Ladder extends Tournament {
               rating: this.elo.createRating()
             }
             if (this.dimension.hasDatabase()) {
-              this.updateDatabaseELOPlayerStats(stats, userList[i]);
+              await this.updateDatabaseELOPlayerStats(stats, userList[i]);
             }
             break;
         }
