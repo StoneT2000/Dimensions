@@ -46,6 +46,9 @@ describe('Testing Dimension Class', () => {
       defaultMatchConfigs: {
         loggingLevel: Logger.LEVEL.INFO,
         secureMode: false,
+      },
+      stationConfigs: {
+        loggingLevel: Logger.LEVEL.INFO
       }
     });
   });

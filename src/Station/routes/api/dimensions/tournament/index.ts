@@ -279,7 +279,9 @@ router.post('/:tournamentID/reset', requireAdmin, async (req: Request, res: Resp
  */
 router.post('/:tournamentID/upload/', requireAuth, async (req: Request, res: Response, next: NextFunction) => { 
   let data: Array<UploadData>;
-
+  if (req.data.dimension.getStation().configs.disableUploads) {
+    return next(new error.BadRequest('Uploads are disabled'));
+  }
   try {
    data = await handleBotUpload(req, req.data.user);
   } catch(err) {

@@ -90,6 +90,11 @@ export interface DimensionConfigs {
    * @default {@link DatabaseType.NONE}
    */
   backingStorage: string | StorageType
+
+  /**
+   * Station configs to use
+   */
+  stationConfigs: DeepPartial<Station.Configs>
 }
 /**
  * The Dimension framework for intiating a {@link Design} to then run instances of a {@link Match} or 
@@ -161,7 +166,8 @@ export class Dimension {
     secureMode: false,
     backingDatabase: DatabaseType.NONE,
     backingStorage: StorageType.NONE,
-    id: 'oLBptg'
+    id: 'oLBptg',
+    stationConfigs: {}
   }
 
   /**
@@ -183,12 +189,15 @@ export class Dimension {
     }
     
     this.log.level = this.configs.loggingLevel;
+    if (this.configs.stationConfigs.loggingLevel === undefined) {
+      this.configs.stationConfigs.loggingLevel = this.configs.loggingLevel;
+    }
     
 
     // open up a new station for the current node process if it hasn't been opened yet and there is a dimension that 
     // is asking for a station to be initiated
     if (this.configs.activateStation === true && Dimension.Station == null) {
-      Dimension.Station = new Station('Station', [], this.configs.loggingLevel);
+      Dimension.Station = new Station('Station', [], this.configs.stationConfigs);
     }
 
     // default match log level and design log level is the same as passed into the dimension

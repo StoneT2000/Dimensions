@@ -16,6 +16,9 @@ import { Tournament } from '../Tournament';
 import { existsSync, mkdirSync } from 'fs';
 import { Agent } from '../Agent';
 import { Plugin } from '../Plugin';
+import { DeepPartial } from '../utils/DeepPartial';
+import { deepMerge } from '../utils/DeepMerge';
+import { deepCopy } from '../utils/DeepCopy';
 
 
 export const BOT_DIR = path.join(__dirname, '../../../../local/bots');
@@ -48,10 +51,18 @@ export class Station {
   public maxAttempts:number = 16;
   private log: Logger = new Logger(Logger.LEVEL.INFO, 'Station Log');
   private server: Server;
-  public webapp: express.Application;
-  constructor(name: string = '', observedDimensions: Dimension | Array<Dimension>, loggingLevel?: Logger.LEVEL) {
+
+  public configs: Station.Configs = {
+    disableUploads: false,
+    loggingLevel: Logger.LEVEL.INFO
+  }
+
+  constructor(name: string = '', observedDimensions: Dimension | Array<Dimension>, configs: DeepPartial<Station.Configs> = {}) {
+
+    this.configs = deepMerge(this.configs, deepCopy(configs));
+
     // set logging level
-    this.log.level = loggingLevel;
+    this.log.level = this.configs.loggingLevel;
     
 
     // store ID, set name and logger identifier
@@ -193,5 +204,24 @@ export class Station {
     let dimMap = this.app.get('dimensions');
     dimMap.set(dimension.id, dimension);
     this.app.set('dimensions', dimMap);
+  }
+}
+
+export module Station {
+  export interface Configs {
+
+    /**
+     * Whether or not to allow bot uploads through the Station API. Note that you can still upload bots by changing the
+     * row entry for the user's bot and updating the botKey and directly calling {@link Tournament.AddPlayer} and 
+     * providing full detils
+     * 
+     * @default `false`
+     */
+    disableUploads: boolean
+
+    /**
+     * Logging level of station
+     */
+    loggingLevel: Logger.LEVEL
   }
 }
