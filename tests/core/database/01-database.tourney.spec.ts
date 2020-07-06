@@ -85,10 +85,10 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
       await sleep(2000);
 
       let ranks = await tourney.getRankings();
-      expect(tourney.state.statistics.totalMatches).to.be.greaterThan(1);
-      expect(ranks[0].player.file).to.equal(paper.file);
-      expect(ranks[1].player.file).to.equal(rock.file);
-      expect(tourney.anonymousCompetitors.size).to.equal(2);
+      expect(tourney.state.statistics.totalMatches).to.be.greaterThan(1, "run more than 1 match");
+      expect(ranks[0].player.file).to.equal(paper.file, "paper is first place");
+      expect(ranks[1].player.file).to.equal(rock.file, "rock is second place");
+      expect(tourney.anonymousCompetitors.size).to.equal(2, "both bots in tourney should be anonymous competitors");
 
     });
     describe("Test on Trueskill", () => {
@@ -107,13 +107,14 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
         await sleep(5000);
         
         let ranks = await t.getRankings();
-        expect(t.state.statistics.totalMatches).to.be.greaterThan(1);
-        expect(ranks[0].player.tournamentID.id).to.equal(paperBot.existingID);
-        let { user } = await t.getPlayerStat(paperBot.existingID)
+        expect(t.state.statistics.totalMatches).to.be.greaterThan(1, "run more than 1 match");
+        expect(ranks[0].player.tournamentID.id).to.equal(paperBot.existingID, "paper bot should be first");
+        let { user } = await t.getPlayerStat(paperBot.existingID);
         // check database stored value is same
-        expect(user.statistics[t.getKeyName()].rankState.rating.mu).to.approximately(ranks[0].rankState.rating.mu, 0.01);
+        expect(user.statistics[t.getKeyName()].rankState.rating.mu)
+          .to.approximately(ranks[0].rankState.rating.mu, 0.01, "user rank mu should match what was returned from getRankings");
         // there shouldn't be any anon competitors if all are using ids
-        expect(t.anonymousCompetitors.size).to.equal(0);
+        expect(t.anonymousCompetitors.size).to.equal(0, "no competitor should be anonymous if ids are provided");
       });
 
       it("should reset rankings", async () => {
@@ -121,7 +122,7 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
         await t.resetRankings();
         let { playerStat } = await t.getPlayerStat(paperBot.existingID)
         let rankState: RankSystem.TRUESKILL.RankState = (<Tournament.Ladder.PlayerStat>playerStat).rankState;
-        expect(rankState.rating.mu).to.equal(t.configs.rankSystemConfigs.initialMu)
+        expect(rankState.rating.mu).to.equal(t.configs.rankSystemConfigs.initialMu, "reset ranking to initialMu")
       });
       it("should allow new bots and bot updates that the bot stats", async () => {
         await t.run();
@@ -131,12 +132,12 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
         let paperbotMatchCount = playerStat.matchesPlayed;
         await t.addplayer(paperBot);
         playerStat = (await t.getPlayerStat(paperBot.existingID)).playerStat;
-        expect(playerStat.matchesPlayed).to.be.lessThan(paperbotMatchCount);
+        expect(playerStat.matchesPlayed).to.be.lessThan(paperbotMatchCount, "updated bot should reset stats and matches played should be less than before");
 
         await t.addplayer(users.rock3);
         await sleep(4000);
         playerStat = (await t.getPlayerStat(users.rock3.existingID)).playerStat;
-        expect(playerStat.matchesPlayed).to.be.greaterThan(0);
+        expect(playerStat).to.be.not.equal(null, "new bot exists");
 
       });
     });
@@ -157,13 +158,13 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
         await sleep(5000);
         
         let ranks = await t.getRankings();
-        expect(t.state.statistics.totalMatches).to.be.greaterThan(1);
-        expect(ranks[0].player.tournamentID.id).to.equal(paperBot.existingID);
+        expect(t.state.statistics.totalMatches).to.be.greaterThan(1, "should run more than 1 match");
+        expect(ranks[0].player.tournamentID.id).to.equal(paperBot.existingID, "first place should be paper bot");
         let { user } = await t.getPlayerStat(paperBot.existingID)
         // check database stored value is same
-        expect(user.statistics[t.getKeyName()].rankState.rating.score).to.equal(ranks[0].rankState.rating.score);
+        expect(user.statistics[t.getKeyName()].rankState.rating.score).to.equal(ranks[0].rankState.rating.score, "user stored score should be same returned from getRankings");
         // there shouldn't be any anon competitors if all are using ids
-        expect(t.anonymousCompetitors.size).to.equal(0);
+        expect(t.anonymousCompetitors.size).to.equal(0, "should be no anonymous competitors");
       });
 
       it("should reset rankings", async () => {
@@ -171,22 +172,22 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
         await t.resetRankings();
         let { playerStat } = await t.getPlayerStat(paperBot.existingID)
         let rankState: RankSystem.ELO.RankState = (<Tournament.Ladder.PlayerStat>playerStat).rankState;
-        expect(rankState.rating.score).to.equal(t.configs.rankSystemConfigs.startingScore);
+        expect(rankState.rating.score).to.equal(t.configs.rankSystemConfigs.startingScore, "elo score should reset to startingScore");
       });
       it("should allow new bots and bot updates that the bot stats", async () => {
         await t.run();
         await sleep(4000);
-
+        
         let { playerStat } = await t.getPlayerStat(paperBot.existingID);
         let paperbotMatchCount = playerStat.matchesPlayed;
         await t.addplayer(paperBot);
         playerStat = (await t.getPlayerStat(paperBot.existingID)).playerStat;
-        expect(playerStat.matchesPlayed).to.be.lessThan(paperbotMatchCount);
+        expect(playerStat.matchesPlayed).to.be.lessThan(paperbotMatchCount, "updated bot should reset stats and matches played should be less than before");
 
         await t.addplayer(users.rock3);
         await sleep(4000);
         playerStat = (await t.getPlayerStat(users.rock3.existingID)).playerStat;
-        expect(playerStat.matchesPlayed).to.be.greaterThan(0);
+        expect(playerStat).to.be.not.equal(null, "new bot exists");
 
       });
     });
