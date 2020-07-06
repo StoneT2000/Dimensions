@@ -39,7 +39,4 @@ describe('Testing /api/dimensions/:dimensionID/tournament API', () => {
     expect(true).to.equal(true)
     done();
   });
-  after(() => {
-    dimension.cleanup();
-  });
 });

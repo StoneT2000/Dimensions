@@ -7,7 +7,6 @@ import sinonChai from "sinon-chai";
 import 'mocha';
 import { Logger, Match } from '../../src';
 import { RockPaperScissorsDesign } from '../rps';
-import MatchSchemaCreator from '../../src/SupportedPlugins/MongoDB/models/match';
 chai.should()
 const expect = chai.expect;
 chai.use(sinonChai);
