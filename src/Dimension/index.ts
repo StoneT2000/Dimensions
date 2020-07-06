@@ -484,7 +484,7 @@ export class Dimension {
    * Returns true if dimension has a database backing it
    */
   public hasDatabase() {
-    return this.databasePlugin && this.configs.backingDatabase !== DatabaseType.NONE;
+    return this.databasePlugin !== undefined && this.configs.backingDatabase !== DatabaseType.NONE;
   }
 
   /**

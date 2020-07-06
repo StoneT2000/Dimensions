@@ -38,7 +38,8 @@ export class Ladder extends Tournament {
       storePastResults: true,
       maxTotalMatches: null,
       matchMake: null,
-      configSyncRefreshRate: 6000
+      configSyncRefreshRate: 6000,
+      syncConfigs: true,
     },
     resultHandler: null,
     agentsPerMatch: [2],
@@ -130,16 +131,18 @@ export class Ladder extends Tournament {
     
     // setup config syncing if DB is enabled and store configs if not stored already
     if (this.dimension.hasDatabase()) {
-      this.syncConfigs();
-      this.setupConfigSyncInterval();
-      this.dimension.databasePlugin.getTournamentConfigs(this.id).then((data) => {
-        if (!data) {
-          this.configLastModificationDate = new Date();
-          this.dimension.databasePlugin.storeTournamentConfigs(this.id, this.configs, this.status).then(() => {
-            this.log.error('Storing initial tournament configuration data');
-          })
-        }
-      });
+      if (this.configs.tournamentConfigs.syncConfigs) {
+        this.syncConfigs();
+        this.setupConfigSyncInterval();
+        this.dimension.databasePlugin.getTournamentConfigs(this.id).then((data) => {
+          if (!data) {
+            this.configLastModificationDate = new Date();
+            this.dimension.databasePlugin.storeTournamentConfigs(this.id, this.configs, this.status).then(() => {
+              this.log.error('Storing initial tournament configuration data');
+            })
+          }
+        });
+      }
     }
 
     this.log.info('Initialized Ladder Tournament');
@@ -211,7 +214,7 @@ export class Ladder extends Tournament {
       throw new TournamentError('You cannot change the tournament ID after constructing the tournament');
     }
 
-    if (this.dimension.hasDatabase()) {
+    if (this.dimension.hasDatabase() && this.configs.tournamentConfigs.syncConfigs) {
       let plugin = this.dimension.databasePlugin
       // ensure configs are up to date first, then set configs
       this.syncConfigs().then(() => {
@@ -1203,6 +1206,13 @@ export namespace Ladder {
      * @default `6000`
      */
     configSyncRefreshRate: number
+
+    /**
+     * Whether or not to sync configs with database and other tournaments of the same id
+     * 
+     * @default `true`
+     */
+    syncConfigs: boolean
 
   }
   /**
