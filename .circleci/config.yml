@@ -7,11 +7,12 @@ executors:
   language-build:
     docker:
       - image: stonezt2000/dimensions_langs:latest
-    resource_class: large
       - image: circleci/mongo:latest
         environment:
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    resource_class: large
+      
 
 jobs:
   build-and-test:
