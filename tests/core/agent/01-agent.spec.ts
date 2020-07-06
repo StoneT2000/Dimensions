@@ -23,7 +23,10 @@ describe('Testing Agent', () => {
       activateStation: false,
       observe: false,
       loggingLevel: Logger.LEVEL.NONE,
-      id: "abcdef"
+      id: "abcdef",
+      defaultMatchConfigs: {
+        storeErrorLogs: false
+      }
     });
   });
   

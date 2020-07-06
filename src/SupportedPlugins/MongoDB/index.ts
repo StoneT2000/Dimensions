@@ -24,6 +24,7 @@ export class MongoDB extends Database {
   public name = 'MongoDB';
   public type = Plugin.Type.DATABASE;
   public db: mongoose.Connection;
+  public mongoose: mongoose.Mongoose;
 
   public models: MongoDB.Models = {
     user: null,
@@ -36,14 +37,16 @@ export class MongoDB extends Database {
 
   constructor(connectionString: string, configs: DeepPartial<Database.Configs> = {}) {
     super(configs);
-    mongoose.set('useFindAndModify', false);
+    this.mongoose = new mongoose.Mongoose();
+    this.mongoose.set('useFindAndModify', false);
     this.connectionString = connectionString;
-    let matchSchema = MatchSchemaCreator();
-    this.models.match = mongoose.model('Match', matchSchema);
-    let userSchema = UserSchemaCreator();
-    this.models.user = mongoose.model('User', userSchema);
 
-    this.models.tournamentConfigs = mongoose.model('TournamentConfigs', TournamentConfigSchema);
+    let matchSchema = MatchSchemaCreator();
+    this.models.match = this.mongoose.model('Match', matchSchema);
+    let userSchema = UserSchemaCreator();
+    this.models.user = this.mongoose.model('User', userSchema)
+
+    this.models.tournamentConfigs = this.mongoose.model('TournamentConfigs', TournamentConfigSchema);
 
   }
 
@@ -51,8 +54,8 @@ export class MongoDB extends Database {
    * Connects to the mongo database and returns the Connection object
    */
   public async connect(): Promise<mongoose.Connection> {
-    mongoose.connect(this.connectionString, {useNewUrlParser: true});
-    this.db = mongoose.connection;
+    this.mongoose.connect(this.connectionString, {useNewUrlParser: true});
+    this.db = this.mongoose.connection;
     this.db.on('error', console.error.bind(console, 'connection error:'));
     return this.db;
   }

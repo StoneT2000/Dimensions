@@ -7,7 +7,6 @@ import sinonChai from "sinon-chai";
 import 'mocha';
 import { Logger, Match } from '../../src';
 import { RockPaperScissorsDesign } from '../rps';
-import MatchSchemaCreator from '../../src/SupportedPlugins/MongoDB/models/match';
 chai.should()
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -27,7 +26,10 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
       activateStation: true,
       observe: true,
       loggingLevel: Logger.LEVEL.NONE,
-      id: "abcdef3"
+      id: "abcdef3",
+      defaultMatchConfigs: {
+        storeErrorLogs: false
+      }
     });
     origin += dimension.getStation().port
     endpoint = origin + `/api/dimensions/${dimension.id}`

@@ -28,6 +28,28 @@ export const requireAuth = (req: Request, res: Response, next: NextFunction) => 
 }
 
 /**
+ * Doesn't require auth, just stores user data if supplied
+ */
+export const storeAuth = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.data.dimension.hasDatabase()) {
+    next();
+    return;
+  }
+  const authHeader = req.get('Authorization');
+  if (!authHeader) return next();
+  const authHead = authHeader.split(' ');
+  const invalidAuthFormat = authHead.length !== 2 || authHead[0] !== 'Bearer' || authHead[1].length === 0;
+  if (invalidAuthFormat) return next();
+  let dimension = req.data.dimension;
+  dimension.databasePlugin.verifyToken(authHead[1]).then((data) => {
+    req.data.user = data;
+    next();
+  }).catch(() => {
+    next();
+  });
+}
+
+/**
  * Admin requiring middleware
  */
 export const requireAdmin = (req: Request, res: Response, next: NextFunction) => {

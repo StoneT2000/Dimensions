@@ -31,7 +31,7 @@ const paperBot = {file: './tests/kits/js/normal/paper.js', name: 'paperbot', exi
 const botList = [rock, paper];
 const userBotList = [disabled, users.rock2, paperBot]; // new bots to add
 
-describe.only('Testing Database with Tournament Singletons (no distribution)', () => {
+describe('Testing Database with Tournament Singletons (no distribution)', () => {
 
   const rpsDesign = new RockPaperScissorsDesign('RPS');
   const d = Dimension.create(rpsDesign, {
@@ -48,7 +48,6 @@ describe.only('Testing Database with Tournament Singletons (no distribution)', (
   
   before( async () => {
     await d.use(mongo);
-    console.log("set up db");
   });
   
   describe("Test running", () => {
@@ -105,7 +104,7 @@ describe.only('Testing Database with Tournament Singletons (no distribution)', (
       it("should run with users and store user data + match data", async () => {
         await t.run();
         await sleep(5000);
-        
+        await t.stop();
         let ranks = await t.getRankings();
         expect(t.state.statistics.totalMatches).to.be.greaterThan(1, "run more than 1 match");
         expect(ranks[0].player.tournamentID.id).to.equal(paperBot.existingID, "paper bot should be first");
@@ -118,7 +117,7 @@ describe.only('Testing Database with Tournament Singletons (no distribution)', (
       });
 
       it("should reset rankings", async () => {
-        await t.stop();
+        
         await t.resetRankings();
         let { playerStat } = await t.getPlayerStat(paperBot.existingID)
         let rankState: RankSystem.TRUESKILL.RankState = (<Tournament.Ladder.PlayerStat>playerStat).rankState;

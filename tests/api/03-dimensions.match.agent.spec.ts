@@ -28,7 +28,10 @@ describe('Testing /api/dimensions/:dimensionID/match/:matchID/agent API', () => 
       activateStation: true,
       observe: true,
       loggingLevel: Logger.LEVEL.NONE,
-      id: "abcdef3"
+      id: "abcdef3",
+      defaultMatchConfigs: {
+        storeErrorLogs: false
+      }
     });
     match = await dimension.createMatch(botList)
     origin += dimension.getStation().port

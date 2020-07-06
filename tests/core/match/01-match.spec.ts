@@ -171,7 +171,10 @@ describe('Testing Match Core', () => {
       d = Dimension.create(custom, {
         activateStation: false,
         observe: false,
-        loggingLevel: Logger.LEVEL.NONE
+        loggingLevel: Logger.LEVEL.NONE,
+        defaultMatchConfigs: {
+          storeErrorLogs: false
+        }
       });
     });
 
