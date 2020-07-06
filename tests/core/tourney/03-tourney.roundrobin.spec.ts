@@ -25,7 +25,8 @@ describe('Testing Roundrobin Tournament Core', () => {
     id: "12345678",
     loggingLevel: Logger.LEVEL.NONE,
     defaultMatchConfigs: {
-      bestOf: 21
+      bestOf: 9,
+      storeErrorLogs: false
     }
   });
 

@@ -208,7 +208,7 @@ export abstract class Tournament {
         return player;
       }
       else {
-        // otherwise bot doesn't exist, and we use this id as our id to generate a new player
+        // otherwise bot doesn't exist locally or in db row statistics field, and we use this id as our id to generate a new player
         id = existingID;
       }
 

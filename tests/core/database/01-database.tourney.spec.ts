@@ -9,6 +9,7 @@ import { Logger, MongoDB, Tournament } from '../../../src';
 import { sleep } from '../utils/sleep';
 import { createLadderTourney, createLadderELOTourney } from '../tourney/utils';
 import { Ladder } from '../../../src/Tournament/Ladder';
+import { RankSystem } from '../../../src/Tournament/RankSystem';
 const expect = chai.expect;
 chai.should()
 chai.use(sinonChai);
@@ -20,6 +21,7 @@ const rock = {file: './tests/kits/js/normal/rock.js', name: 'rock'};
 const disabled = {file: './tests/kits/js/normal/rock.js', name: 'disabled', existingID:'disabled'};
 
 const users = {
+  // in seed, rock1 has stats in tourneys already
   rock1: {file: './tests/kits/js/normal/rock.js', name: 'rock1', existingID:'rock1'},
   rock2: {file: './tests/kits/js/normal/rock.js', name: 'rock2', existingID:'rock2'},
   rock3: {file: './tests/kits/js/normal/rock.js', name: 'rock3', existingID:'rock3'},
@@ -27,7 +29,7 @@ const users = {
 
 const paperBot = {file: './tests/kits/js/normal/paper.js', name: 'paperbot', existingID: 'paperbot'};
 const botList = [rock, paper];
-const userBotList = [disabled, users.rock1, users.rock2, paperBot];
+const userBotList = [disabled, users.rock2, paperBot]; // new bots to add
 
 describe('Testing Database with Tournament Singletons (no distribution)', () => {
 
@@ -66,6 +68,8 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
       expect(tourney.state.statistics.totalMatches).to.be.greaterThan(1);
       expect(ranks[0].player.file).to.equal(paper.file);
       expect(ranks[1].player.file).to.equal(rock.file);
+      // expect all players to be anonymous players as db is used, but no ids given
+      expect(tourney.anonymousCompetitors.size).to.equal(2);
 
     });
     it("should run elo", async () => {
@@ -84,6 +88,7 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
       expect(tourney.state.statistics.totalMatches).to.be.greaterThan(1);
       expect(ranks[0].player.file).to.equal(paper.file);
       expect(ranks[1].player.file).to.equal(rock.file);
+      expect(tourney.anonymousCompetitors.size).to.equal(2);
 
     });
     describe("Test on Trueskill", () => {
@@ -107,21 +112,32 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
         let { user } = await t.getPlayerStat(paperBot.existingID)
         // check database stored value is same
         expect(user.statistics[t.getKeyName()].rankState.rating.mu).to.approximately(ranks[0].rankState.rating.mu, 0.01);
+        // there shouldn't be any anon competitors if all are using ids
+        expect(t.anonymousCompetitors.size).to.equal(0);
       });
 
       it("should reset rankings", async () => {
         await t.stop();
         await t.resetRankings();
-        let ranks = await t.getRankings();
-        let { user } = await t.getPlayerStat(paperBot.existingID)
-        expect(user.statistics[t.getKeyName()].rankState.rating.mu).to.approximately(ranks[0].rankState.rating.mu, 0.01)
-        expect(ranks[0].rankState.rating.mu).to.equal(t.configs.rankSystemConfigs.initialMu);
+        let { playerStat } = await t.getPlayerStat(paperBot.existingID)
+        let rankState: RankSystem.TRUESKILL.RankState = (<Tournament.Ladder.PlayerStat>playerStat).rankState;
+        expect(rankState.rating.mu).to.equal(t.configs.rankSystemConfigs.initialMu)
       });
-      it("should allow new bots and bot updates", async () => {
+      it("should allow new bots and bot updates that the bot stats", async () => {
         await t.run();
-        await sleep(2000);
+        await sleep(4000);
+        
+        let { playerStat } = await t.getPlayerStat(paperBot.existingID);
+        let paperbotMatchCount = playerStat.matchesPlayed;
         await t.addplayer(paperBot);
-        await sleep(2000);
+        playerStat = (await t.getPlayerStat(paperBot.existingID)).playerStat;
+        expect(playerStat.matchesPlayed).to.be.lessThan(paperbotMatchCount);
+
+        await t.addplayer(users.rock3);
+        await sleep(4000);
+        playerStat = (await t.getPlayerStat(users.rock3.existingID)).playerStat;
+        expect(playerStat.matchesPlayed).to.be.greaterThan(0);
+
       });
     });
 
@@ -146,15 +162,32 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
         let { user } = await t.getPlayerStat(paperBot.existingID)
         // check database stored value is same
         expect(user.statistics[t.getKeyName()].rankState.rating.score).to.equal(ranks[0].rankState.rating.score);
+        // there shouldn't be any anon competitors if all are using ids
+        expect(t.anonymousCompetitors.size).to.equal(0);
       });
 
       it("should reset rankings", async () => {
         await t.stop();
         await t.resetRankings();
-        let ranks = await t.getRankings();
-        let { user } = await t.getPlayerStat(paperBot.existingID)
-        expect(user.statistics[t.getKeyName()].rankState.rating.score).to.equal(ranks[0].rankState.rating.score)
-        expect(ranks[0].rankState.rating.score).to.equal(t.configs.rankSystemConfigs.startingScore);
+        let { playerStat } = await t.getPlayerStat(paperBot.existingID)
+        let rankState: RankSystem.ELO.RankState = (<Tournament.Ladder.PlayerStat>playerStat).rankState;
+        expect(rankState.rating.score).to.equal(t.configs.rankSystemConfigs.startingScore);
+      });
+      it("should allow new bots and bot updates that the bot stats", async () => {
+        await t.run();
+        await sleep(4000);
+
+        let { playerStat } = await t.getPlayerStat(paperBot.existingID);
+        let paperbotMatchCount = playerStat.matchesPlayed;
+        await t.addplayer(paperBot);
+        playerStat = (await t.getPlayerStat(paperBot.existingID)).playerStat;
+        expect(playerStat.matchesPlayed).to.be.lessThan(paperbotMatchCount);
+
+        await t.addplayer(users.rock3);
+        await sleep(4000);
+        playerStat = (await t.getPlayerStat(users.rock3.existingID)).playerStat;
+        expect(playerStat.matchesPlayed).to.be.greaterThan(0);
+
       });
     });
   });

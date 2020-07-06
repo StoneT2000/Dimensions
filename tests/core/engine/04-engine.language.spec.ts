@@ -30,7 +30,10 @@ describe('Testing MatchEngine Multi Language Support', () => {
     d = Dimension.create(rpsDesign, {
       activateStation: false,
       observe: false,
-      loggingLevel: Logger.LEVEL.NONE
+      loggingLevel: Logger.LEVEL.NONE,
+      defaultMatchConfigs: {
+        storeErrorLogs: false
+      }
     });
   });
   

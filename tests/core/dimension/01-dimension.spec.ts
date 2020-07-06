@@ -27,7 +27,10 @@ describe('Testing Dimension Class', () => {
       activateStation: false,
       observe: false,
       id: "123456",
-      loggingLevel: Logger.LEVEL.NONE
+      loggingLevel: Logger.LEVEL.NONE,
+      defaultMatchConfigs: {
+        storeErrorLogs: false
+      }
     });
   });
   it('should initialize a dimension with default params correctly', () => {
@@ -43,6 +46,7 @@ describe('Testing Dimension Class', () => {
       defaultMatchConfigs: {
         loggingLevel: Logger.LEVEL.INFO,
         secureMode: false,
+        storeErrorLogs: true
       }
     });
   });

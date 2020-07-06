@@ -43,13 +43,19 @@ describe('Testing MatchEngine Core', () => {
       activateStation: false,
       observe: false,
       id: "123456",
-      loggingLevel: Logger.LEVEL.NONE
+      loggingLevel: Logger.LEVEL.NONE,
+      defaultMatchConfigs: {
+        storeErrorLogs: false
+      }
     });
     d = Dimension.create(rpsDesignChanged, {
       activateStation: false,
       observe: false,
       id: "12345678",
-      loggingLevel: Logger.LEVEL.NONE
+      loggingLevel: Logger.LEVEL.NONE,
+      defaultMatchConfigs: {
+        storeErrorLogs: false
+      }
     });
   });
   describe("Test configurations", () => {
@@ -289,7 +295,7 @@ describe('Testing MatchEngine Core', () => {
       });
     });
     it("should initialize correctly", () => {
-
+      // TODO
     });
 
     it("should run correctly", async () => {
