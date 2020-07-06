@@ -144,7 +144,10 @@ describe('Testing MatchEngine Core', () => {
           activateStation: false,
           observe: false,
           id: "1234linecount",
-          loggingLevel: Logger.LEVEL.NONE
+          loggingLevel: Logger.LEVEL.NONE,
+          defaultMatchConfigs: {
+            storeErrorLogs: false
+          }
         });
       });
       const verifyLinecountSettings = (match: Match) => {
@@ -291,7 +294,10 @@ describe('Testing MatchEngine Core', () => {
       d = Dimension.create(custom, {
         activateStation: false,
         observe: false,
-        loggingLevel: Logger.LEVEL.NONE
+        loggingLevel: Logger.LEVEL.NONE,
+        defaultMatchConfigs: {
+          storeErrorLogs: false
+        }
       });
     });
     it("should initialize correctly", () => {

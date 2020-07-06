@@ -26,7 +26,10 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
       activateStation: true,
       observe: true,
       loggingLevel: Logger.LEVEL.NONE,
-      id: "abcdef3"
+      id: "abcdef3",
+      defaultMatchConfigs: {
+        storeErrorLogs: false
+      }
     });
     origin += dimension.getStation().port
     endpoint = origin + `/api/dimensions/${dimension.id}`

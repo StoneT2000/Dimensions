@@ -30,7 +30,10 @@ describe('Testing /api/dimensions/:dimensionID/tournament API', () => {
       activateStation: true,
       observe: true,
       loggingLevel: Logger.LEVEL.NONE,
-      id: "abcdef4"
+      id: "abcdef4",
+      defaultMatchConfigs: {
+        storeErrorLogs: false
+      }
     });
     origin += dimension.getStation().port
     endpoint = origin + `/api/dimensions/${dimension.id}`
