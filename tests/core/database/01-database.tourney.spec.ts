@@ -31,7 +31,7 @@ const paperBot = {file: './tests/kits/js/normal/paper.js', name: 'paperbot', exi
 const botList = [rock, paper];
 const userBotList = [disabled, users.rock2, paperBot]; // new bots to add
 
-describe('Testing Database with Tournament Singletons (no distribution)', () => {
+describe.only('Testing Database with Tournament Singletons (no distribution)', () => {
 
   const rpsDesign = new RockPaperScissorsDesign('RPS');
   const d = Dimension.create(rpsDesign, {
