@@ -171,7 +171,7 @@ export class RockPaperScissorsDesign extends Dimension.Design {
     }
     
     // if way too many ties occured, stop the match
-    if (match.state.ties >= match.configs.bestOf * 2 + 1) {
+    if (match.state.ties === match.configs.bestOf) {
 
       return Match.Status.FINISHED;
     }
