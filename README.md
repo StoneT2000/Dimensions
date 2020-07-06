@@ -124,7 +124,7 @@ If you want to view the API from a website, see this repo: https://github.com/St
 
 ### Run a Tournament
 
-This framework also provides tournament running features, which currently include [Round Robin](https://stonet2000.github.io/Dimensions/classes/_tournament_tournamenttypes_roundrobin_index_.roundrobintournament.html), [Elimination](https://stonet2000.github.io/Dimensions/classes/_tournament_tournamenttypes_elimination_index_.eliminationtournament.html), and [Ladder](https://stonet2000.github.io/Dimensions/classes/_tournament_tournamenttypes_ladder_index_.laddertournament.html) type tournaments. Additionally, there are various ranking systems used, such as Win/Tie/Loss and Trueskill. This section takes your through a really brief rundown of how to run a tournament. See [this wiki page](https://github.com/StoneT2000/Dimensions/wiki/Running-Tournaments) for more in depth details on setting up the various kinds of tournaments
+This framework also provides tournament running features, which currently include [Round Robin](https://stonet2000.github.io/Dimensions/classes/_tournament_roundrobin_index_.roundrobin.html), [Elimination](https://stonet2000.github.io/Dimensions/classes/_tournament_elimination_index_.elimination.html), and [Ladder](https://stonet2000.github.io/Dimensions/classes/_tournament_ladder_index_.ladder.html) type tournaments. Additionally, there are various ranking systems used, such as Win/Tie/Loss and Trueskill. This section takes your through a really brief rundown of how to run a tournament. See [this wiki page](https://github.com/StoneT2000/Dimensions/wiki/Running-Tournaments) for more in depth details on setting up the various kinds of tournaments
 
 Here is how you run a tournament. First, you will need a `resultHandler` function. This function must be given to the tournament to indicate how the results of a `match` should be interpreted. Recall that these results are returned by the `getResult` function in your design class. It is suggested to provide these result handlers in your `Design`. 
 
@@ -144,7 +144,6 @@ let RPSTournament = myDimension.createTournament(botSources, {
   agentsPerMatch: [2], // specify how many bots can play at a time
   defaultMatchConfigs: {
     bestOf: 329,
-    loggingLevel: Dimension.Logger.LEVEL.NONE
   },
   resultHandler: (results: any) => {
     let ranks = [];
