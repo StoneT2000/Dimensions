@@ -159,6 +159,8 @@ let RPSTournament = myDimension.createTournament(botSources, {
     }
   }
 });
+
+RPSTournament.run();
 ```
 
 Full documentation on Tournaments can be found [here](https://stonet2000.github.io/Dimensions/classes/_tournament_index_.tournament.html) and documentation on the configuration you can pass in can be found [here](https://stonet2000.github.io/Dimensions/interfaces/_tournament_index_.tournament.tournamentconfigsbase.html).
