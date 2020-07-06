@@ -30,7 +30,61 @@
   },
   "username": "rock1",
   "passwordHash": "$2a$10$IhNzsInlg.tb9GxYScPj1uuv6RmMV0NfyRYk0irZ1AfNCkj8ODZ7O",
-  "statistics": {},
+  "statistics": {
+    "Ladder_Tournament_12345ts": {
+      "player": {
+        "tournamentID": {
+          "id": "disabled",
+          "name": "disabled",
+          "username": "disabled"
+        },
+        "file": "./tests/kits/js/normal/rock.js",
+        "anonymous": false,
+        "username": "disabled",
+        "botDirPath": null,
+        "botkey": null,
+        "disabled": false,
+        "zipFile": null
+      },
+      "wins": 0,
+      "ties": 0,
+      "losses": 0,
+      "matchesPlayed": 11,
+      "rankState": {
+        "rating": {
+          "pi": 0.18908239162781093,
+          "tau": 4.083160562101758,
+          "mu": 21.59461030162468,
+          "sigma": 2.2997173226536765
+        }
+      }
+    },
+    "Ladder_Tournament_12345elo": {
+      "player": {
+        "tournamentID": {
+          "id": "disabled",
+          "name": "disabled",
+          "username": "disabled"
+        },
+        "file": "./tests/kits/js/normal/rock.js",
+        "anonymous": false,
+        "username": "disabled",
+        "botDirPath": null,
+        "botkey": null,
+        "disabled": false,
+        "zipFile": null
+      },
+      "wins": 0,
+      "ties": 0,
+      "losses": 0,
+      "matchesPlayed": 0,
+      "rankState": {
+        "rating": {
+          "score": 1000
+        }
+      }
+    }
+  },
   "meta": {},
   "playerID": "rock1",
   "creationDate": {

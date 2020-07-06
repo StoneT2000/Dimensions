@@ -117,6 +117,12 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
         expect(user.statistics[t.getKeyName()].rankState.rating.mu).to.approximately(ranks[0].rankState.rating.mu, 0.01)
         expect(ranks[0].rankState.rating.mu).to.equal(t.configs.rankSystemConfigs.initialMu);
       });
+      it("should allow new bots and bot updates", async () => {
+        await t.run();
+        await sleep(2000);
+        await t.addplayer(paperBot);
+        await sleep(2000);
+      });
     });
 
     describe("Test on ELO", () => {
@@ -152,7 +158,6 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
       });
     });
   });
-    
   
   after(async () => {
     await d.cleanup();
