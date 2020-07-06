@@ -20,7 +20,10 @@ describe('Testing MatchEngine Timeout Mechanism', () => {
     d = Dimension.create(rpsDesign, {
       activateStation: false,
       observe: false,
-      loggingLevel: Logger.LEVEL.NONE
+      loggingLevel: Logger.LEVEL.NONE,
+      defaultMatchConfigs: {
+        storeErrorLogs: false
+      }
     });
   });
   describe("Test timeout mechanism", () => {

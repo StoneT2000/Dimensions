@@ -28,7 +28,8 @@ describe('Testing Match Core', () => {
     id: "12345678",
     loggingLevel: Logger.LEVEL.NONE,
     defaultMatchConfigs: {
-      bestOf: 9
+      bestOf: 9,
+      storeErrorLogs: false
     }
   });
   describe("Test configurations", () => {

@@ -21,14 +21,17 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
     d = Dimension.create(rpsDesign, {
       activateStation: false,
       observe: false,
-      loggingLevel: Logger.LEVEL.NONE
+      loggingLevel: Logger.LEVEL.NONE,
+      defaultMatchConfigs: {
+        storeErrorLogs: false
+      }
     });
   });
   describe("Test memory limit mechanism", () => {
     // TODO: add tests for bot that timeout before match starts
     it("should kill bots accordingly if past memory limit", async () => {
       let match = await d.createMatch(['./tests/kits/js/normal/rock.js', './tests/kits/js/normal/paper.js'], {
-        bestOf: 11,
+        bestOf: 1001, // longer match time to gurantee memory is checked
         engineOptions: {
           memory: {
             limit: 100
