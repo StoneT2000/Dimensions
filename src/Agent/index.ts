@@ -551,6 +551,7 @@ export class Agent {
       files.forEach((file, index: number) => {
         let configs = deepCopy(options);
         configs.id = index;
+        //@ts-ignore
         agents.push(new Agent(file, configs))
       })
     }
@@ -560,6 +561,7 @@ export class Agent {
         let configs = deepCopy(options);
         configs.id = index;
         configs.name = info.name;
+        //@ts-ignore
         agents.push(new Agent(info.file, configs))
       });
     }
@@ -568,6 +570,7 @@ export class Agent {
         let configs = deepCopy(options);
         configs.id = index;
         configs.tournamentID = info.tournamentID;
+        //@ts-ignore
         agents.push(new Agent(info.file, configs))
       })
     }

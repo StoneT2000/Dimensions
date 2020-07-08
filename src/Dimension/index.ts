@@ -272,7 +272,7 @@ export class Dimension {
     }
 
     // override dimension defaults with provided configs
-    let matchConfigs: Match.Configs = deepCopy(this.configs.defaultMatchConfigs);
+    let matchConfigs = deepCopy(this.configs.defaultMatchConfigs);
     matchConfigs = deepMerge(matchConfigs, configs);
 
     // create new match

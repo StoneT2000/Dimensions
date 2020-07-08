@@ -137,7 +137,7 @@ export class Ladder extends Tournament {
         this.dimension.databasePlugin.getTournamentConfigs(this.id).then((data) => {
           if (!data) {
             this.configLastModificationDate = new Date();
-            this.dimension.databasePlugin.storeTournamentConfigs(this.id, this.configs, this.status).then(() => {
+            this.dimension.databasePlugin.storeTournamentConfigs(this.id, this.getConfigsStrippedOfFunctionFields(this.configs), this.status).then(() => {
               this.log.error('Storing initial tournament configuration data');
             })
           }
@@ -146,6 +146,13 @@ export class Ladder extends Tournament {
     }
 
     this.log.info('Initialized Ladder Tournament');
+  }
+
+  private getConfigsStrippedOfFunctionFields(object: Tournament.TournamentConfigs<LadderConfigs>) {
+    let obj = deepCopy(object);
+    delete obj.resultHandler;
+    delete obj.tournamentConfigs.matchMake;
+    return obj;
   }
 
   /**
@@ -219,7 +226,7 @@ export class Ladder extends Tournament {
       // ensure configs are up to date first, then set configs
       this.syncConfigs().then(() => {
         let newconfigs = deepMerge(deepCopy(this.configs), configs, true);
-        plugin.storeTournamentConfigs(this.id, newconfigs, this.status).then(() => {
+        plugin.storeTournamentConfigs(this.id, this.getConfigsStrippedOfFunctionFields(newconfigs), this.status).then(() => {
           // set configs locally as well if we succesfully store into DB
           this.configs = newconfigs;
         });
