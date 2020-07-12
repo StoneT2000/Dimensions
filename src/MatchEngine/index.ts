@@ -463,7 +463,19 @@ export class MatchEngine {
           `${match.name} | id: ${match.id} - spawned: ${cmd} ${parsed.join(' ')}`
         );
       }
-      
+
+      let errorLogFilepath = path.join(match.getMatchErrorLogDirectory(),`match_error.log`);
+      let errorLogWriteStream: WriteStream = null;
+
+      if (match.configs.storeErrorLogs) {
+        errorLogWriteStream = fs.createWriteStream(errorLogFilepath);
+      }
+
+      // pipe stderr of match process to error log file if enabled
+      if (match.configs.storeErrorLogs) {
+        errorLogWriteStream.write('=== Custom Match Error Log ===\n');
+        match.matchProcess.stderr.pipe(errorLogWriteStream);
+      }
 
       let matchTimedOut = false;
       // set up timer if specified
