@@ -24,6 +24,7 @@
   "author": "StoneT2000",
   "license": "MIT",
   "dependencies": {
+    "@google-cloud/datastore": "^6.1.0",
     "@google-cloud/storage": "^5.0.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",

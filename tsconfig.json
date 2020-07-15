@@ -13,12 +13,6 @@
     "src/**/*"
   ],
   "exclude": [
-    "node_modules",
-    "docs",
-    "lib",
-    "examples",
-    "templates",
-    "src/Station/web/**/*",
-    "src/Station/local/**/*"
+    "src/Support/**/*"
   ]
 }
