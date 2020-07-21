@@ -5,12 +5,15 @@ import { Match } from "../../Match";
 import { Tournament, Player } from "../../Tournament";
 import { Ladder } from "../../Tournament/Ladder";
 import { TournamentError } from "../../DimensionError";
-import { verify } from "../../Plugin/Database/utils";
+import { verify, generateToken } from "../../Plugin/Database/utils";
 import { Plugin } from "../../Plugin";
 import bcrypt from 'bcryptjs';
 
 import { Datastore } from '@google-cloud/datastore';
 import { pickMatch } from "../../Station/routes/api/dimensions/match";
+import { deepMerge } from "../../utils/DeepMerge";
+import { deepCopy } from "../../utils/DeepCopy";
+import { stripFunctions } from "../../utils";
 
 
 require('dotenv').config();
@@ -38,7 +41,8 @@ export class GCloudDataStore extends Database {
 
   public async storeMatch(match: Match, governID: NanoID): Promise<any> {
     let data = {...pickMatch(match), governID: governID};
-    // // store all relevant data
+    // store all relevant data and strip functions
+    data = stripFunctions(deepCopy(data));
     const key = this.getMatchDatastoreKey(match.id);
     return this.datastore.save({
       key: key,
@@ -58,18 +62,35 @@ export class GCloudDataStore extends Database {
     return (await this.datastore.runQuery(query))[0];
   }
 
+  // TODO: Use offset and limit in future
   public async getRanks(tournament: Tournament.Ladder, offset: number, limit: number): Promise<Array<Ladder.PlayerStat>> {
     let keyname = tournament.getKeyName();
+    const query = this.datastore.createQuery(GCloudDataStore.Kinds.USERS).filter(`statistics.${keyname}.matchesPlayed`, ">=", 0);
+    let usersInTournament: Array<Database.User> = (await this.datastore.runQuery(query))[0];
+    let unrankedPlayersArray: Array<Ladder.PlayerStat> = usersInTournament.map((user) => {
+      return user.statistics[keyname];
+    })
     if (tournament.configs.rankSystem === Tournament.RANK_SYSTEM.TRUESKILL) {
-
+      return unrankedPlayersArray.sort((p1, p2) => {
+        let r1: Tournament.RANK_SYSTEM.TRUESKILL.RankState = p1.rankState
+        let r2: Tournament.RANK_SYSTEM.TRUESKILL.RankState = p2.rankState
+        let s1 = r1.rating.mu - 3 * r1.rating.sigma;
+        let s2 = r2.rating.mu - 3 * r2.rating.sigma;
+        return s2 - s1;
+      });
     }
     else if (tournament.configs.rankSystem === Tournament.RANK_SYSTEM.ELO) {
-      
+      return unrankedPlayersArray.sort((p1, p2) => {
+        let r1: Tournament.RANK_SYSTEM.ELO.RankState = p1.rankState
+        let r2: Tournament.RANK_SYSTEM.ELO.RankState = p2.rankState
+        let s1 = r1.rating.score
+        let s2 = r2.rating.score;
+        return s2 - s1;
+      });
     }
     else {
       throw new TournamentError("This rank system is not supported for retrieving ranks from MongoDB");
     }
-    return [];
   }
 
   public async registerUser(username: string, password: string, userData?: any) {
@@ -100,7 +121,6 @@ export class GCloudDataStore extends Database {
       data: user,
       excludeFromIndexes: ['passwordHash']
     });
-    console.log('saved');
   }
 
   private getUserDatastoreKey(username: string) {
@@ -109,6 +129,10 @@ export class GCloudDataStore extends Database {
 
   private getMatchDatastoreKey(matchID: NanoID) {
     return this.datastore.key([GCloudDataStore.Kinds.MATCHES, matchID]);
+  }
+
+  private getTournamentConfigsDatastoreKey(tournamentID: NanoID) {
+    return this.datastore.key([GCloudDataStore.Kinds.TOURNAMENT_CONFIGS, tournamentID]);
   }
 
   /**
@@ -133,18 +157,37 @@ export class GCloudDataStore extends Database {
   } 
 
   public async loginUser(username: string, password: string) {
-    return "JWT"
+    let userKey = this.getUserDatastoreKey(username);
+    let user = (await this.datastore.get(userKey))[0];
+    if (user) {
+      if (bcrypt.compareSync(password, user.passwordHash)) {
+        return generateToken(user);
+      }
+      else {
+        throw new Error('Invalid password');
+      }
+    }
+    else {
+      throw new Error('Not a valid user');
+    }
   }
 
   public async updateUser(usernameOrID: string, update: Partial<Database.User>) {
-    let obj: Database.User = {
-      username: 'dud',
-      passwordHash: 'dud',
-    }
-    return obj;
+    let user = await this.getUser(usernameOrID);
+    let userKey = this.getUserDatastoreKey(user.username);
+    user = deepMerge(user, update);
+    await this.datastore.update({
+      key: userKey,
+      data: user
+    });
   }
 
   public async deleteUser(usernameOrID: string) {
+    let user = await this.getUser(usernameOrID);
+    let userKey = this.getUserDatastoreKey(user.username);
+    await this.datastore.delete({
+      key: userKey
+    });
   }
 
   public async verifyToken(jwt: string) {
@@ -164,7 +207,8 @@ export class GCloudDataStore extends Database {
     else if (limit == 0) {
       return [];
     }
-    return [];
+    let q = this.datastore.createQuery(GCloudDataStore.Kinds.USERS).filter(`${key}.matchesPlayed`, '>=', 0);
+    return (await this.datastore.runQuery(q))[0]
   }
 
   public async manipulate(dimension: Dimension) {
@@ -173,30 +217,32 @@ export class GCloudDataStore extends Database {
   }
 
   public async storeTournamentConfigs(tournamentID: NanoID, tournamentConfigs: Tournament.TournamentConfigsBase, status: Tournament.Status) {
-    // return this.models.tournamentConfigs.updateOne({ id: tournamentID }, { configs: tournamentConfigs, id: tournamentID, status: status, modificationDate: new Date()}, { upsert: true });
+    let key = this.getTournamentConfigsDatastoreKey(tournamentID);
+    this.datastore.upsert({
+      key: key,
+      data: {
+        configs: stripFunctions(deepCopy(tournamentConfigs)),
+        id: tournamentID,
+        status: status,
+        modificationDate: new Date(),
+      }
+    });
   }
 
   public async getTournamentConfigsModificationDate(tournamentID: NanoID) {
-    // return this.models.tournamentConfigs.findOne({ id: tournamentID }).select({ modificationDate: 1 }).then((date) => {
-    //   if (date) {
-    //     return new Date(date.toObject().modificationDate);
-    //   }
-    //   else {
-    //     return null;
-    //   }
-      
-    // });
+    let key = this.getTournamentConfigsDatastoreKey(tournamentID);
+    let data = (await this.datastore.get(key))[0];
+    if (data) {
+      return new Date(data.modificationDate);
+    }
     return null;
   }
   public async getTournamentConfigs(tournamentID: NanoID) {
-    // return this.models.tournamentConfigs.findOne({ id: tournamentID }).then((data) => {
-    //   if (data) {
-    //     return data.toObject();
-    //   }
-    //   else {
-    //     return null;
-    //   }
-    // });
+    let key = this.getTournamentConfigsDatastoreKey(tournamentID);
+    let data = (await this.datastore.get(key))[0];
+    if (data) {
+      return { configs: data.configs, status: data.status };
+    }
     return null;
   }
 }

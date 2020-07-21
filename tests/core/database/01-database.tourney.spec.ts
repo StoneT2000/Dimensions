@@ -5,7 +5,7 @@ import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
 import sinonChai from "sinon-chai";
 import 'mocha';
-import { Logger, MongoDB, Tournament } from '../../../src';
+import { Logger, MongoDB, Tournament, GCloudDataStore } from '../../../src';
 import { sleep } from '../utils/sleep';
 import { createLadderTourney, createLadderELOTourney } from '../tourney/utils';
 import { Ladder } from '../../../src/Tournament/Ladder';
@@ -45,9 +45,12 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
     }
   });
   let mongo = new MongoDB('mongodb://root:rootpassword@localhost:27017/test?authSource=admin&readPreference=primary');
-  
+  // let datastore = new GCloudDataStore({
+  //   keyFile: "./tests/keys/owneraccess.json"
+  // });
   before( async () => {
     await d.use(mongo);
+    // await d.use(datastore);
   });
   
   describe("Test running", () => {

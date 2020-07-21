@@ -200,11 +200,18 @@ router.delete('/:tournamentID/player/:playerID', requireAuth, (req, res, next) =
 /**
  * GET
  * 
- * Retrieves player data of the ongoing tournament
+ * Retrieves player stat of the ongoing tournament
  */
 router.get('/:tournamentID/player/:playerID', async (req, res, next) => {
   let tournament = req.data.tournament;
-  res.json({error: null, player: tournament.competitors.get(req.params.playerID)});
+  let { user, playerStat } = await tournament.getPlayerStat(req.params.playerID);
+  if (playerStat) {
+    res.json({error: null, player: playerStat});
+  }
+  else {
+    res.json({error: null, player: null});
+  }
+  
 });
 
 /**
