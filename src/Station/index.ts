@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction } from 'express';
 import path from 'path';
 import statusAPI from './routes/api/status';
 import dimensionsAPI from './routes/api/dimensions';
@@ -102,12 +102,19 @@ export class Station {
     }
 
     // store in each request a data object
-    const initReqData = (req, res, next) => {
+    const initReqData = (req: Express.Request, res: Express.Response, next: NextFunction) => {
       req.data = {};
       next();
     }
     this.app.use('/**/*', initReqData)
     
+    this.app.get('/', (req, res) => {
+      res.json({msg: 'api live at /api'});
+    });
+    this.app.get('/api', (req, res) => {
+      res.json({msg: 'api live at /api'});
+    });
+
     /**
      * Link up routes
      * Status - Status of everything
@@ -123,8 +130,7 @@ export class Station {
 
     // Successful start of app messages and setups
     const successStart = () => {
-      this.log.infobar();
-      this.log.info(`Running '${this.name}' API at port ${this.port}`);
+      this.log.info(`Running '${this.name}' API at port ${this.port}. API served at http://localhost:${this.port}`);
       let dims = [];
       this.app.get('dimensions').forEach((dim: Dimension) => dims.push(dim.name));
       this.log.info(`Observing dimensions: ${dims}`);

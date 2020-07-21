@@ -10,6 +10,7 @@ export * from './Plugin';
 export * from './Logger';
 export * from './SupportedPlugins/MongoDB';
 export * from './SupportedPlugins/GCloudStorage';
+export * from './SupportedPlugins/GCloudDatastore';
 export * from './Design';
 export * from './Agent';
 export * from './Tournament';
