@@ -204,8 +204,8 @@ export class Ladder extends Tournament {
    * Set tournament status and updates DB / propagates the message to every other tournament instance
    */
   public async setStatus(status: Tournament.Status) {
-    if (this.dimension.hasDatabase()) {
-      await this.syncConfigs()
+    if (this.dimension.hasDatabase() && this.configs.tournamentConfigs.syncConfigs) {
+      await this.syncConfigs();
       await this.dimension.databasePlugin.storeTournamentConfigs(this.id, this.configs, status);
       this.status = status;
     }
