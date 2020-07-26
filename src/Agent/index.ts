@@ -11,8 +11,7 @@ import { deepMerge } from "../utils/DeepMerge";
 import { genID } from "../utils";
 import { deepCopy } from "../utils/DeepCopy";
 import { DeepPartial } from "../utils/DeepPartial";
-import { Writable } from "stream";
-import Docker from 'dockerode';
+import { Writable, Readable, EventEmitter } from "stream";
 
 
 /**
@@ -26,7 +25,7 @@ import Docker from 'dockerode';
  * This is a class that should not be broken. If something goes wrong, this should always throw a error. It is 
  * expected that agents are used knowing beforehand that the file given is validated
  */
-export class Agent {
+export class Agent extends EventEmitter {
   
   /**
    * This agent's ID in a match. It is always a non-negative integer and agents in a match are always numbered 
@@ -90,6 +89,15 @@ export class Agent {
   private process: ChildProcess = null;
 
   /**
+   * Streams associated with the agent
+   */
+  public streams: Agent.Streams = {
+    in: null,
+    out: null,
+    err: null
+  }
+
+  /**
    * Current status of the agent
    */
   public status: Agent.Status = Agent.Status.UNINITIALIZED;
@@ -122,7 +130,7 @@ export class Agent {
   private allowedToSendCommands = true;
   
   constructor(file: string, options: Partial<Agent.Options>) {
-
+    super();
     this.creationDate = new Date();
     this.options = deepMerge(this.options, deepCopy(options));
     
@@ -473,14 +481,14 @@ export class Agent {
    * timeout the agent
    */
   timeout() {
-    this.process.emit(MatchEngine.AGENT_EVENTS.TIMEOUT);
+    this.emit(MatchEngine.AGENT_EVENTS.TIMEOUT);
   }
 
   /**
    * call out agent for exceeding memory limit
    */
   overMemory() {
-    this.process.emit(MatchEngine.AGENT_EVENTS.EXCEED_MEMORY_LIMIT);
+    this.emit(MatchEngine.AGENT_EVENTS.EXCEED_MEMORY_LIMIT);
   }
 
   /**
@@ -494,7 +502,7 @@ export class Agent {
    * Whether or not input is destroyed
    */
   inputDestroyed() {
-    return this.process.stdin.destroyed;
+    return this.streams.in.destroyed;
   }
 
   /**
@@ -503,7 +511,11 @@ export class Agent {
    * @param callback - callback function
    */
   write(message: string, callback: (error: Error) => void) {
-    this.process.stdin.write(message, callback);
+    this.streams.in.write(message, callback);
+  }
+
+  hookupErrorlogs() {
+
   }
 
   /**
@@ -665,6 +677,13 @@ export class Agent {
 }
 
 export module Agent {
+
+  export interface Streams {
+    in: Writable,
+    out: Readable,
+    err: Readable,
+  }
+
   /**
    * Status enums for an Agent
    */

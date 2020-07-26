@@ -135,13 +135,19 @@ export class MatchEngine {
     let p: ChildProcess = await agent._spawn();
     this.log.system('Spawned agent ' + agent.id);
 
+    // store process and streams
+    agent._storeProcess(p);
+    agent.streams.in = p.stdin;
+    agent.streams.out = p.stdout;
+    agent.streams.err = p.stderr;
+
     // add listener for memory limit exceeded
-    p.on(MatchEngine.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, () => {
+    agent.on(MatchEngine.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, () => {
       this.engineOptions.memory.memoryCallback(agent, match, this.engineOptions);
     });
 
     // add listener for timeouts
-    p.on(MatchEngine.AGENT_EVENTS.TIMEOUT, () => {
+    agent.on(MatchEngine.AGENT_EVENTS.TIMEOUT, () => {
       this.engineOptions.timeout.timeoutCallback(agent, match, this.engineOptions);
     })
 
@@ -151,7 +157,7 @@ export class MatchEngine {
     agent.status = Agent.Status.RUNNING;
 
     // handler for stdout of Agent processes. Stores their output commands and resolves move promises
-    p.stdout.on('readable', () => {
+    agent.streams.out.on('readable', () => {
 
       let data: Array<string>;
       while (data = p.stdout.read()) {
@@ -191,7 +197,7 @@ export class MatchEngine {
 
     // log stderr from agents to this stderr if option active
     if (!this.engineOptions.noStdErr) {
-      p.stderr.on('data', (data) => {
+      agent.streams.err.on('data', (data) => {
         this.log.error(`${agent.id}: ${data.slice(0, data.length - 1)}`);
       });
     }
@@ -199,7 +205,7 @@ export class MatchEngine {
     // pipe stderr of agent process to error log file if enabled
     if (match.configs.storeErrorLogs) {
       errorLogWriteStream.write('=== Agent Error Log ===\n');
-      p.stderr.pipe(errorLogWriteStream);
+      agent.streams.err.pipe(errorLogWriteStream);
     }
 
     // when process closes, print message
@@ -211,9 +217,6 @@ export class MatchEngine {
       }
       this.log.system(`${agent.name} | id: ${agent.id} - exited with code ${code}`);      
     });
-
-    // store process
-    agent._storeProcess(p);
 
     if (this.engineOptions.memory.active) {
       const checkAgentMemoryUsage = () => {
@@ -248,7 +251,9 @@ export class MatchEngine {
     });
     let stream = await container.attach({stream: true, stdout: true, stderr: true, stdin: true});
     let outstream = new Stream.PassThrough();
-    container.modem.demuxStream(stream, outstream, process.stderr);
+    let errstream = new Stream.PassThrough();
+    container.modem.demuxStream(stream, outstream, errstream);
+    
   }
 
   /**
