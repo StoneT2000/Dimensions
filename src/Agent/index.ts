@@ -6,12 +6,14 @@ import treekill from 'tree-kill';
 import { Logger } from "../Logger";
 import { FatalError, AgentFileError, AgentDirectoryError, AgentMissingIDError, AgentInstallTimeoutError, AgentCompileTimeoutError, NotSupportedError, AgentCompileError, AgentInstallError } from "../DimensionError";
 import { Tournament } from "../Tournament";
-import { BOT_USER, ROOT_USER } from "../MatchEngine";
+import { BOT_USER, ROOT_USER, MatchEngine } from "../MatchEngine";
 import { deepMerge } from "../utils/DeepMerge";
 import { genID } from "../utils";
 import { deepCopy } from "../utils/DeepCopy";
 import { DeepPartial } from "../utils/DeepPartial";
 import { Writable } from "stream";
+import Docker from 'dockerode';
+
 
 /**
  * @class Agent
@@ -83,9 +85,9 @@ export class Agent {
   public memoryWatchInterval = null;
 
   /**
-   * The associatted process running the Agent
+   * The associated process running the Agent
    */
-  process: ChildProcess = null;
+  private process: ChildProcess = null;
 
   /**
    * Current status of the agent
@@ -446,6 +448,86 @@ export class Agent {
     });
   }
 
+  /**
+   * Stop an agent provided it is not terminated. To terminate it, see {@link _terminate};
+   */
+  stop() {
+    if (!this.isTerminated()) {
+      this.process.kill('SIGSTOP');
+      this.status = Agent.Status.STOPPED;
+    }
+  }
+
+  /**
+   * Resume an agent as long it is not terminated already
+   */
+  resume() {
+    if (!this.isTerminated()) {
+      this._allowCommands();
+      this.process.kill('SIGCONT')
+      this.status = Agent.Status.RUNNING;
+    }
+  }
+
+  /**
+   * timeout the agent
+   */
+  timeout() {
+    this.process.emit(MatchEngine.AGENT_EVENTS.TIMEOUT);
+  }
+
+  /**
+   * call out agent for exceeding memory limit
+   */
+  overMemory() {
+    this.process.emit(MatchEngine.AGENT_EVENTS.EXCEED_MEMORY_LIMIT);
+  }
+
+  /**
+   * Whether or not there is a process associated with the agent
+   */
+  hasProcess() {
+    return this.process ? true : false;
+  }
+
+  /**
+   * Whether or not input is destroyed
+   */
+  inputDestroyed() {
+    return this.process.stdin.destroyed;
+  }
+
+  /**
+   * Write to stdin of the process associated with the agent
+   * @param message - the message
+   * @param callback - callback function
+   */
+  write(message: string, callback: (error: Error) => void) {
+    this.process.stdin.write(message, callback);
+  }
+
+  /**
+   * Get process of agent
+   */
+  _getProcess() {
+    return this.process;
+  }
+
+  /**
+   * Store process for agent
+   * @param p - process to store
+   */
+  _storeProcess(p: ChildProcess) {
+    this.process = p;
+  }
+
+  /**
+   * Get the PID of the process
+   */
+  _getProcessPID() {
+    return this.process.pid;
+  }
+  
   /**
    * Returns true if this agent was terminated and no longer send or receive emssages
    */

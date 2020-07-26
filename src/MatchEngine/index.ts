@@ -16,6 +16,8 @@ import { Logger } from '../Logger';
 import { Agent } from '../Agent';
 import { Match } from '../Match';
 import { processIsRunning, removeDirectory } from '../utils/System';
+import Dockerode from 'dockerode';
+import { Stream } from 'stream';
 
 /** @ignore */
 type EngineOptions = MatchEngine.EngineOptions;
@@ -51,6 +53,8 @@ export class MatchEngine {
   /** approx extra buffer time given to agents due to engine processing for timeout mechanism */
   static timeoutBuffer: number = 25; 
   
+  private docker: Dockerode;
+
   /**
    * Match engine constructor
    * @param design - the design to use
@@ -62,6 +66,8 @@ export class MatchEngine {
     this.overrideOptions = deepCopy(this.design.getDesignOptions().override);
     this.log.identifier = `Engine`;
     this.setLogLevel(loggingLevel);
+    // TODO: allow these docker options to be configurable.
+    this.docker = new Dockerode({socketPath: '/var/run/docker.sock'});
   }
 
   /** Set log level */
@@ -130,7 +136,7 @@ export class MatchEngine {
     this.log.system('Spawned agent ' + agent.id);
 
     // add listener for memory limit exceeded
-    p.on(MatchEngine.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, (stat) => {
+    p.on(MatchEngine.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, () => {
       this.engineOptions.memory.memoryCallback(agent, match, this.engineOptions);
     });
 
@@ -207,15 +213,15 @@ export class MatchEngine {
     });
 
     // store process
-    agent.process = p;
+    agent._storeProcess(p);
 
     if (this.engineOptions.memory.active) {
       const checkAgentMemoryUsage = () => {
         // setting { maxage: 0 } because otherwise pidusage leaves interval "memory leaks" and process doesn't exit fast
-        if (processIsRunning(agent.process.pid)) {
-          pidusage(agent.process.pid, { maxage: 0, usePs: this.engineOptions.memory.usePs }).then((stat) => {
+        if (processIsRunning(agent._getProcessPID())) {
+          pidusage(agent._getProcessPID(), { maxage: 0, usePs: this.engineOptions.memory.usePs }).then((stat) => {
             if (stat.memory > this.engineOptions.memory.limit) {
-              agent.process.emit(MatchEngine.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, stat);
+              agent.overMemory();
             }
           }).catch((err) => {
             this.log.warn(err);
@@ -232,6 +238,17 @@ export class MatchEngine {
     if (this.killOffSignal) {
       this.kill(agent);
     }
+  }
+
+  private async initializeAgentWithDocker(agent: Agent, match: Match) {
+    let container = await this.docker.createContainer({
+      // TODO: make this image configurable
+      Image: 'docker.io/stonezt2000/dimensions_langs', 
+      name: `${match.id}_agent_${agent.id}`,
+    });
+    let stream = await container.attach({stream: true, stdout: true, stderr: true, stdin: true});
+    let outstream = new Stream.PassThrough();
+    container.modem.demuxStream(stream, outstream, process.stderr);
   }
 
   /**
@@ -292,8 +309,7 @@ export class MatchEngine {
    */
   public async stop(match: Match) {
     match.agents.forEach((agent) => {
-      agent.process.kill('SIGSTOP')
-      agent.status = Agent.Status.STOPPED;
+      agent.stop();
     });
     this.log.system('Stopped all agents');
   }
@@ -304,9 +320,7 @@ export class MatchEngine {
    */
   public async resume(match: Match) {
     match.agents.forEach((agent) => {
-      agent._allowCommands();
-      agent.process.kill('SIGCONT')
-      agent.status = Agent.Status.RUNNING;
+      agent.resume();
     });
     this.log.system('Resumed all agents');
   }
@@ -324,7 +338,7 @@ export class MatchEngine {
     if (match.agents) { 
       match.agents.forEach((agent) => {
         // kill the process if it is not null
-        if (agent.process) {
+        if (agent.hasProcess()) {
           cleanUpPromises.push(this.kill(agent));
         }
         // remove the agent files if on secureMode and double check it is the temporary directory
@@ -404,8 +418,8 @@ export class MatchEngine {
   public send(match: Match, message: string, agentID: Agent.ID): Promise<boolean> {
     return new Promise((resolve, reject) => {
       let agent = match.idToAgentsMap.get(agentID);
-      if (!agent.process.stdin.destroyed && !agent.isTerminated()) {
-        agent.process.stdin.write(`${message}\n`, (error: Error) => {
+      if (!agent.inputDestroyed() && !agent.isTerminated()) {
+        agent.write(`${message}\n`, (error: Error) => {
           if (error) reject(error);
           resolve(true);
         });

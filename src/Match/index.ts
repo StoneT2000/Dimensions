@@ -473,7 +473,7 @@ export class Match {
       // we now reset each Agent for the next move
       this.agents.forEach((agent: Agent) => {
         // continue agents again
-        agent.process.kill('SIGCONT');
+        agent.resume();
         // setup the agent and its promises and get it ready for the next move
         agent._setupMove();
 
@@ -481,7 +481,7 @@ export class Match {
         if (engineOptions.timeout.active) {
           agent._setTimeout(() => {
             // if agent times out, emit the timeout event
-            agent.process.emit(MatchEngine.AGENT_EVENTS.TIMEOUT);
+            agent.timeout();
           }, engineOptions.timeout.max + MatchEngine.timeoutBuffer);
         }
         // each of these steps can take ~2 ms
