@@ -1,19 +1,19 @@
-import { ChildProcess, spawn, execSync, exec } from "child_process";
+import { ChildProcess, spawn } from "child_process";
 import path from 'path';
 import fs from 'fs';
-import os from 'os';
 import treekill from 'tree-kill';
 import { Logger } from "../Logger";
-import { FatalError, AgentFileError, AgentDirectoryError, AgentMissingIDError, AgentInstallTimeoutError, AgentCompileTimeoutError, NotSupportedError, AgentCompileError, AgentInstallError } from "../DimensionError";
+import { AgentFileError, AgentDirectoryError, AgentMissingIDError, AgentInstallTimeoutError, AgentCompileTimeoutError, NotSupportedError, AgentCompileError, AgentInstallError } from "../DimensionError";
 import { Tournament } from "../Tournament";
-import { BOT_USER, ROOT_USER, MatchEngine } from "../MatchEngine";
+import { MatchEngine } from "../MatchEngine";
 import { deepMerge } from "../utils/DeepMerge";
-import { genID } from "../utils";
+import { processIsRunning } from "../utils/System";
 import { deepCopy } from "../utils/DeepCopy";
 import { DeepPartial } from "../utils/DeepPartial";
 import { Writable, Readable, EventEmitter, Stream, Duplex } from "stream";
 import Dockerode from "dockerode";
 import { isChildProcess } from "../utils/TypeGuards";
+import pidusage from "pidusage";
 
 const containerBotFolder = '/code';
 
@@ -183,38 +183,6 @@ export class Agent extends EventEmitter {
         break;
       default:
     }
-
-    // if we are running in secure mode, we copy the agent over to a temporary directory
-    // if (this.options.secureMode) {
-    //   let botDir = path.join(os.tmpdir(), '/dbot');
-    //   if (!fs.existsSync(botDir)) {
-    //     // create the temporary bot directory and change perms so that other users cannot read it
-    //     fs.mkdirSync(botDir);
-    //     execSync(`sudo chown ${ROOT_USER} ${botDir}`);
-    //     execSync(`sudo chmod o-r ${botDir}`);
-    //     // This makes it hard for bots to try to look for other bots and copy code
-    //     // without access to reading the directory
-    //   }
-    //   // create a temporary directory generated as bot-<12 char nanoID>-<6 random chars.
-    //   let tempDir = fs.mkdtempSync(path.join(botDir, `/bot-${genID(12)}-`));
-    //   let stats = fs.statSync(this.cwd);
-
-    //   if (stats.isDirectory()) {
-    //     // copy all files in the bot directory to the temporary one
-    //     execSync(`sudo cp -R ${this.cwd}/* ${tempDir}`);
-
-    //     // set BOT_USER as the owner
-    //     execSync(`sudo chown -R ${BOT_USER} ${tempDir}`);
-
-    //     // update the current working directory and file fields.
-    //     this.cwd = tempDir;
-    //     this.file = path.join(tempDir, this.src);
-    //   }
-    //   else {
-    //     throw new AgentDirectoryError(`${this.cwd} is not a directory`, this.id);
-    //   }
-    // }
-    
 
     if (this.options.id !== null) {
       this.id = options.id;
@@ -409,12 +377,12 @@ export class Agent extends EventEmitter {
       else {
         stdout = p.out;
         stderr = p.err;
-        let exec = p.exec;
+        let containerExec = p.exec;
         p.stream.on('error', (err) => {
           handleError(err);
         })
         p.stream.on('end', async () => {
-          let endRes = await exec.inspect();
+          let endRes = await containerExec.inspect();
           handleClose(endRes.ExitCode);
         })
       }
@@ -438,10 +406,15 @@ export class Agent extends EventEmitter {
     });
   }
 
+  /**
+   * Spawns the compilation process
+   * @param command - command to compile with
+   * @param args - argument for the compilation
+   */
   async _spawnCompileProcess(command: string, args: Array<string>): Promise<ChildProcess | Agent.ContainerExecData> {
     return new Promise((resolve, reject) => {
       if (this.options.secureMode) {
-        this.containerSpawn(`${command} ${args.join(" ")}`).then(resolve).catch(reject);
+        this.containerSpawn(`${command} ${args.join(" ")}`, containerBotFolder).then(resolve).catch(reject);
       }
       else {
         let p = spawn(command, [...args], {
@@ -456,12 +429,13 @@ export class Agent extends EventEmitter {
    * Executes the given command string in the agent's container and attaches stdin, stdout, and stderr accordingly
    * @param command - the command to execute in the container
    */
-  async containerSpawn(command: string): Promise<Agent.ContainerExecData> {
+  async containerSpawn(command: string, workingDir: string = '/'): Promise<Agent.ContainerExecData> {
     let exec = await this.container.exec({
       Cmd: ['/bin/bash', '-c', command],
       AttachStdin: true,
       AttachStdout: true,
       AttachStderr: true,
+      WorkingDir: workingDir,
     });
 
     let stream = await exec.start({stdin: true, hijack: true});
@@ -483,10 +457,9 @@ export class Agent extends EventEmitter {
   /**
    * Spawn the process and return the process
    */
-  async _spawn(): Promise<ChildProcess> {
+  async _spawn(): Promise<ChildProcess | Agent.ContainerExecData> {
     if (this.options.runCommands[this.ext]) {
-      let p = this._spawnProcess(this.options.runCommands[this.ext][0], [...this.options.runCommands[this.ext].slice(1), this.src]);
-      return p;
+      return this._spawnProcess(this.options.runCommands[this.ext][0], [...this.options.runCommands[this.ext].slice(1), this.src])
     }
     else {
       switch(this.ext) {
@@ -517,15 +490,10 @@ export class Agent extends EventEmitter {
    * Note, we are spawning detached so we can kill off all sub processes if they are made. See {@link _terminate} for 
    * explanation
    */
-  _spawnProcess(command: string, args: Array<string>): Promise<ChildProcess> {
+  _spawnProcess(command: string, args: Array<string>): Promise<ChildProcess | Agent.ContainerExecData> {
     return new Promise((resolve, reject) => {
       if (this.options.secureMode) {
-        let p = spawn('sudo', ['-H', '-u', BOT_USER, command, ...args], {
-          cwd: this.cwd,
-          detached: false,
-        }).on('error', (err) => { reject(err) })
-        resolve(p);
-        
+        this.containerSpawn(`${command} ${args.join(" ")}`, containerBotFolder).then(resolve).catch(reject);
       }
       else {
         let p = spawn(command, args, {
@@ -582,13 +550,6 @@ export class Agent extends EventEmitter {
   }
 
   /**
-   * Whether or not there is a process associated with the agent
-   */
-  hasProcess() {
-    return this.process ? true : false;
-  }
-
-  /**
    * Whether or not input is destroyed
    */
   inputDestroyed() {
@@ -626,20 +587,6 @@ export class Agent extends EventEmitter {
   _storeContainer(c: Dockerode.Container) {
     this.container = c;
   }
-
-  /**
-   * TODO: should be removed, replace with agent internal function
-   */
-  _getContainer() {
-    return this.container;
-  }
-
-  /**
-   * Get the PID of the process
-   */
-  _getProcessPID() {
-    return this.process.pid;
-  }
   
   /**
    * Returns true if this agent was terminated and no longer send or receive emssages
@@ -649,30 +596,51 @@ export class Agent extends EventEmitter {
   }
 
   /**
-   * Terminates this agent by stopping all related processes and remove any temporary directory
+   * Terminates this agent by stopping all related processes and remove any temporary directory. this is the only function allowed to 
+   * set the status value to killed.
    */
   _terminate(): Promise<void> {
     this.status = Agent.Status.KILLED;
     return new Promise((resolve, reject) => {
       
       if (this.options.secureMode) {
-        // this.container.stop().then(() => {
-        //   this.container.remove().then(resolve).catch(reject);
-        // }).catch(reject)
-        resolve();
-      }
-      else {
-        treekill(this.process.pid, 'SIGKILL', (err) => {
-          this._clearTimer();
-          clearInterval(this.memoryWatchInterval);
-
-          if (err) {
-            reject(err);
+        this.container.inspect().then((d) => {
+          if (d.State.Running) {
+            this.container.kill().then(() => {
+              this.container.remove().then(resolve);
+              resolve();
+            }).catch(reject);
           }
           else {
             resolve();
           }
+        }).catch((err) => {
+          if (err.reason !== 'no such container') {
+            reject(err);
+          }
+          else {
+            // we resolve if the reason is just a missing container.
+            resolve();
+          }
         });
+      }
+      else {
+        if (this.process) {
+          treekill(this.process.pid, 'SIGKILL', (err) => {
+            this._clearTimer();
+            clearInterval(this.memoryWatchInterval);
+
+            if (err) {
+              reject(err);
+            }
+            else {
+              resolve();
+            }
+          });
+        }
+        else {
+          resolve();
+        }
       }
     });
   }
@@ -738,6 +706,27 @@ export class Agent extends EventEmitter {
       this._currentMoveResolve = resolve;
       this._currentMoveReject = reject;
     });
+  }
+
+  /**
+   * Used by {@link MatchEngine} only. Setups the memory watcher if docker is not used.
+   * @param engineOptions - engine options to configure the agent with
+   */
+  _setupMemoryWatcher(engineOptions: MatchEngine.EngineOptions) {
+    const checkAgentMemoryUsage = () => {
+      // setting { maxage: 0 } because otherwise pidusage leaves interval "memory leaks" and process doesn't exit fast
+      if (processIsRunning(this.process.pid)) {
+        pidusage(this.process.pid, { maxage: 0, usePs: engineOptions.memory.usePs }).then((stat) => {
+          if (stat.memory > engineOptions.memory.limit) {
+            this.overMemory();
+          }
+        }).catch((err) => {
+          this.log.warn(err);
+        });
+      }
+    }
+    checkAgentMemoryUsage();
+    this.memoryWatchInterval = setInterval(checkAgentMemoryUsage, engineOptions.memory.checkRate);
   }
 
   /**

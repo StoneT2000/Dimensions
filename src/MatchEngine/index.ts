@@ -19,6 +19,7 @@ import { processIsRunning, removeDirectory, dockerCopy } from '../utils/System';
 import Dockerode from 'dockerode';
 import { Stream } from 'stream';
 import { execArgv } from 'process';
+import { isChildProcess } from '../utils/TypeGuards';
 
 /** @ignore */
 type EngineOptions = MatchEngine.EngineOptions;
@@ -128,20 +129,9 @@ export class MatchEngine {
         }
       });
       this.log.system(`Created container ${name}`);
-      // let stream = await container.attach({stream: true, stdout: true, stderr: true, stdin: true});
-      // let instream = new Stream.PassThrough();
-      // let outstream = new Stream.PassThrough();
-      // let errstream = new Stream.PassThrough();
-      // this.log.system(`Attached to container ${name}`);
-      // pipe streams correctly
-      // instream.pipe(stream);
-      // container.modem.demuxStream(stream, outstream, errstream);
       
-      // store container and streams
+      // store container
       agent._storeContainer(container);
-      // agent.streams.in = instream;
-      // agent.streams.out = outstream;
-      // agent.streams.err = errstream;
       await container.start();
       this.log.system(`Started container ${name}`);
 
@@ -170,26 +160,34 @@ export class MatchEngine {
     this.log.system('Succesfully ran compile step for agent ' + agent.id);
     
     
-    let p: ChildProcess = null;
+    let p: ChildProcess | Agent.ContainerExecData = null;
 
     
-    // spawn the agent process otherwise
-    if (!match.configs.secureMode) {
-      p = await agent._spawn();
-      this.log.system('Spawned agent ' + agent.id);
-
+    p = await agent._spawn();
+    this.log.system('Spawned agent ' + agent.id);
+    if (isChildProcess(p)) {
+      
       // store process and streams
       agent._storeProcess(p);
       agent.streams.in = p.stdin;
       agent.streams.out = p.stdout;
       agent.streams.err = p.stderr;
+
+      p.on('close', (code) => {
+        agent.emit(Agent.AGENT_EVENTS.CLOSE, code);
+      });
     }
     else {
-      // start agent
-      let streamdata = await agent.containerSpawn(`${agent.cmd} ${path.join('/code', agent.src)}`);
-      agent.streams.in = streamdata.in;
-      agent.streams.out = streamdata.out;
-      agent.streams.err = streamdata.err;
+      // store streams
+      agent.streams.in = p.in;
+      agent.streams.out = p.out;
+      agent.streams.err = p.err;
+      
+      let containerExec = p.exec;
+      p.stream.on('end', async () => {
+        let endRes = await containerExec.inspect();
+        agent.emit(Agent.AGENT_EVENTS.CLOSE, endRes.ExitCode);
+      });
     }
 
     // add listener for memory limit exceeded
@@ -260,11 +258,6 @@ export class MatchEngine {
     }
 
     // when process closes, print message
-    if (p) {
-      p.on('close', (code) => {
-        agent.emit(Agent.AGENT_EVENTS.CLOSE, code);
-      });
-    }
     agent.on('close', (code) => {
       // terminate agent with engine kill if it hasn't been marked as terminated yet, indicating process likely exited
       // prematurely
@@ -275,20 +268,11 @@ export class MatchEngine {
     });
 
     if (this.engineOptions.memory.active) {
-      const checkAgentMemoryUsage = () => {
-        // setting { maxage: 0 } because otherwise pidusage leaves interval "memory leaks" and process doesn't exit fast
-        if (processIsRunning(agent._getProcessPID())) {
-          pidusage(agent._getProcessPID(), { maxage: 0, usePs: this.engineOptions.memory.usePs }).then((stat) => {
-            if (stat.memory > this.engineOptions.memory.limit) {
-              agent.overMemory();
-            }
-          }).catch((err) => {
-            this.log.warn(err);
-          });
-        }
+      if (agent.options.secureMode) {
       }
-      checkAgentMemoryUsage();
-      agent.memoryWatchInterval = setInterval(checkAgentMemoryUsage, this.engineOptions.memory.checkRate);
+      else {
+        agent._setupMemoryWatcher(this.engineOptions);
+      }
     }
 
 
@@ -297,19 +281,6 @@ export class MatchEngine {
     if (this.killOffSignal) {
       this.kill(agent);
     }
-  }
-
-  private async initializeAgentWithDocker(agent: Agent, match: Match) {
-    let container = await this.docker.createContainer({
-      // TODO: make this image configurable
-      Image: 'docker.io/stonezt2000/dimensions_langs', 
-      name: `${match.id}_agent_${agent.id}`,
-    });
-    let stream = await container.attach({stream: true, stdout: true, stderr: true, stdin: true});
-    let outstream = new Stream.PassThrough();
-    let errstream = new Stream.PassThrough();
-    container.modem.demuxStream(stream, outstream, errstream);
-    
   }
 
   /**
@@ -402,22 +373,7 @@ export class MatchEngine {
     let cleanUpPromises: Array<Promise<any>> = [];
     if (match.agents) { 
       match.agents.forEach((agent) => {
-        // kill the process if it is not null
-        if (agent.hasProcess()) {
-          cleanUpPromises.push(this.kill(agent));
-        }
-        // remove the agent files if on secureMode and double check it is the temporary directory
-        if (agent.options.secureMode) {
-          // let tmpdir = os.tmpdir();
-          // if (agent.cwd.slice(0, tmpdir.length) === tmpdir) {
-          //   // ignore error if directory doesn't exist
-          //   cleanUpPromises.push(removeDirectory(agent.cwd).catch(() => {}));
-          // }
-          // else {
-          //   this.log.error('couldn\'t remove agent files while in secure mode as it was not in the temporary directory');
-          // }
-          agent._getContainer().kill();
-        }
+        cleanUpPromises.push(this.kill(agent));
       });
     }
     await Promise.all(cleanUpPromises);
