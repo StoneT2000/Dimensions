@@ -352,10 +352,12 @@ export class Agent extends EventEmitter {
         switch(this.ext) {
           case '.py':
           case '.php':
+            clearTimeout(compileTimer);
             resolve();
             return;
             // TODO: Make these compile options configurable
           case '.js':
+            clearTimeout(compileTimer);
             resolve();
             return;
             // p = await this._spawnCompileProcess('node', ['--check', this.src])
