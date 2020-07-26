@@ -15,9 +15,10 @@ import { Design } from '../Design';
 import { Logger } from '../Logger';
 import { Agent } from '../Agent';
 import { Match } from '../Match';
-import { processIsRunning, removeDirectory } from '../utils/System';
+import { processIsRunning, removeDirectory, dockerCopy } from '../utils/System';
 import Dockerode from 'dockerode';
 import { Stream } from 'stream';
+import { execArgv } from 'process';
 
 /** @ignore */
 type EngineOptions = MatchEngine.EngineOptions;
@@ -112,6 +113,43 @@ export class MatchEngine {
   private async initializeAgent(agent: Agent, match: Match): Promise<void> {
     this.log.system("Setting up and spawning " + agent.name + ` | Command: ${agent.cmd} ${agent.src}`);
 
+    // create container in secureMode
+    if (match.configs.secureMode) {
+      let name = `${match.id}_agent_${agent.id}`;
+      let container = await this.docker.createContainer({
+        // TODO: make this image configurable
+        Image: 'docker.io/stonezt2000/dimensions_langs', 
+        name: name,
+        OpenStdin: true,
+        StdinOnce: true,
+        // TODO, add resource constraints here
+        HostConfig: {
+
+        }
+      });
+      this.log.system(`Created container ${name}`);
+      // let stream = await container.attach({stream: true, stdout: true, stderr: true, stdin: true});
+      // let instream = new Stream.PassThrough();
+      // let outstream = new Stream.PassThrough();
+      // let errstream = new Stream.PassThrough();
+      // this.log.system(`Attached to container ${name}`);
+      // pipe streams correctly
+      // instream.pipe(stream);
+      // container.modem.demuxStream(stream, outstream, errstream);
+      
+      // store container and streams
+      agent._storeContainer(container);
+      // agent.streams.in = instream;
+      // agent.streams.out = outstream;
+      // agent.streams.err = errstream;
+      await container.start();
+      this.log.system(`Started container ${name}`);
+
+      // copy bot directory into container
+      await dockerCopy(agent.cwd + '/.', name, '/code');
+      this.log.system(`Copied bot into container ${name}`);
+    }
+
     let errorLogFilepath = path.join(match.getMatchErrorLogDirectory(), agent.getAgentErrorLogFilename());
     let errorLogWriteStream: WriteStream = null;
 
@@ -131,23 +169,36 @@ export class MatchEngine {
     await agent._compile(errorLogWriteStream, errorLogWriteStream);
     this.log.system('Succesfully ran compile step for agent ' + agent.id);
     
-    // spawn the agent process
-    let p: ChildProcess = await agent._spawn();
-    this.log.system('Spawned agent ' + agent.id);
+    
+    let p: ChildProcess = null;
 
-    // store process and streams
-    agent._storeProcess(p);
-    agent.streams.in = p.stdin;
-    agent.streams.out = p.stdout;
-    agent.streams.err = p.stderr;
+    
+    // spawn the agent process otherwise
+    if (!match.configs.secureMode) {
+      p = await agent._spawn();
+      this.log.system('Spawned agent ' + agent.id);
+
+      // store process and streams
+      agent._storeProcess(p);
+      agent.streams.in = p.stdin;
+      agent.streams.out = p.stdout;
+      agent.streams.err = p.stderr;
+    }
+    else {
+      // start agent
+      let streamdata = await agent.containerSpawn(`${agent.cmd} ${path.join('/code', agent.src)}`);
+      agent.streams.in = streamdata.in;
+      agent.streams.out = streamdata.out;
+      agent.streams.err = streamdata.err;
+    }
 
     // add listener for memory limit exceeded
-    agent.on(MatchEngine.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, () => {
+    agent.on(Agent.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, () => {
       this.engineOptions.memory.memoryCallback(agent, match, this.engineOptions);
     });
 
     // add listener for timeouts
-    agent.on(MatchEngine.AGENT_EVENTS.TIMEOUT, () => {
+    agent.on(Agent.AGENT_EVENTS.TIMEOUT, () => {
       this.engineOptions.timeout.timeoutCallback(agent, match, this.engineOptions);
     })
 
@@ -160,7 +211,7 @@ export class MatchEngine {
     agent.streams.out.on('readable', () => {
 
       let data: Array<string>;
-      while (data = p.stdout.read()) {
+      while (data = agent.streams.out.read()) {
         // split chunks into line by line and handle each line of commands
         let strs = `${data}`.split('\n');
 
@@ -209,8 +260,13 @@ export class MatchEngine {
     }
 
     // when process closes, print message
-    p.on('close', (code) => {
-      // terminate agent with API if it hasn't been marked as terminated yet, indicating process likely exited
+    if (p) {
+      p.on('close', (code) => {
+        agent.emit(Agent.AGENT_EVENTS.CLOSE, code);
+      });
+    }
+    agent.on('close', (code) => {
+      // terminate agent with engine kill if it hasn't been marked as terminated yet, indicating process likely exited
       // prematurely
       if (!agent.isTerminated()) {
         this.kill(agent);
@@ -272,7 +328,7 @@ export class MatchEngine {
         case MatchEngine.COMMAND_FINISH_POLICIES.FINISH_SYMBOL:
           // if we receive the symbol representing that the agent is done with output and now awaits for updates
           if (`${str}` === this.engineOptions.commandFinishSymbol) { 
-            agent._finishMove();
+            await agent._finishMove();
           }
           else {
             agent.currentMoveCommands.push(str);
@@ -282,7 +338,7 @@ export class MatchEngine {
           
           // if we receive the finish symbol, we mark agent as done with output (finishes their move prematurely)
           if (`${str}` === this.engineOptions.commandFinishSymbol) { 
-            agent._finishMove();
+            await agent._finishMove();
           }
           // only log command if max isnt reached
           else if (agent.currentMoveCommands.length < this.engineOptions.commandLines.max - 1) {
@@ -290,7 +346,7 @@ export class MatchEngine {
           }
           // else if on final command before reaching max, push final command and resolve
           else if (agent.currentMoveCommands.length == this.engineOptions.commandLines.max - 1) {
-            agent._finishMove();
+            await agent._finishMove();
             agent.currentMoveCommands.push(str);
           }
           break;
@@ -313,9 +369,11 @@ export class MatchEngine {
    * @param match - the match to stop
    */
   public async stop(match: Match) {
+    let stopPromises: Array<Promise<void>> = [];
     match.agents.forEach((agent) => {
-      agent.stop();
+      stopPromises.push(agent.stop());
     });
+    await Promise.all(stopPromises);
     this.log.system('Stopped all agents');
   }
 
@@ -324,9 +382,11 @@ export class MatchEngine {
    * @param match - the match to resume
    */
   public async resume(match: Match) {
+    let resumePromises: Array<Promise<void>> = [];
     match.agents.forEach((agent) => {
-      agent.resume();
+      resumePromises.push(agent.resume());
     });
+    await Promise.all(resumePromises);
     this.log.system('Resumed all agents');
   }
 
@@ -348,14 +408,15 @@ export class MatchEngine {
         }
         // remove the agent files if on secureMode and double check it is the temporary directory
         if (agent.options.secureMode) {
-          let tmpdir = os.tmpdir();
-          if (agent.cwd.slice(0, tmpdir.length) === tmpdir) {
-            // ignore error if directory doesn't exist
-            cleanUpPromises.push(removeDirectory(agent.cwd).catch(() => {}));
-          }
-          else {
-            this.log.error('couldn\'t remove agent files while in secure mode as it was not in the temporary directory');
-          }
+          // let tmpdir = os.tmpdir();
+          // if (agent.cwd.slice(0, tmpdir.length) === tmpdir) {
+          //   // ignore error if directory doesn't exist
+          //   cleanUpPromises.push(removeDirectory(agent.cwd).catch(() => {}));
+          // }
+          // else {
+          //   this.log.error('couldn\'t remove agent files while in secure mode as it was not in the temporary directory');
+          // }
+          agent._getContainer().kill();
         }
       });
     }
@@ -817,17 +878,6 @@ export module MatchEngine {
      * The id of the agent that sent this command
      */
     agentID: Agent.ID
-  }
-
-  export enum AGENT_EVENTS {
-    /**
-     * Event emitted by process of {@link Agent} when memory limit is exceeded
-     */
-    EXCEED_MEMORY_LIMIT = 'exceedMemoryLimit',
-    /**
-     * Event emitted by process of {@link Agent} when it times out.
-     */
-    TIMEOUT = 'timeout'
   }
 
   /**

@@ -395,12 +395,12 @@ export class Dimension {
   private async setupSecurity() {
 
     // perform checks
-    try {
-      this.checkForUsers([BOT_USER]);
-    }
-    catch (error) {
-      throw error;
-    }
+    // try {
+    //   this.checkForUsers([BOT_USER]);
+    // }
+    // catch (error) {
+    //   throw error;
+    // }
   }
 
   /**

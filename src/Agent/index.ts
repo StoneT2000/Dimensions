@@ -1,4 +1,4 @@
-import { ChildProcess, spawn, execSync } from "child_process";
+import { ChildProcess, spawn, execSync, exec } from "child_process";
 import path from 'path';
 import fs from 'fs';
 import os from 'os';
@@ -11,8 +11,11 @@ import { deepMerge } from "../utils/DeepMerge";
 import { genID } from "../utils";
 import { deepCopy } from "../utils/DeepCopy";
 import { DeepPartial } from "../utils/DeepPartial";
-import { Writable, Readable, EventEmitter } from "stream";
+import { Writable, Readable, EventEmitter, Stream, Duplex } from "stream";
+import Dockerode from "dockerode";
+import { isChildProcess } from "../utils/TypeGuards";
 
+const containerBotFolder = '/code';
 
 /**
  * @class Agent
@@ -87,6 +90,11 @@ export class Agent extends EventEmitter {
    * The associated process running the Agent
    */
   private process: ChildProcess = null;
+
+  /**
+   * Associated docker container running the agent
+   */
+  private container: Dockerode.Container = null;
 
   /**
    * Streams associated with the agent
@@ -177,35 +185,35 @@ export class Agent extends EventEmitter {
     }
 
     // if we are running in secure mode, we copy the agent over to a temporary directory
-    if (this.options.secureMode) {
-      let botDir = path.join(os.tmpdir(), '/dbot');
-      if (!fs.existsSync(botDir)) {
-        // create the temporary bot directory and change perms so that other users cannot read it
-        fs.mkdirSync(botDir);
-        execSync(`sudo chown ${ROOT_USER} ${botDir}`);
-        execSync(`sudo chmod o-r ${botDir}`);
-        // This makes it hard for bots to try to look for other bots and copy code
-        // without access to reading the directory
-      }
-      // create a temporary directory generated as bot-<12 char nanoID>-<6 random chars.
-      let tempDir = fs.mkdtempSync(path.join(botDir, `/bot-${genID(12)}-`));
-      let stats = fs.statSync(this.cwd);
+    // if (this.options.secureMode) {
+    //   let botDir = path.join(os.tmpdir(), '/dbot');
+    //   if (!fs.existsSync(botDir)) {
+    //     // create the temporary bot directory and change perms so that other users cannot read it
+    //     fs.mkdirSync(botDir);
+    //     execSync(`sudo chown ${ROOT_USER} ${botDir}`);
+    //     execSync(`sudo chmod o-r ${botDir}`);
+    //     // This makes it hard for bots to try to look for other bots and copy code
+    //     // without access to reading the directory
+    //   }
+    //   // create a temporary directory generated as bot-<12 char nanoID>-<6 random chars.
+    //   let tempDir = fs.mkdtempSync(path.join(botDir, `/bot-${genID(12)}-`));
+    //   let stats = fs.statSync(this.cwd);
 
-      if (stats.isDirectory()) {
-        // copy all files in the bot directory to the temporary one
-        execSync(`sudo cp -R ${this.cwd}/* ${tempDir}`);
+    //   if (stats.isDirectory()) {
+    //     // copy all files in the bot directory to the temporary one
+    //     execSync(`sudo cp -R ${this.cwd}/* ${tempDir}`);
 
-        // set BOT_USER as the owner
-        execSync(`sudo chown -R ${BOT_USER} ${tempDir}`);
+    //     // set BOT_USER as the owner
+    //     execSync(`sudo chown -R ${BOT_USER} ${tempDir}`);
 
-        // update the current working directory and file fields.
-        this.cwd = tempDir;
-        this.file = path.join(tempDir, this.src);
-      }
-      else {
-        throw new AgentDirectoryError(`${this.cwd} is not a directory`, this.id);
-      }
-    }
+    //     // update the current working directory and file fields.
+    //     this.cwd = tempDir;
+    //     this.file = path.join(tempDir, this.src);
+    //   }
+    //   else {
+    //     throw new AgentDirectoryError(`${this.cwd} is not a directory`, this.id);
+    //   }
+    // }
     
 
     if (this.options.id !== null) {
@@ -235,50 +243,19 @@ export class Agent extends EventEmitter {
    * Install whatever is needed through a `install.sh` file in the root of the bot folder
    */
   _install(stderrWritestream?: Writable, stdoutWritestream?: Writable): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
 
       // if there is a install.sh file, use it
       if (fs.existsSync(path.join(this.cwd, 'install.sh'))) {
 
-        // run in restricted bash if in secureMode
-        let p: ChildProcess;
+        let stdout: Readable;
+        let stderr: Readable;
         let installTimer = setTimeout(() => {
           reject(new AgentInstallTimeoutError('Agent went over install time during the install stage', this.id));
         }, this.options.maxInstallTime);
-        if (this.options.secureMode) {
-          p = spawn('sudo', ['-H' ,'-u', BOT_USER, 'rbash' ,'install.sh'], {
-            cwd: this.cwd
-          });
-        }
-        else {
-          p = spawn('bash' ,['install.sh'], {
-            cwd: this.cwd
-          });
-        }
-        let chunks = [];
-        p.stdout.on('data', (chunk) => {
-          chunks.push(chunk);
-        });
-        p.stderr.on('data', (chunk) => {
-          chunks.push(chunk);
-        });
-        
-        if (stderrWritestream) {
-          p.stderr.pipe(stderrWritestream, {
-            end: false,
-          });
-        }
-        if (stdoutWritestream) {
-          p.stdout.pipe(stdoutWritestream, {
-            end: false,
-          });
-        }
 
-        p.on('error', (err) => {
-          clearTimeout(installTimer);
-          reject(err)
-        });
-        p.on('close', (code) => {
+        let chunks = [];
+        const handleClose = (code: number) => {
           clearTimeout(installTimer);
           if (code === 0) {
             resolve();
@@ -290,7 +267,63 @@ export class Agent extends EventEmitter {
               )
             )
           }
+        }
+
+        const handleError = (err: Error) => {
+          clearTimeout(installTimer);
+          reject(err);
+        }
+
+        if (this.options.secureMode) {
+          try {
+            let data = await this.containerSpawn(path.join(containerBotFolder, 'install.sh'));
+            stderr = data.err;
+            stdout = data.out;
+            data.stream.on('end', async () => {
+              let endRes = await data.exec.inspect();
+              handleClose(endRes.ExitCode);
+            });
+            data.stream.on('error', (err) => {
+              handleError(err);
+            });
+          }
+          catch(err) {
+            handleError(err);
+          }
+        }
+        else {
+          let p = spawn('bash' ,['install.sh'], {
+            cwd: this.cwd
+          });
+          p.on('error', (err) => {
+            handleError(err);
+          });
+          p.on('close', (code) => {
+            handleClose(code);
+          });
+          stderr = p.stderr;
+          stdout = p.stdout;
+        }
+        
+        stdout.on('data', (chunk) => {
+          chunks.push(chunk);
         });
+        stderr.on('data', (chunk) => {
+          chunks.push(chunk);
+        });
+        
+        if (stderrWritestream) {
+          stderr.pipe(stderrWritestream, {
+            end: false,
+          });
+        }
+        if (stdoutWritestream) {
+          stdout.pipe(stdoutWritestream, {
+            end: false,
+          });
+        }
+
+        
       }
       else {
         resolve();
@@ -304,25 +337,28 @@ export class Agent extends EventEmitter {
    */
   async _compile(stderrWritestream?: Writable, stdoutWritestream?: Writable): Promise<void> {
     return new Promise( async (resolve, reject) => {
-      let p: ChildProcess;
+      let p: ChildProcess | Agent.ContainerExecData;
+      let stdout: Readable;
+      let stderr: Readable;
       let compileTimer = setTimeout(() => {
         reject(new AgentCompileTimeoutError('Agent went over compile time during the compile stage', this.id));
       }, this.options.maxCompileTime);
       if (this.options.compileCommands[this.ext]) {
-        p = spawn(`sudo`, [...this.options.compileCommands[this.ext], this.src], {
-          cwd: this.cwd
-        });
+        let cmd1 = this.options.compileCommands[this.ext][0];
+        let restofCmds = this.options.compileCommands[this.ext].slice(1);
+        p = await this._spawnCompileProcess(cmd1, [...restofCmds, this.src])
       }
       else {
         switch(this.ext) {
           case '.py':
           case '.php':
             resolve();
-            break;
+            return;
             // TODO: Make these compile options configurable
           case '.js':
-            p = await this._spawnCompileProcess('node', ['--check', this.src])
-            break;
+            resolve();
+            return;
+            // p = await this._spawnCompileProcess('node', ['--check', this.src])
           case '.ts':
             // expect user to provide a tsconfig.json
             p = await this._spawnCompileProcess('tsc', [])
@@ -344,51 +380,66 @@ export class Agent extends EventEmitter {
             break;
         }
       }
-      if (p) {
+      let chunks = [];
+      const handleClose = (code: number) => {
+        clearTimeout(compileTimer);
+        if (code === 0) {
+          resolve();
+        }
+        else {
+          reject(new AgentCompileError(`A compile time error occured. Compile step for agent ${this.id} exited with code: ${code}; Compiling ${this.file}; Compile Output:\n${chunks.join('')}`, this.id));
+        }
+      }
+      const handleError = (err: Error) => {
+        clearTimeout(compileTimer);
+        reject(err);
+      }
+      if (isChildProcess(p)) {
+        stdout = p.stdout;
+        stderr = p.stderr;
         p.on('error', (err) => {
-          clearTimeout(compileTimer);
-          reject(err);
+          handleError(err);
         });
-        let chunks = [];
-        p.stdout.on('data', (chunk) => {
-          chunks.push(chunk);
-        });
-        p.stderr.on('data', (chunk) => {
-          chunks.push(chunk);
-        });
-        if (stderrWritestream) {
-          p.stderr.pipe(stderrWritestream, {
-            end: false
-          });
-        }
-        if (stdoutWritestream) {
-          p.stdout.pipe(stdoutWritestream, {
-            end: false
-          });
-        }
         p.on('close', (code) => {
-          clearTimeout(compileTimer);
-          if (code === 0) {
-            resolve();
-          }
-          else {
-            reject(new AgentCompileError(`A compile time error occured. Compile step for agent ${this.id} exited with code: ${code}; Compiling ${this.file}; Compile Output:\n${chunks.join('')}`, this.id));
-          }
+          handleClose(code);
         });
       }
       else {
-        clearTimeout(compileTimer);
+        stdout = p.out;
+        stderr = p.err;
+        let exec = p.exec;
+        p.stream.on('error', (err) => {
+          handleError(err);
+        })
+        p.stream.on('end', async () => {
+          let endRes = await exec.inspect();
+          handleClose(endRes.ExitCode);
+        })
+      }
+
+      stdout.on('data', (chunk) => {
+        chunks.push(chunk);
+      });
+      stderr.on('data', (chunk) => {
+        chunks.push(chunk);
+      });
+      if (stderrWritestream) {
+        stderr.pipe(stderrWritestream, {
+          end: false
+        });
+      }
+      if (stdoutWritestream) {
+        stdout.pipe(stdoutWritestream, {
+          end: false
+        });
       }
     });
   }
 
-  async _spawnCompileProcess(command: string, args: Array<string>): Promise<ChildProcess> {
+  async _spawnCompileProcess(command: string, args: Array<string>): Promise<ChildProcess | Agent.ContainerExecData> {
     return new Promise((resolve, reject) => {
       if (this.options.secureMode) {
-        let p = spawn('sudo', [command, ...args], {
-          cwd: this.cwd
-        }).on('error', (err) => { reject(err) })
-        resolve(p);
+        this.containerSpawn(`${command} ${args.join(" ")}`).then(resolve).catch(reject);
       }
       else {
         let p = spawn(command, [...args], {
@@ -397,6 +448,34 @@ export class Agent extends EventEmitter {
         resolve(p);
       }
     });
+  }
+
+  /**
+   * Executes the given command string in the agent's container and attaches stdin, stdout, and stderr accordingly
+   * @param command - the command to execute in the container
+   */
+  async containerSpawn(command: string): Promise<Agent.ContainerExecData> {
+    let exec = await this.container.exec({
+      Cmd: ['/bin/bash', '-c', command],
+      AttachStdin: true,
+      AttachStdout: true,
+      AttachStderr: true,
+    });
+
+    let stream = await exec.start({stdin: true, hijack: true});
+    let instream = new Stream.PassThrough();
+    let outstream = new Stream.PassThrough();
+    let errstream = new Stream.PassThrough();
+    instream.pipe(stream);
+    this.container.modem.demuxStream(stream, outstream, errstream);
+
+    return {
+      in: instream,
+      out: outstream,
+      err: errstream,
+      stream,
+      exec,
+    }
   }
 
   /**
@@ -459,9 +538,14 @@ export class Agent extends EventEmitter {
   /**
    * Stop an agent provided it is not terminated. To terminate it, see {@link _terminate};
    */
-  stop() {
+  async stop() {
     if (!this.isTerminated()) {
-      this.process.kill('SIGSTOP');
+      if (this.options.secureMode) {
+        await this.container.pause();
+      }
+      else {
+        this.process.kill('SIGSTOP');
+      }
       this.status = Agent.Status.STOPPED;
     }
   }
@@ -469,10 +553,14 @@ export class Agent extends EventEmitter {
   /**
    * Resume an agent as long it is not terminated already
    */
-  resume() {
+  async resume() {
     if (!this.isTerminated()) {
       this._allowCommands();
-      this.process.kill('SIGCONT')
+      if (this.options.secureMode) {
+        // await this.container.unpause();
+      } else { 
+        this.process.kill('SIGCONT');
+      }
       this.status = Agent.Status.RUNNING;
     }
   }
@@ -481,14 +569,14 @@ export class Agent extends EventEmitter {
    * timeout the agent
    */
   timeout() {
-    this.emit(MatchEngine.AGENT_EVENTS.TIMEOUT);
+    this.emit(Agent.AGENT_EVENTS.TIMEOUT);
   }
 
   /**
    * call out agent for exceeding memory limit
    */
   overMemory() {
-    this.emit(MatchEngine.AGENT_EVENTS.EXCEED_MEMORY_LIMIT);
+    this.emit(Agent.AGENT_EVENTS.EXCEED_MEMORY_LIMIT);
   }
 
   /**
@@ -514,10 +602,6 @@ export class Agent extends EventEmitter {
     this.streams.in.write(message, callback);
   }
 
-  hookupErrorlogs() {
-
-  }
-
   /**
    * Get process of agent
    */
@@ -531,6 +615,21 @@ export class Agent extends EventEmitter {
    */
   _storeProcess(p: ChildProcess) {
     this.process = p;
+  }
+
+  /**
+   * Store container for agent
+   * @param c - container to store
+   */
+  _storeContainer(c: Dockerode.Container) {
+    this.container = c;
+  }
+
+  /**
+   * TODO: should be removed, replace with agent internal function
+   */
+  _getContainer() {
+    return this.container;
   }
 
   /**
@@ -554,18 +653,25 @@ export class Agent extends EventEmitter {
     this.status = Agent.Status.KILLED;
     return new Promise((resolve, reject) => {
       
-      treekill(this.process.pid, 'SIGKILL', (err) => {
-        this._clearTimer();
-        clearInterval(this.memoryWatchInterval);
+      if (this.options.secureMode) {
+        // this.container.stop().then(() => {
+        //   this.container.remove().then(resolve).catch(reject);
+        // }).catch(reject)
+        resolve();
+      }
+      else {
+        treekill(this.process.pid, 'SIGKILL', (err) => {
+          this._clearTimer();
+          clearInterval(this.memoryWatchInterval);
 
-        if (err) {
-          reject(err);
-        }
-        else {
-          resolve();
-        }
-      });
-      
+          if (err) {
+            reject(err);
+          }
+          else {
+            resolve();
+          }
+        });
+      }
     });
   }
 
@@ -605,14 +711,18 @@ export class Agent extends EventEmitter {
   /**
    * Stop this agent from more outputs and mark it as done for now and awaiting for updates
    */
-  _finishMove() {
+  async _finishMove() {
     this._clearTimer();
 
     // Resolve move and tell engine in `getCommands` this agent is done outputting commands and awaits input
     this._currentMoveResolve();
             
     // stop the process for now from sending more output and disallow commmands to ignore rest of output
-    this.process.kill('SIGSTOP');
+    if (this.options.secureMode) {
+      // await this.container.pause();
+    } else {
+      this.process.kill('SIGSTOP');
+    }
     this._disallowCommands();
   }
 
@@ -678,10 +788,21 @@ export class Agent extends EventEmitter {
 
 export module Agent {
 
+  /**
+   * Stream data for any process
+   */
   export interface Streams {
     in: Writable,
     out: Readable,
     err: Readable,
+  }
+
+  /**
+   * data related to executing a command in a container, with stream data, and the exec object
+   */
+  export interface ContainerExecData extends Streams {
+    exec: Dockerode.Exec,
+    stream: Duplex,
   }
 
   /**
@@ -762,6 +883,24 @@ export module Agent {
      * @default `null`
      */
     runCommands: { [x in string]: Array<string> }
+  }
+  
+  /**
+   * Agent events
+   */
+  export enum AGENT_EVENTS {
+    /**
+     * Event emitted by process of {@link Agent} when memory limit is exceeded
+     */
+    EXCEED_MEMORY_LIMIT = 'exceedMemoryLimit',
+    /**
+     * Event emitted by process of {@link Agent} when it times out.
+     */
+    TIMEOUT = 'timeout',
+    /**
+     * event emitted when associated process or container for agent closes and agent effectively is terminated
+     */
+    CLOSE = 'close'
   }
 
   /**
