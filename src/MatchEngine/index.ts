@@ -1,6 +1,5 @@
 import os from 'os';
 import { spawn, ChildProcess, exec } from 'child_process';
-import pidusage from 'pidusage';
 import fs, { WriteStream } from 'fs';
 import path from 'path';
 
@@ -15,10 +14,7 @@ import { Design } from '../Design';
 import { Logger } from '../Logger';
 import { Agent } from '../Agent';
 import { Match } from '../Match';
-import { processIsRunning, removeDirectory, dockerCopy } from '../utils/System';
 import Dockerode from 'dockerode';
-import { Stream } from 'stream';
-import { execArgv } from 'process';
 import { isChildProcess } from '../utils/TypeGuards';
 
 /** @ignore */
@@ -117,27 +113,7 @@ export class MatchEngine {
     // create container in secureMode
     if (match.configs.secureMode) {
       let name = `${match.id}_agent_${agent.id}`;
-      let container = await this.docker.createContainer({
-        // TODO: make this image configurable
-        Image: 'docker.io/stonezt2000/dimensions_langs', 
-        name: name,
-        OpenStdin: true,
-        StdinOnce: true,
-        // TODO, add resource constraints here
-        HostConfig: {
-
-        }
-      });
-      this.log.system(`Created container ${name}`);
-      
-      // store container
-      agent._storeContainer(container);
-      await container.start();
-      this.log.system(`Started container ${name}`);
-
-      // copy bot directory into container
-      await dockerCopy(agent.cwd + '/.', name, '/code');
-      this.log.system(`Copied bot into container ${name}`);
+      await agent.setupContainer(name, this.docker);
     }
 
     let errorLogFilepath = path.join(match.getMatchErrorLogDirectory(), agent.getAgentErrorLogFilename());

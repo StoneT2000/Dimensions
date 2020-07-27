@@ -112,7 +112,7 @@ export class Match {
     loggingLevel: Logger.LEVEL.INFO,
     engineOptions: {},
     secureMode: false,
-    agentOptions: Agent.OptionDefaults,
+    agentOptions: deepCopy(Agent.OptionDefaults),
     storeReplay: true,
     storeReplayDirectory: 'replays',
     storeErrorLogs: true,
@@ -287,6 +287,8 @@ export class Match {
       return true;
     }
     catch(err) {
+      // first handle log files in case they might hold relevant install / compile time logs
+      this.handleLogFiles();
       // kill processes and clean up and then throw the error
       await this.killAndCleanUp();
       throw err;
@@ -386,42 +388,7 @@ export class Match {
             reject(new MatchReplayFileError(`Replay file provided ${this.results.replayFile} does not exist`));
           }
         }
-
-        let uploadLogPromises: Array<Promise<{key: string, agentID: number}>> = [];
-        let fileLogsToRemove: Array<string> = [];
-
-        // upload error logs if stored
-        if (this.configs.storeErrorLogs) {
-          // upload each agent error log
-          for (let agent of this.agents) {
-            let filepath = path.join(this.getMatchErrorLogDirectory(), agent.getAgentErrorLogFilename());
-            if (existsSync(filepath)) {
-              if (this.dimension.hasStorage()) {
-                let uploadKeyPromise = 
-                  this.dimension.storagePlugin
-                    .upload(filepath, filepath)
-                    .then((key) => {
-                      return { key: key, agentID: agent.id }
-                    });
-                uploadLogPromises.push(uploadKeyPromise);
-                fileLogsToRemove.push(filepath);
-              }
-            }
-            else {
-              // this shouldn't happen
-              this.log.error(`Agent ${this.id} log file at ${filepath} does not exist`);
-            }
-          }
-        }
-        let logkeys = await Promise.all(uploadLogPromises);
-        logkeys.forEach((val) => {
-          this.idToAgentsMap.get(val.agentID).logkey = val.key;
-        });
-
-        if (fileLogsToRemove.length > 0) {
-          removeDirectory(this.getMatchErrorLogDirectory());
-        }
-
+        this.handleLogFiles();
         this.finishDate = new Date();
         resolve(this.results);
       }
@@ -429,6 +396,46 @@ export class Match {
         reject(error);
       }
     });
+  }
+
+  /**
+   * Handles log files and stores / uploads / deletes them as necessary
+   */
+  private async handleLogFiles() {
+    let uploadLogPromises: Array<Promise<{key: string, agentID: number}>> = [];
+    let fileLogsToRemove: Array<string> = [];
+
+    // upload error logs if stored
+    if (this.configs.storeErrorLogs) {
+      // upload each agent error log
+      for (let agent of this.agents) {
+        let filepath = path.join(this.getMatchErrorLogDirectory(), agent.getAgentErrorLogFilename());
+        if (existsSync(filepath)) {
+          if (this.dimension.hasStorage()) {
+            let uploadKeyPromise = 
+              this.dimension.storagePlugin
+                .upload(filepath, filepath)
+                .then((key) => {
+                  return { key: key, agentID: agent.id }
+                });
+            uploadLogPromises.push(uploadKeyPromise);
+            fileLogsToRemove.push(filepath);
+          }
+        }
+        else {
+          // this shouldn't happen
+          this.log.error(`Agent ${this.id} log file at ${filepath} does not exist`);
+        }
+      }
+    }
+    let logkeys = await Promise.all(uploadLogPromises);
+    logkeys.forEach((val) => {
+      this.idToAgentsMap.get(val.agentID).logkey = val.key;
+    });
+
+    if (fileLogsToRemove.length > 0) {
+      removeDirectory(this.getMatchErrorLogDirectory());
+    }
   }
 
   /**

@@ -7,7 +7,7 @@ import { AgentFileError, AgentDirectoryError, AgentMissingIDError, AgentInstallT
 import { Tournament } from "../Tournament";
 import { MatchEngine } from "../MatchEngine";
 import { deepMerge } from "../utils/DeepMerge";
-import { processIsRunning } from "../utils/System";
+import { processIsRunning, dockerCopy } from "../utils/System";
 import { deepCopy } from "../utils/DeepCopy";
 import { DeepPartial } from "../utils/DeepPartial";
 import { Writable, Readable, EventEmitter, Stream, Duplex } from "stream";
@@ -207,6 +207,29 @@ export class Agent extends EventEmitter {
 
   }
 
+  async setupContainer(name: string, docker: Dockerode) {
+    let container = await docker.createContainer({
+      Image: this.options.image, 
+      name: name,
+      OpenStdin: true,
+      StdinOnce: true,
+      // TODO, add resource constraints here
+      HostConfig: {
+
+      }
+    });
+    this.log.system(`Created container ${name}`);
+    
+    // store container
+    this.container = container;
+    await container.start();
+    this.log.system(`Started container ${name}`);
+
+    // copy bot directory into container
+    await dockerCopy(this.cwd + '/.', name, '/code');
+    this.log.system(`Copied bot into container ${name}`);
+  }
+
   /**
    * Install whatever is needed through a `install.sh` file in the root of the bot folder
    */
@@ -323,12 +346,9 @@ export class Agent extends EventEmitter {
             clearTimeout(compileTimer);
             resolve();
             return;
-            // TODO: Make these compile options configurable
           case '.js':
-            clearTimeout(compileTimer);
-            resolve();
-            return;
-            // p = await this._spawnCompileProcess('node', ['--check', this.src])
+            p = await this._spawnCompileProcess('node', ['--check', this.src])
+            break;
           case '.ts':
             // expect user to provide a tsconfig.json
             p = await this._spawnCompileProcess('tsc', [])
@@ -578,14 +598,6 @@ export class Agent extends EventEmitter {
    */
   _storeProcess(p: ChildProcess) {
     this.process = p;
-  }
-
-  /**
-   * Store container for agent
-   * @param c - container to store
-   */
-  _storeContainer(c: Dockerode.Container) {
-    this.container = c;
   }
   
   /**
@@ -874,6 +886,14 @@ export module Agent {
      * @default `null`
      */
     runCommands: { [x in string]: Array<string> }
+
+    /**
+     * Image to use for docker container if Agent is being run in secureMode. The default is a standard image provided by Dimensions that has 
+     * all supported languages built in so agents can use them.
+     * 
+     * @default `docker.io/stonezt2000/dimensions_langs`
+     */
+    image: string
   }
   
   /**
@@ -906,6 +926,7 @@ export module Agent {
     maxInstallTime: 300000,
     maxCompileTime: 60000,
     runCommands: {},
-    compileCommands: {}
+    compileCommands: {},
+    image: 'docker.io/stonezt2000/dimensions_langs',
   };
 }
