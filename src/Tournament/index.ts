@@ -426,7 +426,6 @@ export abstract class Tournament {
 
       // remove the match from the active matches list
       this.matches.delete(match.id);
-      // TODO: Add option to just archive matches instead
       
       // Resolve the results
       return {results: results, match: match};

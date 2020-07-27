@@ -64,7 +64,6 @@ export class MatchEngine {
     this.overrideOptions = deepCopy(this.design.getDesignOptions().override);
     this.log.identifier = `Engine`;
     this.setLogLevel(loggingLevel);
-    // TODO: allow these docker options to be configurable.
     this.docker = new Dockerode({socketPath: '/var/run/docker.sock'});
   }
 
@@ -430,10 +429,10 @@ export class MatchEngine {
   }
 
   /**
-   * TODO: Initialize a custom design based match and run through some basic security measures
    * @param match - The match to initialize with a custom design
    */
   async initializeCustom(match: Match): Promise<boolean> {
+    // TODO: Initialize a custom design based match and run through some basic security measures
     return true;
   }
 
