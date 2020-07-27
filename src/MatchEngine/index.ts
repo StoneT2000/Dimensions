@@ -457,24 +457,14 @@ export class MatchEngine {
       // spawn the match process with the parsed arguments
       let matchProcessTimer: any;
 
-      // in secure mode, spawn given script as root user. User is required to spawn their match with 
-      // sudo -H -u dimensions_bot to ensure security
-      if (match.configs.secureMode) {
-        match.matchProcess = spawn('sudo', ['-H', '-u', ROOT_USER, cmd, ...parsed]).on('error', (err) => {
-          if (err) throw err;
-        });
-        this.log.system(
-          `${match.name} | id: ${match.id} - spawned: sudo -H -u ${ROOT_USER} ${cmd} ${parsed.join(' ')}`
-        );
-      }
-      else {
-        match.matchProcess = spawn(cmd, parsed).on('error', (err) => {
-          if (err) throw err;
-        });
-        this.log.system(
-          `${match.name} | id: ${match.id} - spawned: ${cmd} ${parsed.join(' ')}`
-        );
-      }
+      // TODO: configure some kind of secureMode for custom matches
+      
+      match.matchProcess = spawn(cmd, parsed).on('error', (err) => {
+        if (err) throw err;
+      });
+      this.log.system(
+        `${match.name} | id: ${match.id} - spawned: ${cmd} ${parsed.join(' ')}`
+      );
 
       let errorLogFilepath = path.join(match.getMatchErrorLogDirectory(),`match_error.log`);
       let errorLogWriteStream: WriteStream = null;
@@ -872,8 +862,3 @@ export module MatchEngine {
     D_NAMES = 'D_NAMES'
   }
 }
-
-/** name of the bot user that owns the agent's process */
-export const BOT_USER = 'dimensions_bot';
-/** @ignore */
-export const ROOT_USER = 'root';

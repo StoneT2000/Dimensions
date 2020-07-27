@@ -8,11 +8,10 @@ import { deepCopy } from '../utils/DeepCopy';
 import { Logger} from '../Logger';
 import { Match } from '../Match';
 import { Station } from '../Station';
-import { FatalError, MissingFilesError, NotSupportedError } from '../DimensionError';
+import { MissingFilesError } from '../DimensionError';
 import { Design } from '../Design';
 import { Tournament } from '../Tournament';
 
-import { BOT_USER } from '../MatchEngine';
 import { Plugin } from '../Plugin';
 import { Database } from '../Plugin/Database';
 import { Storage } from '../Plugin/Storage';
@@ -392,66 +391,10 @@ export class Dimension {
   /**
    * Sets up necessary security and checks if everything is in place
    */
-  private async setupSecurity() {
-
-    // perform checks
-    // TODO check for docker
+  private setupSecurity() {
   }
 
-  /**
-   * Checks if the provided users exist in this system or not.
-   * @param usernames - usernames of the users to check for
-   */
-  private checkForUsers(usernames: Array<string>) {
-    return new Promise((resolve, reject) => {
-
-      let userset = new Set();
-      switch(process.platform) {
-        case 'darwin': {
-          let p = exec(`dscacheutil -q user`, (err) => {
-            if (err) throw err;
-          });
-          p.stdout.on('data', (chunk) => {
-            `${chunk}`.split('\n').forEach((line) => {
-              if (line.slice(0, 4) === 'name') {
-                userset.add(line.slice(6));
-              }
-            });
-          });
-          p.on('close', (code) => {
-            for (let i = 0; i < usernames.length; i++) {
-              let name = usernames[i];
-              if (!userset.has(name)) {
-                throw new FatalError(`Missing user: ${name} \nPlease add that user to your system (do not make it admin)`);
-              }
-            }
-            resolve();
-          });
-          break;
-        }
-        case 'linux': {
-          exec(`awk -F: '{ print $1}' /etc/passwd`, (err, stdout) => {
-            if (err) throw err;
-            `${stdout}`.split('\n').forEach((line) => {
-              userset.add(line);
-            });
-            for (let i = 0; i < usernames.length; i++) {
-              let name = usernames[i];
-              if (!userset.has(name)) {
-                throw new FatalError(`Missing user: ${name}. Please add that user to your system (do not make it admin)`);
-              }
-            }
-            resolve();
-          });
-          break;
-        }
-        default:
-          throw new NotSupportedError(`The platform ${process.platform} is not supported yet for secureMode`);
-      }
-      
-    });
-  }
-
+  
   /**
    * Generates a 6 character nanoID string for identifying dimensions
    */
