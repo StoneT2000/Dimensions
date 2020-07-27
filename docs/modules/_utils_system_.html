@@ -73,6 +73,7 @@
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_utils_system_.html#dockercopy" class="tsd-kind-icon">docker<wbr>Copy</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_utils_system_.html#processisrunning" class="tsd-kind-icon">process<wbr>IsRunning</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_utils_system_.html#removedirectory" class="tsd-kind-icon">remove<wbr>Directory</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_utils_system_.html#removedirectorysync" class="tsd-kind-icon">remove<wbr>Directory<wbr>Sync</a></li>
@@ -86,6 +87,44 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="dockercopy" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> docker<wbr>Copy</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">docker<wbr>Copy<span class="tsd-signature-symbol">(</span>fileOrDirectoryPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, containerID<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, targetPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/639282e/src/utils/System.ts#L82">https://github.com/StoneT2000/Dimensions/blob/639282e/src/utils/System.ts#L82</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Effectively runs the <code>docker cp</code> command</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>fileOrDirectoryPath: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>containerID: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>targetPath: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+										</div>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">unknown</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
 					<a name="processisrunning" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagConst">Const</span> process<wbr>IsRunning</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
@@ -95,7 +134,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c1432d7/src/utils/System.ts#L36">https://github.com/StoneT2000/Dimensions/blob/c1432d7/src/utils/System.ts#L36</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/639282e/src/utils/System.ts#L36">https://github.com/StoneT2000/Dimensions/blob/639282e/src/utils/System.ts#L36</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -118,7 +157,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c1432d7/src/utils/System.ts#L58">https://github.com/StoneT2000/Dimensions/blob/c1432d7/src/utils/System.ts#L58</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/639282e/src/utils/System.ts#L58">https://github.com/StoneT2000/Dimensions/blob/639282e/src/utils/System.ts#L58</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -150,7 +189,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c1432d7/src/utils/System.ts#L50">https://github.com/StoneT2000/Dimensions/blob/c1432d7/src/utils/System.ts#L50</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/639282e/src/utils/System.ts#L50">https://github.com/StoneT2000/Dimensions/blob/639282e/src/utils/System.ts#L50</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -182,7 +221,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c1432d7/src/utils/System.ts#L19">https://github.com/StoneT2000/Dimensions/blob/c1432d7/src/utils/System.ts#L19</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/639282e/src/utils/System.ts#L19">https://github.com/StoneT2000/Dimensions/blob/639282e/src/utils/System.ts#L19</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -215,7 +254,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c1432d7/src/utils/System.ts#L11">https://github.com/StoneT2000/Dimensions/blob/c1432d7/src/utils/System.ts#L11</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/639282e/src/utils/System.ts#L11">https://github.com/StoneT2000/Dimensions/blob/639282e/src/utils/System.ts#L11</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -253,6 +292,9 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_utils_system_.html#dockercopy" class="tsd-kind-icon">docker<wbr>Copy</a>
+					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="_utils_system_.html#processisrunning" class="tsd-kind-icon">process<wbr>IsRunning</a>
 					</li>
