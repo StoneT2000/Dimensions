@@ -112,7 +112,7 @@ export class MatchEngine {
     // create container in secureMode
     if (match.configs.secureMode) {
       let name = `${match.id}_agent_${agent.id}`;
-      await agent.setupContainer(name, this.docker);
+      await agent.setupContainer(name, this.docker, this.engineOptions);
     }
 
     let errorLogFilepath = path.join(match.getMatchErrorLogDirectory(), agent.getAgentErrorLogFilename());
@@ -855,7 +855,7 @@ export module MatchEngine {
     /**
      * D_NAMES is automatically replaced with the names of the agents
      * 
-     * @example Suppose the agents 0 and 1 had names `bob, richard`. Then `D_NAMES` is passed into your commnad as 
+     * @example Suppose the agents 0 and 1 had names `bob, richard`. Then `D_NAMES` is passed into your command as 
      * `bob richard`
      */
     D_NAMES = 'D_NAMES'

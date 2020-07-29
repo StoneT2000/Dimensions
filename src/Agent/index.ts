@@ -11,7 +11,7 @@ import { processIsRunning, dockerCopy } from "../utils/System";
 import { deepCopy } from "../utils/DeepCopy";
 import { DeepPartial } from "../utils/DeepPartial";
 import { Writable, Readable, EventEmitter, Stream, Duplex } from "stream";
-import Dockerode from "dockerode";
+import Dockerode, { HostConfig } from "dockerode";
 import { isChildProcess } from "../utils/TypeGuards";
 import pidusage from "pidusage";
 
@@ -207,16 +207,20 @@ export class Agent extends EventEmitter {
 
   }
 
-  async setupContainer(name: string, docker: Dockerode) {
+  async setupContainer(name: string, docker: Dockerode, engineOptions: MatchEngine.EngineOptions) {
+    let HostConfig: HostConfig = {
+
+    }
+    if (engineOptions.memory.active) {
+      // HostConfig.Memory = engineOptions.memory.limit;
+    }
     let container = await docker.createContainer({
       Image: this.options.image, 
       name: name,
       OpenStdin: true,
       StdinOnce: true,
       // TODO, add resource constraints here
-      HostConfig: {
-
-      }
+      HostConfig,
     });
     this.log.system(`Created container ${name}`);
     
@@ -343,6 +347,8 @@ export class Agent extends EventEmitter {
         switch(this.ext) {
           case '.py':
           case '.php':
+          case '.js':
+            
             clearTimeout(compileTimer);
             resolve();
             return;
@@ -377,7 +383,8 @@ export class Agent extends EventEmitter {
           resolve();
         }
         else {
-          reject(new AgentCompileError(`A compile time error occured. Compile step for agent ${this.id} exited with code: ${code}; Compiling ${this.file}; Compile Output:\n${chunks.join('')}`, this.id));
+          let msg = `A compile time error occured. Compile step for agent ${this.id} exited with code: ${code}; Compiling ${this.file}; Compile Output:\n${chunks.join('')}`;
+          reject(new AgentCompileError(msg, this.id));
         }
       }
       const handleError = (err: Error) => {
@@ -616,25 +623,29 @@ export class Agent extends EventEmitter {
     return new Promise((resolve, reject) => {
       
       if (this.options.secureMode) {
-        this.container.inspect().then((d) => {
-          if (d.State.Running) {
-            this.container.kill().then(() => {
-              this.container.remove().then(resolve);
+        if (this.container) {
+          this.container.inspect().then((d) => {
+            if (d.State.Running) {
+              this.container.kill().then(() => {
+                this.container.remove().then(resolve);
+                resolve();
+              }).catch(reject);
+            }
+            else {
               resolve();
-            }).catch(reject);
-          }
-          else {
-            resolve();
-          }
-        }).catch((err) => {
-          if (err.reason !== 'no such container') {
-            reject(err);
-          }
-          else {
-            // we resolve if the reason is just a missing container.
-            resolve();
-          }
-        });
+            }
+          }).catch((err) => {
+            if (err.reason !== 'no such container') {
+              reject(err);
+            }
+            else {
+              // we resolve if the reason is just a missing container.
+              resolve();
+            }
+          });
+        } else {
+          resolve();
+        }
       }
       else {
         if (this.process) {
