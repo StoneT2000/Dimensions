@@ -120,47 +120,18 @@ export class MatchEngine {
 
     if (match.configs.storeErrorLogs) {
       errorLogWriteStream = fs.createWriteStream(errorLogFilepath);
-      agent._storeErrorLogStream(errorLogWriteStream);
       errorLogWriteStream.write('=== Agent Install Log ===\n')
     }
     
-    // setup memory watcher on container to use it during install and compile stages
-    if (this.engineOptions.memory.active) {
-      if (agent.options.secureMode) {
-        await agent._setupMemoryWatcherOnContainer(this.engineOptions);
-      }
-    }
-
-    // add listener for install memory limit exceeded
-    const installTimeCB = () => {
-      const msg = `agent ${agent.id} - ${agent.name} reached the memory limit of ${this.engineOptions.memory.limit / 1000000} MB in install time`;
-      match.log.error(msg);
-      if (errorLogWriteStream) errorLogWriteStream.write(`${msg}\n`);
-      match.kill(agent);
-    }
-    agent.on(Agent.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, installTimeCB);
-
     // wait for install step
-    await agent._install(errorLogWriteStream, errorLogWriteStream, this.engineOptions);
-    agent.removeListener(Agent.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, installTimeCB);
+    await agent._install(errorLogWriteStream, errorLogWriteStream);
     this.log.system('Succesfully ran install step for agent ' + agent.id);
     
     if (match.configs.storeErrorLogs) {
       errorLogWriteStream.write('=== Agent Compile Log ===\n');
     }
-
-    // add listener for install memory limit exceeded
-    const compileTimeCB = () => {
-      const msg = `agent ${agent.id} - ${agent.name} reached the memory limit of ${this.engineOptions.memory.limit / 1000000} MB in compile time`
-      match.log.error(msg);
-      if (errorLogWriteStream) errorLogWriteStream.write(`${msg}\n`);
-      match.kill(agent);
-    }
-    agent.on(Agent.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, compileTimeCB);
-    
     // wait for compilation step
-    await agent._compile(errorLogWriteStream, errorLogWriteStream, this.engineOptions);
-    agent.removeListener(Agent.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, compileTimeCB);
+    await agent._compile(errorLogWriteStream, errorLogWriteStream);
     this.log.system('Succesfully ran compile step for agent ' + agent.id);
     
     
@@ -203,7 +174,7 @@ export class MatchEngine {
     // add listener for timeouts
     agent.on(Agent.AGENT_EVENTS.TIMEOUT, () => {
       this.engineOptions.timeout.timeoutCallback(agent, match, this.engineOptions);
-    });
+    })
 
     match.idToAgentsMap.set(agent.id, agent);
 
@@ -273,8 +244,11 @@ export class MatchEngine {
     });
 
     if (this.engineOptions.memory.active) {
-      if (!agent.options.secureMode) {
-        agent._setupMemoryWatcher(this.engineOptions, agent._getProcess().pid);
+      if (agent.options.secureMode) {
+        await agent._setupMemoryWatcherOnContainer(this.engineOptions);
+      }
+      else {
+        agent._setupMemoryWatcher(this.engineOptions);
       }
     }
 
