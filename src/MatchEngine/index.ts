@@ -157,8 +157,9 @@ export class MatchEngine {
       agent.streams.in = p.in;
       agent.streams.out = p.out;
       agent.streams.err = p.err;
-      
+
       let containerExec = p.exec;
+
       p.stream.on('end', async () => {
         let endRes = await containerExec.inspect();
         agent.emit(Agent.AGENT_EVENTS.CLOSE, endRes.ExitCode);
@@ -244,6 +245,7 @@ export class MatchEngine {
 
     if (this.engineOptions.memory.active) {
       if (agent.options.secureMode) {
+        await agent._setupMemoryWatcherOnContainer(this.engineOptions);
       }
       else {
         agent._setupMemoryWatcher(this.engineOptions);
@@ -359,7 +361,11 @@ export class MatchEngine {
    * @param agent - the agent to kill off
    */
   public async kill(agent: Agent) {
-    await agent._terminate();
+    try {
+      await agent._terminate();
+    } catch(err) {
+      this.log.error("This should not happen when terminating agents.", err);
+    }
     agent._currentMoveResolve();
     this.log.system(`Killed off agent ${agent.id} - ${agent.name}`);
   }

@@ -14,6 +14,7 @@ import { Writable, Readable, EventEmitter, Stream, Duplex } from "stream";
 import Dockerode, { HostConfig } from "dockerode";
 import { isChildProcess } from "../utils/TypeGuards";
 import pidusage from "pidusage";
+import { IncomingMessage } from "http";
 
 const containerBotFolder = '/code';
 
@@ -208,12 +209,7 @@ export class Agent extends EventEmitter {
   }
 
   async setupContainer(name: string, docker: Dockerode, engineOptions: MatchEngine.EngineOptions) {
-    let HostConfig: HostConfig = {
-
-    }
-    if (engineOptions.memory.active) {
-      // HostConfig.Memory = engineOptions.memory.limit;
-    }
+    let HostConfig: HostConfig = {};
     let container = await docker.createContainer({
       Image: this.options.image, 
       name: name,
@@ -620,29 +616,23 @@ export class Agent extends EventEmitter {
    */
   _terminate(): Promise<void> {
     this.status = Agent.Status.KILLED;
-    return new Promise((resolve, reject) => {
+    return new Promise( async (resolve, reject) => {
       
       if (this.options.secureMode) {
         if (this.container) {
-          this.container.inspect().then((d) => {
-            if (d.State.Running) {
-              this.container.kill().then(() => {
-                this.container.remove().then(resolve);
-                resolve();
-              }).catch(reject);
+          try {
+            const ins = await this.container.inspect();
+            if (ins.State.Running) {
+              await this.container.kill();
+              await this.container.remove();
             }
-            else {
-              resolve();
-            }
-          }).catch((err) => {
-            if (err.reason !== 'no such container') {
+          } catch(err) {
+            if (err.statusCode !== 409) {
               reject(err);
-            }
-            else {
-              // we resolve if the reason is just a missing container.
+            } else {
               resolve();
             }
-          });
+          }
         } else {
           resolve();
         }
@@ -750,6 +740,16 @@ export class Agent extends EventEmitter {
     }
     checkAgentMemoryUsage();
     this.memoryWatchInterval = setInterval(checkAgentMemoryUsage, engineOptions.memory.checkRate);
+  }
+
+  async _setupMemoryWatcherOnContainer(engineOptions: MatchEngine.EngineOptions) {
+    let statsStream: unknown = await this.container.stats();
+      (<IncomingMessage>statsStream).on('data', (event) => {
+        const statsEvent: Dockerode.ContainerStats = JSON.parse(event);
+        if (statsEvent.memory_stats.usage > engineOptions.memory.limit) {
+          this.emit(Agent.AGENT_EVENTS.EXCEED_MEMORY_LIMIT);
+        }
+      });
   }
 
   /**

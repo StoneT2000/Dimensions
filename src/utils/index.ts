@@ -73,3 +73,15 @@ export const stripNull = <T extends { [x in string]: any}>(object: T): T => {
   }
   return helper(object);
 }
+
+/**
+ * Async function that resolves after `ms` milliseconds
+ * @param ms - number of milliseconds to sleep for
+ */
+export const sleep = async (ms: number) => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, ms);
+  })
+}
