@@ -267,6 +267,11 @@ export class Agent extends EventEmitter {
 
         if (this.options.secureMode) {
           try {
+            let exec = await this.container.exec({
+              Cmd: ['/bin/bash', '-c', 'chmod u+x install.sh'],
+              WorkingDir: containerBotFolder,
+            });
+            await exec.start({});
             let data = await this.containerSpawn(path.join(containerBotFolder, 'install.sh'));
             stderr = data.err;
             stdout = data.out;
@@ -626,6 +631,7 @@ export class Agent extends EventEmitter {
               await this.container.kill();
               await this.container.remove();
             }
+            resolve();
           } catch(err) {
             if (err.statusCode !== 409) {
               reject(err);
