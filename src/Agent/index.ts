@@ -1,6 +1,6 @@
 import { ChildProcess, spawn } from "child_process";
 import path from 'path';
-import fs from 'fs';
+import fs, { WriteStream } from 'fs';
 import treekill from 'tree-kill';
 import { Logger } from "../Logger";
 import { AgentFileError, AgentDirectoryError, AgentMissingIDError, AgentInstallTimeoutError, AgentCompileTimeoutError, NotSupportedError, AgentCompileError, AgentInstallError } from "../DimensionError";
@@ -137,6 +137,11 @@ export class Agent extends EventEmitter {
 
   /** whether agent is allowed to send commands. Used to help ignore extra output from agents */
   private allowedToSendCommands = true;
+
+  /**
+   * Error log stream for agent
+   */
+  private errorLogStream: WriteStream = null;
   
   constructor(file: string, options: Partial<Agent.Options>) {
     super();
@@ -215,7 +220,6 @@ export class Agent extends EventEmitter {
       name: name,
       OpenStdin: true,
       StdinOnce: true,
-      // TODO, add resource constraints here
       HostConfig,
     });
     this.log.system(`Created container ${name}`);
@@ -233,7 +237,7 @@ export class Agent extends EventEmitter {
   /**
    * Install whatever is needed through a `install.sh` file in the root of the bot folder
    */
-  _install(stderrWritestream?: Writable, stdoutWritestream?: Writable): Promise<void> {
+  _install(stderrWritestream: Writable, stdoutWritestream: Writable, engineOptions: MatchEngine.EngineOptions): Promise<void> {
     return new Promise(async (resolve, reject) => {
 
       // if there is a install.sh file, use it
@@ -267,6 +271,11 @@ export class Agent extends EventEmitter {
 
         if (this.options.secureMode) {
           try {
+            let exec = await this.container.exec({
+              Cmd: ['/bin/bash', '-c', 'chmod u+x install.sh'],
+              WorkingDir: containerBotFolder,
+            });
+            await exec.start({});
             let data = await this.containerSpawn(path.join(containerBotFolder, 'install.sh'));
             stderr = data.err;
             stdout = data.out;
@@ -294,6 +303,7 @@ export class Agent extends EventEmitter {
           });
           stderr = p.stderr;
           stdout = p.stdout;
+          this._setupMemoryWatcher(engineOptions, p.pid);
         }
         
         stdout.on('data', (chunk) => {
@@ -326,7 +336,7 @@ export class Agent extends EventEmitter {
    * Compile whatever is needed and validate files. Called by {@link MatchEngine} and has a timer set by the 
    * maxCompileTime option in {@link Agent.Options}
    */
-  async _compile(stderrWritestream?: Writable, stdoutWritestream?: Writable): Promise<void> {
+  async _compile(stderrWritestream: Writable, stdoutWritestream: Writable, engineOptions: MatchEngine.EngineOptions): Promise<void> {
     return new Promise( async (resolve, reject) => {
       let p: ChildProcess | Agent.ContainerExecData;
       let stdout: Readable;
@@ -344,7 +354,6 @@ export class Agent extends EventEmitter {
           case '.py':
           case '.php':
           case '.js':
-            
             clearTimeout(compileTimer);
             resolve();
             return;
@@ -388,6 +397,7 @@ export class Agent extends EventEmitter {
         reject(err);
       }
       if (isChildProcess(p)) {
+        this._setupMemoryWatcher(engineOptions, p.pid);
         stdout = p.stdout;
         stderr = p.stderr;
         p.on('error', (err) => {
@@ -725,11 +735,11 @@ export class Agent extends EventEmitter {
    * Used by {@link MatchEngine} only. Setups the memory watcher if docker is not used.
    * @param engineOptions - engine options to configure the agent with
    */
-  _setupMemoryWatcher(engineOptions: MatchEngine.EngineOptions) {
+  _setupMemoryWatcher(engineOptions: MatchEngine.EngineOptions, pid: number) {
     const checkAgentMemoryUsage = () => {
       // setting { maxage: 0 } because otherwise pidusage leaves interval "memory leaks" and process doesn't exit fast
-      if (processIsRunning(this.process.pid)) {
-        pidusage(this.process.pid, { maxage: 0, usePs: engineOptions.memory.usePs }).then((stat) => {
+      if (processIsRunning(pid)) {
+        pidusage(pid, { maxage: 0, usePs: engineOptions.memory.usePs }).then((stat) => {
           if (stat.memory > engineOptions.memory.limit) {
             this.overMemory();
           }
@@ -750,6 +760,10 @@ export class Agent extends EventEmitter {
           this.emit(Agent.AGENT_EVENTS.EXCEED_MEMORY_LIMIT);
         }
       });
+  }
+
+  _storeErrorLogStream(stream: WriteStream) {
+    this.errorLogStream = stream;
   }
 
   /**
