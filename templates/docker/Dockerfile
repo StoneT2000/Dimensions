@@ -19,3 +19,5 @@ RUN apt-get clean
 RUN useradd dimensions_bot && \
     mkdir /home/dimensions_bot && \
     chown -R dimensions_bot /home/dimensions_bot
+
+USER root
