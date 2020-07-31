@@ -632,8 +632,8 @@ export class Agent extends EventEmitter {
               await this.container.remove();
             }
             resolve();
-          } catch(err) {
-            if (err.statusCode !== 409) {
+          } catch (err) {
+            if (err.statusCode !== 409 && err.reason !== 'no such container') {
               reject(err);
             } else {
               resolve();

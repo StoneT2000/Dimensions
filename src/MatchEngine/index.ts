@@ -115,6 +115,14 @@ export class MatchEngine {
       await agent.setupContainer(name, this.docker, this.engineOptions);
     }
 
+    if (this.engineOptions.memory.active) {
+      if (agent.options.secureMode) {
+        await agent._setupMemoryWatcherOnContainer(this.engineOptions);
+      }
+    }
+    // note to self, do a Promise.all for each stage before going to the next, split initializeAgent into
+    // initializeAgentCompile, initializeAgentInstall, initializeAgentSpawn....
+
     let errorLogFilepath = path.join(match.getMatchErrorLogDirectory(), agent.getAgentErrorLogFilename());
     let errorLogWriteStream: WriteStream = null;
 
@@ -244,10 +252,7 @@ export class MatchEngine {
     });
 
     if (this.engineOptions.memory.active) {
-      if (agent.options.secureMode) {
-        await agent._setupMemoryWatcherOnContainer(this.engineOptions);
-      }
-      else {
+      if (!agent.options.secureMode) {
         agent._setupMemoryWatcher(this.engineOptions);
       }
     }
