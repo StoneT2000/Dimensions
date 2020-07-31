@@ -106,7 +106,7 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
       });
       it("should run with users and store user data + match data", async () => {
         await t.run();
-        await sleep(5000);
+        await sleep(15000);
         await t.stop();
         let ranks = await t.getRankings();
         expect(t.state.statistics.totalMatches).to.be.greaterThan(1, "run more than 1 match");
@@ -157,7 +157,7 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
       });
       it("should run with users and store user data + match data", async () => {
         await t.run();
-        await sleep(5000);
+        await sleep(15000);
         
         let ranks = await t.getRankings();
         expect(t.state.statistics.totalMatches).to.be.greaterThan(1, "should run more than 1 match");
@@ -176,16 +176,18 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
         let rankState: RankSystem.ELO.RankState = (<Tournament.Ladder.PlayerStat>playerStat).rankState;
         expect(rankState.rating.score).to.equal(t.configs.rankSystemConfigs.startingScore, "elo score should reset to startingScore");
       });
-      it("should allow new bots and bot updates that the bot stats", async () => {
+      it("should allow bots to be added and initialize / update bot stats", async () => {
         await t.run();
-        await sleep(4000);
+        await sleep(15000);
         
         let { playerStat } = await t.getPlayerStat(paperBot.existingID);
         let paperbotMatchCount = playerStat.matchesPlayed;
+        // addplayer to update the bot
         await t.addplayer(paperBot);
         playerStat = (await t.getPlayerStat(paperBot.existingID)).playerStat;
         expect(playerStat.matchesPlayed).to.be.lessThan(paperbotMatchCount, "updated bot should reset stats and matches played should be less than before");
 
+        // addplayer to add new bot
         await t.addplayer(users.rock3);
         await sleep(4000);
         playerStat = (await t.getPlayerStat(users.rock3.existingID)).playerStat;
