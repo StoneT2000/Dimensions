@@ -15,6 +15,9 @@ import Dockerode, { HostConfig } from "dockerode";
 import { isChildProcess } from "../utils/TypeGuards";
 import pidusage from "pidusage";
 import { IncomingMessage } from "http";
+import DefaultSeccompProfileJSON from "../Security/seccomp/default.json";
+
+const DefaultSeccompProfileString = JSON.stringify(DefaultSeccompProfileJSON);
 
 const containerBotFolder = '/code';
 
@@ -209,7 +212,9 @@ export class Agent extends EventEmitter {
   }
 
   async setupContainer(name: string, docker: Dockerode, engineOptions: MatchEngine.EngineOptions) {
-    let HostConfig: HostConfig = {};
+    let HostConfig: HostConfig = {
+      SecurityOpt: [`seccomp=${DefaultSeccompProfileString}`]
+    };
     let container = await docker.createContainer({
       Image: this.options.image, 
       name: name,

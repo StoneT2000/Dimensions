@@ -15,3 +15,6 @@ RUN bash ./scripts/go.sh
 RUN npm install -g typescript
 
 RUN apt-get clean
+
+RUN useradd dimensions_bot
+USER dimensions_bot
