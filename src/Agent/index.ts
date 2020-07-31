@@ -220,7 +220,6 @@ export class Agent extends EventEmitter {
       name: name,
       OpenStdin: true,
       StdinOnce: true,
-      // TODO, add resource constraints here
       HostConfig,
     });
     this.log.system(`Created container ${name}`);
