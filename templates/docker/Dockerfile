@@ -1,23 +1,29 @@
-FROM node:12.16.3
+FROM docker:dind
 
 RUN mkdir ./scripts
 COPY ./scripts ./scripts
 
+RUN apk update
+
+RUN apk add --no-cache curl
+RUN apk add --no-cache build-base
+
 # install tooling and langs
-RUN apt-get update
-RUN apt-get install -y sudo
-RUN apt-get install -y g++ default-jdk python3-pip
 
-RUN bash ./scripts/php.sh
+RUN apk add --no-cache nodejs nodejs-npm
 
-RUN bash ./scripts/go.sh
+RUN apk add --no-cache go
+
+RUN apk add --no-cache php7
+
+RUN apk add --no-cache python3
 
 RUN npm install -g typescript
 
-RUN apt-get clean
+RUN apk add --no-cache bash
 
-RUN useradd dimensions_bot && \
-    mkdir /home/dimensions_bot && \
-    chown -R dimensions_bot /home/dimensions_bot
+RUN apk --update add openjdk7-jre
+
+RUN adduser -D dimensions_bot
 
 USER root
