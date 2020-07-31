@@ -16,5 +16,6 @@ RUN npm install -g typescript
 
 RUN apt-get clean
 
-RUN useradd dimensions_bot
-USER dimensions_bot
+RUN useradd dimensions_bot && \
+    mkdir /home/dimensions_bot && \
+    chown -R dimensions_bot /home/dimensions_bot
