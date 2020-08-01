@@ -128,7 +128,7 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
       });
       it("should allow new bots and bot updates that the bot stats", async () => {
         await t.run();
-        await sleep(5000);
+        await sleep(15000);
         
         let { playerStat } = await t.getPlayerStat(paperBot.existingID);
         let paperbotMatchCount = playerStat.matchesPlayed;
@@ -137,7 +137,7 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
         expect(playerStat.matchesPlayed).to.be.lessThan(paperbotMatchCount, "updated bot should reset stats and matches played should be less than before");
 
         await t.addplayer(users.rock3);
-        await sleep(4000);
+        await sleep(5000);
         playerStat = (await t.getPlayerStat(users.rock3.existingID)).playerStat;
         expect(playerStat).to.be.not.equal(null, "new bot exists");
 
@@ -189,7 +189,7 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
 
         // addplayer to add new bot
         await t.addplayer(users.rock3);
-        await sleep(4000);
+        await sleep(5000);
         playerStat = (await t.getPlayerStat(users.rock3.existingID)).playerStat;
         expect(playerStat).to.be.not.equal(null, "new bot exists");
 
