@@ -22,7 +22,9 @@ RUN npm install -g typescript
 
 RUN apk add --no-cache bash
 
-RUN apk --update add openjdk7-jre
+RUN apk add --no-cache openjdk8
+ENV JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk
+ENV PATH="$JAVA_HOME/bin:${PATH}"
 
 RUN adduser -D dimensions_bot
 
