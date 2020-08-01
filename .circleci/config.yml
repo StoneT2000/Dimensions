@@ -19,7 +19,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-          version: 19.03.8
+          version: '19.03.8'
       - run: apk add docker-cli
       - run: 
           name: Pull standard images for Dimensions
