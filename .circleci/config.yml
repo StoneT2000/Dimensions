@@ -18,8 +18,8 @@ jobs:
       name: language-build
     steps:
       - checkout
-      - setup_remote_docker
-          version: '19.03.8'
+      - setup_remote_docker:
+          version: 19.03.8
       - run: apk add docker-cli
       - run: 
           name: Pull standard images for Dimensions
