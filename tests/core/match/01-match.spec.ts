@@ -134,7 +134,7 @@ describe('Testing Match Core', () => {
 
   
 
-  describe("Test secureMode", () => {
+  describe.only("Test secureMode", () => {
     it("should initialize correctly", async () => {
       let match = await d.createMatch(botList, {
         bestOf: 11,

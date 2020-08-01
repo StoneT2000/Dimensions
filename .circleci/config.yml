@@ -19,6 +19,7 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
+      - run: apk add docker-cli
       - run: 
           name: Pull standard images for Dimensions
           command: docker pull docker.io/stonezt2000/dimensions_langs
