@@ -94,7 +94,6 @@ export class RoundRobin extends Tournament {
     this.configs = deepMerge(this.configs, configs, true);
     this.initialize();
     this.schedule();
-    
     // running one at a time
     while (this.matchQueue.length) {
       // stop logic

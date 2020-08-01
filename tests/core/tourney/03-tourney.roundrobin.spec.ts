@@ -31,17 +31,25 @@ describe('Testing Roundrobin Tournament Core', () => {
   });
 
   const testRunStopTourney = async (t: Tournament.RoundRobin) => {
-    expect(t.status).to.equal(Tournament.Status.INITIALIZED);
-    t.run();
-    expect(t.status).to.equal(Tournament.Status.RUNNING);
-    await sleep(500);
-    expect(t.status).to.equal(Tournament.Status.RUNNING);
-    await t.stop();
-    expect(t.status).to.equal(Tournament.Status.STOPPED);
-    await sleep(50);
-    expect(t.status).to.equal(Tournament.Status.STOPPED);
-    t.resume();
-    expect(t.status).to.equal(Tournament.Status.RUNNING);
+    return new Promise(async (res, rej) => {
+      try {
+        expect(t.status).to.equal(Tournament.Status.INITIALIZED);
+        t.run().catch(rej);
+        expect(t.status).to.equal(Tournament.Status.RUNNING);
+        await sleep(500);
+        expect(t.status).to.equal(Tournament.Status.RUNNING);
+        await t.stop();
+        expect(t.status).to.equal(Tournament.Status.STOPPED);
+        await sleep(50);
+        expect(t.status).to.equal(Tournament.Status.STOPPED);
+        t.resume().catch(rej)
+        expect(t.status).to.equal(Tournament.Status.RUNNING);
+        res();
+      }
+      catch(error) {
+        rej(error);
+      }
+    });
   }
 
   describe("Test running", () => {

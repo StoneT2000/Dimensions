@@ -64,7 +64,7 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
       let sandbox = sinon.createSandbox();
       
       let match = await d.createMatch(['./tests/kits/js/normal/rock.js', './tests/kits/js/normal/paper.js'], {
-        bestOf: 11,
+        bestOf: 1001,
         engineOptions: customEngineOptions
       });
       let killSpy = sandbox.spy(match, 'kill');
