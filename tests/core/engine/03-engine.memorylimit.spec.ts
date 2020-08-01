@@ -30,6 +30,7 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
   });
   describe("Test memory limit mechanism", () => {
     // TODO: add tests for bot that timeout before match starts
+    for (let bool of tf) {
       it(`should kill bots accordingly if past memory limit; secureMode: ${bool}`, async () => {
         let match = await d.createMatch(['./tests/kits/js/normal/rock.exceedmemory.js', './tests/kits/js/normal/paper.js'], {
           bestOf: 1001, // longer match time to gurantee memory is checked
