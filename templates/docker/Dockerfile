@@ -1,7 +1,4 @@
-FROM docker:dind
-
-RUN mkdir ./scripts
-COPY ./scripts ./scripts
+FROM alpine:3.11
 
 RUN apk update
 
@@ -29,3 +26,5 @@ ENV PATH="$JAVA_HOME/bin:${PATH}"
 RUN adduser -D dimensions_bot
 
 USER root
+
+CMD [ "sh" ]
