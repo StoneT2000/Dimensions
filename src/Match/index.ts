@@ -592,14 +592,17 @@ export class Match {
   /**
    * Terminate an {@link Agent}, kill the process. Note, the agent is still stored in the Match, but you can't send or 
    * receive messages from it anymore
+   * 
+   * @param agent - id of agent or the Agent object to kill
+   * @param reason - an optional reason string to provide for logging purposes
    */
-  public async kill(agent: Agent.ID | Agent) {
+  public async kill(agent: Agent.ID | Agent, reason?: string) {
     
     if (agent instanceof Agent) {
-      this.matchEngine.kill(agent);
+      this.matchEngine.kill(agent, reason);
     }
     else {
-      this.matchEngine.kill(this.idToAgentsMap.get(agent));
+      this.matchEngine.kill(this.idToAgentsMap.get(agent), reason);
     }
   }
 
@@ -646,7 +649,7 @@ export class Match {
       }
       catch (err) {
         this.log.error(err);
-        this.kill(receiver);
+        this.kill(receiver, "could not send message anymore");
       }
     }
     else {
@@ -655,7 +658,7 @@ export class Match {
       }
       catch (err) {
         this.log.error(err);
-        this.kill(receiver);
+        this.kill(receiver, "could not send message anymore");
       }
     }
   }

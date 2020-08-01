@@ -1,6 +1,6 @@
 import { ChildProcess, spawn } from "child_process";
 import path from 'path';
-import fs from 'fs';
+import fs, { WriteStream } from 'fs';
 import treekill from 'tree-kill';
 import { Logger } from "../Logger";
 import { AgentFileError, AgentDirectoryError, AgentMissingIDError, AgentInstallTimeoutError, AgentCompileTimeoutError, NotSupportedError, AgentCompileError, AgentInstallError } from "../DimensionError";
@@ -14,7 +14,6 @@ import { Writable, Readable, EventEmitter, Stream, Duplex } from "stream";
 import Dockerode, { HostConfig } from "dockerode";
 import { isChildProcess } from "../utils/TypeGuards";
 import pidusage from "pidusage";
-import { IncomingMessage } from "http";
 import DefaultSeccompProfileJSON from "../Security/seccomp/default.json";
 
 const DefaultSeccompProfileString = JSON.stringify(DefaultSeccompProfileJSON);
@@ -131,6 +130,8 @@ export class Agent extends EventEmitter {
   /** Clears out the timer associated with the agent during a match */
   public _clearTimer: Function = () => {};
 
+  errorLogWriteStream: WriteStream = null;
+
   private log = new Logger();
 
   /**
@@ -213,8 +214,12 @@ export class Agent extends EventEmitter {
 
   async setupContainer(name: string, docker: Dockerode, engineOptions: MatchEngine.EngineOptions) {
     let HostConfig: HostConfig = {
-      SecurityOpt: [`seccomp=${DefaultSeccompProfileString}`]
+      // apply seccomp profile for security
+      SecurityOpt: [`seccomp=${DefaultSeccompProfileString}`],
     };
+    if (engineOptions.memory.active) {
+      HostConfig.Memory = engineOptions.memory.limit;
+    }
     let container = await docker.createContainer({
       Image: this.options.image, 
       name: name,
@@ -237,7 +242,7 @@ export class Agent extends EventEmitter {
   /**
    * Install whatever is needed through a `install.sh` file in the root of the bot folder
    */
-  _install(stderrWritestream?: Writable, stdoutWritestream?: Writable): Promise<void> {
+  _install(stderrWritestream: Writable, stdoutWritestream: Writable, engineOptions: MatchEngine.EngineOptions): Promise<void> {
     return new Promise(async (resolve, reject) => {
 
       // if there is a install.sh file, use it
@@ -246,7 +251,11 @@ export class Agent extends EventEmitter {
         let stdout: Readable;
         let stderr: Readable;
         let installTimer = setTimeout(() => {
-          reject(new AgentInstallTimeoutError('Agent went over install time during the install stage', this.id));
+          let msg = 'Agent went over install time during the install stage\n';
+          if (this.errorLogWriteStream) {
+            this.errorLogWriteStream.write(msg);
+          }
+          reject(new AgentInstallTimeoutError(msg, this.id));
         }, this.options.maxInstallTime);
 
         let chunks = [];
@@ -256,9 +265,16 @@ export class Agent extends EventEmitter {
             resolve();
           }
           else {
+            let msg = `A install time error occured. Install step for agent ${this.id} exited with code: ${code}; Installing ${path.join(this.cwd, 'install.sh')}; Install Output:\n${chunks.join('')}`;
+            if (code === 137) {
+              msg += `\nAgent likely ran out of memory, exceeded ${engineOptions.memory.limit / 1000000} MB`; 
+            }
+            if (this.errorLogWriteStream) {
+              this.errorLogWriteStream.write(msg + "\n");
+            }
             reject(
               new AgentInstallError(
-                `A install time error occured. Install step for agent ${this.id} exited with code: ${code}; Installing ${path.join(this.cwd, 'install.sh')}; Install Output:\n${chunks.join('')}`, this.id
+                msg, this.id
               )
             )
           }
@@ -335,13 +351,17 @@ export class Agent extends EventEmitter {
    * Compile whatever is needed and validate files. Called by {@link MatchEngine} and has a timer set by the 
    * maxCompileTime option in {@link Agent.Options}
    */
-  async _compile(stderrWritestream?: Writable, stdoutWritestream?: Writable): Promise<void> {
+  async _compile(stderrWritestream: Writable, stdoutWritestream: Writable, engineOptions: MatchEngine.EngineOptions): Promise<void> {
     return new Promise( async (resolve, reject) => {
       let p: ChildProcess | Agent.ContainerExecData;
       let stdout: Readable;
       let stderr: Readable;
       let compileTimer = setTimeout(() => {
-        reject(new AgentCompileTimeoutError('Agent went over compile time during the compile stage', this.id));
+        let msg = 'Agent went over compile time during the compile stage\n';
+        if (this.errorLogWriteStream) {
+          this.errorLogWriteStream.write(msg);
+        }
+        reject(new AgentCompileTimeoutError(msg, this.id));
       }, this.options.maxCompileTime);
       if (this.options.compileCommands[this.ext]) {
         let cmd1 = this.options.compileCommands[this.ext][0];
@@ -389,6 +409,12 @@ export class Agent extends EventEmitter {
         }
         else {
           let msg = `A compile time error occured. Compile step for agent ${this.id} exited with code: ${code}; Compiling ${this.file}; Compile Output:\n${chunks.join('')}`;
+          if (code === 137) {
+            msg += `\nAgent likely ran out of memory, exceeded ${engineOptions.memory.limit / 1000000} MB`; 
+          }
+          if (this.errorLogWriteStream) {
+            this.errorLogWriteStream.write(msg + "\n");
+          }
           reject(new AgentCompileError(msg, this.id));
         }
       }
@@ -571,6 +597,9 @@ export class Agent extends EventEmitter {
    * timeout the agent
    */
   timeout() {
+    if (this.errorLogWriteStream) {
+      this.errorLogWriteStream.write("Agent timed out");
+    }
     this.emit(Agent.AGENT_EVENTS.TIMEOUT);
   }
 
@@ -578,6 +607,9 @@ export class Agent extends EventEmitter {
    * call out agent for exceeding memory limit
    */
   overMemory() {
+    if (this.errorLogWriteStream) {
+      this.errorLogWriteStream.write("Agent exceeded memory limit");
+    }
     this.emit(Agent.AGENT_EVENTS.EXCEED_MEMORY_LIMIT);
   }
 
@@ -631,6 +663,8 @@ export class Agent extends EventEmitter {
         if (this.container) {
           try {
             const ins = await this.container.inspect();
+            this._clearTimer();
+            clearInterval(this.memoryWatchInterval);
             if (ins.State.Running) {
               await this.container.kill();
               await this.container.remove();
@@ -750,16 +784,6 @@ export class Agent extends EventEmitter {
     }
     checkAgentMemoryUsage();
     this.memoryWatchInterval = setInterval(checkAgentMemoryUsage, engineOptions.memory.checkRate);
-  }
-
-  async _setupMemoryWatcherOnContainer(engineOptions: MatchEngine.EngineOptions) {
-    let statsStream: unknown = await this.container.stats();
-      (<IncomingMessage>statsStream).on('data', (event) => {
-        const statsEvent: Dockerode.ContainerStats = JSON.parse(event);
-        if (statsEvent.memory_stats.usage > engineOptions.memory.limit) {
-          this.emit(Agent.AGENT_EVENTS.EXCEED_MEMORY_LIMIT);
-        }
-      });
   }
 
   /**

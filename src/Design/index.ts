@@ -210,7 +210,7 @@ export const DefaultDesignOptions: DesignOptions = {
       max: 1000,
       active: true,
       timeoutCallback: (agent: Agent, match: Match, engineOptions: EngineOptions) => {
-        match.kill(agent.id);
+        match.kill(agent.id, "timed out");
         match.log.error(`agent ${agent.id} - '${agent.name}' timed out after ${engineOptions.timeout.max} ms`);
       }
       /**
@@ -224,7 +224,7 @@ export const DefaultDesignOptions: DesignOptions = {
       active: true,
       usePs: true,
       memoryCallback: (agent: Agent, match: Match, engineOptions: EngineOptions) => {
-        match.kill(agent.id);
+        match.kill(agent.id, "exceed memory limit");
         match.log.error(
           `agent ${agent.id} - '${agent.name}' reached the memory limit of ${engineOptions.memory.limit / 1000000} MB`
         );
