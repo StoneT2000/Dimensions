@@ -56,7 +56,7 @@ docker.createContainer({Image: 'alpine', name: 'agent_i',
     if(err) console.error(err);
     console.log(`${data}`);
     container.exec({
-      Cmd: ['/bin/bash', '-c', 'mkdir temp && cd temp && echo 3'],
+      Cmd: ['/bin/sh', '-c', 'mkdir temp && cd temp && echo 3'],
       AttachStdin: true,
       AttachStdout: true,
       AttachStderr: true,
