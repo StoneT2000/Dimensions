@@ -1,6 +1,5 @@
 import os from 'os';
 import { spawn, ChildProcess, exec } from 'child_process';
-import pidusage from 'pidusage';
 import fs, { WriteStream } from 'fs';
 import path from 'path';
 
@@ -15,7 +14,9 @@ import { Design } from '../Design';
 import { Logger } from '../Logger';
 import { Agent } from '../Agent';
 import { Match } from '../Match';
-import { processIsRunning, removeDirectory } from '../utils/System';
+import Dockerode from 'dockerode';
+import { isChildProcess } from '../utils/TypeGuards';
+import { match } from 'sinon';
 
 /** @ignore */
 type EngineOptions = MatchEngine.EngineOptions;
@@ -51,6 +52,13 @@ export class MatchEngine {
   /** approx extra buffer time given to agents due to engine processing for timeout mechanism */
   static timeoutBuffer: number = 25; 
   
+  private docker: Dockerode;
+
+  /**
+   * Single memory watch interval so that all memory checks are made together
+   */
+  private memoryWatchInterval = null;
+
   /**
    * Match engine constructor
    * @param design - the design to use
@@ -62,6 +70,7 @@ export class MatchEngine {
     this.overrideOptions = deepCopy(this.design.getDesignOptions().override);
     this.log.identifier = `Engine`;
     this.setLogLevel(loggingLevel);
+    this.docker = new Dockerode({socketPath: '/var/run/docker.sock'});
   }
 
   /** Set log level */
@@ -94,6 +103,7 @@ export class MatchEngine {
     }, this);
 
     await Promise.all(agentSetupPromises);
+
     this.log.system('FINISHED INITIALIZATION OF PROCESSES\n');
     return;
   }
@@ -106,36 +116,80 @@ export class MatchEngine {
   private async initializeAgent(agent: Agent, match: Match): Promise<void> {
     this.log.system("Setting up and spawning " + agent.name + ` | Command: ${agent.cmd} ${agent.src}`);
 
+    // create container in secureMode
+    if (match.configs.secureMode) {
+      let name = `${match.id}_agent_${agent.id}`;
+      await agent.setupContainer(name, this.docker, this.engineOptions);
+    }
+
+    if (this.engineOptions.memory.active) {
+      if (agent.options.secureMode) {
+        // await agent._setupMemoryWatcherOnContainer(this.engineOptions);
+      }
+    }
+    // note to self, do a Promise.all for each stage before going to the next, split initializeAgent into
+    // initializeAgentCompile, initializeAgentInstall, initializeAgentSpawn....
+
     let errorLogFilepath = path.join(match.getMatchErrorLogDirectory(), agent.getAgentErrorLogFilename());
     let errorLogWriteStream: WriteStream = null;
 
     if (match.configs.storeErrorLogs) {
       errorLogWriteStream = fs.createWriteStream(errorLogFilepath);
+      agent.errorLogWriteStream = errorLogWriteStream;
       errorLogWriteStream.write('=== Agent Install Log ===\n')
     }
     
     // wait for install step
-    await agent._install(errorLogWriteStream, errorLogWriteStream);
+    await agent._install(errorLogWriteStream, errorLogWriteStream, this.engineOptions);
     this.log.system('Succesfully ran install step for agent ' + agent.id);
     
     if (match.configs.storeErrorLogs) {
       errorLogWriteStream.write('=== Agent Compile Log ===\n');
     }
     // wait for compilation step
-    await agent._compile(errorLogWriteStream, errorLogWriteStream);
+    await agent._compile(errorLogWriteStream, errorLogWriteStream, this.engineOptions);
     this.log.system('Succesfully ran compile step for agent ' + agent.id);
     
-    // spawn the agent process
-    let p: ChildProcess = await agent._spawn();
+    
+    
+    let p: ChildProcess | Agent.ContainerExecData = null;
+
+    
+    p = await agent._spawn();
     this.log.system('Spawned agent ' + agent.id);
+    if (isChildProcess(p)) {
+      
+      // store process and streams
+      agent._storeProcess(p);
+      agent.streams.in = p.stdin;
+      agent.streams.out = p.stdout;
+      agent.streams.err = p.stderr;
+
+      p.on('close', (code) => {
+        agent.emit(Agent.AGENT_EVENTS.CLOSE, code);
+      });
+    }
+    else {
+      // store streams
+      agent.streams.in = p.in;
+      agent.streams.out = p.out;
+      agent.streams.err = p.err;
+
+      let containerExec = p.exec;
+
+      p.stream.on('end', async () => {
+        let endRes = await containerExec.inspect();
+        agent.emit(Agent.AGENT_EVENTS.CLOSE, endRes.ExitCode);
+      });
+    }
 
     // add listener for memory limit exceeded
-    p.on(MatchEngine.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, (stat) => {
+    agent.on(Agent.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, () => {
       this.engineOptions.memory.memoryCallback(agent, match, this.engineOptions);
     });
 
     // add listener for timeouts
-    p.on(MatchEngine.AGENT_EVENTS.TIMEOUT, () => {
+    agent.on(Agent.AGENT_EVENTS.TIMEOUT, () => {
       this.engineOptions.timeout.timeoutCallback(agent, match, this.engineOptions);
     })
 
@@ -145,10 +199,10 @@ export class MatchEngine {
     agent.status = Agent.Status.RUNNING;
 
     // handler for stdout of Agent processes. Stores their output commands and resolves move promises
-    p.stdout.on('readable', () => {
+    agent.streams.out.on('readable', () => {
 
       let data: Array<string>;
-      while (data = p.stdout.read()) {
+      while (data = agent.streams.out.read()) {
         // split chunks into line by line and handle each line of commands
         let strs = `${data}`.split('\n');
 
@@ -185,7 +239,7 @@ export class MatchEngine {
 
     // log stderr from agents to this stderr if option active
     if (!this.engineOptions.noStdErr) {
-      p.stderr.on('data', (data) => {
+      agent.streams.err.on('data', (data) => {
         this.log.error(`${agent.id}: ${data.slice(0, data.length - 1)}`);
       });
     }
@@ -193,44 +247,38 @@ export class MatchEngine {
     // pipe stderr of agent process to error log file if enabled
     if (match.configs.storeErrorLogs) {
       errorLogWriteStream.write('=== Agent Error Log ===\n');
-      p.stderr.pipe(errorLogWriteStream);
+      agent.streams.err.pipe(errorLogWriteStream);
     }
 
     // when process closes, print message
-    p.on('close', (code) => {
-      // terminate agent with API if it hasn't been marked as terminated yet, indicating process likely exited
+    agent.on(Agent.AGENT_EVENTS.CLOSE, (code) => {
+      // terminate agent with engine kill if it hasn't been marked as terminated yet, indicating process likely exited
       // prematurely
       if (!agent.isTerminated()) {
-        this.kill(agent);
+        
+        // if secureMode, agent wasn't terminated yet, and container exited prematurely with 137, it likely had an OOM error
+        if (agent.options.secureMode && code === 137) {
+          this.kill(agent, "agent closed but agent not terminated yet, likely exceeded memory");
+          this.engineOptions.memory.memoryCallback(agent, match, this.engineOptions);
+        }
+        else {
+          this.kill(agent, "agent closed but agent not terminated yet");
+        }
       }
       this.log.system(`${agent.name} | id: ${agent.id} - exited with code ${code}`);      
     });
 
-    // store process
-    agent.process = p;
-
     if (this.engineOptions.memory.active) {
-      const checkAgentMemoryUsage = () => {
-        // setting { maxage: 0 } because otherwise pidusage leaves interval "memory leaks" and process doesn't exit fast
-        if (processIsRunning(agent.process.pid)) {
-          pidusage(agent.process.pid, { maxage: 0, usePs: this.engineOptions.memory.usePs }).then((stat) => {
-            if (stat.memory > this.engineOptions.memory.limit) {
-              agent.process.emit(MatchEngine.AGENT_EVENTS.EXCEED_MEMORY_LIMIT, stat);
-            }
-          }).catch((err) => {
-            this.log.warn(err);
-          });
-        }
+      if (!agent.options.secureMode) {
+        agent._setupMemoryWatcher(this.engineOptions);
       }
-      checkAgentMemoryUsage();
-      agent.memoryWatchInterval = setInterval(checkAgentMemoryUsage, this.engineOptions.memory.checkRate);
     }
 
 
     // this is for handling a race condition explained in the comments of this.killOffSignal
     // Briefly, sometimes agent process isn't stored yet during initialization and doesn't get killed as a result
     if (this.killOffSignal) {
-      this.kill(agent);
+      this.kill(agent, "engine has killOffSignal on, killing agent during initialization");
     }
   }
 
@@ -250,7 +298,7 @@ export class MatchEngine {
         case MatchEngine.COMMAND_FINISH_POLICIES.FINISH_SYMBOL:
           // if we receive the symbol representing that the agent is done with output and now awaits for updates
           if (`${str}` === this.engineOptions.commandFinishSymbol) { 
-            agent._finishMove();
+            await agent._finishMove();
           }
           else {
             agent.currentMoveCommands.push(str);
@@ -260,7 +308,7 @@ export class MatchEngine {
           
           // if we receive the finish symbol, we mark agent as done with output (finishes their move prematurely)
           if (`${str}` === this.engineOptions.commandFinishSymbol) { 
-            agent._finishMove();
+            await agent._finishMove();
           }
           // only log command if max isnt reached
           else if (agent.currentMoveCommands.length < this.engineOptions.commandLines.max - 1) {
@@ -268,7 +316,7 @@ export class MatchEngine {
           }
           // else if on final command before reaching max, push final command and resolve
           else if (agent.currentMoveCommands.length == this.engineOptions.commandLines.max - 1) {
-            agent._finishMove();
+            await agent._finishMove();
             agent.currentMoveCommands.push(str);
           }
           break;
@@ -291,10 +339,11 @@ export class MatchEngine {
    * @param match - the match to stop
    */
   public async stop(match: Match) {
+    let stopPromises: Array<Promise<void>> = [];
     match.agents.forEach((agent) => {
-      agent.process.kill('SIGSTOP')
-      agent.status = Agent.Status.STOPPED;
+      stopPromises.push(agent.stop());
     });
+    await Promise.all(stopPromises);
     this.log.system('Stopped all agents');
   }
 
@@ -303,41 +352,28 @@ export class MatchEngine {
    * @param match - the match to resume
    */
   public async resume(match: Match) {
+    let resumePromises: Array<Promise<void>> = [];
     match.agents.forEach((agent) => {
-      agent._allowCommands();
-      agent.process.kill('SIGCONT')
-      agent.status = Agent.Status.RUNNING;
+      resumePromises.push(agent.resume());
     });
+    await Promise.all(resumePromises);
     this.log.system('Resumed all agents');
   }
 
   /**
-   * Kills all agents and processes from a match and cleans up. Kills any game processes as well. Shouldn't be used
+   * Kills all intervals and agents and processes from a match and cleans up. Kills any game processes as well. Shouldn't be used
    * for custom design based matches. Called by {@link Match}
    * 
    * @param match - the match to kill all agents in and clean up
    */
   public async killAndClean(match: Match) {
     // set to true to ensure no more processes are being spawned.
-    this.killOffSignal = true; 
+    this.killOffSignal = true;
+    clearInterval(this.memoryWatchInterval);
     let cleanUpPromises: Array<Promise<any>> = [];
     if (match.agents) { 
       match.agents.forEach((agent) => {
-        // kill the process if it is not null
-        if (agent.process) {
-          cleanUpPromises.push(this.kill(agent));
-        }
-        // remove the agent files if on secureMode and double check it is the temporary directory
-        if (agent.options.secureMode) {
-          let tmpdir = os.tmpdir();
-          if (agent.cwd.slice(0, tmpdir.length) === tmpdir) {
-            // ignore error if directory doesn't exist
-            cleanUpPromises.push(removeDirectory(agent.cwd).catch(() => {}));
-          }
-          else {
-            this.log.error('couldn\'t remove agent files while in secure mode as it was not in the temporary directory');
-          }
-        }
+        cleanUpPromises.push(this.kill(agent, "cleanup"));
       });
     }
     await Promise.all(cleanUpPromises);
@@ -347,10 +383,14 @@ export class MatchEngine {
    * Kills an agent and closes the process, and no longer attempts to receive coommands from it anymore
    * @param agent - the agent to kill off
    */
-  public async kill(agent: Agent) {
-    await agent._terminate();
+  public async kill(agent: Agent, reason: string = "unspecified") {
+    try {
+      await agent._terminate();
+      this.log.system(`Killed off agent ${agent.id} - ${agent.name}`, `Reason: ${reason}`);
+    } catch(err) {
+      this.log.error("This should not happen when terminating agents.", err);
+    }
     agent._currentMoveResolve();
-    this.log.system(`Killed off agent ${agent.id} - ${agent.name}`);
   }
   
   /**
@@ -404,8 +444,8 @@ export class MatchEngine {
   public send(match: Match, message: string, agentID: Agent.ID): Promise<boolean> {
     return new Promise((resolve, reject) => {
       let agent = match.idToAgentsMap.get(agentID);
-      if (!agent.process.stdin.destroyed && !agent.isTerminated()) {
-        agent.process.stdin.write(`${message}\n`, (error: Error) => {
+      if (!agent.inputDestroyed() && !agent.isTerminated()) {
+        agent.write(`${message}\n`, (error: Error) => {
           if (error) reject(error);
           resolve(true);
         });
@@ -418,10 +458,10 @@ export class MatchEngine {
   }
 
   /**
-   * TODO: Initialize a custom design based match and run through some basic security measures
    * @param match - The match to initialize with a custom design
    */
   async initializeCustom(match: Match): Promise<boolean> {
+    // TODO: Initialize a custom design based match and run through some basic security measures
     return true;
   }
 
@@ -445,24 +485,14 @@ export class MatchEngine {
       // spawn the match process with the parsed arguments
       let matchProcessTimer: any;
 
-      // in secure mode, spawn given script as root user. User is required to spawn their match with 
-      // sudo -H -u dimensions_bot to ensure security
-      if (match.configs.secureMode) {
-        match.matchProcess = spawn('sudo', ['-H', '-u', ROOT_USER, cmd, ...parsed]).on('error', (err) => {
-          if (err) throw err;
-        });
-        this.log.system(
-          `${match.name} | id: ${match.id} - spawned: sudo -H -u ${ROOT_USER} ${cmd} ${parsed.join(' ')}`
-        );
-      }
-      else {
-        match.matchProcess = spawn(cmd, parsed).on('error', (err) => {
-          if (err) throw err;
-        });
-        this.log.system(
-          `${match.name} | id: ${match.id} - spawned: ${cmd} ${parsed.join(' ')}`
-        );
-      }
+      // TODO: configure some kind of secureMode for custom matches
+      
+      match.matchProcess = spawn(cmd, parsed).on('error', (err) => {
+        if (err) throw err;
+      });
+      this.log.system(
+        `${match.name} | id: ${match.id} - spawned: ${cmd} ${parsed.join(' ')}`
+      );
 
       let errorLogFilepath = path.join(match.getMatchErrorLogDirectory(),`match_error.log`);
       let errorLogWriteStream: WriteStream = null;
@@ -800,17 +830,6 @@ export module MatchEngine {
     agentID: Agent.ID
   }
 
-  export enum AGENT_EVENTS {
-    /**
-     * Event emitted by process of {@link Agent} when memory limit is exceeded
-     */
-    EXCEED_MEMORY_LIMIT = 'exceedMemoryLimit',
-    /**
-     * Event emitted by process of {@link Agent} when it times out.
-     */
-    TIMEOUT = 'timeout'
-  }
-
   /**
    * Dynammic Data strings are strings in the {@link OverrideOptions} arguments array that are automatically replaced
    * with dynamic data as defined in the documentation of these enums
@@ -865,14 +884,9 @@ export module MatchEngine {
     /**
      * D_NAMES is automatically replaced with the names of the agents
      * 
-     * @example Suppose the agents 0 and 1 had names `bob, richard`. Then `D_NAMES` is passed into your commnad as 
+     * @example Suppose the agents 0 and 1 had names `bob, richard`. Then `D_NAMES` is passed into your command as 
      * `bob richard`
      */
     D_NAMES = 'D_NAMES'
   }
 }
-
-/** name of the bot user that owns the agent's process */
-export const BOT_USER = 'dimensions_bot';
-/** @ignore */
-export const ROOT_USER = 'root';

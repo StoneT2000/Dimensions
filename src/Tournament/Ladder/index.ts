@@ -138,7 +138,7 @@ export class Ladder extends Tournament {
           if (!data) {
             this.configLastModificationDate = new Date();
             this.dimension.databasePlugin.storeTournamentConfigs(this.id, this.getConfigsStrippedOfFunctionFields(this.configs), this.status).then(() => {
-              this.log.error('Storing initial tournament configuration data');
+              this.log.info('Storing initial tournament configuration data');
             })
           }
         });

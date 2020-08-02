@@ -18,9 +18,15 @@ jobs:
       name: language-build
     steps:
       - checkout
+      - setup_remote_docker:
+          version: 19.03.8
+      - run: apk add docker-cli
+      - run: 
+          name: Pull standard images for Dimensions
+          command: docker pull docker.io/stonezt2000/dimensions_langs
       - run:
           name: install dockerize
-          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && sudo tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
           environment:
             DOCKERIZE_VERSION: v0.3.0
       - run:
@@ -31,7 +37,7 @@ jobs:
       - node/with-cache:
           steps:
             - run: npm install
-            - run: sudo npm run test
+            - run: npm run test
       - run: npm run codecov
       - store_artifacts:
           path: coverage.lcov

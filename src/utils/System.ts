@@ -72,3 +72,26 @@ export const removeDirectory = (dir: string) => {
     })
   })
 }
+
+/**
+ * Effectively runs the `docker cp` command
+ * @param fileOrDirectoryPath 
+ * @param container 
+ * @param targetPath 
+ */
+export const dockerCopy = (fileOrDirectoryPath: string, containerID: string, targetPath: string) => {
+  return new Promise((resolve, reject) => {
+    let p = spawn('docker', ['cp', fileOrDirectoryPath, `${containerID}:${targetPath}`]);
+    p.on('error', (err) => {
+      reject(err);
+    })
+    p.on('close', (code) => {
+      if (code === 0) {
+        resolve();
+      }
+      else {
+        reject(`dockerCopy from ${fileOrDirectoryPath} to ${containerID}:${targetPath} exited with code ${code}`);
+      }
+    })
+  })
+}

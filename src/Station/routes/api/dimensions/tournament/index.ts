@@ -232,7 +232,6 @@ router.get('/:tournamentID/player/:playerID/match', async (req, res, next) => {
     }
   }
   else {
-    // TODO: configure tournament.state.results to store more match meta data
     return next(new error.NotImplemented('Requires a database plugin in order to retrieve past matches'));
   }
 });

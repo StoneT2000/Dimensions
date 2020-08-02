@@ -42,11 +42,11 @@ Also checkout the blog post introducing the motivation for Dimensions and though
 
 - Easy to build an AI competition that is language agnostic, allowing any kind of bot in any language to compete in your competition
 - Run many kinds of AI competitions and run different kinds of formats like round robin or using Trueskill in a ladder tournament (like a leaderboard).
-- Wrap your own AI competition built without the dimensions framework to make use of its competition running features such as Trueskill leaderboards like the [Halite 4 wrapper](https://github.com/StoneT2000/Halite-4-Tournament-Runner).
+- Wrap your own AI competition built without the dimensions framework to make use of its competition running features such as Trueskill ranking like the [Halite 4 wrapper](https://github.com/StoneT2000/Halite-4-Tournament-Runner).
 - Comes with an API served locally that gives access to data on ongoing matches and tournaments and allows for direct control of matches and tournaments through the API. See this page for details on this API: https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API
   - Check out https://github.com/StoneT2000/Dimensions-web if you want a website and UI to use the API data from.
 - Supports plugins like the [MongoDB](https://github.com/StoneT2000/Dimensions/wiki/Plugin#supported-plugins) plugin that takes three lines of code to automatically integrate and scale up your tournament and integrate an automatic user authentication and login system. See [this](https://github.com/StoneT2000/Dimensions/wiki/Scaling) for complete info on how to scale up.
-- Ensures malicious bots cannot cause harm to your servers through `secureMode`. See [this wiki page](https://github.com/StoneT2000/Dimensions/wiki/Security) for details and best practices
+- Ensures malicious bots cannot cause harm to your servers through `secureMode`. See [this wiki page](https://github.com/StoneT2000/Dimensions/wiki/Security) for details.
 
 ## Requirements
 
@@ -176,9 +176,7 @@ The [wiki](https://github.com/StoneT2000/Dimensions/wiki) is populated with more
 
 ### Strong Recommendations
 
-In a production setting, it is strongly recommended to create a Dimension in `secureMode` to decrease the likelihood of user uploaded bot code of causing any significant harm to a server. By default, `secureMode` is set to false, but you will always get a warning about it. Setting it to true also requires you to run the code as root user. Note that running in secureMode requires you to be as root user, so you must run with `sudo`. More details on that [here](https://github.com/StoneT2000/Dimensions/wiki/Security)
-
-Agents for each match are spawned in a new child process of the main node process running the match or tournament. To help make it more fair, it is recommended not to simultaneously spawn more agents than the number the number of cores your computer has. Namely, if your matches each allow for 4 agents and your device has 16 cores, then it is recommended to run no more than 4 matches at a time.
+In a production setting, it is strongly recommended to create a Dimension in `secureMode` to decrease the likelihood of user uploaded bot code of causing any significant harm to a server. By default, `secureMode` is set to false, but you will always get a warning about it. Setting it to true only requires you to install [Docker](https://www.docker.com/get-started).
 
 ## Plugins
 

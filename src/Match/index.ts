@@ -112,7 +112,7 @@ export class Match {
     loggingLevel: Logger.LEVEL.INFO,
     engineOptions: {},
     secureMode: false,
-    agentOptions: Agent.OptionDefaults,
+    agentOptions: deepCopy(Agent.OptionDefaults),
     storeReplay: true,
     storeReplayDirectory: 'replays',
     storeErrorLogs: true,
@@ -287,6 +287,8 @@ export class Match {
       return true;
     }
     catch(err) {
+      // first handle log files in case they might hold relevant install / compile time logs
+      this.handleLogFiles();
       // kill processes and clean up and then throw the error
       await this.killAndCleanUp();
       throw err;
@@ -386,42 +388,7 @@ export class Match {
             reject(new MatchReplayFileError(`Replay file provided ${this.results.replayFile} does not exist`));
           }
         }
-
-        let uploadLogPromises: Array<Promise<{key: string, agentID: number}>> = [];
-        let fileLogsToRemove: Array<string> = [];
-
-        // upload error logs if stored
-        if (this.configs.storeErrorLogs) {
-          // upload each agent error log
-          for (let agent of this.agents) {
-            let filepath = path.join(this.getMatchErrorLogDirectory(), agent.getAgentErrorLogFilename());
-            if (existsSync(filepath)) {
-              if (this.dimension.hasStorage()) {
-                let uploadKeyPromise = 
-                  this.dimension.storagePlugin
-                    .upload(filepath, filepath)
-                    .then((key) => {
-                      return { key: key, agentID: agent.id }
-                    });
-                uploadLogPromises.push(uploadKeyPromise);
-                fileLogsToRemove.push(filepath);
-              }
-            }
-            else {
-              // this shouldn't happen
-              this.log.error(`Agent ${this.id} log file at ${filepath} does not exist`);
-            }
-          }
-        }
-        let logkeys = await Promise.all(uploadLogPromises);
-        logkeys.forEach((val) => {
-          this.idToAgentsMap.get(val.agentID).logkey = val.key;
-        });
-
-        if (fileLogsToRemove.length > 0) {
-          removeDirectory(this.getMatchErrorLogDirectory());
-        }
-
+        this.handleLogFiles();
         this.finishDate = new Date();
         resolve(this.results);
       }
@@ -429,6 +396,46 @@ export class Match {
         reject(error);
       }
     });
+  }
+
+  /**
+   * Handles log files and stores / uploads / deletes them as necessary
+   */
+  private async handleLogFiles() {
+    let uploadLogPromises: Array<Promise<{key: string, agentID: number}>> = [];
+    let fileLogsToRemove: Array<string> = [];
+
+    // upload error logs if stored
+    if (this.configs.storeErrorLogs) {
+      // upload each agent error log
+      for (let agent of this.agents) {
+        let filepath = path.join(this.getMatchErrorLogDirectory(), agent.getAgentErrorLogFilename());
+        if (existsSync(filepath)) {
+          if (this.dimension.hasStorage()) {
+            let uploadKeyPromise = 
+              this.dimension.storagePlugin
+                .upload(filepath, filepath)
+                .then((key) => {
+                  return { key: key, agentID: agent.id }
+                });
+            uploadLogPromises.push(uploadKeyPromise);
+            fileLogsToRemove.push(filepath);
+          }
+        }
+        else {
+          // this shouldn't happen
+          this.log.error(`Agent ${this.id} log file at ${filepath} does not exist`);
+        }
+      }
+    }
+    let logkeys = await Promise.all(uploadLogPromises);
+    logkeys.forEach((val) => {
+      this.idToAgentsMap.get(val.agentID).logkey = val.key;
+    });
+
+    if (fileLogsToRemove.length > 0) {
+      removeDirectory(this.getMatchErrorLogDirectory());
+    }
   }
 
   /**
@@ -473,7 +480,7 @@ export class Match {
       // we now reset each Agent for the next move
       this.agents.forEach((agent: Agent) => {
         // continue agents again
-        agent.process.kill('SIGCONT');
+        agent.resume();
         // setup the agent and its promises and get it ready for the next move
         agent._setupMove();
 
@@ -481,7 +488,7 @@ export class Match {
         if (engineOptions.timeout.active) {
           agent._setTimeout(() => {
             // if agent times out, emit the timeout event
-            agent.process.emit(MatchEngine.AGENT_EVENTS.TIMEOUT);
+            agent.timeout();
           }, engineOptions.timeout.max + MatchEngine.timeoutBuffer);
         }
         // each of these steps can take ~2 ms
@@ -585,14 +592,17 @@ export class Match {
   /**
    * Terminate an {@link Agent}, kill the process. Note, the agent is still stored in the Match, but you can't send or 
    * receive messages from it anymore
+   * 
+   * @param agent - id of agent or the Agent object to kill
+   * @param reason - an optional reason string to provide for logging purposes
    */
-  public async kill(agent: Agent.ID | Agent) {
+  public async kill(agent: Agent.ID | Agent, reason?: string) {
     
     if (agent instanceof Agent) {
-      this.matchEngine.kill(agent);
+      this.matchEngine.kill(agent, reason);
     }
     else {
-      this.matchEngine.kill(this.idToAgentsMap.get(agent));
+      this.matchEngine.kill(this.idToAgentsMap.get(agent), reason);
     }
   }
 
@@ -639,7 +649,7 @@ export class Match {
       }
       catch (err) {
         this.log.error(err);
-        this.kill(receiver);
+        this.kill(receiver, "could not send message anymore");
       }
     }
     else {
@@ -648,7 +658,7 @@ export class Match {
       }
       catch (err) {
         this.log.error(err);
-        this.kill(receiver);
+        this.kill(receiver, "could not send message anymore");
       }
     }
   }

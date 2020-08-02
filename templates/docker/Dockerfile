@@ -1,26 +1,26 @@
-FROM node:12.16.3
+FROM alpine:3.11
 
-RUN mkdir ./scripts
-COPY ./scripts ./scripts
+RUN apk update
+
+RUN apk add --no-cache curl
+RUN apk add --no-cache build-base
 
 # install tooling and langs
-RUN apt-get update
-RUN apt-get install -y sudo
-RUN apt-get install -y g++ default-jdk python3-pip
 
+RUN apk add --no-cache nodejs nodejs-npm
 
-RUN bash ./scripts/php.sh
+RUN apk add --no-cache go
 
-RUN bash ./scripts/go.sh
+RUN apk add --no-cache php7
+
+RUN apk add --no-cache python3
 
 RUN npm install -g typescript
 
+RUN apk add --no-cache bash
 
-RUN apt-get clean
+RUN apk add --no-cache openjdk8
+ENV JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk
+ENV PATH="$JAVA_HOME/bin:${PATH}"
 
-# other security related setup
-
-RUN  useradd dimensions_bot && \
-chsh dimensions_bot -s /bin/rbash && \
-mkdir /home/dimensions_bot && \
-chown -R dimensions_bot /home/dimensions_bot
+RUN adduser -D dimensions_bot

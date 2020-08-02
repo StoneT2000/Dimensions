@@ -77,7 +77,7 @@ export class RoundRobin extends Tournament {
 
     // add all players
     files.forEach((file) => {
-      this.addplayer(file);
+      this.initialAddPlayerPromises.push(this.addplayer(file));
     });
 
     this.status = Tournament.Status.INITIALIZED;
@@ -94,7 +94,6 @@ export class RoundRobin extends Tournament {
     this.configs = deepMerge(this.configs, configs, true);
     this.initialize();
     this.schedule();
-    
     // running one at a time
     while (this.matchQueue.length) {
       // stop logic
@@ -272,7 +271,8 @@ export class RoundRobin extends Tournament {
   }
 
 
-  private initialize() {
+  private async initialize() {
+    await Promise.all(this.initialAddPlayerPromises);
     this.state.playerStats = new Map();
     this.state.results = [];
     this.competitors.forEach((player) => {
