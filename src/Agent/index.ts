@@ -377,9 +377,6 @@ export class Agent extends EventEmitter {
             clearTimeout(compileTimer);
             resolve();
             return;
-          case '.js':
-            p = await this._spawnCompileProcess('node', ['--check', this.src])
-            break;
           case '.ts':
             // expect user to provide a tsconfig.json
             p = await this._spawnCompileProcess('tsc', [])

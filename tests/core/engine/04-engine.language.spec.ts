@@ -5,6 +5,7 @@ import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
 import 'mocha';
 import { Logger } from '../../../src';
+import { bold } from 'colors';
 const expect = chai.expect;
 chai.should()
 chai.use(chaiAsPromised);
@@ -25,7 +26,7 @@ describe('Testing MatchEngine Multi Language Support', () => {
     go: './tests/kits/go/bot.go',
     php: './tests/kits/php/bot.php',
   };
-
+  const tf = [true, false];
   before( async () => {
     d = Dimension.create(rpsDesign, {
       activateStation: false,
@@ -37,73 +38,84 @@ describe('Testing MatchEngine Multi Language Support', () => {
     });
   });
   
-  describe("Test python", () => {
-    it("should run", async () => {
-      let results = await d.runMatch([bots.python, bots.js], {
-        bestOf: 9,
-        agentOptions: {
-          runCommands: {
-            '.py': ['python3']
-          }
-        }
+  for (const bool of tf) {
+    describe(`Testing langs with secureMode: ${bool}`, () => {
+      describe("Test python", () => {
+        it("should run", async () => {
+          let results = await d.runMatch([bots.python, bots.js], {
+            bestOf: 9,
+            secureMode: bool,
+            agentOptions: {
+              runCommands: {
+                '.py': ['python3']
+              }
+            }
+          });
+          expect(results.scores).to.eql({'0': 0, '1': 9});
+        });
       });
-      expect(results.scores).to.eql({'0': 0, '1': 9});
-    });
-  });
-
-  describe("Test typescript", () => {
-    it("should run", async () => {
-      let results = await d.runMatch([bots.ts, bots.js], {
-        bestOf: 9
+  
+      describe("Test typescript", () => {
+        it("should run", async () => {
+          let results = await d.runMatch([bots.ts, bots.js], {
+            secureMode: bool,
+            bestOf: 9
+          });
+          expect(results.scores).to.eql({'0': 0, '1': 9});
+        });
       });
-      expect(results.scores).to.eql({'0': 0, '1': 9});
-    });
-  });
-
-  describe("Test java", () => {
-    it("should run", async () => {
-      let results = await d.runMatch([bots.java, bots.js], {
-        bestOf: 9
+  
+      describe("Test java", () => {
+        it("should run", async () => {
+          let results = await d.runMatch([bots.java, bots.js], {
+            bestOf: 9,
+            secureMode: bool
+          });
+          expect(results.scores).to.eql({'0': 0, '1': 9});
+        });
       });
-      expect(results.scores).to.eql({'0': 0, '1': 9});
-    });
-  });
-
-  describe("Test c++", () => {
-    it("should run", async () => {
-      let results = await d.runMatch([bots.cpp, bots.js], {
-        bestOf: 9
+  
+      describe("Test c++", () => {
+        it("should run", async () => {
+          let results = await d.runMatch([bots.cpp, bots.js], {
+            bestOf: 9,
+            secureMode: bool
+          });
+          expect(results.scores).to.eql({'0': 0, '1': 9});
+        });
       });
-      expect(results.scores).to.eql({'0': 0, '1': 9});
-    });
-  });
-
-  describe("Test c", () => {
-    it("should run", async () => {
-      let results = await d.runMatch([bots.c, bots.js], {
-        bestOf: 9
+  
+      describe("Test c", () => {
+        it("should run", async () => {
+          let results = await d.runMatch([bots.c, bots.js], {
+            bestOf: 9,
+            secureMode: bool
+          });
+          expect(results.scores).to.eql({'0': 0, '1': 9});
+        });
       });
-      expect(results.scores).to.eql({'0': 0, '1': 9});
-    });
-  });
-
-  describe("Test go", () => {
-    it("should run", async () => {
-      let results = await d.runMatch([bots.go, bots.js], {
-        bestOf: 9
+  
+      describe("Test go", () => {
+        it("should run", async () => {
+          let results = await d.runMatch([bots.go, bots.js], {
+            bestOf: 9,
+            secureMode: bool
+          });
+          expect(results.scores).to.eql({'0': 0, '1': 9});
+        });
       });
-      expect(results.scores).to.eql({'0': 0, '1': 9});
-    });
-  });
-
-  describe("Test php", () => {
-    it("should run", async () => {
-      let results = await d.runMatch([bots.php, bots.js], {
-        bestOf: 9
+  
+      describe("Test php", () => {
+        it("should run", async () => {
+          let results = await d.runMatch([bots.php, bots.js], {
+            bestOf: 9,
+            secureMode: bool
+          });
+          expect(results.scores).to.eql({'0': 0, '1': 9});
+        });
       });
-      expect(results.scores).to.eql({'0': 0, '1': 9});
-    });
-  });
+    })
+  }
   after(() => {
     d.cleanup();
   });
