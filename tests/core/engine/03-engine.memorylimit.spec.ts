@@ -49,13 +49,14 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
 
     it("should allow for custom memory limit reached functions", async () => {
       const someMessage = "some message";
+      let customRan = false;
       const customEngineOptions: DeepPartial<MatchEngine.EngineOptions> = {
         memory: {
           limit: 1024 * 1024 * 50,
           memoryCallback: (agent: Agent, match: Match, engineOptions: MatchEngine.EngineOptions) => {
             match.kill(agent.id);
             match.log.detail(`custom message! - agent ${agent.id} - '${agent.name}' reached max memory!`);
-            match.log.detail(someMessage)
+            customRan = true;
             // engine options provided should be the same as the match itself
             expect(match.matchEngine.getEngineOptions()).to.be.equal(engineOptions);
           }
@@ -72,7 +73,7 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
       let results = await match.run();
       expect(results.terminated[0]).to.equal('terminated');
       expect(killSpy).to.be.calledWith(0)
-      expect(logspy).to.be.calledWith(someMessage);
+      expect(customRan).to.equal(true, "custom memory callback ran");
     });
 
     it("should allow for turning off memory limit", async () => {
