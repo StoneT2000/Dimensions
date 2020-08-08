@@ -29,32 +29,33 @@ describe('Testing MatchEngine Timeout Mechanism', () => {
   });
   describe("Test timeout mechanism", () => {
     // TODO: add tests for bot that timeout before match starts
-    it("should timeout bots accordingly", async () => {
-      for (let bool of tf) {
-        let match = await d.createMatch(['./tests/kits/js/normal/rockdelayed.js', './tests/kits/js/normal/paper.js'], {
-          bestOf: 11,
-          engineOptions: {
-            timeout: {
-              max: 150
+    for (let bool of tf) {
+      it(`should timeout bots accordingly; secureMode: ${bool}`, async () => {
+        
+          let match = await d.createMatch(['./tests/kits/js/normal/rockdelayed.js', './tests/kits/js/normal/paper.js'], {
+            bestOf: 11,
+            engineOptions: {
+              timeout: {
+                max: 150
+              }
             }
-          }
-        });
-        let results = await match.run();
-        expect(results.terminated[0]).to.equal('terminated');
+          });
+          let results = await match.run();
+          expect(results.terminated[0]).to.equal('terminated');
 
-        match = await d.createMatch(['./tests/kits/js/normal/rockdelayed.js', './tests/kits/js/normal/rockdelayed.js'], {
-          bestOf: 11,
-          engineOptions: {
-            timeout: {
-              max: 150
+          match = await d.createMatch(['./tests/kits/js/normal/rockdelayed.js', './tests/kits/js/normal/rockdelayed.js'], {
+            bestOf: 11,
+            engineOptions: {
+              timeout: {
+                max: 150
+              }
             }
-          }
-        });
-        results = await match.run();
-        expect(results.terminated[0]).to.equal('terminated');
-        expect(results.terminated[1]).to.equal('terminated');
-      }
-    });
+          });
+          results = await match.run();
+          expect(results.terminated[0]).to.equal('terminated');
+          expect(results.terminated[1]).to.equal('terminated')
+      });
+    }
 
     it("should allow for custom timeout functions", async () => {
       const someMessage = "some message";
