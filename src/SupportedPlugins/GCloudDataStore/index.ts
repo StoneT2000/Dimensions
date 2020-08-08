@@ -50,7 +50,6 @@ export class GCloudDataStore extends Database {
     })
   }
   public async getMatch(id: NanoID) {
-    // return this.models.match.findOne({id: id});
     const key = this.getMatchDatastoreKey(id);
     return (await this.datastore.get(key))[0];
   }
@@ -146,7 +145,7 @@ export class GCloudDataStore extends Database {
     const q = this.datastore.createQuery(GCloudDataStore.Kinds.USERS).filter('playerID', '=', usernameOrID);
     const res = await this.datastore.runQuery(q);
     user = res[0][0]; // there should only be one user with this playerID
-    if (!user) { 
+    if (!user) {
       const key = this.getUserDatastoreKey(usernameOrID);
       user = (await this.datastore.get(key))[0];
     }

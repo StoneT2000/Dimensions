@@ -58,14 +58,13 @@ describe('Testing MatchEngine Timeout Mechanism', () => {
     }
 
     it("should allow for custom timeout functions", async () => {
-      const someMessage = "some message";
+      let callbacked = false;
       const customEngineOptions = {
         timeout: {
           max: 150,
           timeoutCallback: (agent: Agent, match: Match, engineOptions: MatchEngine.EngineOptions) => {
             match.kill(agent.id);
-            match.log.detail(`custom message! - agent ${agent.id} - '${agent.name}' timed out after ${engineOptions.timeout.max} ms`);
-            match.log.detail(someMessage)
+            callbacked = true;
             // engine options provided should be the same as the match itself
             expect(match.matchEngine.getEngineOptions()).to.be.equal(engineOptions);
           }
@@ -82,8 +81,7 @@ describe('Testing MatchEngine Timeout Mechanism', () => {
       let results = await match.run();
       expect(results.terminated[0]).to.equal('terminated');
       expect(killSpy).to.be.calledWithExactly(0);
-      expect(logspy).to.be.callCount(2);
-      expect(logspy).to.be.calledWith(someMessage);
+      expect(callbacked).to.equal(true);
     });
 
     it("should allow for turning off timeout", async () => {

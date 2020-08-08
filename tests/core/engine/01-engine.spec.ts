@@ -10,6 +10,7 @@ import { Logger, MatchEngine, Match, Agent, Design } from '../../../src';
 import { deepCopy } from '../../../src/utils/DeepCopy';
 import { stripFunctions } from '../utils/stripfunctions';
 import { createCustomDesign } from '../utils/createCustomDesign';
+import { AgentCompileError, AgentCompileTimeoutError, AgentDirectoryError, AgentMissingIDError, AgentInstallTimeoutError } from '../../../src/DimensionError';
 const expect = chai.expect;
 chai.should()
 chai.use(sinonChai);
@@ -21,7 +22,18 @@ describe('Testing MatchEngine Core', () => {
   let d: Dimension.DimensionType;
   const paper = './tests/kits/js/normal/paper.js';
   const rock = './tests/kits/js/normal/rock.js'
+  const bots = {
+    python: './tests/kits/python/bot.py',
+    js: './tests/kits/js/normal/paper.js',
+    ts: './tests/kits/ts/bot.ts',
+    java: './tests/kits/java/Bot.java',
+    cpp: './tests/kits/cpp/bot.cpp',
+    c: './tests/kits/c/bot.c',
+    go: './tests/kits/go/bot.go',
+    php: './tests/kits/php/bot.php',
+  };
   const botList = [rock, paper]
+  const jsWithSlowInstall = './tests/kits/js/withinstall/rock.js';
   const lineCountBotList = ['./tests/kits/js/linecount/rock.js', './tests/kits/js/linecount/paper.js']
   const twoLineCountBotList = ['./tests/kits/js/linecount/rock.2line.js', './tests/kits/js/linecount/paper.2line.js']
   let changedOptions = {
@@ -37,7 +49,8 @@ describe('Testing MatchEngine Core', () => {
     engineOptions: {
       commandFinishPolicy: MatchEngine.COMMAND_FINISH_POLICIES.LINE_COUNT
     }
-  })
+  });
+  const tf = [true, false];
   before( async () => {
     ddefault = Dimension.create(rpsDesign, {
       activateStation: false,
@@ -284,6 +297,34 @@ describe('Testing MatchEngine Core', () => {
       let results = await match.run();
       expect(results.scores).to.eql({'0': 0, '1': 11});
     });
+  });
+
+  describe("Test compilation step", () => {
+    for (const bool of tf) {
+      it(`should throw error for bot going over compile time limit; secureMode: ${bool}`, async () => {
+        await expect(d.createMatch([bots.java, bots.js], {
+          bestOf: 11,
+          secureMode: bool,
+          agentOptions: {
+            maxCompileTime: 100,
+          }
+        })).to.be.rejectedWith(AgentCompileTimeoutError);
+      });
+    }
+  });
+
+  describe("Test install step", () => {
+    for (const bool of tf) {
+      it(`should throw error for bot going over install time limit; secureMode: ${bool}`, async () => {
+        await expect(d.createMatch([jsWithSlowInstall, bots.js], {
+          bestOf: 11,
+          secureMode: bool,
+          agentOptions: {
+            maxInstallTime: 100,
+          }
+        })).to.be.rejectedWith(AgentInstallTimeoutError);
+      });
+    }
   });
 
   describe("Test custom designs", () => {
