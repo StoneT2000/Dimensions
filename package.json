@@ -14,7 +14,9 @@
     "docs": "typedoc --theme ./theme/dimensions/ --mode modules --exclude ./src/Station/ --out docs ./src && touch ./docs/.nojekyll ",
     "watch": "tsc -w",
     "build": "rm -rf lib && tsc",
-    "clean": "./cleanup.sh"
+    "clean": "./cleanup.sh",
+    "services:start": "docker-compose -f tests/dimension-docker/docker-compose.yml up -d",
+    "services:stop": "docker-compose -f tests/dimension-docker/docker-compose.yml down"
   },
   "keywords": [
     "AI",
@@ -56,7 +58,7 @@
     "@types/jsonwebtoken": "^8.3.9",
     "@types/mocha": "^7.0.2",
     "@types/mongoose": "^5.7.14",
-    "@types/node": "^12.12.53",
+    "@types/node": "^12.12.54",
     "@types/pidusage": "^2.0.1",
     "@types/sinon": "^9.0.0",
     "@types/sinon-chai": "^3.2.4",
