@@ -1,4 +1,5 @@
 # Dimensions
+[![npm version](https://badge.fury.io/js/dimensions-ai.svg)](https://badge.fury.io/js/dimensions-ai)
 
 This is an **open sourced** **generic** **Artificial Intelligence competition framework**, intended to provide you the fully scalable infrastructure needed to run your own AI competition with no hassle.
 
