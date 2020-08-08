@@ -51,7 +51,7 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
       const someMessage = "some message";
       const customEngineOptions: DeepPartial<MatchEngine.EngineOptions> = {
         memory: {
-          limit: 100,
+          limit: 1024 * 1024 * 50,
           memoryCallback: (agent: Agent, match: Match, engineOptions: MatchEngine.EngineOptions) => {
             match.kill(agent.id);
             match.log.detail(`custom message! - agent ${agent.id} - '${agent.name}' reached max memory!`);
@@ -63,7 +63,7 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
       }
       let sandbox = sinon.createSandbox();
       
-      let match = await d.createMatch(['./tests/kits/js/normal/rock.js', './tests/kits/js/normal/paper.js'], {
+      let match = await d.createMatch(['./tests/kits/js/normal/rock.exceedmemory.js', './tests/kits/js/normal/paper.js'], {
         bestOf: 1001,
         engineOptions: customEngineOptions
       });
@@ -71,9 +71,7 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
       let logspy = sandbox.spy(match.log, 'detail');
       let results = await match.run();
       expect(results.terminated[0]).to.equal('terminated');
-      expect(results.terminated[1]).to.equal('terminated');
-      expect(killSpy).to.be.calledWith(0);
-      expect(killSpy).to.be.calledWith(1);
+      expect(killSpy).to.be.calledWith(0)
       expect(logspy).to.be.calledWith(someMessage);
     });
 
