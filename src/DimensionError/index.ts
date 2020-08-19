@@ -89,3 +89,4 @@ export class SecurityError extends Error {
 export * from './AgentError';
 export * from './MatchError';
 export * from './TournamentError';
+export * from './DatabaseError';

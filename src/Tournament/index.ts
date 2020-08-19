@@ -1,6 +1,6 @@
 import { Match } from '../Match';
 import { Design } from '../Design';
-import { FatalError, TournamentPlayerDoesNotExistError, TournamentError } from '../DimensionError'
+import { FatalError, TournamentPlayerDoesNotExistError, TournamentError, DatabaseGetUserError } from '../DimensionError'
 
 import { DeepPartial } from '../utils/DeepPartial';
 import { Logger } from '../Logger';
@@ -90,7 +90,7 @@ export abstract class Tournament {
   public matches: Map<NanoID, Match> = new Map();
 
   /** A queue whose elements are each arrays of players that are to compete against each other */
-  public matchQueue: Array<Array<Player>> = [];
+  public matchQueue: Array<Tournament.QueuedMatch> = [];
   
   /** The current status of the tournament */
   public status: Tournament.Status = Tournament.Status.UNINITIALIZED;
@@ -442,6 +442,18 @@ export abstract class Tournament {
     }
   }
 
+  public async getMatchInfoFromQueuedMatch(queuedMatchInfo: Tournament.QueuedMatch) {
+    // Consider adding possibility to use cached player meta data
+    let retrievePlayerPromises: Array<Promise<Player>> = [];
+    for (let i = 0; i < queuedMatchInfo.length; i++) {
+      let playerId = queuedMatchInfo[i];
+      
+      retrievePlayerPromises.push(this.getPlayerStat(playerId).then(({ playerStat }) => playerStat.player));
+    }
+
+    return await Promise.all(retrievePlayerPromises);
+  }
+
   /**
    * Removes a match by id. Returns true if deleted, false if nothing was deleted
    */
@@ -519,7 +531,14 @@ export abstract class Tournament {
     // TODO: Add caching as an option
     if (!this.state.playerStats.has(id)) {
       if (this.dimension.hasDatabase()) {
-        let user = await this.dimension.databasePlugin.getUser(id);
+        let user: Database.User;
+        try {
+          user = await this.dimension.databasePlugin.getUser(id);
+        }
+        catch(err)  {
+          this.log.error(err);
+          throw new DatabaseGetUserError(`failed to get database user with id: ${id}`);
+        }
         if (user && user.statistics[this.getKeyName()]) {
           return {user: user, playerStat: user.statistics[this.getKeyName()]};
         }
@@ -650,7 +669,7 @@ export module Tournament {
   /**
    * Queued match information, consisting of player IDs of players to compete
    */
-  export type QueuedMatchInfo = Array<nanoid>
+  export type QueuedMatch = Array<nanoid>
 
   /**
    * Internally used type.

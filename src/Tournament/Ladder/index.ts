@@ -515,7 +515,7 @@ export class Ladder extends Tournament {
    * Performs a Fisher Yates Shuffle
    * @param arr - the array to shuffle
    */
-  private shuffle(arr: any[]) {
+  private shuffle<T>(arr: T[]) {
     for (let i = arr.length - 1; i >= 1; i--) {
       let j = Math.floor(Math.random() * i);
       let tmp = arr[i];
@@ -746,7 +746,7 @@ export class Ladder extends Tournament {
     // TODO: For scalability, getrankings should handle just a subset at a time in order to not load too much at once.
     
     let sortedPlayers = rankings.map((p) => p.player).filter((p) => !p.disabled);
-    let newQueue = [];
+    let newQueue: Array<Tournament.QueuedMatch> = [];
     sortedPlayers.forEach((player, rank) => {
 
       let competitorCount = this.selectRandomAgentAmountForMatch();
@@ -759,7 +759,9 @@ export class Ladder extends Tournament {
       }
       let randomPlayers = this.selectRandomplayersFromArray(
         [...sortedPlayers.slice(Math.max(rank - competitorCount * 2.5, lowerBound), rank), ... sortedPlayers.slice(rank + 1, rank + competitorCount * 2.5)], competitorCount - 1);
-      newQueue.push(this.shuffle([player, ...randomPlayers]));
+      let playerQueue = this.shuffle([player, ...randomPlayers])
+
+      newQueue.push(playerQueue.map((player) => player.tournamentID.id ));
     });
     this.shuffle(newQueue);
     this.matchQueue.push(...newQueue);
@@ -770,8 +772,8 @@ export class Ladder extends Tournament {
   }
 
   // using resovoir sampling to select num distinct randomly
-  private selectRandomplayersFromArray(arr: Array<any>, num: number, excludedSet: Set<number> = new Set()) {
-    let reservoir = [];
+  private selectRandomplayersFromArray(arr: Array<Player>, num: number, excludedSet: Set<number> = new Set()) {
+    let reservoir: Array<Player> = [];
     // put the first num into reservoir
     for (let i = 0; i < num; i++) {
       reservoir.push(arr[i]);
@@ -784,6 +786,12 @@ export class Ladder extends Tournament {
     }
     return reservoir;
   }
+
+  /** Scheddule a match using match info */
+  public scheduleMatch(matchInfo: Tournament.QueuedMatch) {
+    this.matchQueue.push(matchInfo);
+  }
+
 
   // when adding a new player
   async internalAddPlayer(player: Player) {
@@ -947,7 +955,10 @@ export class Ladder extends Tournament {
    * Handles the start and end of a match, and updates state accrding to match results and the given result handler
    * @param matchInfo 
    */
-  private async handleMatch(matchInfo: Array<Player>) {
+  private async handleMatch(queuedMatchInfo: Tournament.QueuedMatch) {
+    
+    // Consider adding possibility to use cached player meta data
+    let matchInfo = await this.getMatchInfoFromQueuedMatch(queuedMatchInfo);
     
     if (!(await this.checkMatchIntegrity(matchInfo))) {
       // quit
@@ -1212,7 +1223,7 @@ export namespace Ladder {
      * @param playerStats - an array of all player stats in the tournament. See {@link PlayerStat} for what variables
      * are exposed to use to help schedule matches
      */
-      (playerStats: Array<PlayerStat>) => Array<Array<Player>>,
+      (playerStats: Array<PlayerStat>) => Array<Tournament.QueuedMatch>,
 
     /**
      * Rate in ms of how fast to sync the configs. Used for synchronizing configs in a distributed system.

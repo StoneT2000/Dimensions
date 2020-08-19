@@ -160,9 +160,9 @@ export class Elimination extends Tournament {
         this.log.info('Resumed Tournament');
         this.shouldStop = false;
       }
-      let matchInfo = this.matchQueue.shift();
+      let queuedMatchInfo = this.matchQueue.shift();
       let matchHash = this.matchHashes.shift();
-      await this.handleMatch(matchInfo, matchHash);        
+      await this.handleMatch(queuedMatchInfo, matchHash);        
       if (this.state.currentRound === 2) {
         break;
       }
@@ -179,7 +179,8 @@ export class Elimination extends Tournament {
    * Handles a match and updates stats appropriately
    * @param matchInfo - The match to run
    */
-  private async handleMatch(matchInfo: Array<Player>, matchHash: string) {
+  private async handleMatch(queuedMatchInfo: Tournament.QueuedMatch, matchHash: string) {
+    let matchInfo = await this.getMatchInfoFromQueuedMatch(queuedMatchInfo);
     if (matchInfo.length != 2) {
       throw new FatalError(`This shouldn't happen, tried to run a match with player count not equal to 2 in an elimination tournament`);
     }
@@ -359,7 +360,7 @@ export class Elimination extends Tournament {
       let res2 = this.state.resultsMap.get(`${hash[1]},${oldOpponent2}`);
       let p2 = res2.winner;
       this.matchHashes.push(`${hash[0]},${hash[1]}`);
-      this.matchQueue.push([p1, p2]);
+      this.matchQueue.push([p1.tournamentID.id, p2.tournamentID.id]);
 
     }
     this.state.currentRound = nextRound;
