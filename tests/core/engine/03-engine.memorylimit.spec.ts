@@ -52,7 +52,7 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
       let customRan = false;
       const customEngineOptions: DeepPartial<MatchEngine.EngineOptions> = {
         memory: {
-          limit: 1024 * 1024 * 50,
+          limit: 1024 * 1024 * 4,
           memoryCallback: (agent: Agent, match: Match, engineOptions: MatchEngine.EngineOptions) => {
             match.kill(agent.id);
             match.log.detail(`custom message! - agent ${agent.id} - '${agent.name}' reached max memory!`);
