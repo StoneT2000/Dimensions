@@ -40,6 +40,7 @@ export class Ladder extends Tournament {
       matchMake: null,
       configSyncRefreshRate: 6000,
       syncConfigs: true,
+      selfMatchMake: true,
     },
     resultHandler: null,
     agentsPerMatch: [2],
@@ -436,7 +437,11 @@ export class Ladder extends Tournament {
     this.log.info('Running Tournament');
     this.configs = deepMerge(this.configs, configs, true);
     await this.initialize();
-    await this.schedule();
+
+    this.configs.tournamentConfigs.selfMatchMake ? 
+      await this.schedule() :
+      this.log.info('Self match make turned off, tournament will only run matches stored in match queue')
+
     if (master) {
       this.setStatus(TournamentStatus.RUNNING);
     }
@@ -472,11 +477,11 @@ export class Ladder extends Tournament {
     }
     let matchPromises = [];
 
-    // if too little matches, schedule another set
-    if (this.matchQueue.length < this.configs.tournamentConfigs.maxConcurrentMatches * 2) {
+    // if too little matches, schedule another set provided tournament is set to schedule its own matches
+    if (this.configs.tournamentConfigs.selfMatchMake && this.matchQueue.length < this.configs.tournamentConfigs.maxConcurrentMatches * 2) {
       await this.schedule();
     }
-    // run as the minimum of the queued matches length, minimum to not go over maxConcurrent matches config, and not to go over a maxtTotalMatches limit if there is one
+    // run as many matches as allowed by maxConcurrentMatches, maxTotalMatches, and how many matches left in queue allow
     for (let i = 0; i < Math.min(this.matchQueue.length, this.configs.tournamentConfigs.maxConcurrentMatches - this.matches.size); i++) {
       if (maxTotalMatches && maxTotalMatches - this.state.statistics.totalMatches - this.matches.size <= 0) {
         break;
@@ -1222,6 +1227,13 @@ export namespace Ladder {
      * @default `true`
      */
     syncConfigs: boolean
+
+    /**
+     * Whether or not this tournament will schedule its own matches using its own {@link Ladder.Configs.matchMake | matchMake} function
+     * 
+     * @default `true`
+     */
+    selfMatchMake: boolean
 
   }
   /**

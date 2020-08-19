@@ -189,6 +189,21 @@ describe('Testing Ladder Tournament Core', () => {
         expect(tourney.status).to.equal(Tournament.Status.STOPPED);
       });
     });
+
+    describe("Test selfMatchMake config", () => {
+      it("should not schedule matches if set to false", async () => {
+        let tourney = createLadderTourney(d, botList, {
+          tournamentConfigs: {
+            selfMatchMake: false,
+          }
+        });
+        await tourney.run();
+        expect(tourney.status).to.equal(Tournament.Status.RUNNING);
+        await sleep(1000);
+        expect(tourney.matchQueue.length).to.be.equal(0);
+        expect(tourney.matches.size).to.be.equal(0);
+      });
+    });
   });
   afterEach(() => {
     d.cleanupTournaments();
