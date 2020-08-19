@@ -44,6 +44,8 @@ export class Elimination extends Tournament {
   };
   matchHashes: Array<string> = [];
 
+  type = Tournament.Type.ELIMINATION;
+
   private shouldStop: boolean = false;
   private resumePromise: Promise<void>;
   private resumeResolver: Function;

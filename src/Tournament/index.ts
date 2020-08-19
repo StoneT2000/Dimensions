@@ -120,6 +120,9 @@ export abstract class Tournament {
    */
   public name = '';
 
+  /** Tournament Type */
+  abstract type: Tournament.Type;
+
   /**
    * Promise array of which all resolves once every player added through constructor is finished adding
    */

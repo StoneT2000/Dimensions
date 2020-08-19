@@ -29,6 +29,9 @@ export class RoundRobin extends Tournament {
     consoleDisplay: true,
     id: 'aa2qlM'
   }
+
+  type = Tournament.Type.ROUND_ROBIN;
+
   private shouldStop: boolean = false;
   private resumePromise: Promise<void>;
   private resumeResolver: Function;

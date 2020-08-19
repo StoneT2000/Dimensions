@@ -55,6 +55,8 @@ export class Ladder extends Tournament {
     }
   };
 
+  type = Tournament.Type.LADDER;
+
   /**
    * ELO System used in this tournament
    */
