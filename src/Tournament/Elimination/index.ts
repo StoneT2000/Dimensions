@@ -325,11 +325,11 @@ export class Elimination extends Tournament {
     for (let i = 0; i < round / 2; i++) {
       let p1 = seededArr[i][1].player;
       let oseed = round - (i + 1);
-      let p2 = null; // a null is a bye
+      let p2: Player = null; // a null is a bye
       if (seededArr.length > oseed) {
         p2 = seededArr[oseed][1].player;
       }
-      this.matchQueue.push([p1, p2]);
+      this.matchQueue.push([p1.tournamentID.id, p2.tournamentID.id]);
 
       // hashes are of the form `betterseed,worseseed`, which has a 1-1 bijection with the match that should be played
       // in a elimination tournament. e.g 8,9 is a matchup that can happen is during the round of (8 + 9 - 1) = 16
