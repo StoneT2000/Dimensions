@@ -21,6 +21,7 @@ import LadderPlayerStat = Ladder.PlayerStat;
 import { nanoid } from "../..";
 import { deepCopy } from "../../utils/DeepCopy";
 import { chooseKRandomElements } from "../Scheduler/utils";
+import { Scheduler } from "../Scheduler";
 
 const REFRESH_RATE = 10000
 
@@ -147,6 +148,18 @@ export class Ladder extends Tournament {
           }
         });
       }
+    }
+
+    // setup matchmaking algorithm to default if not provided
+    if (!this.configs.tournamentConfigs.matchMake) {
+      let max = this.configs.agentsPerMatch[0];
+      this.configs.agentsPerMatch.forEach((v) => {
+        max = Math.max(max, v);
+      });
+      this.configs.tournamentConfigs.matchMake = Scheduler.RankRangeRandom({
+        agentsPerMatch: this.configs.agentsPerMatch,
+        range: Math.ceil(max * 2.5)
+      });
     }
 
     this.log.info('Initialized Ladder Tournament');
@@ -727,9 +740,7 @@ export class Ladder extends Tournament {
   }
   
   /**
-   * Schedules matches to play. Default function is to schedule randomly a player A with other players that are within
-   * 2.5 * competitorCount rank of that player A's rank. competitorCount is the number of agents chosen to compete
-   * in the particular match to schedule. See {@link Tournament.TournamentConfigs.agentsPerMatch}.
+   * Schedules matches to play. By default uses {@link Scheduler.RankRangeRandom}
    * 
    * If a {@link Ladder.Configs.matchMake | matchMake} function is provided, that will be used instead of the default.
    */
@@ -741,35 +752,6 @@ export class Ladder extends Tournament {
       this.matchQueue.push(...newMatches);
       return;
     }
-
-    // runs a round of scheduling
-    // for every not disabled player, we schedule a match
-    // TODO: For scalability, getrankings should handle just a subset at a time in order to not load too much at once.
-    
-    let sortedPlayers = rankings.map((p) => p.player).filter((p) => !p.disabled);
-    let newQueue: Array<Tournament.QueuedMatch> = [];
-    sortedPlayers.forEach((player, rank) => {
-
-      let competitorCount = this.selectRandomAgentAmountForMatch();
-       
-      // take random competitors from +/- competitorCount * 2.5 ranks near you
-      let lowerBound = 0;
-      if (rank == 0) lowerBound = 1;
-      if (sortedPlayers.length < competitorCount) {
-        return;
-      }
-      let randomPlayers = chooseKRandomElements(
-        [...sortedPlayers.slice(Math.max(rank - competitorCount * 2.5, lowerBound), rank), ... sortedPlayers.slice(rank + 1, rank + competitorCount * 2.5)], competitorCount - 1);
-      let playerQueue = this.shuffle([player, ...randomPlayers])
-
-      newQueue.push(playerQueue.map((player) => player.tournamentID.id ));
-    });
-    this.shuffle(newQueue);
-    this.matchQueue.push(...newQueue);
-  }
-
-  private selectRandomAgentAmountForMatch(): number {
-    return this.configs.agentsPerMatch[Math.floor(Math.random() * this.configs.agentsPerMatch.length)];
   }
 
   /** Schedule a match using match info */

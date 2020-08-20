@@ -101,6 +101,7 @@ describe('Testing Ladder Tournament Core', () => {
       });
       it("should update players mid tourney", async () => {
         let tourney = createLadderTourney(d, [...botList, testbot]);
+        await Promise.all(tourney.initialAddPlayerPromises);
         await tourney.run();
         await sleep(1000);
         await tourney.addplayer(testbot);
