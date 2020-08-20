@@ -305,6 +305,7 @@ export class Agent extends EventEmitter {
           }
           catch(err) {
             handleError(err);
+            return;
           }
         }
         else {
