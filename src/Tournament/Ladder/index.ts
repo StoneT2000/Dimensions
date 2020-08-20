@@ -734,7 +734,7 @@ export class Ladder extends Tournament {
    * If a {@link Ladder.Configs.matchMake | matchMake} function is provided, that will be used instead of the default.
    */
   private async schedule() {
-    // TODO: Slide window instead for dealing with rankings. good buffer size might be max 1k players ~ 10mb
+    // TODO: Consider slide window instead for dealing with rankings?
     let rankings = await this.getRankings(0, -1);
     if (this.configs.tournamentConfigs.matchMake) {
       let newMatches = this.configs.tournamentConfigs.matchMake(rankings);

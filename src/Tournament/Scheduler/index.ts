@@ -11,9 +11,13 @@ export class Scheduler {
    * Returns the Scheduler function that can 
    * be passed to the {@link Tournament.Ladder.Configs.matchMake} field
    */
-  static Random(configs: Scheduler.RandomConfigs = { agentsPerMatch: [2], scheduleEvenly: true }) : (players: Array<Tournament.Ladder.PlayerStat>) => Array<Tournament.QueuedMatch> {
+  static Random(configs: Scheduler.RandomConfigs = { agentsPerMatch: [2], scheduleEvenly: true, allowDisabled: false }) : (players: Array<Tournament.Ladder.PlayerStat>) => Array<Tournament.QueuedMatch> {
     const rng = seedrandom(configs.seed);
-    return (players: Array<Tournament.Ladder.PlayerStat>) => {
+    return (origPlayers: Array<Tournament.Ladder.PlayerStat>) => {
+      let players = origPlayers;
+      if (!configs.allowDisabled) {
+        players = origPlayers.map((p) => p.player).filter((p) => !p.disabled);
+      }
       const queue: Array<Tournament.QueuedMatch> = [];
       if (configs.scheduleEvenly) {
         for (let i = 0; i < players.length; i++) {
@@ -46,10 +50,14 @@ export class Scheduler {
    * Returns the Scheduler function that can 
    * be passed to the {@link Tournament.Ladder.Configs.matchMake} field
    */
-  static RankRangeRandom(configs: Scheduler.RankRangeRandomConfigs = { agentsPerMatch: [2], scheduleEvenly: true, range: 4 }) : (players: Array<Tournament.Ladder.PlayerStat>) => Array<Tournament.QueuedMatch> {
+  static RankRangeRandom(configs: Scheduler.RankRangeRandomConfigs = { agentsPerMatch: [2], scheduleEvenly: true, range: 4, allowDisabled: false }) : (players: Array<Tournament.Ladder.PlayerStat>) => Array<Tournament.QueuedMatch> {
     const rng = seedrandom(configs.seed);
     
-    return (players: Array<Tournament.Ladder.PlayerStat>) => {
+    return (origPlayers: Array<Tournament.Ladder.PlayerStat>) => {
+      let players = origPlayers;
+      if (!configs.allowDisabled) {
+        players = origPlayers.map((p) => p.player).filter((p) => !p.disabled);
+      }
       const queue: Array<Tournament.QueuedMatch> = [];
       const generateMatch = (i: number) => {
         const agentCount = configs.agentsPerMatch[Math.floor(rng() * configs.agentsPerMatch.length)];
@@ -103,6 +111,14 @@ export module Scheduler {
      * @default `true`
      */
     scheduleEvenly: boolean
+
+    /**
+     * If false, will not schedule matches with players that are disabled (manually by an admin or due to compile 
+     * errors etc.)
+     * 
+     * @default `false`
+     */
+    allowDisabled: boolean
   }
   export interface RandomConfigs extends ConfigsBase {
     /** an optional seed to seed the random number generator */
