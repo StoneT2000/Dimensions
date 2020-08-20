@@ -82,7 +82,7 @@ describe('Testing /api/dimensions/:dimensionID/tournament API', () => {
     });
   });
 
-  it.only(`POST ${base}/tournament/:tournamentID/match-queue - should schedule matches`, async () => {
+  it(`POST ${base}/tournament/:tournamentID/match-queue - should schedule matches`, async () => {
     return new Promise( async (resolve, reject) => {
       let t = createLadderTourney(dimension, botListWithIDs, {
         id: 'ladderWithoutSelfMatchmake',
@@ -103,21 +103,21 @@ describe('Testing /api/dimensions/:dimensionID/tournament API', () => {
         message: `Queued ${matchQueue.length} matches`
       });
       let count = 0;
-      t.on(Tournament.Events.MATCH_HANDLED, () => {
-        console.log("Handled");
+      t.on(Tournament.Events.MATCH_HANDLED, async () => {
         if (++count === 2) {
           try {
             expect(t.state.playerStats.get('rock1').matchesPlayed).to.equal(1);
             expect(t.state.playerStats.get('rock2').matchesPlayed).to.equal(2);
             expect(t.state.playerStats.get('rock3').matchesPlayed).to.equal(1);
+            await t.destroy();
             resolve();
           }
           catch(err) {
+            await t.destroy();
             reject(err)
           }
         }
       });
-      
-    })
+    });
   });
 });

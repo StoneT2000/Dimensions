@@ -59,6 +59,9 @@ export class Ladder extends Tournament {
 
   type = Tournament.Type.LADDER;
 
+  // lock matchqueue for concurrency
+  private matchQueueLocked: boolean = false;
+
   /**
    * ELO System used in this tournament
    */
@@ -130,7 +133,7 @@ export class Ladder extends Tournament {
         this.initialAddPlayerPromises.push(this.addplayer(file, file.existingID));
       }
     });
-    
+
     Promise.all(this.initialAddPlayerPromises).then(() => {
       this.emit(Tournament.Events.INITIAL_PLAYERS_INITIALIZED);
     })
@@ -472,7 +475,10 @@ export class Ladder extends Tournament {
   }
 
   private async tourneyRunner() {
-
+    if (this.matchQueueLocked) {
+      return;
+    }
+    this.matchQueueLocked = true;
     if (this.matches.size >= this.configs.tournamentConfigs.maxConcurrentMatches) return;
 
     let maxTotalMatches = this.configs.tournamentConfigs.maxTotalMatches;
@@ -498,6 +504,7 @@ export class Ladder extends Tournament {
     if (this.configs.tournamentConfigs.selfMatchMake && this.matchQueue.length < this.configs.tournamentConfigs.maxConcurrentMatches * 2) {
       await this.schedule();
     }
+
     // run as many matches as allowed by maxConcurrentMatches, maxTotalMatches, and how many matches left in queue allow
     for (let i = 0; i < Math.min(this.matchQueue.length, this.configs.tournamentConfigs.maxConcurrentMatches - this.matches.size); i++) {
       if (maxTotalMatches && maxTotalMatches - this.state.statistics.totalMatches - this.matches.size <= 0) {
@@ -526,6 +533,7 @@ export class Ladder extends Tournament {
         }
       }
     });
+    this.matchQueueLocked = false;
   }
 
   /**
@@ -660,7 +668,7 @@ export class Ladder extends Tournament {
           rating: new Rating(trueskillConfigs.initialMu, trueskillConfigs.initialSigma)
         }
       }
-      this.updateDatabaseTrueskillPlayerStats(playerStat, user);
+      await this.updateDatabaseTrueskillPlayerStats(playerStat, user);
     }
 
     // only store locally if not in DB
@@ -1011,10 +1019,10 @@ export class Ladder extends Tournament {
         if (user && user.statistics[this.getKeyName()]) {
           switch(this.configs.rankSystem) {
             case RankSystem.TRUESKILL:
-              this.updateDatabaseTrueskillPlayerStats(currentStats, user);
+              await this.updateDatabaseTrueskillPlayerStats(currentStats, user);
               break;
             case RankSystem.ELO:
-              this.updateDatabaseELOPlayerStats(currentStats, user);
+              await this.updateDatabaseELOPlayerStats(currentStats, user);
               break;
           }
         }
@@ -1039,7 +1047,10 @@ export class Ladder extends Tournament {
     let result = <RankSystem.TRUESKILL.Results>toProcess.result;
     
     // stop if no ranks provided, meaning match not successful and we throw result away
-    if (result.ranks.length === 0) return;
+    if (result.ranks.length === 0) {
+      this.emit(Tournament.Events.MATCH_HANDLED);
+      return;
+    }
     
     let playerRatings: Array<Array<Rating>> = [];
     let tourneyIDs: Array<{id: Tournament.ID, stats: any}> = [];
@@ -1073,6 +1084,7 @@ export class Ladder extends Tournament {
       await Promise.all(fetchingRatings);
     } catch (err) {
       this.log.error('Probably due to player being removed: ', err);
+      this.emit(Tournament.Events.MATCH_HANDLED);
       return;
     }
 
@@ -1083,7 +1095,7 @@ export class Ladder extends Tournament {
         let currentStats: Ladder.PlayerStat = info.stats;
         (<RankSystem.TRUESKILL.RankState>currentStats.rankState).rating = newRatings[i][0];
 
-        this.updatePlayerStat(currentStats);
+        await this.updatePlayerStat(currentStats);
       }
       updatePlayerStatsPromises.push(updateStat());
     });
@@ -1093,6 +1105,7 @@ export class Ladder extends Tournament {
     if (this.configs.consoleDisplay) {
       await this.printTournamentStatus();
     }
+
     this.emit(Tournament.Events.MATCH_HANDLED);
   }
 
@@ -1100,7 +1113,13 @@ export class Ladder extends Tournament {
     let toProcess = this.resultProcessingQueue.shift();
     let mapAgentIDtoTournamentID = toProcess.mapAgentIDtoTournamentID;
     let result = <RankSystem.ELO.Results>toProcess.result;
-    if (result.ranks.length === 0) return;
+
+    // stop if no ranks provided, meaning match not successful and we throw result away
+    if (result.ranks.length === 0) {
+      this.emit(Tournament.Events.MATCH_HANDLED);
+      return;
+    }
+
     let ratingsToChange: Array<ELORating> = [];
     let ranks = [];
     let tourneyIDs: Array<{id: Tournament.ID, stats: any}> = [];
@@ -1111,6 +1130,7 @@ export class Ladder extends Tournament {
 
         let { playerStat } = (await this.getPlayerStat(tournamentID.id));
         if (!playerStat) {
+          this.emit(Tournament.Events.MATCH_HANDLED);
           throw new TournamentPlayerDoesNotExistError(`Player ${tournamentID.id} doesn't exist anymore, likely was removed`);
         }
         let currentplayerStats = <Ladder.PlayerStat>playerStat;
@@ -1127,6 +1147,7 @@ export class Ladder extends Tournament {
     try {
       await Promise.all(fetchingRatings);
     } catch (err) {
+      this.emit(Tournament.Events.MATCH_HANDLED);
       this.log.error('Probably due to player being removed: ', err);
       return;
     }
