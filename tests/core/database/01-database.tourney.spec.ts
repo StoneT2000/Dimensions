@@ -93,7 +93,7 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
       expect(tourney.anonymousCompetitors.size).to.equal(2, "both bots in tourney should be anonymous competitors");
 
     });
-    describe.only("Test on Trueskill", () => {
+    describe("Test on Trueskill", () => {
       let t: Ladder;
       before(() => {
         t = createLadderTourney(d, userBotList, {
@@ -104,7 +104,7 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
           }
         });
       });
-      it.only("should run with users and store user data + match data", async () => {
+      it("should run with users and store user data + match data", async () => {
         await t.run();
         await sleep(5000);
         await t.stop();
@@ -119,14 +119,14 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
         expect(t.anonymousCompetitors.size).to.equal(0, "no competitor should be anonymous if ids are provided");
       });
 
-      it.only("should reset rankings", async () => {
+      it("should reset rankings", async () => {
         await sleep(5000);
         await t.resetRankings();
         let { playerStat } = await t.getPlayerStat(paperBot.existingID)
         let rankState: RankSystem.TRUESKILL.RankState = (<Tournament.Ladder.PlayerStat>playerStat).rankState;
         expect(rankState.rating.mu).to.equal(t.configs.rankSystemConfigs.initialMu, "reset ranking to initialMu")
       });
-      it.only("should allow new bots and bot updates that the bot stats", async () => {
+      it("should allow new bots and bot updates that the bot stats", async () => {
         await t.resume();
         await sleep(15000);
         
