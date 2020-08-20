@@ -22,7 +22,6 @@ import { deepCopy } from '../utils/DeepCopy';
 
 
 export const BOT_DIR = path.join(__dirname, '../../../../local/bots');
-export const BOT_DIR_TEMP = path.join(__dirname, '../../../../local/botstemp');
 
 // declare global and merge declaration with Express Request to allow storage of data across middleware in typescript 
 declare global {
@@ -145,9 +144,6 @@ export class Station {
     // make local bot directories if not made yet
     if (!existsSync(BOT_DIR)) {
       mkdirSync(BOT_DIR, { recursive: true });
-    }
-    if (!existsSync(BOT_DIR_TEMP)) {
-      mkdirSync(BOT_DIR_TEMP, { recursive: true });
     }
     
   }
