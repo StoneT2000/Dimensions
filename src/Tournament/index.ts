@@ -9,6 +9,12 @@ import RankSystemDefault = require('./RankSystem');
 import { deepCopy } from '../utils/DeepCopy';
 import { Dimension, NanoID } from '../Dimension';
 import { genID } from '../utils';
+import { nanoid } from '..';
+import { removeDirectory, removeDirectorySync } from '../utils/System';
+import { Database } from '../Plugin/Database';
+import EventEmitter from 'events';
+
+
 import TournamentStatusDefault = require('./TournamentStatus');
 import TournamentTypeDefault = require('./TournamentTypes')
 
@@ -81,7 +87,7 @@ export class Player {
  * `this.anonymousCompetitors` and other players are pulled from DB. Hence, a lot of code requires checking if database
  * exists and if so, pull from there and the anonymous competitors map, other wise use this.state or this.competitors
  */
-export abstract class Tournament {
+export abstract class Tournament extends EventEmitter {
 
   /** Tournament configs */
   abstract configs: Tournament.TournamentConfigsBase;
@@ -135,6 +141,7 @@ export abstract class Tournament {
     tournamentConfigs: Tournament.TournamentConfigsBase,
     dimension: Dimension
   ) {
+    super();
     this.id = id;
 
     // use overriden id if provided
@@ -434,6 +441,7 @@ export abstract class Tournament {
       return {results: results, match: match};
     }
     catch(err) {
+      this.emit(Tournament.Events.MATCH_RAN);
       return {
         results: false,
         err: err,
@@ -569,9 +577,6 @@ import EliminationTournament = EliminationDefault.Elimination;
 import SchedulerDefault = require('./Scheduler');
 /** @ignore */
 import SchedulerClass = SchedulerDefault.Scheduler;
-import { nanoid } from '..';
-import { removeDirectory, removeDirectorySync } from '../utils/System';
-import { Database } from '../Plugin/Database';
 
 export module Tournament {
 
@@ -728,6 +733,25 @@ export module Tournament {
   export interface PlayerStatBase {
     player: Player,
     matchesPlayed: number
+  }
+
+  export enum Events {
+    /**
+     * Event is emitted when initialAddPlayerPromises resolves. This involves all players initialized to tournament 
+     * upon initialization of tournament instance
+     */
+    INITIAL_PLAYERS_INITIALIZED = 'initial_players_initialized',
+
+
+    /**
+     * Event is emitted whenever a match runs
+     */
+    MATCH_RAN = 'match_ran',
+
+    /**
+     * Event is emitted whenever a match runs AND the tournament is completely done handling it.
+     */
+    MATCH_HANDLED = 'match_handled',
   }
 }
 

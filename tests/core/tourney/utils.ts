@@ -15,7 +15,7 @@ export const createRoundRobinTourney = (d: Dimension.DimensionType, botList: Arr
   return tourney;
 }
 
-export const createLadderTourney = (d: Dimension.DimensionType, botList: Array<any>, tournamentConfigs: DeepPartial<Tournament.TournamentConfigsBase> = {}) => {
+export const createLadderTourney = (d: Dimension.DimensionType, botList: Array<any>, tournamentConfigs: DeepPartial<Tournament.TournamentConfigs<Tournament.Ladder.Configs>> = {}) => {
   let tourney = <Dimension.Tournament.Ladder>d.createTournament(botList, {
     type: Dimension.Tournament.Type.LADDER,
     rankSystem: Dimension.Tournament.RankSystem.TRUESKILL,

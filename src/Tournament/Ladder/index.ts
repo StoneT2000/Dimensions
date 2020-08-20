@@ -20,7 +20,6 @@ import LadderConfigs = Ladder.Configs;
 import LadderPlayerStat = Ladder.PlayerStat;
 import { nanoid } from "../..";
 import { deepCopy } from "../../utils/DeepCopy";
-import { chooseKRandomElements } from "../Scheduler/utils";
 import { Scheduler } from "../Scheduler";
 
 const REFRESH_RATE = 10000
@@ -131,6 +130,10 @@ export class Ladder extends Tournament {
         this.initialAddPlayerPromises.push(this.addplayer(file, file.existingID));
       }
     });
+    
+    Promise.all(this.initialAddPlayerPromises).then(() => {
+      this.emit(Tournament.Events.INITIAL_PLAYERS_INITIALIZED);
+    })
 
     this.status = TournamentStatus.INITIALIZED;
     
@@ -755,8 +758,10 @@ export class Ladder extends Tournament {
   }
 
   /** Schedule a match using match info */
-  public scheduleMatch(matchInfo: Tournament.QueuedMatch) {
-    this.matchQueue.push(matchInfo);
+  public scheduleMatches(...matchInfos: Array<Tournament.QueuedMatch>) {
+    this.matchQueue.push(...matchInfos);
+    // kick off the runner to process any matches
+    this.tourneyRunner();
   }
 
 
@@ -1027,6 +1032,8 @@ export class Ladder extends Tournament {
    * If match result is {ranks: []}, nothing will happen, can be used to mark a match as having errored
    */
   private async handleMatchWithTrueSkill() {
+    // TODO, a lot of code repeated with ELO as well. Abstract to "ranksystem class" and have abstract functions for
+    // handling match results, updating rank states etc. Ideally in Ladder there should only be calls to various logic // linking these updates with local state or db
     let toProcess = this.resultProcessingQueue.shift();
     let mapAgentIDtoTournamentID = toProcess.mapAgentIDtoTournamentID;
     let result = <RankSystem.TRUESKILL.Results>toProcess.result;
@@ -1086,7 +1093,7 @@ export class Ladder extends Tournament {
     if (this.configs.consoleDisplay) {
       await this.printTournamentStatus();
     }
-    
+    this.emit(Tournament.Events.MATCH_HANDLED);
   }
 
   private async handleMatchWithELO() {
@@ -1143,6 +1150,8 @@ export class Ladder extends Tournament {
     if (this.configs.consoleDisplay) {
       await this.printTournamentStatus();
     }
+
+    this.emit(Tournament.Events.MATCH_HANDLED);
   }
 
   protected async preInternalDestroy() {
