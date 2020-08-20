@@ -106,7 +106,7 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
       });
       it("should run with users and store user data + match data", async () => {
         await t.run();
-        await sleep(5000);
+        await sleep(15000);
         await t.stop();
         let ranks = await t.getRankings();
         expect(t.state.statistics.totalMatches).to.be.greaterThan(1, "run more than 1 match");
