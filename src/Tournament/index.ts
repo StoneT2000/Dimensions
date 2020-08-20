@@ -247,7 +247,7 @@ export abstract class Tournament {
         this.anonymousCompetitors.set(id, newPlayer);
       }
   
-      this.internalAddPlayer(newPlayer);
+      await this.internalAddPlayer(newPlayer);
       return newPlayer;
     }
     else {
@@ -276,7 +276,7 @@ export abstract class Tournament {
         this.anonymousCompetitors.set(id, newPlayer);
       }
 
-      this.internalAddPlayer(newPlayer);
+      await this.internalAddPlayer(newPlayer);
       return newPlayer;
     }
   }
@@ -285,7 +285,7 @@ export abstract class Tournament {
    * Function to be implemented by a tournament type that performs further tasks to integrate a new player
    * @param player 
    */
-  abstract internalAddPlayer(player: Player): void;
+  abstract async internalAddPlayer(player: Player): Promise<void>;
 
   /**
    * Returns a new id for identifying a player in a tournament

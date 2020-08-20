@@ -381,7 +381,7 @@ export class Elimination extends Tournament {
     return arr;
   }
 
-  internalAddPlayer(player: Player) {
+  async internalAddPlayer(player: Player) {
     if (this.status === Tournament.Status.INITIALIZED || this.status === Tournament.Status.RUNNING)
     throw new 
       TournamentError('You are not allowed to add a player during the middle or after initialization of elimination tournaments');

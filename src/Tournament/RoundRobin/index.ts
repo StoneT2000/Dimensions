@@ -319,7 +319,7 @@ export class RoundRobin extends Tournament {
     return roundQueue;
   }
 
-  internalAddPlayer(player: Player) {
+  async internalAddPlayer(player: Player) {
     return;
   }
   async updatePlayer(player: Player, oldname: string, oldfile: string) {
