@@ -10,7 +10,7 @@ import { deepCopy } from '../utils/DeepCopy';
 import { Dimension, NanoID } from '../Dimension';
 import { genID } from '../utils';
 import TournamentStatusDefault = require('./TournamentStatus');
-import TournamentTypeDefault = require('./TournamentTypes');
+import TournamentTypeDefault = require('./TournamentTypes')
 
 /** @ignore */
 import _RankSystem = RankSystemDefault.RankSystem;
@@ -20,7 +20,7 @@ import _TOURNAMENT_TYPE = TournamentTypeDefault.TournamentType;
 import _TournamentStatus = TournamentStatusDefault.TournamentStatus;
 
 /**
- * Player class that persists data for the same ephemereal agent across multiple matches
+ * Player class that persists data for the same ephemereal agent across multiple matches. Used for {@link Tournament | Tournaments}
  */
 export class Player {
   
@@ -442,8 +442,12 @@ export abstract class Tournament {
     }
   }
 
+  /**
+   * Return an Array of Players corresponding to the player ids stored in `queuedMatchInfo`
+   * @param queuedMatchInfo 
+   */
   public async getMatchInfoFromQueuedMatch(queuedMatchInfo: Tournament.QueuedMatch) {
-    // Consider adding possibility to use cached player meta data
+    // Consider adding possibility to use cached player meta data to reduce db reads
     let retrievePlayerPromises: Array<Promise<Player>> = [];
     for (let i = 0; i < queuedMatchInfo.length; i++) {
       let playerId = queuedMatchInfo[i];
@@ -562,11 +566,20 @@ import RoundRobinTournament = RoundRobinDefault.RoundRobin;
 import EliminationDefault = require('./Elimination');
 /** @ignore */
 import EliminationTournament = EliminationDefault.Elimination;
+import SchedulerDefault = require('./Scheduler');
+/** @ignore */
+import SchedulerClass = SchedulerDefault.Scheduler;
 import { nanoid } from '..';
 import { removeDirectory, removeDirectorySync } from '../utils/System';
 import { Database } from '../Plugin/Database';
 
 export module Tournament {
+
+  // Re-export tournament classes/namespaces
+  export import Ladder = LadderTournament; 
+  export import RoundRobin = RoundRobinTournament;
+  export import Elimination = EliminationTournament;
+  export import Scheduler = SchedulerClass;
 
   // Re-export some types
   export import Type = _TOURNAMENT_TYPE;
@@ -716,11 +729,6 @@ export module Tournament {
     player: Player,
     matchesPlayed: number
   }
-
-  // Re-export tournament classes/namespaces
-  export import Ladder = LadderTournament; 
-  export import RoundRobin = RoundRobinTournament;
-  export import Elimination = EliminationTournament;
 }
 
 

@@ -20,6 +20,7 @@ import LadderConfigs = Ladder.Configs;
 import LadderPlayerStat = Ladder.PlayerStat;
 import { nanoid } from "../..";
 import { deepCopy } from "../../utils/DeepCopy";
+import { chooseKRandomElements } from "../Scheduler/utils";
 
 const REFRESH_RATE = 10000
 
@@ -757,7 +758,7 @@ export class Ladder extends Tournament {
       if (sortedPlayers.length < competitorCount) {
         return;
       }
-      let randomPlayers = this.selectRandomplayersFromArray(
+      let randomPlayers = chooseKRandomElements(
         [...sortedPlayers.slice(Math.max(rank - competitorCount * 2.5, lowerBound), rank), ... sortedPlayers.slice(rank + 1, rank + competitorCount * 2.5)], competitorCount - 1);
       let playerQueue = this.shuffle([player, ...randomPlayers])
 
@@ -771,29 +772,13 @@ export class Ladder extends Tournament {
     return this.configs.agentsPerMatch[Math.floor(Math.random() * this.configs.agentsPerMatch.length)];
   }
 
-  // using resovoir sampling to select num distinct randomly
-  private selectRandomplayersFromArray(arr: Array<Player>, num: number, excludedSet: Set<number> = new Set()) {
-    let reservoir: Array<Player> = [];
-    // put the first num into reservoir
-    for (let i = 0; i < num; i++) {
-      reservoir.push(arr[i]);
-    }
-    for (let i = num; i < arr.length; i++) {
-      let j = Math.floor(Math.random() * i);
-      if (j < num) {
-        reservoir[j] = arr[i];
-      }
-    }
-    return reservoir;
-  }
-
-  /** Scheddule a match using match info */
+  /** Schedule a match using match info */
   public scheduleMatch(matchInfo: Tournament.QueuedMatch) {
     this.matchQueue.push(matchInfo);
   }
 
 
-  // when adding a new player
+  // called adding a new player
   async internalAddPlayer(player: Player) {
     switch(this.configs.rankSystem) {
       case RankSystem.TRUESKILL:

@@ -41,6 +41,7 @@
     "mongoose": "^5.9.11",
     "nanoid": "^3.1.4",
     "pidusage": "^2.0.18",
+    "seedrandom": "^3.0.5",
     "sprintf-js": "^1.1.2",
     "tree-kill": "^1.2.2",
     "ts-trueskill": "^2.5.5"
@@ -60,6 +61,7 @@
     "@types/mongoose": "^5.7.14",
     "@types/node": "^12.12.54",
     "@types/pidusage": "^2.0.1",
+    "@types/seedrandom": "^2.4.28",
     "@types/sinon": "^9.0.0",
     "@types/sinon-chai": "^3.2.4",
     "axios": "^0.19.2",
