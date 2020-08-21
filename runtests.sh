@@ -8,5 +8,5 @@ npm run clean
 npm run test-seed
 
 # test core, then api
-nyc --reporter=html --no-clean mocha tests/core/**/*.spec.ts tests/api/**/*.spec.ts
+nyc --reporter=html --no-clean mocha tests/core/**/*.spec.ts
 
