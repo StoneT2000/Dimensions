@@ -51,7 +51,7 @@ describe('Testing MatchEngine Core', () => {
     }
   });
   const tf = [true, false];
-  before( async () => {
+  before(() => {
     ddefault = Dimension.create(rpsDesign, {
       activateStation: false,
       observe: false,
@@ -352,9 +352,9 @@ describe('Testing MatchEngine Core', () => {
   });
   
 
-  after(() => {
-    d.cleanupMatches();
-    ddefault.cleanupMatches();
+  after(async () => {
+    await d.cleanupMatches();
+    await ddefault.cleanupMatches();
   });
   
 });

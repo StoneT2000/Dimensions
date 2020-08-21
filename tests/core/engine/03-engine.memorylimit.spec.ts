@@ -18,7 +18,7 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
   let d: Dimension.DimensionType;
   let rpsDesign = new RockPaperScissorsDesign('RPS');
   const tf = [true, false];
-  before( async () => {
+  before(() => {
     d = Dimension.create(rpsDesign, {
       activateStation: false,
       observe: false,
@@ -95,7 +95,7 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
       expect(results.scores).to.eql({'0': 0, '1': 9});
     });
   });
-  after(() => {
-    d.cleanup();
+  after(async () => {
+    await d.cleanup();
   });
 });
