@@ -7,13 +7,21 @@ npm run clean
 
 npm run test-seed
 
-# test core, then api
-nyc --reporter=html --no-clean mocha tests/core/agent/**/*.spec.ts
-nyc --reporter=html --no-clean mocha tests/core/database/**/*.spec.ts
-nyc --reporter=html --no-clean mocha tests/core/dimension/**/*.spec.ts
-nyc --reporter=html --no-clean mocha tests/core/engine/**/*.spec.ts
-nyc --reporter=html --no-clean mocha tests/core/logger/**/*.spec.ts
-nyc --reporter=html --no-clean mocha tests/core/rating/**/*.spec.ts
-nyc --reporter=html --no-clean mocha tests/core/tourney/**/*.spec.ts
-nyc --reporter=html --no-clean mocha tests/api/**/*.spec.ts
+testpaths=(tests/core/agent/**/*.spec.ts \
+tests/core/database/**/*.spec.ts \
+tests/core/dimension/**/*.spec.ts \
+tests/core/engine/**/*.spec.ts \
+tests/core/logger/**/*.spec.ts \
+tests/core/match/**/*.spec.ts \
+tests/core/rating/**/*.spec.ts \
+tests/core/tourney/**/*.spec.ts \
+tests/api/**/*.spec.ts )
 
+errcount=0
+
+for path in ${testpaths[@]}; do
+  nyc --reporter=html --no-clean mocha $path
+  errcount=$((errcount + $?))
+done
+
+exit ${errcount}

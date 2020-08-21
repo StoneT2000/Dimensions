@@ -27,7 +27,7 @@ describe('Testing MatchEngine Multi Language Support', () => {
     php: './tests/kits/php/bot.php',
   };
   const tf = [true, false];
-  before( async () => {
+  before(() => {
     d = Dimension.create(rpsDesign, {
       activateStation: false,
       observe: false,
@@ -116,7 +116,8 @@ describe('Testing MatchEngine Multi Language Support', () => {
       });
     })
   }
-  after(() => {
-    d.cleanup();
+  after(async () => {
+    await d.cleanup();
+    console.log("cleaned up");
   });
 });
