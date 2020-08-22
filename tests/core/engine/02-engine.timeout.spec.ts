@@ -17,7 +17,7 @@ describe('Testing MatchEngine Timeout Mechanism', () => {
   let d: Dimension.DimensionType;
   let rpsDesign = new RockPaperScissorsDesign('RPS');
   const tf = [true, false];
-  before( async () => {
+  before(() => {
     d = Dimension.create(rpsDesign, {
       activateStation: false,
       observe: false,
@@ -101,7 +101,7 @@ describe('Testing MatchEngine Timeout Mechanism', () => {
       expect(results.scores).to.eql({'0': 0, '1': 3});
     });
   });
-  after(() => {
-    d.cleanup();
+  after(async () => {
+    await d.cleanup();
   });
 });

@@ -44,6 +44,8 @@ export class Elimination extends Tournament {
   };
   matchHashes: Array<string> = [];
 
+  type = Tournament.Type.ELIMINATION;
+
   private shouldStop: boolean = false;
   private resumePromise: Promise<void>;
   private resumeResolver: Function;
@@ -158,9 +160,9 @@ export class Elimination extends Tournament {
         this.log.info('Resumed Tournament');
         this.shouldStop = false;
       }
-      let matchInfo = this.matchQueue.shift();
+      let queuedMatchInfo = this.matchQueue.shift();
       let matchHash = this.matchHashes.shift();
-      await this.handleMatch(matchInfo, matchHash);        
+      await this.handleMatch(queuedMatchInfo, matchHash);        
       if (this.state.currentRound === 2) {
         break;
       }
@@ -177,7 +179,8 @@ export class Elimination extends Tournament {
    * Handles a match and updates stats appropriately
    * @param matchInfo - The match to run
    */
-  private async handleMatch(matchInfo: Array<Player>, matchHash: string) {
+  private async handleMatch(queuedMatchInfo: Tournament.QueuedMatch, matchHash: string) {
+    let matchInfo = await this.getMatchInfoFromQueuedMatch(queuedMatchInfo);
     if (matchInfo.length != 2) {
       throw new FatalError(`This shouldn't happen, tried to run a match with player count not equal to 2 in an elimination tournament`);
     }
@@ -322,11 +325,11 @@ export class Elimination extends Tournament {
     for (let i = 0; i < round / 2; i++) {
       let p1 = seededArr[i][1].player;
       let oseed = round - (i + 1);
-      let p2 = null; // a null is a bye
+      let p2: Player = null; // a null is a bye
       if (seededArr.length > oseed) {
         p2 = seededArr[oseed][1].player;
       }
-      this.matchQueue.push([p1, p2]);
+      this.matchQueue.push([p1.tournamentID.id, p2.tournamentID.id]);
 
       // hashes are of the form `betterseed,worseseed`, which has a 1-1 bijection with the match that should be played
       // in a elimination tournament. e.g 8,9 is a matchup that can happen is during the round of (8 + 9 - 1) = 16
@@ -357,7 +360,7 @@ export class Elimination extends Tournament {
       let res2 = this.state.resultsMap.get(`${hash[1]},${oldOpponent2}`);
       let p2 = res2.winner;
       this.matchHashes.push(`${hash[0]},${hash[1]}`);
-      this.matchQueue.push([p1, p2]);
+      this.matchQueue.push([p1.tournamentID.id, p2.tournamentID.id]);
 
     }
     this.state.currentRound = nextRound;
@@ -378,7 +381,7 @@ export class Elimination extends Tournament {
     return arr;
   }
 
-  internalAddPlayer(player: Player) {
+  async internalAddPlayer(player: Player) {
     if (this.status === Tournament.Status.INITIALIZED || this.status === Tournament.Status.RUNNING)
     throw new 
       TournamentError('You are not allowed to add a player during the middle or after initialization of elimination tournaments');

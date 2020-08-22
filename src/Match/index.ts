@@ -296,7 +296,7 @@ export class Match {
   }
 
   /**
-   * Retrieves a bot through its key and downloads it to a random generated folder. Returns the new file
+   * Retrieves a bot through its key and downloads it to a random generated folder. Returns the new file's path
    * @param botkey 
    */
   private async retrieveBot(botkey: string, file: string) {

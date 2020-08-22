@@ -29,6 +29,9 @@ export class RoundRobin extends Tournament {
     consoleDisplay: true,
     id: 'aa2qlM'
   }
+
+  type = Tournament.Type.ROUND_ROBIN;
+
   private shouldStop: boolean = false;
   private resumePromise: Promise<void>;
   private resumeResolver: Function;
@@ -92,7 +95,7 @@ export class RoundRobin extends Tournament {
     this.status = Tournament.Status.RUNNING;
     this.log.info('Running Tournament');
     this.configs = deepMerge(this.configs, configs, true);
-    this.initialize();
+    await this.initialize();
     this.schedule();
     // running one at a time
     while (this.matchQueue.length) {
@@ -115,7 +118,9 @@ export class RoundRobin extends Tournament {
    * Handles the start and end of a match, and updates state accrding to match results and the given result handler
    * @param matchInfo 
    */
-  private async handleMatch(matchInfo: Array<Player>) {
+  private async handleMatch(queuedMatchInfo: Tournament.QueuedMatch) {
+    let matchInfo = await this.getMatchInfoFromQueuedMatch(queuedMatchInfo);
+
     if (this.configs.consoleDisplay) {
       this.printTournamentStatus();
       console.log();
@@ -294,27 +299,27 @@ export class RoundRobin extends Tournament {
    */
   private schedule() {
     this.log.detail('Scheduling... ');
-    let matchSets: Array<Array<Player>> = [];
+    let matchSets: Array<Tournament.QueuedMatch> = [];
     for (let i = 0; i < this.configs.tournamentConfigs.times; i++) {
       matchSets.push(...this.generateARound());
     }
     this.matchQueue = matchSets;
   }
   private generateARound() {
-    let roundQueue: Array<Array<Player>> = [];
+    let roundQueue: Array<Tournament.QueuedMatch> = [];
 
     let comp = Array.from(this.competitors.values());
     for (let i = 0; i < this.competitors.size; i++) {
       for (let j = i + 1; j < this.competitors.size; j++) {
         let player1 = comp[i];
         let player2 = comp[j];
-        roundQueue.push([player1, player2]);
+        roundQueue.push([player1.tournamentID.id, player2.tournamentID.id]);
       }
     }
     return roundQueue;
   }
 
-  internalAddPlayer(player: Player) {
+  async internalAddPlayer(player: Player) {
     return;
   }
   async updatePlayer(player: Player, oldname: string, oldfile: string) {

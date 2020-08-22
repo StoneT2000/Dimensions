@@ -20,6 +20,7 @@ import LadderConfigs = Ladder.Configs;
 import LadderPlayerStat = Ladder.PlayerStat;
 import { nanoid } from "../..";
 import { deepCopy } from "../../utils/DeepCopy";
+import { Scheduler } from "../Scheduler";
 
 const REFRESH_RATE = 10000
 
@@ -40,6 +41,7 @@ export class Ladder extends Tournament {
       matchMake: null,
       configSyncRefreshRate: 6000,
       syncConfigs: true,
+      selfMatchMake: true,
     },
     resultHandler: null,
     agentsPerMatch: [2],
@@ -54,6 +56,11 @@ export class Ladder extends Tournament {
       totalMatches: 0
     }
   };
+
+  type = Tournament.Type.LADDER;
+
+  // lock matchqueue for concurrency
+  private matchQueueLocked: boolean = false;
 
   /**
    * ELO System used in this tournament
@@ -127,6 +134,10 @@ export class Ladder extends Tournament {
       }
     });
 
+    Promise.all(this.initialAddPlayerPromises).then(() => {
+      this.emit(Tournament.Events.INITIAL_PLAYERS_INITIALIZED);
+    })
+
     this.status = TournamentStatus.INITIALIZED;
     
     // setup config syncing if DB is enabled and store configs if not stored already
@@ -143,6 +154,18 @@ export class Ladder extends Tournament {
           }
         });
       }
+    }
+
+    // setup matchmaking algorithm to default if not provided
+    if (!this.configs.tournamentConfigs.matchMake) {
+      let max = this.configs.agentsPerMatch[0];
+      this.configs.agentsPerMatch.forEach((v) => {
+        max = Math.max(max, v);
+      });
+      this.configs.tournamentConfigs.matchMake = Scheduler.RankRangeRandom({
+        agentsPerMatch: this.configs.agentsPerMatch,
+        range: Math.ceil(max * 2.5)
+      });
     }
 
     this.log.info('Initialized Ladder Tournament');
@@ -434,7 +457,11 @@ export class Ladder extends Tournament {
     this.log.info('Running Tournament');
     this.configs = deepMerge(this.configs, configs, true);
     await this.initialize();
-    await this.schedule();
+
+    this.configs.tournamentConfigs.selfMatchMake ? 
+      await this.schedule() :
+      this.log.info('Self match make turned off, tournament will only run matches stored in match queue')
+
     if (master) {
       this.setStatus(TournamentStatus.RUNNING);
     }
@@ -448,7 +475,10 @@ export class Ladder extends Tournament {
   }
 
   private async tourneyRunner() {
-
+    if (this.matchQueueLocked) {
+      return;
+    }
+    this.matchQueueLocked = true;
     if (this.matches.size >= this.configs.tournamentConfigs.maxConcurrentMatches) return;
 
     let maxTotalMatches = this.configs.tournamentConfigs.maxTotalMatches;
@@ -470,11 +500,12 @@ export class Ladder extends Tournament {
     }
     let matchPromises = [];
 
-    // if too little matches, schedule another set
-    if (this.matchQueue.length < this.configs.tournamentConfigs.maxConcurrentMatches * 2) {
+    // if too little matches, schedule another set provided tournament is set to schedule its own matches
+    if (this.configs.tournamentConfigs.selfMatchMake && this.matchQueue.length < this.configs.tournamentConfigs.maxConcurrentMatches * 2) {
       await this.schedule();
     }
-    // run as the minimum of the queued matches length, minimum to not go over maxConcurrent matches config, and not to go over a maxtTotalMatches limit if there is one
+
+    // run as many matches as allowed by maxConcurrentMatches, maxTotalMatches, and how many matches left in queue allow
     for (let i = 0; i < Math.min(this.matchQueue.length, this.configs.tournamentConfigs.maxConcurrentMatches - this.matches.size); i++) {
       if (maxTotalMatches && maxTotalMatches - this.state.statistics.totalMatches - this.matches.size <= 0) {
         break;
@@ -502,13 +533,14 @@ export class Ladder extends Tournament {
         }
       }
     });
+    this.matchQueueLocked = false;
   }
 
   /**
    * Performs a Fisher Yates Shuffle
    * @param arr - the array to shuffle
    */
-  private shuffle(arr: any[]) {
+  private shuffle<T>(arr: T[]) {
     for (let i = arr.length - 1; i >= 1; i--) {
       let j = Math.floor(Math.random() * i);
       let tmp = arr[i];
@@ -636,7 +668,7 @@ export class Ladder extends Tournament {
           rating: new Rating(trueskillConfigs.initialMu, trueskillConfigs.initialSigma)
         }
       }
-      this.updateDatabaseTrueskillPlayerStats(playerStat, user);
+      await this.updateDatabaseTrueskillPlayerStats(playerStat, user);
     }
 
     // only store locally if not in DB
@@ -719,66 +751,29 @@ export class Ladder extends Tournament {
   }
   
   /**
-   * Schedules matches to play. Default function is to schedule randomly a player A with other players that are within
-   * 2.5 * competitorCount rank of that player A's rank. competitorCount is the number of agents chosen to compete
-   * in the particular match to schedule. See {@link Tournament.TournamentConfigs.agentsPerMatch}.
+   * Schedules matches to play. By default uses {@link Scheduler.RankRangeRandom}
    * 
    * If a {@link Ladder.Configs.matchMake | matchMake} function is provided, that will be used instead of the default.
    */
   private async schedule() {
-    // TODO: Slide window instead for dealing with rankings. good buffer size might be max 1k players ~ 10mb
+    // TODO: Consider slide window instead for dealing with rankings?
     let rankings = await this.getRankings(0, -1);
     if (this.configs.tournamentConfigs.matchMake) {
       let newMatches = this.configs.tournamentConfigs.matchMake(rankings);
       this.matchQueue.push(...newMatches);
       return;
     }
-
-    // runs a round of scheduling
-    // for every not disabled player, we schedule a match
-    // TODO: For scalability, getrankings should handle just a subset at a time in order to not load too much at once.
-    
-    let sortedPlayers = rankings.map((p) => p.player).filter((p) => !p.disabled);
-    let newQueue = [];
-    sortedPlayers.forEach((player, rank) => {
-
-      let competitorCount = this.selectRandomAgentAmountForMatch();
-       
-      // take random competitors from +/- competitorCount * 2.5 ranks near you
-      let lowerBound = 0;
-      if (rank == 0) lowerBound = 1;
-      if (sortedPlayers.length < competitorCount) {
-        return;
-      }
-      let randomPlayers = this.selectRandomplayersFromArray(
-        [...sortedPlayers.slice(Math.max(rank - competitorCount * 2.5, lowerBound), rank), ... sortedPlayers.slice(rank + 1, rank + competitorCount * 2.5)], competitorCount - 1);
-      newQueue.push(this.shuffle([player, ...randomPlayers]));
-    });
-    this.shuffle(newQueue);
-    this.matchQueue.push(...newQueue);
   }
 
-  private selectRandomAgentAmountForMatch(): number {
-    return this.configs.agentsPerMatch[Math.floor(Math.random() * this.configs.agentsPerMatch.length)];
+  /** Schedule a match using match info */
+  public scheduleMatches(...matchInfos: Array<Tournament.QueuedMatch>) {
+    this.matchQueue.push(...matchInfos);
+    // kick off the runner to process any matches
+    this.tourneyRunner();
   }
 
-  // using resovoir sampling to select num distinct randomly
-  private selectRandomplayersFromArray(arr: Array<any>, num: number, excludedSet: Set<number> = new Set()) {
-    let reservoir = [];
-    // put the first num into reservoir
-    for (let i = 0; i < num; i++) {
-      reservoir.push(arr[i]);
-    }
-    for (let i = num; i < arr.length; i++) {
-      let j = Math.floor(Math.random() * i);
-      if (j < num) {
-        reservoir[j] = arr[i];
-      }
-    }
-    return reservoir;
-  }
 
-  // when adding a new player
+  // called adding a new player
   async internalAddPlayer(player: Player) {
     switch(this.configs.rankSystem) {
       case RankSystem.TRUESKILL:
@@ -940,7 +935,10 @@ export class Ladder extends Tournament {
    * Handles the start and end of a match, and updates state accrding to match results and the given result handler
    * @param matchInfo 
    */
-  private async handleMatch(matchInfo: Array<Player>) {
+  private async handleMatch(queuedMatchInfo: Tournament.QueuedMatch) {
+    
+    // Consider adding possibility to use cached player meta data
+    let matchInfo = await this.getMatchInfoFromQueuedMatch(queuedMatchInfo);
     
     if (!(await this.checkMatchIntegrity(matchInfo))) {
       // quit
@@ -1021,10 +1019,10 @@ export class Ladder extends Tournament {
         if (user && user.statistics[this.getKeyName()]) {
           switch(this.configs.rankSystem) {
             case RankSystem.TRUESKILL:
-              this.updateDatabaseTrueskillPlayerStats(currentStats, user);
+              await this.updateDatabaseTrueskillPlayerStats(currentStats, user);
               break;
             case RankSystem.ELO:
-              this.updateDatabaseELOPlayerStats(currentStats, user);
+              await this.updateDatabaseELOPlayerStats(currentStats, user);
               break;
           }
         }
@@ -1042,12 +1040,17 @@ export class Ladder extends Tournament {
    * If match result is {ranks: []}, nothing will happen, can be used to mark a match as having errored
    */
   private async handleMatchWithTrueSkill() {
+    // TODO, a lot of code repeated with ELO as well. Abstract to "ranksystem class" and have abstract functions for
+    // handling match results, updating rank states etc. Ideally in Ladder there should only be calls to various logic // linking these updates with local state or db
     let toProcess = this.resultProcessingQueue.shift();
     let mapAgentIDtoTournamentID = toProcess.mapAgentIDtoTournamentID;
     let result = <RankSystem.TRUESKILL.Results>toProcess.result;
     
     // stop if no ranks provided, meaning match not successful and we throw result away
-    if (result.ranks.length === 0) return;
+    if (result.ranks.length === 0) {
+      this.emit(Tournament.Events.MATCH_HANDLED);
+      return;
+    }
     
     let playerRatings: Array<Array<Rating>> = [];
     let tourneyIDs: Array<{id: Tournament.ID, stats: any}> = [];
@@ -1081,6 +1084,7 @@ export class Ladder extends Tournament {
       await Promise.all(fetchingRatings);
     } catch (err) {
       this.log.error('Probably due to player being removed: ', err);
+      this.emit(Tournament.Events.MATCH_HANDLED);
       return;
     }
 
@@ -1091,7 +1095,7 @@ export class Ladder extends Tournament {
         let currentStats: Ladder.PlayerStat = info.stats;
         (<RankSystem.TRUESKILL.RankState>currentStats.rankState).rating = newRatings[i][0];
 
-        this.updatePlayerStat(currentStats);
+        await this.updatePlayerStat(currentStats);
       }
       updatePlayerStatsPromises.push(updateStat());
     });
@@ -1101,14 +1105,21 @@ export class Ladder extends Tournament {
     if (this.configs.consoleDisplay) {
       await this.printTournamentStatus();
     }
-    
+
+    this.emit(Tournament.Events.MATCH_HANDLED);
   }
 
   private async handleMatchWithELO() {
     let toProcess = this.resultProcessingQueue.shift();
     let mapAgentIDtoTournamentID = toProcess.mapAgentIDtoTournamentID;
     let result = <RankSystem.ELO.Results>toProcess.result;
-    if (result.ranks.length === 0) return;
+
+    // stop if no ranks provided, meaning match not successful and we throw result away
+    if (result.ranks.length === 0) {
+      this.emit(Tournament.Events.MATCH_HANDLED);
+      return;
+    }
+
     let ratingsToChange: Array<ELORating> = [];
     let ranks = [];
     let tourneyIDs: Array<{id: Tournament.ID, stats: any}> = [];
@@ -1119,6 +1130,7 @@ export class Ladder extends Tournament {
 
         let { playerStat } = (await this.getPlayerStat(tournamentID.id));
         if (!playerStat) {
+          this.emit(Tournament.Events.MATCH_HANDLED);
           throw new TournamentPlayerDoesNotExistError(`Player ${tournamentID.id} doesn't exist anymore, likely was removed`);
         }
         let currentplayerStats = <Ladder.PlayerStat>playerStat;
@@ -1135,6 +1147,7 @@ export class Ladder extends Tournament {
     try {
       await Promise.all(fetchingRatings);
     } catch (err) {
+      this.emit(Tournament.Events.MATCH_HANDLED);
       this.log.error('Probably due to player being removed: ', err);
       return;
     }
@@ -1158,6 +1171,8 @@ export class Ladder extends Tournament {
     if (this.configs.consoleDisplay) {
       await this.printTournamentStatus();
     }
+
+    this.emit(Tournament.Events.MATCH_HANDLED);
   }
 
   protected async preInternalDestroy() {
@@ -1205,7 +1220,7 @@ export namespace Ladder {
      * @param playerStats - an array of all player stats in the tournament. See {@link PlayerStat} for what variables
      * are exposed to use to help schedule matches
      */
-      (playerStats: Array<PlayerStat>) => Array<Array<Player>>,
+      (playerStats: Array<PlayerStat>) => Array<Tournament.QueuedMatch>,
 
     /**
      * Rate in ms of how fast to sync the configs. Used for synchronizing configs in a distributed system.
@@ -1220,6 +1235,13 @@ export namespace Ladder {
      * @default `true`
      */
     syncConfigs: boolean
+
+    /**
+     * Whether or not this tournament will schedule its own matches using its own {@link Ladder.Configs.matchMake | matchMake} function
+     * 
+     * @default `true`
+     */
+    selfMatchMake: boolean
 
   }
   /**

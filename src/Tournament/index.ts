@@ -1,6 +1,6 @@
 import { Match } from '../Match';
 import { Design } from '../Design';
-import { FatalError, TournamentPlayerDoesNotExistError, TournamentError } from '../DimensionError'
+import { FatalError, TournamentPlayerDoesNotExistError, TournamentError, DatabaseGetUserError } from '../DimensionError'
 
 import { DeepPartial } from '../utils/DeepPartial';
 import { Logger } from '../Logger';
@@ -9,8 +9,14 @@ import RankSystemDefault = require('./RankSystem');
 import { deepCopy } from '../utils/DeepCopy';
 import { Dimension, NanoID } from '../Dimension';
 import { genID } from '../utils';
+import { nanoid } from '..';
+import { removeDirectory, removeDirectorySync } from '../utils/System';
+import { Database } from '../Plugin/Database';
+import EventEmitter from 'events';
+
+
 import TournamentStatusDefault = require('./TournamentStatus');
-import TournamentTypeDefault = require('./TournamentTypes');
+import TournamentTypeDefault = require('./TournamentTypes')
 
 /** @ignore */
 import _RankSystem = RankSystemDefault.RankSystem;
@@ -20,7 +26,7 @@ import _TOURNAMENT_TYPE = TournamentTypeDefault.TournamentType;
 import _TournamentStatus = TournamentStatusDefault.TournamentStatus;
 
 /**
- * Player class that persists data for the same ephemereal agent across multiple matches
+ * Player class that persists data for the same ephemereal agent across multiple matches. Used for {@link Tournament | Tournaments}
  */
 export class Player {
   
@@ -81,7 +87,7 @@ export class Player {
  * `this.anonymousCompetitors` and other players are pulled from DB. Hence, a lot of code requires checking if database
  * exists and if so, pull from there and the anonymous competitors map, other wise use this.state or this.competitors
  */
-export abstract class Tournament {
+export abstract class Tournament extends EventEmitter {
 
   /** Tournament configs */
   abstract configs: Tournament.TournamentConfigsBase;
@@ -90,7 +96,7 @@ export abstract class Tournament {
   public matches: Map<NanoID, Match> = new Map();
 
   /** A queue whose elements are each arrays of players that are to compete against each other */
-  public matchQueue: Array<Array<Player>> = [];
+  public matchQueue: Array<Tournament.QueuedMatch> = [];
   
   /** The current status of the tournament */
   public status: Tournament.Status = Tournament.Status.UNINITIALIZED;
@@ -120,6 +126,9 @@ export abstract class Tournament {
    */
   public name = '';
 
+  /** Tournament Type */
+  abstract type: Tournament.Type;
+
   /**
    * Promise array of which all resolves once every player added through constructor is finished adding
    */
@@ -132,6 +141,7 @@ export abstract class Tournament {
     tournamentConfigs: Tournament.TournamentConfigsBase,
     dimension: Dimension
   ) {
+    super();
     this.id = id;
 
     // use overriden id if provided
@@ -244,7 +254,7 @@ export abstract class Tournament {
         this.anonymousCompetitors.set(id, newPlayer);
       }
   
-      this.internalAddPlayer(newPlayer);
+      await this.internalAddPlayer(newPlayer);
       return newPlayer;
     }
     else {
@@ -273,7 +283,7 @@ export abstract class Tournament {
         this.anonymousCompetitors.set(id, newPlayer);
       }
 
-      this.internalAddPlayer(newPlayer);
+      await this.internalAddPlayer(newPlayer);
       return newPlayer;
     }
   }
@@ -282,7 +292,7 @@ export abstract class Tournament {
    * Function to be implemented by a tournament type that performs further tasks to integrate a new player
    * @param player 
    */
-  abstract internalAddPlayer(player: Player): void;
+  abstract async internalAddPlayer(player: Player): Promise<void>;
 
   /**
    * Returns a new id for identifying a player in a tournament
@@ -431,12 +441,29 @@ export abstract class Tournament {
       return {results: results, match: match};
     }
     catch(err) {
+      this.emit(Tournament.Events.MATCH_RAN);
       return {
         results: false,
         err: err,
         match: match
       }
     }
+  }
+
+  /**
+   * Return an Array of Players corresponding to the player ids stored in `queuedMatchInfo`
+   * @param queuedMatchInfo 
+   */
+  public async getMatchInfoFromQueuedMatch(queuedMatchInfo: Tournament.QueuedMatch) {
+    // Consider adding possibility to use cached player meta data to reduce db reads
+    let retrievePlayerPromises: Array<Promise<Player>> = [];
+    for (let i = 0; i < queuedMatchInfo.length; i++) {
+      let playerId = queuedMatchInfo[i];
+      
+      retrievePlayerPromises.push(this.getPlayerStat(playerId).then(({ playerStat }) => playerStat.player));
+    }
+
+    return await Promise.all(retrievePlayerPromises);
   }
 
   /**
@@ -516,7 +543,14 @@ export abstract class Tournament {
     // TODO: Add caching as an option
     if (!this.state.playerStats.has(id)) {
       if (this.dimension.hasDatabase()) {
-        let user = await this.dimension.databasePlugin.getUser(id);
+        let user: Database.User;
+        try {
+          user = await this.dimension.databasePlugin.getUser(id);
+        }
+        catch(err)  {
+          this.log.error(err);
+          throw new DatabaseGetUserError(`failed to get database user with id: ${id}`);
+        }
         if (user && user.statistics[this.getKeyName()]) {
           return {user: user, playerStat: user.statistics[this.getKeyName()]};
         }
@@ -540,11 +574,17 @@ import RoundRobinTournament = RoundRobinDefault.RoundRobin;
 import EliminationDefault = require('./Elimination');
 /** @ignore */
 import EliminationTournament = EliminationDefault.Elimination;
-import { nanoid } from '..';
-import { removeDirectory, removeDirectorySync } from '../utils/System';
-import { Database } from '../Plugin/Database';
+import SchedulerDefault = require('./Scheduler');
+/** @ignore */
+import SchedulerClass = SchedulerDefault.Scheduler;
 
 export module Tournament {
+
+  // Re-export tournament classes/namespaces
+  export import Ladder = LadderTournament; 
+  export import RoundRobin = RoundRobinTournament;
+  export import Elimination = EliminationTournament;
+  export import Scheduler = SchedulerClass;
 
   // Re-export some types
   export import Type = _TOURNAMENT_TYPE;
@@ -647,7 +687,7 @@ export module Tournament {
   /**
    * Queued match information, consisting of player IDs of players to compete
    */
-  export type QueuedMatchInfo = Array<nanoid>
+  export type QueuedMatch = Array<nanoid>
 
   /**
    * Internally used type.
@@ -695,10 +735,24 @@ export module Tournament {
     matchesPlayed: number
   }
 
-  // Re-export tournament classes/namespaces
-  export import Ladder = LadderTournament; 
-  export import RoundRobin = RoundRobinTournament;
-  export import Elimination = EliminationTournament;
+  export enum Events {
+    /**
+     * Event is emitted when initialAddPlayerPromises resolves. This involves all players initialized to tournament 
+     * upon initialization of tournament instance
+     */
+    INITIAL_PLAYERS_INITIALIZED = 'initial_players_initialized',
+
+
+    /**
+     * Event is emitted whenever a match runs
+     */
+    MATCH_RAN = 'match_ran',
+
+    /**
+     * Event is emitted whenever a match runs AND the tournament is completely done handling it.
+     */
+    MATCH_HANDLED = 'match_handled',
+  }
 }
 
 

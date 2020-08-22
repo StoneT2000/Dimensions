@@ -7,8 +7,6 @@ errorlogs
 *.log
 replays
 
-*.code-workspace
-
 # test files
 coverage
 tests/run.*.ts
@@ -24,7 +22,8 @@ __pycache__
 
 # other files
 *.DS_Store
-
+*.code-workspace
+.vscode
 
 src/Station/local/bots
 .devcontainer

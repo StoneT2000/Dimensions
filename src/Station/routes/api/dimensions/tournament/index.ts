@@ -264,6 +264,11 @@ router.get('/:tournamentID/player/:playerID/bot', requireAuth, async (req, res, 
   
 });
 
+/**
+ * POST 
+ * 
+ * Reset rankings
+ */
 router.post('/:tournamentID/reset', requireAdmin, async (req: Request, res: Response, next: NextFunction) => {
   if (req.data.tournament.configs.type !== TournamentType.LADDER) {
     return (next(new error.BadRequest(`Can't reset a tournament that is not of the ladder type`)));
@@ -336,6 +341,20 @@ router.post('/:tournamentID/upload/', requireAuth, async (req: Request, res: Res
   res.json({error: null, message: 'Successfully uploaded bot'});
 });
 
+/**
+ * POST
+ * 
+ * Create queued matches
+ */
+router.post('/:tournamentID/match-queue/', requireAdmin, async (req: Request, res: Response, next: NextFunction) => { 
+  if (!req.body.matchQueue) return next(new error.BadRequest('Missing matchQueue field'));
+  if (!req.body.matchQueue.length) return next(new error.BadRequest('Must provide an array'));
+  if (req.data.tournament.type === Tournament.Type.LADDER) {
+    let t = <Tournament.Ladder>req.data.tournament;
+    t.scheduleMatches(...req.body.matchQueue);
+    res.json({error: null, message: `Queued ${req.body.matchQueue.length} matches`})
+  }
+});
 
 
 

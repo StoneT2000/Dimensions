@@ -1,8 +1,0 @@
-{
-  "files.associations": {
-    "__split_buffer": "cpp",
-    "deque": "cpp",
-    "list": "cpp",
-    "utility": "cpp"
-  }
-}

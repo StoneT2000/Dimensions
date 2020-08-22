@@ -16,6 +16,8 @@ export enum RankSystem {
 
 export namespace RankSystem {
   
+  export interface ConfigsBase {}
+
   /**
    * Wins rank system. Ranks based on Wins, Ties, and Losses.
    */
@@ -23,7 +25,7 @@ export namespace RankSystem {
     /**
      * The configuration interface for configuring the {@link WINS} ranking system
      */
-    export interface Configs {
+    export interface Configs extends ConfigsBase {
       /** Points given per win in a {@link Match} */
       winValue: number
       /** Points given per tie in a {@link Match} */
@@ -52,7 +54,7 @@ export namespace RankSystem {
     /**
      * The configuration interface for configuring the {@link ELO} ranking system
      */
-    export interface Configs {
+    export interface Configs extends ConfigsBase {
       /** 
        * Starting ELO score 
        * @default `1000`
@@ -83,7 +85,7 @@ export namespace RankSystem {
 
   export namespace TRUESKILL {
     /** The Configuration interface used for configuring the {@link TRUESKILL} ranking system */
-    export interface Configs {
+    export interface Configs extends ConfigsBase {
       /** 
        * The initial Mu value players start with 
        * @default `25`

@@ -18,7 +18,7 @@ export class TournamentError extends Error {
  * 
  * Usually won't halt a tournament, but indicate something was uncompleted as a result of an error
  */
-export class TournamentPlayerDoesNotExistError extends Error {
+export class TournamentPlayerDoesNotExistError extends TournamentError {
   constructor(m: string) {
     super(m);
     this.name = TOURNAMENT_PLAYER_DOES_NOT_EXIST_ERROR

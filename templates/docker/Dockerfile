@@ -23,4 +23,9 @@ RUN apk add --no-cache openjdk8
 ENV JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk
 ENV PATH="$JAVA_HOME/bin:${PATH}"
 
+# needed to make pidusage work
+RUN apk --no-cache add procps
+
+RUN apk --no-cache add docker-cli
+
 RUN adduser -D dimensions_bot
