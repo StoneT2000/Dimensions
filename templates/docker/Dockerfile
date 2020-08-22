@@ -26,4 +26,6 @@ ENV PATH="$JAVA_HOME/bin:${PATH}"
 # needed to make pidusage work
 RUN apk --no-cache add procps
 
+RUN apk --no-cache add docker-cli
+
 RUN adduser -D dimensions_bot
