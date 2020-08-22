@@ -48,7 +48,7 @@ describe('Testing /api/dimensions/:dimensionID/tournament API', () => {
       id: 'tournamentid'
     });
   });
-  it(`GET ${base}/tournament - should return all tournaments`, async () => {
+  it(`GET ${base}/tournaments - should return all tournaments`, async () => {
     let res = await chai.request(endpoint)
     .get(`/tournament`)
     expect(res.status).to.equal(200);
@@ -60,9 +60,9 @@ describe('Testing /api/dimensions/:dimensionID/tournament API', () => {
     }).to.containSubset(res.body)
   });
 
-  it(`GET ${base}/tournament/:tournamentID - should return tournament with id tournamentID`, async () => {
+  it(`GET ${base}/tournaments/:tournamentID - should return tournament with id tournamentID`, async () => {
     let res = await chai.request(endpoint)
-    .get(`/tournament/${t.id}`)
+    .get(`/tournaments/${t.id}`)
     expect(res.status).to.equal(200);
     expect({
       error: null,
@@ -70,9 +70,9 @@ describe('Testing /api/dimensions/:dimensionID/tournament API', () => {
     }).to.containSubset(res.body)
   });
 
-  it(`GET ${base}/tournament/:tournamentID - should return 400, if tournament with id tournamentID does not exist`, async () => {
+  it(`GET ${base}/tournaments/:tournamentID - should return 400, if tournament with id tournamentID does not exist`, async () => {
     let res = await chai.request(endpoint)
-    .get(`/tournament/faketournamentID`)
+    .get(`/tournaments/faketournamentID`)
     expect(res.status).to.equal(400);
     expect(res.body).to.eql({
       error: {
@@ -82,7 +82,7 @@ describe('Testing /api/dimensions/:dimensionID/tournament API', () => {
     });
   });
 
-  it(`POST ${base}/tournament/:tournamentID/match-queue - should schedule matches`, async () => {
+  it(`POST ${base}/tournaments/:tournamentID/match-queue - should schedule matches`, async () => {
     return new Promise( async (resolve, reject) => {
       let t = createLadderTourney(dimension, botListWithIDs, {
         id: 'ladderWithoutSelfMatchmake',
@@ -96,7 +96,7 @@ describe('Testing /api/dimensions/:dimensionID/tournament API', () => {
       let matchQueue = [['rock1', 'rock2'], ['rock2', 'rock3']]
       await t.run();
       let res = await chai.request(endpoint)
-      .post(`/tournament/${t.id}/match-queue`).send({ matchQueue })
+      .post(`/tournaments/${t.id}/match-queue`).send({ matchQueue })
       expect(res.status).to.equal(200);
       expect(res.body).to.eql({
         error: null,

@@ -161,6 +161,6 @@ router.post('/:matchID/stop', requireAdmin, async (req: Request, res: Response, 
   });
 });
 
-router.use('/:matchID/agent', agentRouter);
+router.use('/:matchID/agents', agentRouter);
 
 export default router;

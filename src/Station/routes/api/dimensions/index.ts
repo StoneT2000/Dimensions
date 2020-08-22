@@ -139,7 +139,7 @@ router.delete('/:id/match/:matchID', async (req, res, next) => {
  * 
  * Gets all tournaments in a dimension
  */
-router.get('/:id/tournament', (req: Request, res: Response) => {
+router.get('/:id/tournaments', (req: Request, res: Response) => {
   let pickedTournaments = {}
   req.data.dimension.tournaments.forEach((t) => {
     pickedTournaments[t.id] = pickTournament(t);
@@ -150,7 +150,7 @@ router.get('/:id/tournament', (req: Request, res: Response) => {
 /**
  * Use the tournament API
  */
-router.use('/:id/tournament', tournamentAPI);
+router.use('/:id/tournaments', tournamentAPI);
 
 export const requiresDatabase = (req: Request, res: Response, next: NextFunction) => {
   // throw a error if no database detected
@@ -166,13 +166,13 @@ export const requiresDatabase = (req: Request, res: Response, next: NextFunction
 }
 
 /** Require that user and auth routes need database setup */
-router.use('/:id/user', requiresDatabase);
+router.use('/:id/users', requiresDatabase);
 router.use('/:id/auth', requiresDatabase);
 
 /**
  * Use the user API
  */
-router.use('/:id/user', userAPI);
+router.use('/:id/users', userAPI);
 
 /**
  * Use the auth API
