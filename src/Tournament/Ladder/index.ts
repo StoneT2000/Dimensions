@@ -1187,7 +1187,7 @@ export class Ladder extends Tournament {
 export namespace Ladder {
   
   /**
-   * Configuration interface for {@link LadderTournament}.
+   * Configuration interface for Ladder Tournaments
    */
   export interface Configs extends Tournament.TournamentTypeConfig {
     /** Max matches that can run concurrently on one node instance 
@@ -1245,7 +1245,7 @@ export namespace Ladder {
 
   }
   /**
-   * The {@link LadderTournament} state, consisting of the current player statistics and past results
+   * The Ladder Tournament state, consisting of the current player statistics and past results
    */
   export interface State extends Tournament.TournamentTypeState {
     /**

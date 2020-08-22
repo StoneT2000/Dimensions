@@ -9,7 +9,7 @@ export class Scheduler {
    * Randomly picks enough players for a match and schedules a match with them. 
    * 
    * Returns the Scheduler function that can 
-   * be passed to the {@link Tournament.Ladder.Configs.matchMake} field
+   * be passed to the {@link Ladder.Configs.matchMake} field
    */
   static Random(configs: Scheduler.RandomConfigs = { agentsPerMatch: [2] }) : (players: Array<Tournament.Ladder.PlayerStat>) => Array<Tournament.QueuedMatch> {
     const rng = seedrandom(configs.seed);
@@ -48,7 +48,7 @@ export class Scheduler {
    * This is also the default algorithm used by the {@link Tournament.Ladder | Ladder Tournament}
    * 
    * Returns the Scheduler function that can 
-   * be passed to the {@link Tournament.Ladder.Configs.matchMake} field
+   * be passed to the {@link Ladder.Configs.matchMake} field
    */
   static RankRangeRandom(configs: Scheduler.RankRangeRandomConfigs = { agentsPerMatch: [2], range: 4 }) : (players: Array<Tournament.Ladder.PlayerStat>) => Array<Tournament.QueuedMatch> {
     const rng = seedrandom(configs.seed);

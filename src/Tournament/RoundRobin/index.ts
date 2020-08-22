@@ -353,7 +353,7 @@ export class RoundRobin extends Tournament {
 export namespace RoundRobin {
 
   /**
-   * Configuration interface for {@link RoundRobinTournament}
+   * Configuration interface for RoundRobin Tournaments
    */
   export interface Configs extends Tournament.TournamentTypeConfig {
     /**
@@ -363,7 +363,7 @@ export namespace RoundRobin {
     times: number
   }
   /**
-   * The {@link RoundRobinTournament} state, consisting of the current player statistics and past results
+   * The RoundRobin Tournament state, consisting of the current player statistics and past results
    */
   export interface State extends Tournament.TournamentTypeState {
     /**

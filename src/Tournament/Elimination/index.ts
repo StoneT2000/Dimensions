@@ -397,7 +397,7 @@ export class Elimination extends Tournament {
 export namespace Elimination {
 
   /**
-   * Configuration interface for {@link EliminationTournament}
+   * Configuration interface for Elimination Tournaments
    */
   export interface Configs extends Tournament.TournamentTypeConfig {
     /**
@@ -420,7 +420,7 @@ export namespace Elimination {
     seeding: Array<number>
   }
   /**
-   * The {@link EliminationTournament} state, consisting of the current player statistics and past results
+   * The Elimination Tournament state, consisting of the current player statistics and past results
    */
   export interface State extends Tournament.TournamentTypeState {
     /**
