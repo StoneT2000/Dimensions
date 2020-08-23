@@ -8,7 +8,7 @@ import { spawnSync, spawn } from 'child_process';
  * Removes a file synchronously
  * @param file - file to remove
  */
-export const removeFileSync = (file: string) => {
+export const removeFileSync = (file: string): void => {
   spawnSync('rm', ['-f', file]);
 };
 
@@ -16,9 +16,9 @@ export const removeFileSync = (file: string) => {
  * Removes a file
  * @param file - file to remove
  */
-export const removeFile = (file: string) => {
+export const removeFile = (file: string): Promise<void> => {
   return new Promise((resolve, reject) => {
-    let p = spawn('rm', ['-f', file]);
+    const p = spawn('rm', ['-f', file]);
     p.on('error', (err) => {
       reject(err);
     });
@@ -45,7 +45,7 @@ export const processIsRunning = (pid: number): boolean => {
  * Removes files in the given directory synchronously
  * @param dir
  */
-export const removeDirectorySync = (dir: string) => {
+export const removeDirectorySync = (dir: string): void => {
   spawnSync('find', [dir, '-exec', 'rm', '-rf', '{}', '+']);
 };
 
@@ -53,9 +53,9 @@ export const removeDirectorySync = (dir: string) => {
  * Removes files in the given directory
  * @param dir
  */
-export const removeDirectory = (dir: string) => {
+export const removeDirectory = (dir: string): Promise<void> => {
   return new Promise((resolve, reject) => {
-    let p = spawn('find', [dir, '-exec', 'rm', '-rf', '{}', '+']);
+    const p = spawn('find', [dir, '-exec', 'rm', '-rf', '{}', '+']);
     p.on('error', (err) => {
       reject(err);
     });
@@ -79,9 +79,9 @@ export const dockerCopy = (
   fileOrDirectoryPath: string,
   containerID: string,
   targetPath: string
-) => {
+): Promise<void> => {
   return new Promise((resolve, reject) => {
-    let p = spawn('docker', [
+    const p = spawn('docker', [
       'cp',
       fileOrDirectoryPath,
       `${containerID}:${targetPath}`,

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
-let Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-let TournamentConfigSchema = new Schema(
+const TournamentConfigSchema = new Schema(
   {
     id: { type: String, index: true, required: true, unique: true },
     configs: { type: Schema.Types.Mixed, required: true },

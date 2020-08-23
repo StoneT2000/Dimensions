@@ -3,7 +3,6 @@ import { Design } from '../Design';
 import {
   FatalError,
   TournamentPlayerDoesNotExistError,
-  TournamentError,
   DatabaseGetUserError,
 } from '../DimensionError';
 
@@ -15,7 +14,7 @@ import { deepCopy } from '../utils/DeepCopy';
 import { Dimension, NanoID } from '../Dimension';
 import { genID } from '../utils';
 import { nanoid } from '..';
-import { removeDirectory, removeDirectorySync } from '../utils/System';
+import { removeDirectorySync } from '../utils/System';
 import { Database } from '../Plugin/Database';
 import EventEmitter from 'events';
 
@@ -38,7 +37,7 @@ export class Player {
    *
    * If this is ever false, then that means 1. we have a backend setup 2. there is an actual user entry
    */
-  public anonymous: boolean = true;
+  public anonymous = true;
 
   /** Associated username if there is one */
   public username: string = undefined;
@@ -58,7 +57,7 @@ export class Player {
    * {@link Tournament.Ladder | Ladder Tournaments}. Is set to true if this player's bot throws an error during
    * the initialization stage of a {@link Match}.
    */
-  public disabled: boolean = false;
+  public disabled = false;
 
   /**
    * Path to the zip file for the bot
@@ -78,7 +77,7 @@ export class Player {
   /**
    * Generates a 12 character player id string
    */
-  public static generatePlayerID() {
+  public static generatePlayerID(): string {
     return genID(12);
   }
 }
@@ -119,8 +118,6 @@ export abstract class Tournament extends EventEmitter {
   /** All competitors that are anonymous competitors and not registered in database */
   public anonymousCompetitors: Map<NanoID, Player> = new Map();
 
-  private playerID = 0;
-
   /** A reference to the dimension this tournament was spawned from */
   public dimension: Dimension;
 
@@ -142,7 +139,6 @@ export abstract class Tournament extends EventEmitter {
 
   constructor(
     protected design: Design,
-    files: Array<string> | Array<{ file: string; name: string }>,
     id: NanoID,
     tournamentConfigs: Tournament.TournamentConfigsBase,
     dimension: Dimension
@@ -211,15 +207,15 @@ export abstract class Tournament extends EventEmitter {
     }
 
     if (existingID) {
-      let { playerStat } = await this.getPlayerStat(existingID);
+      const { playerStat } = await this.getPlayerStat(existingID);
       if (playerStat) {
         // bot has stats in tournament already
-        let player = playerStat.player;
+        const player = playerStat.player;
         // undisable the player
         player.disabled = false;
 
-        let oldname = player.tournamentID.name;
-        let oldfile = player.file;
+        const oldname = player.tournamentID.name;
+        const oldfile = player.file;
         // remove the oldfile
         if (player.botDirPath) {
           // player.lock();
@@ -250,8 +246,8 @@ export abstract class Tournament extends EventEmitter {
     // add new competitor and call internal add so tournaments can perform any internal operations for the
     // addition of a new player
     if (typeof file === 'string') {
-      let name = `player-${id}`;
-      let newPlayer = new Player(
+      const name = `player-${id}`;
+      const newPlayer = new Player(
         { id: id, name: name, username: undefined },
         file,
         undefined
@@ -259,7 +255,7 @@ export abstract class Tournament extends EventEmitter {
 
       // check database
       if (this.dimension.hasDatabase()) {
-        let user = await this.dimension.databasePlugin.getUser(
+        const user = await this.dimension.databasePlugin.getUser(
           newPlayer.tournamentID.id
         );
         if (user) {
@@ -280,7 +276,7 @@ export abstract class Tournament extends EventEmitter {
       await this.internalAddPlayer(newPlayer);
       return newPlayer;
     } else {
-      let newPlayer = new Player(
+      const newPlayer = new Player(
         { id: id, name: file.name, username: undefined },
         file.file,
         file.zipFile,
@@ -289,7 +285,7 @@ export abstract class Tournament extends EventEmitter {
       newPlayer.botDirPath = file.botdir;
       // check database
       if (this.dimension.hasDatabase()) {
-        let user = await this.dimension.databasePlugin.getUser(
+        const user = await this.dimension.databasePlugin.getUser(
           newPlayer.tournamentID.id
         );
         if (user) {
@@ -323,7 +319,7 @@ export abstract class Tournament extends EventEmitter {
    * Returns a new id for identifying a player in a tournament
    * Only used when adding a plyaer to a tournament is done without specifying an id to use.
    */
-  public generateNextTournamentIDString() {
+  public generateNextTournamentIDString(): string {
     return Player.generatePlayerID();
   }
 
@@ -377,8 +373,8 @@ export abstract class Tournament extends EventEmitter {
    * Disables the player with id playerID
    * @param playerID - the player's id to disable
    */
-  public async disablePlayer(playerID: nanoid) {
-    let { user, playerStat } = await this.getPlayerStat(playerID);
+  public async disablePlayer(playerID: nanoid): Promise<void> {
+    const { user, playerStat } = await this.getPlayerStat(playerID);
     if (playerStat) {
       playerStat.player.disabled = true;
       if (this.dimension.hasDatabase() && user) {
@@ -397,8 +393,8 @@ export abstract class Tournament extends EventEmitter {
    *
    * @param playerID - ID of the player to remove
    */
-  public async removePlayer(playerID: nanoid) {
-    let { user, playerStat } = await this.getPlayerStat(playerID);
+  public async removePlayer(playerID: nanoid): Promise<void> {
+    const { user, playerStat } = await this.getPlayerStat(playerID);
     if (playerStat) {
       this.competitors.delete(playerID);
       this.anonymousCompetitors.delete(playerID);
@@ -413,7 +409,8 @@ export abstract class Tournament extends EventEmitter {
     }
   }
 
-  protected async internalRemovePlayer(playerID: nanoid) {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+  protected async internalRemovePlayer(playerID: nanoid): Promise<void> {}
 
   /**
    * Set configs for this tournament
@@ -439,10 +436,9 @@ export abstract class Tournament extends EventEmitter {
   ): Promise<{ results: any; match: Match; err?: any }> {
     if (!players.length) throw new FatalError('No players provided for match');
 
-    let matchConfigs = deepCopy(this.getConfigs().defaultMatchConfigs);
+    const matchConfigs = deepCopy(this.getConfigs().defaultMatchConfigs);
 
-    let match: Match;
-    let filesAndNamesAndIDs: Array<{
+    const filesAndNamesAndIDs: Array<{
       file: string;
       tournamentID: Tournament.ID;
       botkey?: string;
@@ -454,7 +450,7 @@ export abstract class Tournament extends EventEmitter {
         botkey: player.botkey,
       };
     });
-    match = new Match(
+    const match = new Match(
       this.design,
       filesAndNamesAndIDs,
       matchConfigs,
@@ -469,7 +465,7 @@ export abstract class Tournament extends EventEmitter {
       await match.initialize();
 
       // Get results
-      let results = await match.run();
+      const results = await match.run();
 
       // if database plugin is active and saveTournamentMatches is set to true, store match
       if (this.dimension.hasDatabase()) {
@@ -499,11 +495,11 @@ export abstract class Tournament extends EventEmitter {
    */
   public async getMatchInfoFromQueuedMatch(
     queuedMatchInfo: Tournament.QueuedMatch
-  ) {
+  ): Promise<Array<Player>> {
     // Consider adding possibility to use cached player meta data to reduce db reads
-    let retrievePlayerPromises: Array<Promise<Player>> = [];
+    const retrievePlayerPromises: Array<Promise<Player>> = [];
     for (let i = 0; i < queuedMatchInfo.length; i++) {
-      let playerId = queuedMatchInfo[i];
+      const playerId = queuedMatchInfo[i];
 
       retrievePlayerPromises.push(
         this.getPlayerStat(playerId).then(({ playerStat }) => playerStat.player)
@@ -516,9 +512,9 @@ export abstract class Tournament extends EventEmitter {
   /**
    * Removes a match by id. Returns true if deleted, false if nothing was deleted
    */
-  public async removeMatch(matchID: NanoID) {
+  public async removeMatch(matchID: NanoID): Promise<boolean> {
     if (this.matches.has(matchID)) {
-      let match = this.matches.get(matchID);
+      const match = this.matches.get(matchID);
       await match.destroy();
       return this.matches.delete(matchID);
     }
@@ -534,7 +530,7 @@ export abstract class Tournament extends EventEmitter {
     // stop if running
     if (this.status === Tournament.Status.RUNNING) this.stop();
 
-    let destroyPromises = [];
+    const destroyPromises = [];
 
     // now remove all match processes
     this.matches.forEach((match) => {
@@ -547,32 +543,34 @@ export abstract class Tournament extends EventEmitter {
   /**
    * Pre run function before generic destroy takes place
    */
-  protected async preInternalDestroy() {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  protected async preInternalDestroy(): Promise<void> {}
 
   /**
    * Post run function before generic destroy takes place
    */
-  protected async postInternalDestroy() {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  protected async postInternalDestroy(): Promise<void> {}
 
   /**
    * Generates a 6 character tournament ID identifying this tournament class instance. Not to be confused with
    * {@link Tournament.ID} which is the ID for competitors in the tournament
    */
-  public static genTournamentClassID() {
+  public static genTournamentClassID(): string {
     return genID(6);
   }
 
   /**
    * Returns the name of the tournament but formatted (no spaces)
    */
-  public getSafeName() {
+  public getSafeName(): string {
     return this.name.replace(/ /g, '_');
   }
 
   /**
    * Returns a key name to be used when storing a tournament by a combination of its name and id
    */
-  public getKeyName() {
+  public getKeyName(): string {
     return `${this.getSafeName()}_${this.id}`;
   }
 
@@ -622,8 +620,9 @@ import SchedulerDefault = require('./Scheduler');
 /** @ignore */
 import SchedulerClass = SchedulerDefault.Scheduler;
 
-export module Tournament {
+export namespace Tournament {
   // Re-export tournament classes/namespaces
+  /* eslint-disable */
   export import Ladder = LadderTournament;
   export import RoundRobin = RoundRobinTournament;
   export import Elimination = EliminationTournament;
@@ -654,6 +653,8 @@ export module Tournament {
    * Use {@link Tournament.Status} instead.
    */
   export import TournamentStatus = _TournamentStatus;
+
+  /* eslint-enable */
 
   /**
    * Required and Optional Tournament configurations

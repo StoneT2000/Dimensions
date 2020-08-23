@@ -1,4 +1,4 @@
-import { Tournament, Player } from '..';
+import { Tournament } from '..';
 import seedrandom from 'seedrandom';
 import { chooseKRandomElements } from './utils';
 /**
@@ -112,7 +112,7 @@ export class Scheduler {
   }
 }
 
-export module Scheduler {
+export namespace Scheduler {
   export interface ConfigsBase {
     /**
      * array of possible number of agents/players that can be put in single match, e.g. [2, 4] means 2 or 4 agents can

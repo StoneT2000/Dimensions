@@ -4,7 +4,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import * as error from '../../../../error';
 import { Match } from '../../../../../Match';
-import { pick } from '../../../../../utils';
+import { pick, noop } from '../../../../../utils';
 import agentRouter, { pickAgent } from './agent';
 import { requireAdmin } from '../auth';
 const router = express.Router();
@@ -22,7 +22,7 @@ export const getMatch = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   let match: Match;
   if (req.data.tournament) {
     match = req.data.tournament.matches.get(req.params.matchID);
@@ -61,21 +61,25 @@ export const getMatch = async (
 /**
  * Pick relevant fields of a match
  */
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const pickMatch = (match: Match) => {
-  let picked = pick(
-    match,
-    'configs',
-    'creationDate',
-    'id',
-    'log',
-    'mapAgentIDtoTournamentID',
-    'matchStatus',
-    'name',
-    'finishDate',
-    'results',
-    'replayFileKey',
-    'replayFile'
-  );
+  const picked = {
+    ...pick(
+      match,
+      'configs',
+      'creationDate',
+      'id',
+      'log',
+      'mapAgentIDtoTournamentID',
+      'matchStatus',
+      'name',
+      'finishDate',
+      'results',
+      'replayFileKey',
+      'replayFile'
+    ),
+    agents: [],
+  };
   if (match.agents) {
     picked.agents = match.agents.map((agent) => pickAgent(agent));
   }
@@ -106,7 +110,7 @@ router.get('/:matchID/results', (req, res) => {
 router.get('/:matchID/replay', async (req, res, next) => {
   if (req.data.dimension.hasStorage()) {
     if (req.data.match.replayFileKey) {
-      let storage = req.data.dimension.storagePlugin;
+      const storage = req.data.dimension.storagePlugin;
       res.send({
         error: null,
         url: await storage.getDownloadURL(req.data.match.replayFileKey),
@@ -162,7 +166,7 @@ router.post(
       } else {
         // run and do nothing with the error
         // match should be in ready state
-        req.data.match.run().catch(() => {});
+        req.data.match.run().catch(noop);
       }
       res.json({ error: null, msg: 'Running Match' });
     } catch (error) {

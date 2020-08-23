@@ -81,7 +81,7 @@ export class Match {
    * The current time step of the Match. This time step is independent of any {@link Design} and agents are coordianted
    * against this timeStep
    */
-  public timeStep: number = 0;
+  public timeStep = 0;
 
   /**
    * The associated {@link MatchEngine} that is running this match and serves as the backend for this match.
@@ -132,7 +132,7 @@ export class Match {
   matchProcessTimer: any;
 
   /** Signal to stop at next time step */
-  private shouldStop: boolean = false;
+  private shouldStop = false;
 
   /** Promise for resuming */
   private resumePromise: Promise<void>;
@@ -172,7 +172,7 @@ export class Match {
   constructor(
     public design: Design,
     public agentFiles:
-      | Array<String>
+      | Array<string>
       | Array<{ file: string; name: string; botkey?: string }>
       | Array<{ file: string; tournamentID: Tournament.ID; botkey?: string }>,
     configs: DeepPartial<Match.Configs> = {},
@@ -220,7 +220,7 @@ export class Match {
         `Design: ${this.design.name} | Initializing match - ID: ${this.id}, Name: ${this.name}`
       );
 
-      let overrideOptions = this.design.getDesignOptions().override;
+      const overrideOptions = this.design.getDesignOptions().override;
 
       this.log.detail('Match Configs', this.configs);
 
@@ -231,7 +231,7 @@ export class Match {
         if (!existsSync(this.configs.storeErrorDirectory)) {
           mkdirSync(this.configs.storeErrorDirectory);
         }
-        let matchErrorLogDirectory = this.getMatchErrorLogDirectory();
+        const matchErrorLogDirectory = this.getMatchErrorLogDirectory();
         if (!existsSync(matchErrorLogDirectory)) {
           mkdirSync(matchErrorLogDirectory);
         }
@@ -242,8 +242,8 @@ export class Match {
 
       // copy over any agent bot files if dimension has a backing storage servicde and the agent has botkey specified
       // copy them over the agent's specified file location to use
-      let retrieveBotFilePromises: Array<Promise<any>> = [];
-      let retrieveBotFileIndexes: Array<number> = [];
+      const retrieveBotFilePromises: Array<Promise<any>> = [];
+      const retrieveBotFileIndexes: Array<number> = [];
       if (this.dimension.hasStorage()) {
         this.agentFiles.forEach((agentFile, index) => {
           if (agentFile.botkey && agentFile.file) {
@@ -255,10 +255,11 @@ export class Match {
           }
         });
       }
-      let retrievedBotFiles = await Promise.all(retrieveBotFilePromises);
+      const retrievedBotFiles = await Promise.all(retrieveBotFilePromises);
       retrieveBotFileIndexes.forEach((val, index) => {
         if (!(typeof this.agentFiles[val] === 'string')) {
-          //@ts-ignore
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           this.agentFiles[val].file = retrievedBotFiles[index];
           // push them as non local files so they can be removed when match is done
           this.nonLocalFiles.push(path.dirname(retrievedBotFiles[index]));
@@ -280,7 +281,7 @@ export class Match {
       // if overriding with custom design, log some other info and use a different engine initialization function
       if (overrideOptions.active) {
         this.log.detail('Match Arguments', overrideOptions.arguments);
-        await this.matchEngine.initializeCustom(this);
+        await this.matchEngine.initializeCustom();
       } else {
         // Initialize the matchEngine and get it ready to run and process I/O for agents
         await this.matchEngine.initialize(this.agents, this);
@@ -307,10 +308,10 @@ export class Match {
    * @param botkey
    */
   private async retrieveBot(botkey: string, file: string) {
-    let dir = BOT_DIR + '/anon-' + genID(18);
+    const dir = BOT_DIR + '/anon-' + genID(18);
     mkdirSync(dir);
 
-    let zipFile = path.join(dir, 'bot.zip');
+    const zipFile = path.join(dir, 'bot.zip');
     await this.dimension.storagePlugin.download(botkey, zipFile);
     await extract(zipFile, {
       dir: dir,
@@ -324,6 +325,7 @@ export class Match {
    */
   public run(): Promise<any> {
     // returning new promise explicitly here because we need to store reject
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       try {
         this.runReject = reject;
@@ -333,7 +335,7 @@ export class Match {
 
         // check if our design is a javascript/typescript based design or custom and to be executed with a
         // provided command
-        let overrideOptions = this.design.getDesignOptions().override;
+        const overrideOptions = this.design.getDesignOptions().override;
         if (overrideOptions.active) {
           this.log.system('Running custom');
           await this.matchEngine.runCustom(this);
@@ -364,10 +366,10 @@ export class Match {
               if (this.configs.storeReplay) {
                 this.replayFile = this.results.replayFile;
                 if (this.dimension.hasStorage()) {
-                  let fileName = path.basename(this.results.replayFile);
+                  const fileName = path.basename(this.results.replayFile);
 
                   // store to storage and get key
-                  let key = await this.dimension.storagePlugin.upload(
+                  const key = await this.dimension.storagePlugin.upload(
                     this.results.replayFile,
                     `${path.join(this.configs.storeReplayDirectory, fileName)}`
                   );
@@ -406,23 +408,23 @@ export class Match {
    * Handles log files and stores / uploads / deletes them as necessary
    */
   private async handleLogFiles() {
-    let uploadLogPromises: Array<Promise<{
+    const uploadLogPromises: Array<Promise<{
       key: string;
       agentID: number;
     }>> = [];
-    let fileLogsToRemove: Array<string> = [];
+    const fileLogsToRemove: Array<string> = [];
 
     // upload error logs if stored
     if (this.configs.storeErrorLogs) {
       // upload each agent error log
-      for (let agent of this.agents) {
-        let filepath = path.join(
+      for (const agent of this.agents) {
+        const filepath = path.join(
           this.getMatchErrorLogDirectory(),
           agent.getAgentErrorLogFilename()
         );
         if (existsSync(filepath)) {
           if (this.dimension.hasStorage()) {
-            let uploadKeyPromise = this.dimension.storagePlugin
+            const uploadKeyPromise = this.dimension.storagePlugin
               .upload(filepath, filepath)
               .then((key) => {
                 return { key: key, agentID: agent.id };
@@ -438,7 +440,7 @@ export class Match {
         }
       }
     }
-    let logkeys = await Promise.all(uploadLogPromises);
+    const logkeys = await Promise.all(uploadLogPromises);
     logkeys.forEach((val) => {
       this.idToAgentsMap.get(val.agentID).logkey = val.key;
     });
@@ -530,7 +532,7 @@ export class Match {
    * - If design uses a SEQUENTIAL match engine, a stop will result in ensuring all agents complete all their actions up
    *   to a coordinated stopping `timeStep`
    */
-  public stop() {
+  public stop(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (this.matchStatus != Match.Status.RUNNING) {
         this.log.warn("You can't stop a match that is not running");
@@ -562,7 +564,7 @@ export class Match {
    * Resume the match if it was in the stopped state
    * @returns true if succesfully resumed
    */
-  public resume() {
+  public resume(): Promise<void> {
     return new Promise((resolve, reject) => {
       if (this.matchStatus != Match.Status.STOPPED) {
         this.log.warn("You can't resume a match that is not stopped");
@@ -596,7 +598,7 @@ export class Match {
    */
   private async killAndCleanUp() {
     await this.matchEngine.killAndClean(this);
-    let removeNonLocalFilesPromises: Array<Promise<any>> = [];
+    const removeNonLocalFilesPromises: Array<Promise<any>> = [];
     this.nonLocalFiles.forEach((nonLocalFile) => {
       removeNonLocalFilesPromises.push(removeDirectory(nonLocalFile));
     });
@@ -610,7 +612,7 @@ export class Match {
    * @param agent - id of agent or the Agent object to kill
    * @param reason - an optional reason string to provide for logging purposes
    */
-  public async kill(agent: Agent.ID | Agent, reason?: string) {
+  public async kill(agent: Agent.ID | Agent, reason?: string): Promise<void> {
     if (agent instanceof Agent) {
       this.matchEngine.kill(agent, reason);
     } else {
@@ -621,7 +623,7 @@ export class Match {
   /**
    * Retrieve results through delegating the task to {@link Design.getResults}
    */
-  public async getResults() {
+  public async getResults(): Promise<any> {
     // Retrieve match results according to `design` by delegating storeResult task to the enforced `design`
     return await this.design.getResults(this);
   }
@@ -633,7 +635,7 @@ export class Match {
    */
   public sendAll(message: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      let sendPromises = [];
+      const sendPromises = [];
       this.agents.forEach((agent: Agent) => {
         sendPromises.push(this.send(message, agent));
       });
@@ -691,7 +693,7 @@ export class Match {
    * @param agentID - the misbehaving agent's ID
    * @param error - The error
    */
-  public async throw(agentID: Agent.ID, error: Error) {
+  public async throw(agentID: Agent.ID, error: Error): Promise<void> {
     // Fatal errors are logged and should end the whole match
     if (error instanceof FatalError) {
       await this.destroy();
@@ -721,7 +723,7 @@ export class Match {
   /**
    * Destroys this match and makes sure to remove any leftover processes
    */
-  public async destroy() {
+  public async destroy(): Promise<void> {
     // reject the run promise first if it exists
     if (this.runReject)
       this.runReject(new MatchDestroyedError('Match was destroyed'));
@@ -734,16 +736,16 @@ export class Match {
   /**
    * Generates a 12 character nanoID string for identifying matches
    */
-  public static genMatchID() {
+  public static genMatchID(): string {
     return genID(12);
   }
 
-  public getMatchErrorLogDirectory() {
+  public getMatchErrorLogDirectory(): string {
     return path.join(this.configs.storeErrorDirectory, `match_${this.id}`);
   }
 }
 
-export module Match {
+export namespace Match {
   /**
    * Match Configurations. Has 5 specified fields. All other fields are up to user discretion
    */

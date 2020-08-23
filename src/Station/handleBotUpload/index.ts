@@ -1,10 +1,9 @@
-import express, { Request, Response, NextFunction } from 'express';
+import { Request } from 'express';
 import * as error from '../error';
 import formidable from 'formidable';
 import extract from 'extract-zip';
 import { existsSync } from 'fs';
 import path from 'path';
-import { spawn } from 'child_process';
 import { BOT_DIR } from '..';
 import { genID } from '../../utils';
 import { removeDirectory } from '../../utils/System';
@@ -27,7 +26,8 @@ export const handleBotUpload = (
   user?: Database.PublicUser
 ): Promise<Array<UploadData>> => {
   return new Promise((resolve, reject) => {
-    //@ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore - this function is callable
     const form = formidable({ multiples: true });
     try {
       form.parse(req, async (err, fields, files) => {
@@ -50,16 +50,16 @@ export const handleBotUpload = (
         if (fields.paths.length != files.files.length)
           throw new error.BadRequest('Paths and File arrays mismatch');
 
-        let uploads = files.files;
-        let paths = fields.paths;
+        const uploads = files.files;
+        const paths = fields.paths;
         let names = fields.names;
-        let playerIDs = fields.playerIDs;
+        const playerIDs = fields.playerIDs;
         if (!names) names = [];
 
-        let uploadProcessPromises: Array<Promise<UploadData>> = [];
+        const uploadProcessPromises: Array<Promise<UploadData>> = [];
         for (let i = 0; i < uploads.length; i++) {
-          let upload = uploads[i];
-          let pathToFile = paths[i];
+          const upload = uploads[i];
+          const pathToFile = paths[i];
           if (
             (<string>pathToFile).indexOf('/') !== -1 ||
             (<string>pathToFile).indexOf('\\') !== -1
@@ -72,8 +72,8 @@ export const handleBotUpload = (
             return;
           }
 
-          let botName = names[i];
-          let playerID = playerIDs[i];
+          const botName = names[i];
+          const playerID = playerIDs[i];
           if (user) {
             // if differrent playerID and isn't admin, throw insufficient permissions
             if (
@@ -107,9 +107,9 @@ const processUpload = async (
   playerID: string
 ): Promise<UploadData> => {
   // generate a 18 char length nano ID to store this bot
-  let id = genID(18);
+  const id = genID(18);
 
-  let botdir = BOT_DIR + '/bot-' + playerID + '-' + id;
+  const botdir = BOT_DIR + '/bot-' + playerID + '-' + id;
 
   // extract first
   try {
@@ -122,8 +122,8 @@ const processUpload = async (
     throw new error.InternalServerError(err);
   }
 
-  let pathToBotFile = path.join(botdir, pathToFile);
-  let name = botName;
+  const pathToBotFile = path.join(botdir, pathToFile);
+  const name = botName;
 
   // check if file exists
   if (!existsSync(pathToBotFile)) {

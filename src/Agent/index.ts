@@ -20,10 +20,12 @@ import { processIsRunning, dockerCopy } from '../utils/System';
 import { deepCopy } from '../utils/DeepCopy';
 import { DeepPartial } from '../utils/DeepPartial';
 import { Writable, Readable, EventEmitter, Stream, Duplex } from 'stream';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import Dockerode, { HostConfig } from 'dockerode';
 import { isChildProcess } from '../utils/TypeGuards';
 import pidusage from 'pidusage';
 import DefaultSeccompProfileJSON from '../Security/seccomp/default.json';
+import { noop } from '../utils';
 
 const DefaultSeccompProfileString = JSON.stringify(DefaultSeccompProfileJSON);
 
@@ -128,14 +130,14 @@ export class Agent extends EventEmitter {
   public _currentMovePromise: Promise<void>;
 
   /* istanbul ignore next */
-  public _currentMoveResolve: Function = () => {}; // set as a dummy function
+  public _currentMoveResolve: Function = noop; // set as a dummy function
   public _currentMoveReject: Function;
 
   /** A number that counts the number of times the agent has essentially interacted with the {@link MatchEngine} */
   public agentTimeStep = 0;
 
   /** Clears out the timer associated with the agent during a match */
-  public _clearTimer: Function = () => {};
+  public _clearTimer: Function = noop;
 
   errorLogWriteStream: WriteStream = null;
 
@@ -157,7 +159,7 @@ export class Agent extends EventEmitter {
     this.log.level = this.options.loggingLevel;
 
     this.ext = path.extname(file);
-    let pathparts = file.split('/');
+    const pathparts = file.split('/');
     this.cwd = pathparts.slice(0, -1).join('/');
     this.src = pathparts.slice(-1).join('/');
     this.srcNoExt = this.src.slice(0, -this.ext.length);
@@ -230,15 +232,15 @@ export class Agent extends EventEmitter {
     name: string,
     docker: Dockerode,
     engineOptions: MatchEngine.EngineOptions
-  ) {
-    let HostConfig: HostConfig = {
+  ): Promise<void> {
+    const HostConfig: HostConfig = {
       // apply seccomp profile for security
       SecurityOpt: [`seccomp=${DefaultSeccompProfileString}`],
     };
     if (engineOptions.memory.active) {
       HostConfig.Memory = engineOptions.memory.limit;
     }
-    let container = await docker.createContainer({
+    const container = await docker.createContainer({
       Image: this.options.image,
       name: name,
       OpenStdin: true,
@@ -265,20 +267,21 @@ export class Agent extends EventEmitter {
     stdoutWritestream: Writable,
     engineOptions: MatchEngine.EngineOptions
   ): Promise<void> {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       // if there is a install.sh file, use it
       if (fs.existsSync(path.join(this.cwd, 'install.sh'))) {
         let stdout: Readable;
         let stderr: Readable;
-        let installTimer = setTimeout(() => {
-          let msg = 'Agent went over install time during the install stage\n';
+        const installTimer = setTimeout(() => {
+          const msg = 'Agent went over install time during the install stage\n';
           if (this.errorLogWriteStream) {
             this.errorLogWriteStream.write(msg);
           }
           reject(new AgentInstallTimeoutError(msg, this.id));
         }, this.options.maxInstallTime);
 
-        let chunks = [];
+        const chunks = [];
         const handleClose = (code: number) => {
           clearTimeout(installTimer);
           if (code === 0) {
@@ -309,18 +312,18 @@ export class Agent extends EventEmitter {
 
         if (this.options.secureMode) {
           try {
-            let exec = await this.container.exec({
+            const exec = await this.container.exec({
               Cmd: ['/bin/bash', '-c', 'chmod u+x install.sh'],
               WorkingDir: containerBotFolder,
             });
             await exec.start({});
-            let data = await this.containerSpawn(
+            const data = await this.containerSpawn(
               path.join(containerBotFolder, 'install.sh')
             );
             stderr = data.err;
             stdout = data.out;
             data.stream.on('end', async () => {
-              let endRes = await data.exec.inspect();
+              const endRes = await data.exec.inspect();
               handleClose(endRes.ExitCode);
             });
             data.stream.on('error', (err) => {
@@ -331,7 +334,7 @@ export class Agent extends EventEmitter {
             return;
           }
         } else {
-          let p = spawn('bash', ['install.sh'], {
+          const p = spawn('bash', ['install.sh'], {
             cwd: this.cwd,
           });
           p.on('error', (err) => {
@@ -376,20 +379,21 @@ export class Agent extends EventEmitter {
     stdoutWritestream: Writable,
     engineOptions: MatchEngine.EngineOptions
   ): Promise<void> {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       let p: ChildProcess | Agent.ContainerExecData;
       let stdout: Readable;
       let stderr: Readable;
-      let compileTimer = setTimeout(() => {
-        let msg = 'Agent went over compile time during the compile stage\n';
+      const compileTimer = setTimeout(() => {
+        const msg = 'Agent went over compile time during the compile stage\n';
         if (this.errorLogWriteStream) {
           this.errorLogWriteStream.write(msg);
         }
         reject(new AgentCompileTimeoutError(msg, this.id));
       }, this.options.maxCompileTime);
       if (this.options.compileCommands[this.ext]) {
-        let cmd1 = this.options.compileCommands[this.ext][0];
-        let restofCmds = this.options.compileCommands[this.ext].slice(1);
+        const cmd1 = this.options.compileCommands[this.ext][0];
+        const restofCmds = this.options.compileCommands[this.ext].slice(1);
         p = await this._spawnCompileProcess(cmd1, [...restofCmds, this.src]);
       } else {
         switch (this.ext) {
@@ -440,7 +444,7 @@ export class Agent extends EventEmitter {
             break;
         }
       }
-      let chunks = [];
+      const chunks = [];
       const handleClose = (code: number) => {
         clearTimeout(compileTimer);
         if (code === 0) {
@@ -478,12 +482,12 @@ export class Agent extends EventEmitter {
       } else {
         stdout = p.out;
         stderr = p.err;
-        let containerExec = p.exec;
+        const containerExec = p.exec;
         p.stream.on('error', (err) => {
           handleError(err);
         });
         p.stream.on('end', async () => {
-          let endRes = await containerExec.inspect();
+          const endRes = await containerExec.inspect();
           handleClose(endRes.ExitCode);
         });
       }
@@ -522,7 +526,7 @@ export class Agent extends EventEmitter {
           .then(resolve)
           .catch(reject);
       } else {
-        let p = spawn(command, [...args], {
+        const p = spawn(command, [...args], {
           cwd: this.cwd,
         }).on('error', (err) => {
           reject(err);
@@ -538,9 +542,9 @@ export class Agent extends EventEmitter {
    */
   async containerSpawn(
     command: string,
-    workingDir: string = '/'
+    workingDir = '/'
   ): Promise<Agent.ContainerExecData> {
-    let exec = await this.container.exec({
+    const exec = await this.container.exec({
       Cmd: ['/bin/bash', '-c', command],
       AttachStdin: true,
       AttachStdout: true,
@@ -548,10 +552,10 @@ export class Agent extends EventEmitter {
       WorkingDir: workingDir,
     });
 
-    let stream = await exec.start({ stdin: true, hijack: true });
-    let instream = new Stream.PassThrough();
-    let outstream = new Stream.PassThrough();
-    let errstream = new Stream.PassThrough();
+    const stream = await exec.start({ stdin: true, hijack: true });
+    const instream = new Stream.PassThrough();
+    const outstream = new Stream.PassThrough();
+    const errstream = new Stream.PassThrough();
     instream.pipe(stream);
     this.container.modem.demuxStream(stream, outstream, errstream);
 
@@ -577,9 +581,10 @@ export class Agent extends EventEmitter {
       switch (this.ext) {
         case '.py':
         case '.js':
-        case '.php':
-          let p = this._spawnProcess(this.cmd, [this.src]);
+        case '.php': {
+          const p = this._spawnProcess(this.cmd, [this.src]);
           return p;
+        }
         case '.ts':
           return this._spawnProcess(this.cmd, [this.srcNoExt + '.js']);
         case '.java':
@@ -613,7 +618,7 @@ export class Agent extends EventEmitter {
           .then(resolve)
           .catch(reject);
       } else {
-        let p = spawn(command, args, {
+        const p = spawn(command, args, {
           cwd: this.cwd,
           detached: false,
         }).on('error', (err) => {
@@ -627,7 +632,7 @@ export class Agent extends EventEmitter {
   /**
    * Stop an agent provided it is not terminated. To terminate it, see {@link _terminate};
    */
-  async stop() {
+  async stop(): Promise<void> {
     if (!this.isTerminated()) {
       if (this.options.secureMode) {
         await this.container.pause();
@@ -641,7 +646,7 @@ export class Agent extends EventEmitter {
   /**
    * Resume an agent as long it is not terminated already
    */
-  async resume() {
+  async resume(): Promise<void> {
     if (!this.isTerminated()) {
       this._allowCommands();
       if (this.options.secureMode) {
@@ -656,7 +661,7 @@ export class Agent extends EventEmitter {
   /**
    * timeout the agent
    */
-  timeout() {
+  timeout(): void {
     if (this.errorLogWriteStream) {
       this.errorLogWriteStream.write('Agent timed out');
     }
@@ -666,7 +671,7 @@ export class Agent extends EventEmitter {
   /**
    * call out agent for exceeding memory limit
    */
-  overMemory() {
+  overMemory(): void {
     if (this.errorLogWriteStream) {
       this.errorLogWriteStream.write('Agent exceeded memory limit');
     }
@@ -676,7 +681,7 @@ export class Agent extends EventEmitter {
   /**
    * Whether or not input is destroyed
    */
-  inputDestroyed() {
+  inputDestroyed(): boolean {
     return this.streams.in.destroyed;
   }
 
@@ -685,14 +690,14 @@ export class Agent extends EventEmitter {
    * @param message - the message
    * @param callback - callback function
    */
-  write(message: string, callback: (error: Error) => void) {
+  write(message: string, callback: (error: Error) => void): void {
     this.streams.in.write(message, callback);
   }
 
   /**
    * Get process of agent
    */
-  _getProcess() {
+  _getProcess(): ChildProcess {
     return this.process;
   }
 
@@ -700,14 +705,14 @@ export class Agent extends EventEmitter {
    * Store process for agent
    * @param p - process to store
    */
-  _storeProcess(p: ChildProcess) {
+  _storeProcess(p: ChildProcess): void {
     this.process = p;
   }
 
   /**
    * Returns true if this agent was terminated and no longer send or receive emssages
    */
-  isTerminated() {
+  isTerminated(): boolean {
     return this.status === Agent.Status.KILLED;
   }
 
@@ -717,6 +722,7 @@ export class Agent extends EventEmitter {
    */
   _terminate(): Promise<void> {
     this.status = Agent.Status.KILLED;
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       if (this.options.secureMode) {
         if (this.container) {
@@ -761,29 +767,29 @@ export class Agent extends EventEmitter {
   /**
    * Disallow an agent from sending more commands
    */
-  _disallowCommands() {
+  _disallowCommands(): void {
     this.allowedToSendCommands = false;
   }
 
   /**
    * Allow agent to send commands again
    */
-  _allowCommands() {
+  _allowCommands(): void {
     this.allowedToSendCommands = true;
   }
 
   /**
    * Check if agent is set to be allowed to send commands. The {@link EngineOptions} affect when this is flipped
    */
-  isAllowedToSendCommands() {
+  isAllowedToSendCommands(): boolean {
     return this.allowedToSendCommands;
   }
 
   /**
    * Setup the agent timer clear out method
    */
-  _setTimeout(fn: Function, delay: number, ...args: any[]) {
-    let timer = setTimeout(() => {
+  _setTimeout(fn: Function, delay: number, ...args: any[]): void {
+    const timer = setTimeout(() => {
       fn(...args);
     }, delay);
     this._clearTimer = () => {
@@ -794,7 +800,7 @@ export class Agent extends EventEmitter {
   /**
    * Stop this agent from more outputs and mark it as done for now and awaiting for updates
    */
-  async _finishMove() {
+  async _finishMove(): Promise<void> {
     this._clearTimer();
 
     // Resolve move and tell engine in `getCommands` this agent is done outputting commands and awaits input
@@ -810,7 +816,7 @@ export class Agent extends EventEmitter {
   }
 
   // Start an Agent's move and setup the promise structures
-  _setupMove() {
+  _setupMove(): void {
     // allows agent to send commands; increment time; clear past commands; reset the promise structure
     this.allowedToSendCommands = true;
     this.agentTimeStep++;
@@ -825,7 +831,7 @@ export class Agent extends EventEmitter {
    * Used by {@link MatchEngine} only. Setups the memory watcher if docker is not used.
    * @param engineOptions - engine options to configure the agent with
    */
-  _setupMemoryWatcher(engineOptions: MatchEngine.EngineOptions) {
+  _setupMemoryWatcher(engineOptions: MatchEngine.EngineOptions): void {
     const checkAgentMemoryUsage = () => {
       // setting { maxage: 0 } because otherwise pidusage leaves interval "memory leaks" and process doesn't exit fast
       if (processIsRunning(this.process.pid)) {
@@ -859,9 +865,8 @@ export class Agent extends EventEmitter {
    */
   static generateAgents(
     files:
-      | Array<String>
-      | Array<{ file: string; name: string }>
-      | Array<{ file: string; tournamentID: Tournament.ID }>,
+      | Array<string>
+      | Array<{ file: string; name?: string; tournamentID?: Tournament.ID }>,
     options: DeepPartial<Agent.Options>
   ): Array<Agent> {
     if (files.length === 0) {
@@ -870,43 +875,38 @@ export class Agent extends EventEmitter {
         -1
       );
     }
-    let agents: Array<Agent> = [];
+    const agents: Array<Agent> = [];
 
     if (typeof files[0] === 'string') {
       files.forEach((file, index: number) => {
-        let configs = deepCopy(options);
+        const configs = deepCopy(options);
         configs.id = index;
-        //@ts-ignore
-        agents.push(new Agent(file, configs));
+        agents.push(new Agent(file, <Agent.Options>configs));
       });
-    }
-    //@ts-ignore
-    else if (files[0].name !== undefined) {
+    } else if (files[0].name !== undefined) {
       files.forEach((info, index: number) => {
-        let configs = deepCopy(options);
+        const configs = deepCopy(options);
         configs.id = index;
         configs.name = info.name;
-        //@ts-ignore
-        agents.push(new Agent(info.file, configs));
+        agents.push(new Agent(info.file, <Agent.Options>configs));
       });
     } else {
       files.forEach((info, index: number) => {
-        let configs = deepCopy(options);
+        const configs = deepCopy(options);
         configs.id = index;
         configs.tournamentID = info.tournamentID;
-        //@ts-ignore
-        agents.push(new Agent(info.file, configs));
+        agents.push(new Agent(info.file, <Agent.Options>configs));
       });
     }
     return agents;
   }
 
-  getAgentErrorLogFilename() {
+  getAgentErrorLogFilename(): string {
     return `agent_${this.id}.log`;
   }
 }
 
-export module Agent {
+export namespace Agent {
   /**
    * Stream data for any process
    */

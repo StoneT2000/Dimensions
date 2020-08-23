@@ -17,6 +17,7 @@ import { Ladder } from '../../Tournament/Ladder';
 import { TournamentError } from '../../DimensionError';
 import TournamentConfigSchema from './models/tournamentConfig';
 import { TournamentStatus } from '../../Tournament/TournamentStatus';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 const salt = bcrypt.genSaltSync();
 
@@ -44,9 +45,9 @@ export class MongoDB extends Database {
     this.mongoose.set('useFindAndModify', false);
     this.connectionString = connectionString;
 
-    let matchSchema = MatchSchemaCreator();
+    const matchSchema = MatchSchemaCreator();
     this.models.match = this.mongoose.model('Match', matchSchema);
-    let userSchema = UserSchemaCreator();
+    const userSchema = UserSchemaCreator();
     this.models.user = this.mongoose.model('User', userSchema);
 
     this.models.tournamentConfigs = this.mongoose.model(
@@ -65,10 +66,10 @@ export class MongoDB extends Database {
     return this.db;
   }
 
-  public async initialize(dimension: Dimension) {
+  public async initialize(): Promise<void> {
     await this.connect();
     // create admin user
-    let existingUser = await this.getUser('admin');
+    const existingUser = await this.getUser('admin');
     if (!existingUser) {
       await this.registerUser('admin', process.env.ADMIN_PASSWORD);
     }
@@ -77,20 +78,20 @@ export class MongoDB extends Database {
   }
 
   public async storeMatch(match: Match, governID: nanoid): Promise<any> {
-    let data = { ...pickMatch(match), governID: governID };
+    const data = { ...pickMatch(match), governID: governID };
     // store all relevant data
     return this.models.match.create(data);
   }
-  public async getMatch(id: NanoID) {
+  public async getMatch(id: NanoID): Promise<any> {
     return this.models.match.findOne({ id: id });
   }
 
   public async getPlayerMatches(
     playerID: nanoid,
     governID: nanoid,
-    offset: number = 0,
-    limit: number = 10,
-    order: number = -1
+    offset = 0,
+    limit = 10,
+    order = -1
   ): Promise<Array<Match>> {
     return this.models.match.aggregate([
       {
@@ -122,9 +123,9 @@ export class MongoDB extends Database {
     offset: number,
     limit: number
   ): Promise<Array<Ladder.PlayerStat>> {
-    let keyname = tournament.getKeyName();
+    const keyname = tournament.getKeyName();
     if (tournament.configs.rankSystem === Tournament.RANK_SYSTEM.TRUESKILL) {
-      let agg: Array<Object> = [
+      const agg: Array<object> = [
         {
           // select all users with stats in this tournament, implying they are still in the tourney
           $match: {
@@ -167,12 +168,12 @@ export class MongoDB extends Database {
           $limit: limit,
         });
       }
-      let rankData = await this.models.user.aggregate(agg);
+      const rankData = await this.models.user.aggregate(agg);
       return rankData.map((data) => {
         return data.statistics[keyname];
       });
     } else if (tournament.configs.rankSystem === Tournament.RANK_SYSTEM.ELO) {
-      let agg: Array<Object> = [
+      const agg: Array<object> = [
         {
           // select all users with stats in this tournament, implying they are still in the tourney
           $match: {
@@ -205,7 +206,7 @@ export class MongoDB extends Database {
           $limit: limit,
         });
       }
-      let rankData = await this.models.user.aggregate(agg);
+      const rankData = await this.models.user.aggregate(agg);
       return rankData.map((data) => {
         return data.statistics[keyname];
       });
@@ -219,8 +220,9 @@ export class MongoDB extends Database {
   public async registerUser(
     username: string,
     password: string,
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     userData?: any
-  ) {
+  ): Promise<any> {
     const hash = bcrypt.hashSync(password, salt);
     return this.models.user.create({
       username: username,
@@ -236,7 +238,10 @@ export class MongoDB extends Database {
    * Gets user information. If public is false, will retrieve all information other than password
    * @param usernameOrID
    */
-  public async getUser(usernameOrID: string, publicView: boolean = true) {
+  public async getUser(
+    usernameOrID: string,
+    publicView = true
+  ): Promise<Database.User> {
     return this.models.user
       .findOne({
         $or: [{ username: usernameOrID }, { playerID: usernameOrID }],
@@ -246,7 +251,7 @@ export class MongoDB extends Database {
         if (user) {
           obj = user.toObject();
           if (!publicView) return obj;
-          let d = <Database.User>(
+          const d = <Database.User>(
             pick(
               obj,
               'creationDate',
@@ -263,7 +268,7 @@ export class MongoDB extends Database {
       });
   }
 
-  public async loginUser(username: string, password: string) {
+  public async loginUser(username: string, password: string): Promise<string> {
     return this.models.user
       .findOne({ username: username })
       .then((user: mongoose.Document & Database.User) => {
@@ -282,7 +287,7 @@ export class MongoDB extends Database {
   public async updateUser(
     usernameOrID: string,
     update: Partial<Database.User>
-  ) {
+  ): Promise<Database.User> {
     return this.models.user
       .findOneAndUpdate(
         { $or: [{ username: usernameOrID }, { playerID: usernameOrID }] },
@@ -297,7 +302,7 @@ export class MongoDB extends Database {
       });
   }
 
-  public async deleteUser(usernameOrID: string) {
+  public async deleteUser(usernameOrID: string): Promise<void> {
     return this.models.user
       .findOneAndDelete({
         $or: [{ username: usernameOrID }, { playerID: usernameOrID }],
@@ -309,21 +314,21 @@ export class MongoDB extends Database {
       });
   }
 
-  public async verifyToken(jwt: string) {
+  public async verifyToken(jwt: string): Promise<string> {
     return verify(jwt);
   }
 
-  public isAdmin(user: Database.PublicUser) {
+  public isAdmin(user: Database.PublicUser): boolean {
     if (user.username === 'admin') return true;
     return false;
   }
 
   public async getUsersInTournament(
     tournamentKey: string,
-    offset: number = 0,
-    limit: number = -1
-  ) {
-    let key = `statistics.${tournamentKey}`;
+    offset = 0,
+    limit = -1
+  ): Promise<Array<Database.User>> {
+    const key = `statistics.${tournamentKey}`;
     if (limit == -1) {
       limit = 0;
     } else if (limit == 0) {
@@ -334,12 +339,12 @@ export class MongoDB extends Database {
       .skip(offset)
       .limit(limit)
       .then((users) => {
-        let mapped = users.map((user) => user.toObject());
+        const mapped = users.map((user) => user.toObject());
         return mapped;
       });
   }
 
-  public async manipulate(dimension: Dimension) {
+  public async manipulate(dimension: Dimension): Promise<void> {
     dimension.configs.backingDatabase = DatabaseType.MONGO;
     return;
   }
@@ -348,7 +353,7 @@ export class MongoDB extends Database {
     tournamentID: nanoid,
     tournamentConfigs: Tournament.TournamentConfigsBase,
     status: TournamentStatus
-  ) {
+  ): Promise<void> {
     return this.models.tournamentConfigs.updateOne(
       { id: tournamentID },
       {
@@ -361,7 +366,9 @@ export class MongoDB extends Database {
     );
   }
 
-  public async getTournamentConfigsModificationDate(tournamentID: nanoid) {
+  public async getTournamentConfigsModificationDate(
+    tournamentID: nanoid
+  ): Promise<Date> {
     return this.models.tournamentConfigs
       .findOne({ id: tournamentID })
       .select({ modificationDate: 1 })
@@ -373,7 +380,12 @@ export class MongoDB extends Database {
         }
       });
   }
-  public async getTournamentConfigs(tournamentID: nanoid) {
+  public async getTournamentConfigs(
+    tournamentID: nanoid
+  ): Promise<{
+    configs: Tournament.TournamentConfigsBase;
+    status: Tournament.Status;
+  }> {
     return this.models.tournamentConfigs
       .findOne({ id: tournamentID })
       .then((data) => {
@@ -385,7 +397,7 @@ export class MongoDB extends Database {
       });
   }
 }
-export module MongoDB {
+export namespace MongoDB {
   /**
    * See {@link Match} class for what these fields represent. They are copied here letter for letter. If set true, the
    * field will be included into the database
@@ -407,8 +419,8 @@ export module MongoDB {
   }
 
   export interface Models {
-    user: mongoose.Model<mongoose.Document, {}>;
-    match: mongoose.Model<mongoose.Document, {}>;
-    tournamentConfigs: mongoose.Model<mongoose.Document, {}>;
+    user: mongoose.Model<mongoose.Document, object>;
+    match: mongoose.Model<mongoose.Document, object>;
+    tournamentConfigs: mongoose.Model<mongoose.Document, object>;
   }
 }

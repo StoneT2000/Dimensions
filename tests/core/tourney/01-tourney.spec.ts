@@ -4,24 +4,9 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
 import sinonChai from 'sinon-chai';
-import sinon from 'sinon';
 import 'mocha';
-import {
-  Logger,
-  MatchEngine,
-  Match,
-  Agent,
-  Design,
-  Tournament,
-} from '../../../src';
-import {
-  createRoundRobinTourney,
-  createLadderTourney,
-  createElimTourney,
-} from './utils';
-import { deepCopy } from '../../../src/utils/DeepCopy';
-import { stripFunctions } from '../utils/stripfunctions';
-import { createCustomDesign } from '../utils/createCustomDesign';
+import { Logger, Tournament } from '../../../src';
+import { createLadderTourney } from './utils';
 const expect = chai.expect;
 chai.should();
 chai.use(sinonChai);
@@ -50,7 +35,7 @@ describe('Testing Tournament Core', () => {
 
   describe('Test Configurations', () => {
     it('should adopt same match configs as dimension defaults', () => {
-      let tourney = createLadderTourney(d, botList);
+      const tourney = createLadderTourney(d, botList);
       expect(tourney.getConfigs().defaultMatchConfigs).to.eql(
         d.configs.defaultMatchConfigs
       );
@@ -60,7 +45,7 @@ describe('Testing Tournament Core', () => {
       expect(tourney.log.level).to.equal(d.log.level);
     });
     it('should allow overrided id, name, log level', () => {
-      let tourney: Tournament = createLadderTourney(d, botList, {
+      const tourney: Tournament = createLadderTourney(d, botList, {
         id: 'abc',
         name: 'abc_tourney',
       });
@@ -71,9 +56,9 @@ describe('Testing Tournament Core', () => {
 
   describe('Test functions', () => {
     it('should get player stat', async () => {
-      let tourney = createLadderTourney(d, [...botList, testbot]);
+      const tourney = createLadderTourney(d, [...botList, testbot]);
       await Promise.all(tourney.initialAddPlayerPromises);
-      let { user, playerStat } = await tourney.getPlayerStat(
+      const { user, playerStat } = await tourney.getPlayerStat(
         testbot.existingID
       );
       expect(user).to.equal(null);

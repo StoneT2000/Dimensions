@@ -17,9 +17,8 @@ chai.use(chaiHttp);
 describe('Testing /api/dimensions API', () => {
   let origin = 'http://localhost:';
   let dimension: Dimension.DimensionType, dimension2: Dimension.DimensionType;
-  let RPSTournament: Dimension.Tournament.RoundRobin;
   before(() => {
-    let rpsDesign = new RockPaperScissorsDesign('RPS');
+    const rpsDesign = new RockPaperScissorsDesign('RPS');
     dimension = Dimension.create(rpsDesign, {
       activateStation: true,
       observe: true,
@@ -33,22 +32,6 @@ describe('Testing /api/dimensions API', () => {
       id: 'abcdef2',
     });
     origin += dimension.getStation().port;
-    RPSTournament = <Dimension.Tournament.RoundRobin>dimension.createTournament(
-      ['./tests/kits/js/normal/rock.js', './tests/kits/js/normal/paper.js'],
-      {
-        type: Dimension.Tournament.Type.ROUND_ROBIN,
-        rankSystem: Dimension.Tournament.RankSystem.WINS,
-        name: 'Rock Paper Scissors',
-        loggingLevel: Dimension.Logger.LEVEL.NONE,
-        agentsPerMatch: [2],
-        consoleDisplay: false,
-        defaultMatchConfigs: {
-          bestOf: 3,
-          loggingLevel: Dimension.Logger.LEVEL.NONE,
-        },
-        resultHandler: RockPaperScissorsDesign.winsResultHandler,
-      }
-    );
   });
   it('GET /api/dimensions should retrieve all dimensions', (done) => {
     chai

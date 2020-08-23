@@ -14,7 +14,6 @@ import { handleBotUpload, UploadData } from '../../../../handleBotUpload';
 import { TournamentPlayerDoesNotExistError } from '../../../../../DimensionError';
 import { removeDirectorySync } from '../../../../../utils/System';
 import { spawnSync } from 'child_process';
-import { Ladder } from '../../../../../Tournament/Ladder';
 import { TournamentType } from '../../../../../Tournament/TournamentTypes';
 
 const router = express.Router();
@@ -23,7 +22,9 @@ const router = express.Router();
  * Get tournament by tournamentID in request. Requires dimension to be stored.
  */
 const getTournament = (req: Request, res: Response, next: NextFunction) => {
-  let tournament = req.data.dimension.tournaments.get(req.params.tournamentID);
+  const tournament = req.data.dimension.tournaments.get(
+    req.params.tournamentID
+  );
   if (!tournament) {
     return next(
       new error.BadRequest(
@@ -39,7 +40,9 @@ router.use('/:tournamentID', getTournament);
 /**
  * Picks out relevant fields for a tournament
  */
-export const pickTournament = (t: Tournament) => {
+export const pickTournament = (
+  t: Tournament
+): Pick<Tournament, 'configs' | 'id' | 'log' | 'name' | 'status'> => {
   return pick(t, 'configs', 'id', 'log', 'name', 'status');
 };
 
@@ -60,7 +63,7 @@ router.use('/:tournamentID/match', matchAPI);
  * Returns all matches in the dimension
  */
 router.get('/:tournamentID/match', (req: Request, res: Response) => {
-  let matchData = {};
+  const matchData = {};
   req.data.tournament.matches.forEach((match, key) => {
     matchData[key] = pickMatch(match);
   });
@@ -90,7 +93,7 @@ router.post(
     try {
       // ladder types have asynchronous config setting when using DB
       if (req.data.tournament.configs.type === TournamentType.LADDER) {
-        let tournament = <Tournament.Ladder>req.data.tournament;
+        const tournament = <Tournament.Ladder>req.data.tournament;
         await tournament.setConfigs(req.body.configs);
         res.json({ error: null });
       } else {
@@ -169,8 +172,8 @@ router.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       let ranks = [];
-      let offset = req.query.offset ? req.query.offset : 0;
-      let limit = req.query.limit ? req.query.limit : -1;
+      const offset = req.query.offset ? req.query.offset : 0;
+      const limit = req.query.limit ? req.query.limit : -1;
       if (req.data.tournament.configs.type === TournamentType.LADDER) {
         ranks = await req.data.tournament.getRankings(offset, limit);
       } else {
@@ -199,7 +202,7 @@ router.delete(
         res.json({ error: null });
       })
       .catch((err) => {
-        return next(new error.InternalServerError('Something went wrong'));
+        return next(new error.InternalServerError(err));
       });
     // TODO: There should be a better way to abstract this so we don't need to store something related to the match API
     // in the dimensions API.
@@ -252,11 +255,9 @@ router.delete(
  *
  * Retrieves player stat of the ongoing tournament
  */
-router.get('/:tournamentID/players/:playerID', async (req, res, next) => {
-  let tournament = req.data.tournament;
-  let { user, playerStat } = await tournament.getPlayerStat(
-    req.params.playerID
-  );
+router.get('/:tournamentID/players/:playerID', async (req, res) => {
+  const tournament = req.data.tournament;
+  const { playerStat } = await tournament.getPlayerStat(req.params.playerID);
   if (playerStat) {
     res.json({ error: null, player: playerStat });
   } else {
@@ -272,11 +273,10 @@ router.get('/:tournamentID/players/:playerID', async (req, res, next) => {
 router.get('/:tournamentID/players/:playerID/match', async (req, res, next) => {
   if (!req.query.offset || !req.query.limit || !req.query.order)
     return next(new error.BadRequest('Missing params'));
-  let tournament = req.data.tournament;
-  let db = req.data.dimension.databasePlugin;
+  const db = req.data.dimension.databasePlugin;
   if (req.data.dimension.hasDatabase()) {
     try {
-      let matchData = await db.getPlayerMatches(
+      const matchData = await db.getPlayerMatches(
         req.params.playerID,
         req.params.tournamentID,
         parseInt(req.query.offset),
@@ -315,15 +315,15 @@ router.get(
         )
       );
     }
-    let tournament = req.data.tournament;
+    const tournament = req.data.tournament;
 
     req.data.dimension.databasePlugin
       .getUser(req.params.playerID)
       .then((user) => {
-        let player: Player = user.statistics[tournament.getKeyName()].player;
+        const player: Player = user.statistics[tournament.getKeyName()].player;
 
         if (req.data.dimension.hasStorage()) {
-          let key = player.botkey;
+          const key = player.botkey;
           req.data.dimension.storagePlugin.getDownloadURL(key).then((url) => {
             res.json({ error: null, url: url });
           });
@@ -352,7 +352,7 @@ router.post(
         )
       );
     }
-    let tournament = <Tournament.Ladder>req.data.tournament;
+    const tournament = <Tournament.Ladder>req.data.tournament;
     tournament
       .resetRankings()
       .then(() => {
@@ -389,7 +389,7 @@ router.post(
       return next(
         new error.BadRequest('Can only upload one tournament bot at a time')
       );
-    let bot = data[0];
+    const bot = data[0];
     let id = bot.playerID;
 
     // if user is admin, get the actual user the upload is for
@@ -401,12 +401,12 @@ router.post(
       }
     }
 
-    let zipLoc = path.join(path.dirname(bot.file), 'bot.zip');
+    const zipLoc = path.join(path.dirname(bot.file), 'bot.zip');
 
     // upload bot if storage is used
     let botkey: string;
     if (req.data.dimension.hasStorage()) {
-      let storage = req.data.dimension.storagePlugin;
+      const storage = req.data.dimension.storagePlugin;
       botkey = await storage.uploadTournamentFile(
         bot.originalFile,
         user,
@@ -456,7 +456,7 @@ router.post(
     if (!req.body.matchQueue.length)
       return next(new error.BadRequest('Must provide an array'));
     if (req.data.tournament.type === Tournament.Type.LADDER) {
-      let t = <Tournament.Ladder>req.data.tournament;
+      const t = <Tournament.Ladder>req.data.tournament;
       t.scheduleMatches(...req.body.matchQueue);
       res.json({
         error: null,

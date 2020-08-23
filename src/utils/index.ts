@@ -1,20 +1,21 @@
-import { DeepPartial } from './DeepPartial';
 import { customAlphabet } from 'nanoid';
 import { NanoID } from '../Dimension';
-import { deepCopy } from './DeepCopy';
 
 /**
  * Pick stuff
  * @param obj - object to pick out from
  * @param params - fields to pick out
  */
-export const pick = <T>(obj: T, ...params: Array<keyof T>): DeepPartial<T> => {
-  let picked: any = {};
+export const pick = <T, K extends keyof T>(
+  obj: T,
+  ...params: Array<K>
+): Pick<T, K> => {
+  const picked: any = {};
   params.forEach((key) => {
     picked[key] = obj[key];
   });
 
-  return <DeepPartial<T>>picked;
+  return picked;
 };
 
 const ALPHA_NUM_STRING =
@@ -30,16 +31,16 @@ for (let i = 4; i <= 22; i++) {
  * Generate unique IDs using nanoid
  * @param n - length of id
  */
-export const genID = (n: number) => {
+export const genID = (n: number): NanoID => {
   return idGenFunctionMap.get(n)();
 };
 
 export const stripFunctions = <T extends { [x in string]: any }>(
   object: T
-): T => {
-  let seen = new Set<Object>();
-  const helper = (object: T): T => {
-    for (let key in object) {
+): NoFunctions<T> => {
+  const seen = new Set<any>();
+  const helper = (object: T): NoFunctions<T> => {
+    for (const key in object) {
       if (!seen.has(key)) {
         seen.add(key);
         if (typeof object[key] === 'function') {
@@ -55,15 +56,23 @@ export const stripFunctions = <T extends { [x in string]: any }>(
         helper(object[key]);
       }
     }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     return object;
   };
   return helper(object);
 };
 
+export type NoFunctions<T> = T extends object
+  ? T extends Function
+    ? null
+    : { [K in keyof T]: NoFunctions<T[K]> }
+  : T;
+
 export const stripNull = <T extends { [x in string]: any }>(object: T): T => {
-  let seen = new Set<Object>();
+  const seen = new Set<any>();
   const helper = (object: T): T => {
-    for (let key in object) {
+    for (const key in object) {
       if (!seen.has(key)) {
         seen.add(key);
         if (object[key] === null) {
@@ -82,10 +91,13 @@ export const stripNull = <T extends { [x in string]: any }>(object: T): T => {
  * Async function that resolves after `ms` milliseconds
  * @param ms - number of milliseconds to sleep for
  */
-export const sleep = async (ms: number) => {
+export const sleep = async (ms: number): Promise<void> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve();
     }, ms);
   });
 };
+
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export const noop = (): void => {};

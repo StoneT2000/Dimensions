@@ -6,6 +6,7 @@ import chaiSubset from 'chai-subset';
 import sinonChai from 'sinon-chai';
 import 'mocha';
 import { Tournament, Logger } from '../../../src';
+import { noop } from '../../../src/utils';
 const expect = chai.expect;
 chai.should();
 chai.use(sinonChai);
@@ -15,12 +16,12 @@ chai.use(chaiSubset);
 describe('Testing Dimension Class', () => {
   let ddefault: Dimension.DimensionType;
   let d: Dimension.DimensionType;
-  let botList = [
+  const botList = [
     './tests/kits/js/normal/rock.js',
     './tests/kits/js/normal/paper.js',
   ];
   before(async () => {
-    let rpsDesign = new RockPaperScissorsDesign('RPS');
+    const rpsDesign = new RockPaperScissorsDesign('RPS');
     ddefault = Dimension.create(rpsDesign, {
       activateStation: false,
       observe: false,
@@ -59,7 +60,7 @@ describe('Testing Dimension Class', () => {
       type: Tournament.Type.LADDER,
       agentsPerMatch: [2],
       rankSystem: Tournament.RankSystem.ELO,
-      resultHandler: () => {},
+      resultHandler: noop,
     });
     expect(tourney.configs.type).to.be.eql(Tournament.Type.LADDER);
     expect(tourney.configs.rankSystem).to.be.eql(Tournament.RankSystem.ELO);
@@ -68,7 +69,7 @@ describe('Testing Dimension Class', () => {
       type: Tournament.Type.ROUND_ROBIN,
       agentsPerMatch: [2],
       rankSystem: Tournament.RankSystem.WINS,
-      resultHandler: () => {},
+      resultHandler: noop,
     });
     expect(tourney.configs.type).to.be.eql(Tournament.Type.ROUND_ROBIN);
     expect(tourney.configs.rankSystem).to.be.eql(Tournament.RankSystem.WINS);
@@ -77,20 +78,20 @@ describe('Testing Dimension Class', () => {
       type: Tournament.Type.ELIMINATION,
       agentsPerMatch: [2],
       rankSystem: Tournament.RankSystem.WINS,
-      resultHandler: () => {},
+      resultHandler: noop,
     });
     expect(tourney.configs.type).to.be.eql(Tournament.Type.ELIMINATION);
     expect(tourney.configs.rankSystem).to.be.eql(Tournament.RankSystem.WINS);
   });
 
   it('should be able to create matches and with matching configs', async () => {
-    let match = await d.createMatch(botList);
+    const match = await d.createMatch(botList);
     // configs should be superset of  dimension's match config defaults
     expect(match.configs).to.containSubset(d.configs.defaultMatchConfigs);
   });
 
   it('should be able to remove matches in any state', async () => {
-    let match = await d.createMatch(botList);
+    const match = await d.createMatch(botList);
     expect(d.removeMatch(match.id)).to.eventually.equal(true);
   });
   it('should not be able to remove non-existent matches', () => {

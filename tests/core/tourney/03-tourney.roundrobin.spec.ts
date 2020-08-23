@@ -31,6 +31,7 @@ describe('Testing Roundrobin Tournament Core', () => {
   });
 
   const testRunStopTourney = async (t: Tournament.RoundRobin) => {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (res, rej) => {
       try {
         expect(t.status).to.equal(Tournament.Status.INITIALIZED);
@@ -53,8 +54,8 @@ describe('Testing Roundrobin Tournament Core', () => {
 
   describe('Test running', () => {
     it('should run', async () => {
-      let tourney = createRoundRobinTourney(d, botList);
-      let res = await tourney.run();
+      const tourney = createRoundRobinTourney(d, botList);
+      const res = await tourney.run();
       tourney.competitors.forEach((player) => {
         switch (player.tournamentID.name) {
           case 'paper':
@@ -75,12 +76,12 @@ describe('Testing Roundrobin Tournament Core', () => {
             break;
         }
       });
-      let ranks = tourney.getRankings();
+      const ranks = tourney.getRankings();
       expect(ranks[0]).to.contain({ name: 'rock', score: 0 });
       expect(ranks[1]).to.contain({ name: 'paper', score: 6 });
     });
     it('should run and stop', async () => {
-      let tourney = createRoundRobinTourney(d, botList);
+      const tourney = createRoundRobinTourney(d, botList);
       tourney.setConfigs({
         tournamentConfigs: {
           times: 10,

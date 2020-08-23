@@ -4,13 +4,10 @@
  * @param obj2 - the second object to use to merge into the first
  * @param clobberArrays - whether or not to replace arrays or merge them together by appending obj2's array to obj1's
  */
-export const deepMerge = (
-  obj1: any,
-  obj2: any,
-  clobberArrays: boolean = false
-) => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const deepMerge = (obj1: any, obj2: any, clobberArrays = false): any => {
   if (obj2 == undefined || obj2 == null) return obj1;
-  let rootKeys = Object.keys(obj2);
+  const rootKeys = Object.keys(obj2);
 
   rootKeys.forEach((key: string) => {
     // if obj2 field is not an object and not an array, override obj1

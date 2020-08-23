@@ -16,7 +16,7 @@ chai.use(chaiSubset);
 
 describe('Testing MatchEngine Memory Limit Mechanism', () => {
   let d: Dimension.DimensionType;
-  let rpsDesign = new RockPaperScissorsDesign('RPS');
+  const rpsDesign = new RockPaperScissorsDesign('RPS');
   const tf = [true, false];
   before(() => {
     d = Dimension.create(rpsDesign, {
@@ -30,9 +30,9 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
   });
   describe('Test memory limit mechanism', () => {
     // TODO: add tests for bot that timeout before match starts
-    for (let bool of tf) {
+    for (const bool of tf) {
       it(`should kill bots accordingly if past memory limit; secureMode: ${bool}`, async () => {
-        let match = await d.createMatch(
+        const match = await d.createMatch(
           [
             './tests/kits/js/normal/rock.exceedmemory.js',
             './tests/kits/js/normal/paper.js',
@@ -47,7 +47,7 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
             },
           }
         );
-        let results = await match.run();
+        const results = await match.run();
         expect(results.terminated[0]).to.equal('terminated');
         expect(results.terminated[1]).to.equal(undefined);
       });
@@ -55,7 +55,6 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
 
     // TODO, investigate why circleci can't get this passing
     it.skip('should allow for custom memory limit reached functions', async () => {
-      const someMessage = 'some message';
       let customRan = false;
       const customEngineOptions: DeepPartial<MatchEngine.EngineOptions> = {
         memory: {
@@ -77,9 +76,9 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
           },
         },
       };
-      let sandbox = sinon.createSandbox();
+      const sandbox = sinon.createSandbox();
 
-      let match = await d.createMatch(
+      const match = await d.createMatch(
         [
           './tests/kits/js/normal/rock.exceedmemory.js',
           './tests/kits/js/normal/paper.js',
@@ -89,16 +88,15 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
           engineOptions: customEngineOptions,
         }
       );
-      let killSpy = sandbox.spy(match, 'kill');
-      let logspy = sandbox.spy(match.log, 'detail');
-      let results = await match.run();
+      const killSpy = sandbox.spy(match, 'kill');
+      const results = await match.run();
       expect(results.terminated[0]).to.equal('terminated');
       expect(killSpy).to.be.calledWith(0);
       expect(customRan).to.equal(true, 'custom memory callback ran');
     });
 
     it('should allow for turning off memory limit', async () => {
-      let match = await d.createMatch(
+      const match = await d.createMatch(
         ['./tests/kits/js/normal/rock.js', './tests/kits/js/normal/paper.js'],
         {
           bestOf: 9,
@@ -110,9 +108,9 @@ describe('Testing MatchEngine Memory Limit Mechanism', () => {
           },
         }
       );
-      let sandbox = sinon.createSandbox();
-      let killSpy = sandbox.spy(match, 'kill');
-      let results = await match.run();
+      const sandbox = sinon.createSandbox();
+      const killSpy = sandbox.spy(match, 'kill');
+      const results = await match.run();
       // match.kill should never get called
       expect(killSpy).to.be.callCount(0);
       expect(results.scores).to.eql({ '0': 0, '1': 9 });

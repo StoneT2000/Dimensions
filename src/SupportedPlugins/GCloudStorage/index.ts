@@ -10,7 +10,7 @@ import { Database } from '../../Plugin/Database';
 import { Tournament } from '../../Tournament';
 
 export class GCloudStorage extends DStorage {
-  public name: string = 'GCloudStorage';
+  public name = 'GCloudStorage';
   public type: Plugin.Type = Plugin.Type.STORAGE;
   public storage: Storage;
   public configs: GCloudStorage.Configs;
@@ -24,8 +24,8 @@ export class GCloudStorage extends DStorage {
   /**
    * Initializer. Initializes the storage object and creates necessary buckets
    */
-  async initialize(dimension: Dimension) {
-    let bucketName =
+  async initialize(dimension: Dimension): Promise<void> {
+    const bucketName =
       dimension.name.toLowerCase().replace(/ /g, '_') +
       '_' +
       dimension.id.toLowerCase();
@@ -33,7 +33,7 @@ export class GCloudStorage extends DStorage {
       keyFilename: this.configs.keyFilename,
       projectId: this.configs.projectId,
     });
-    let exists = await this.storage.bucket(bucketName).exists();
+    const exists = await this.storage.bucket(bucketName).exists();
     if (!exists[0]) {
       await this.storage.createBucket(bucketName);
     }
@@ -44,8 +44,8 @@ export class GCloudStorage extends DStorage {
     file: string,
     user: Database.User,
     tournament: Tournament
-  ) {
-    let dest = `users/${user.username}_${
+  ): Promise<string> {
+    const dest = `users/${user.username}_${
       user.playerID
     }/tournaments/${tournament.getKeyName()}/bot.zip`;
     return this.dimensionBucket
@@ -57,8 +57,8 @@ export class GCloudStorage extends DStorage {
       });
   }
 
-  async upload(file: string, destination?: string) {
-    let dest = `${destination ? destination : path.basename(file)}`;
+  async upload(file: string, destination?: string): Promise<string> {
+    const dest = `${destination ? destination : path.basename(file)}`;
     return this.dimensionBucket
       .upload(file, {
         destination: dest,
@@ -68,8 +68,12 @@ export class GCloudStorage extends DStorage {
       });
   }
 
-  async uploadUserFile(file: string, userID: nanoid, destination?: string) {
-    let dest = `users/${userID}/${
+  async uploadUserFile(
+    file: string,
+    userID: nanoid,
+    destination?: string
+  ): Promise<string> {
+    const dest = `users/${userID}/${
       destination ? destination : path.basename(file)
     }`;
     return this.dimensionBucket
@@ -81,10 +85,12 @@ export class GCloudStorage extends DStorage {
       });
   }
 
-  async download(key: string, destination: string) {
-    return new Promise((resolve, reject) => {
-      let file = this.dimensionBucket.file(key);
-      let ws = file.createReadStream().pipe(fs.createWriteStream(destination));
+  async download(key: string, destination: string): Promise<string> {
+    return new Promise((resolve) => {
+      const file = this.dimensionBucket.file(key);
+      const ws = file
+        .createReadStream()
+        .pipe(fs.createWriteStream(destination));
       ws.on('close', () => {
         resolve();
       });
@@ -95,8 +101,8 @@ export class GCloudStorage extends DStorage {
    * Returns a download URL to use to download an object
    * @param key - key referencing the object to download
    */
-  async getDownloadURL(key: string) {
-    let options: GetSignedUrlConfig = {
+  async getDownloadURL(key: string): Promise<string> {
+    const options: GetSignedUrlConfig = {
       version: 'v4',
       action: 'read',
       expires: new Date().getTime() + 15 * 60 * 1000,
@@ -109,13 +115,13 @@ export class GCloudStorage extends DStorage {
       });
   }
 
-  public async manipulate(dimension: Dimension) {
+  public async manipulate(dimension: Dimension): Promise<void> {
     dimension.configs.backingDatabase = StorageType.GCLOUD;
     return;
   }
 }
 
-export module GCloudStorage {
+export namespace GCloudStorage {
   /**
    * Specific configurations for GCloud storage
    */

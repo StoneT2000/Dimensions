@@ -11,10 +11,7 @@ import { deepCopy } from '../../../src/utils/DeepCopy';
 import { stripFunctions } from '../utils/stripfunctions';
 import { createCustomDesign } from '../utils/createCustomDesign';
 import {
-  AgentCompileError,
   AgentCompileTimeoutError,
-  AgentDirectoryError,
-  AgentMissingIDError,
   AgentInstallTimeoutError,
 } from '../../../src/DimensionError';
 const expect = chai.expect;
@@ -48,7 +45,7 @@ describe('Testing MatchEngine Core', () => {
     './tests/kits/js/linecount/rock.2line.js',
     './tests/kits/js/linecount/paper.2line.js',
   ];
-  let changedOptions = {
+  const changedOptions = {
     engineOptions: {
       timeout: {
         max: 10000,
@@ -89,20 +86,20 @@ describe('Testing MatchEngine Core', () => {
   describe('Test configurations', () => {
     it('should be initialized with a match correctly when using defaults', async () => {
       // create match goes to as far as running initalize functions
-      let match = await ddefault.createMatch(botList, {
+      const match = await ddefault.createMatch(botList, {
         bestOf: 9,
       });
-      let deeped = stripFunctions(
+      const deeped = stripFunctions(
         deepCopy(rpsDesign.getDesignOptions().engineOptions)
       );
       expect(match.matchEngine.getEngineOptions()).to.containSubset(deeped);
     });
     it('should be initialized with a match correctly when using overriden', async () => {
       // create match goes to as far as running initalize functions
-      let match = await d.createMatch(botList, {
+      const match = await d.createMatch(botList, {
         bestOf: 9,
       });
-      let deeped = stripFunctions(
+      const deeped = stripFunctions(
         deepCopy(rpsDesignChanged.getDesignOptions().engineOptions)
       );
       expect(match.matchEngine.getEngineOptions()).to.containSubset(deeped);
@@ -117,7 +114,7 @@ describe('Testing MatchEngine Core', () => {
       });
     });
     it('should store relevant processes', () => {
-      for (let agent of match.agents) {
+      for (const agent of match.agents) {
         expect(agent._getProcess()).to.not.equal(
           null,
           'process should be stored'
@@ -137,7 +134,7 @@ describe('Testing MatchEngine Core', () => {
       }
     });
     it('should store relevant memory watcher intervals', () => {
-      for (let agent of match.agents) {
+      for (const agent of match.agents) {
         expect(agent.memoryWatchInterval).to.not.equal(
           null,
           'memory watch interval should be stored and active'
@@ -146,12 +143,12 @@ describe('Testing MatchEngine Core', () => {
     });
     it('should store idToAgents map in match', () => {
       expect(match.idToAgentsMap.size).to.equal(2);
-      for (let agent of match.agents) {
+      for (const agent of match.agents) {
         expect(match.idToAgentsMap.get(agent.id)).to.equal(agent);
       }
     });
     it('should initialize all agents as running', () => {
-      for (let agent of match.agents) {
+      for (const agent of match.agents) {
         expect(agent.status).to.equal(Agent.Status.RUNNING);
       }
     });
@@ -160,7 +157,7 @@ describe('Testing MatchEngine Core', () => {
   describe('Test running', () => {
     describe('Test FINISH_SYMBOL policy', () => {
       it('should handle commands when using the default FINISH_SYMBOL policy', async () => {
-        let match = await d.createMatch(botList, {
+        const match = await d.createMatch(botList, {
           bestOf: 11,
         });
         expect(match.matchEngine.getEngineOptions().commandStreamType).to.equal(
@@ -169,12 +166,12 @@ describe('Testing MatchEngine Core', () => {
         expect(
           match.matchEngine.getEngineOptions().commandFinishPolicy
         ).to.equal(MatchEngine.COMMAND_FINISH_POLICIES.FINISH_SYMBOL);
-        let results = await match.run();
+        const results = await match.run();
         expect(results.scores).to.eql({ '0': 0, '1': 11 });
       });
 
       it('should erase extraneous output after finish symbol', async () => {
-        let results = await d.runMatch(
+        const results = await d.runMatch(
           [
             './tests/kits/js/normal/rock.withextra.js',
             './tests/kits/js/normal/paper.js',
@@ -212,12 +209,12 @@ describe('Testing MatchEngine Core', () => {
         ).to.equal(MatchEngine.COMMAND_FINISH_POLICIES.LINE_COUNT);
       };
       it('should handle commands when using the default configs', async () => {
-        let match = await d.createMatch(lineCountBotList, {
+        const match = await d.createMatch(lineCountBotList, {
           bestOf: 11,
         });
         verifyLinecountSettings(match);
 
-        let results = await match.run();
+        const results = await match.run();
         expect(results.scores).to.eql({ '0': 0, '1': 11 });
       });
       it('should handle commands when setting max lines to more than 1', async () => {
@@ -234,7 +231,7 @@ describe('Testing MatchEngine Core', () => {
         expect(results.scores).to.eql({ '0': 0, '1': 11 });
 
         // rock.extra.js sends a 2nd "S" after the "R", allowed by max 2, and thus wins this
-        let extraOutputBotList = [
+        const extraOutputBotList = [
           './tests/kits/js/linecount/rock.extra.js',
           './tests/kits/js/linecount/paper.2line.js',
         ];
@@ -252,7 +249,7 @@ describe('Testing MatchEngine Core', () => {
       });
     });
     it('should allow stderr output from agents', async () => {
-      let match = await d.createMatch(
+      const match = await d.createMatch(
         [
           './tests/kits/js/normal/rock.withstderr.js',
           './tests/kits/js/normal/paper.js',
@@ -264,22 +261,22 @@ describe('Testing MatchEngine Core', () => {
           },
         }
       );
-      let sandbox = sinon.createSandbox();
-      let stderrSpy = sandbox.spy(match.matchEngine.getLogger(), 'error');
+      const sandbox = sinon.createSandbox();
+      const stderrSpy = sandbox.spy(match.matchEngine.getLogger(), 'error');
 
-      let results = await match.run();
+      const results = await match.run();
       expect(stderrSpy).to.be.calledWith('0: test');
       expect(results.scores).to.eql({ '0': 0, '1': 11 });
     });
     it('should call matchEngine kill twice only for 2 agent matches', async () => {
-      let match = await d.createMatch(
+      const match = await d.createMatch(
         ['./tests/kits/js/normal/rock.js', './tests/kits/js/normal/paper.js'],
         {
           bestOf: 9,
         }
       );
-      let sandbox = sinon.createSandbox();
-      let matchEngineKillSpy = sandbox.spy(match.matchEngine, 'kill');
+      const sandbox = sinon.createSandbox();
+      const matchEngineKillSpy = sandbox.spy(match.matchEngine, 'kill');
       await match.run();
       expect(matchEngineKillSpy).to.callCount(2);
     });
@@ -287,7 +284,7 @@ describe('Testing MatchEngine Core', () => {
     describe('Testing engine processing of agent output commands', () => {
       // specifically tests line with `agent._buffer.push(strs[strs.length - 1]);`
       it('should allow for delayed newline characters and use the _buffer store in agent correctly', async () => {
-        let match = await d.createMatch(
+        const match = await d.createMatch(
           [
             './tests/kits/js/normal/rock.delaynewline.js',
             './tests/kits/js/normal/paper.delaynewline.js',
@@ -296,12 +293,12 @@ describe('Testing MatchEngine Core', () => {
             bestOf: 9,
           }
         );
-        let results = await match.run();
+        const results = await match.run();
         expect(results.scores).to.eql({ '0': 0, '1': 9 });
       });
 
       it('should ignore extra newlines if newline was already sent', async () => {
-        let match = await d.createMatch(
+        const match = await d.createMatch(
           [
             './tests/kits/js/normal/rock.extranewlines.js',
             './tests/kits/js/normal/paper.delaynewline.js',
@@ -310,22 +307,22 @@ describe('Testing MatchEngine Core', () => {
             bestOf: 9,
           }
         );
-        let results = await match.run();
+        const results = await match.run();
         expect(results.scores).to.eql({ '0': 0, '1': 9 });
       });
     });
 
     describe(`Testing engine handling of agent 'close' event`, () => {
       it('should terminate the agent internally as well if agent prematurely exits', async () => {
-        let match = await d.createMatch(
+        const match = await d.createMatch(
           ['./tests/kits/js/normal/rock.prematureexit.js', paper],
           {
             bestOf: 9,
           }
         );
-        let sandbox = sinon.createSandbox();
-        let matchEngineKillSpy = sandbox.spy(match.matchEngine, 'kill');
-        let results = await match.run();
+        const sandbox = sinon.createSandbox();
+        const matchEngineKillSpy = sandbox.spy(match.matchEngine, 'kill');
+        const results = await match.run();
         expect(results.scores).to.eql({ '0': 0, '1': 1 });
         // 3 kill calls, one for premature termination and 2 are always called
         expect(matchEngineKillSpy).to.be.callCount(3);
@@ -335,22 +332,22 @@ describe('Testing MatchEngine Core', () => {
 
   describe('Test secureMode', () => {
     it('should initialize correctly', async () => {
-      let match = await d.createMatch(botList, {
+      const match = await d.createMatch(botList, {
         bestOf: 11,
         secureMode: true,
       });
-      for (let agent of match.agents) {
+      for (const agent of match.agents) {
         expect(agent.options.secureMode).to.equal(true);
       }
       expect(match.configs.secureMode).to.equal(true);
     });
 
     it('should run correctly', async () => {
-      let match = await d.createMatch(botList, {
+      const match = await d.createMatch(botList, {
         bestOf: 11,
         secureMode: true,
       });
-      let results = await match.run();
+      const results = await match.run();
       expect(results.scores).to.eql({ '0': 0, '1': 11 });
     });
   });
@@ -406,7 +403,7 @@ describe('Testing MatchEngine Core', () => {
     });
 
     it('should run correctly', async () => {
-      let results = await d.runMatch(botList);
+      const results = await d.runMatch(botList);
       expect(results).to.eql({
         ranks: [
           { agentID: 0, rank: 1 },

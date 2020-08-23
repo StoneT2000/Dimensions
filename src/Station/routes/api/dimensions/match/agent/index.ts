@@ -3,20 +3,20 @@
  */
 import express, { Request, Response, NextFunction } from 'express';
 import * as error from '../../../../../error';
-import { Match } from '../../../../../../Match';
 import { Agent } from '../../../../../../Agent';
 import { pick } from '../../../../../../utils';
-
-import { getMatch } from '../';
 
 const router = express.Router();
 
 /**
  * Gets agent by agentID in request. Requires a match to be stored
  */
-export const getAgent = (req: Request, res: Response, next: NextFunction) => {
-  let agent: Agent;
-  agent = req.data.match.agents[parseInt(req.params.agentID)];
+export const getAgent = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  const agent = req.data.match.agents[parseInt(req.params.agentID)];
   if (!agent) {
     return next(
       new error.BadRequest(
@@ -31,8 +31,13 @@ export const getAgent = (req: Request, res: Response, next: NextFunction) => {
 /**
  * Picks out relevant fields of the agent
  */
-export const pickAgent = (agent: Agent) => {
-  let picked = pick(
+export const pickAgent = (
+  agent: Agent
+): Pick<
+  Agent,
+  'creationDate' | 'id' | 'name' | 'src' | 'status' | 'tournamentID' | 'logkey'
+> => {
+  const picked = pick(
     agent,
     'creationDate',
     'id',
@@ -51,7 +56,7 @@ router.use('/:agentID', getAgent);
  * Get all agents in match
  */
 router.get('/', (req: Request, res: Response) => {
-  let agentData = req.data.match.agents.map((agent) => pickAgent(agent));
+  const agentData = req.data.match.agents.map((agent) => pickAgent(agent));
   res.json({ error: null, agents: agentData });
 });
 
@@ -66,10 +71,10 @@ router.get('/:agentID', (req, res) => {
  * Get agent error logs
  */
 router.get('/:agentID/logs', async (req, res, next) => {
-  let agent = req.data.agent;
+  const agent = req.data.agent;
   if (agent.logkey) {
     if (req.data.dimension.hasStorage()) {
-      let url = await req.data.dimension.storagePlugin.getDownloadURL(
+      const url = await req.data.dimension.storagePlugin.getDownloadURL(
         agent.logkey
       );
       res.json({ error: null, url: url });

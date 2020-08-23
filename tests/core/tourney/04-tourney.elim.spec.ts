@@ -31,9 +31,9 @@ describe('Testing Elimination Tournament Core', () => {
 
   describe('Test running', () => {
     it('should run', async () => {
-      let tourney = createElimTourney(d, [...botList, rock, rock]);
+      const tourney = createElimTourney(d, [...botList, rock, rock]);
       await tourney.run();
-      let ranks = tourney.getRankings();
+      const ranks = tourney.getRankings();
       expect(ranks[0].rank).to.equal(1);
       expect(ranks[1].rank).to.equal(2);
       expect(ranks[2].rank).to.equal(4);

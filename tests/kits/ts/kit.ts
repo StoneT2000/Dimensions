@@ -11,15 +11,15 @@ export class Agent {
   public getLine: () => Promise<Parsed>;
   public id: number;
   public roundResults: Array<number> = [];
-  _setup() {
+  _setup(): void {
     // Prepare to read input
     const rl = readline.createInterface({
       input: process.stdin,
       output: null,
     });
 
-    let buffer = [];
-    let currentResolve;
+    const buffer = [];
+    let currentResolve: Function;
     const makePromise = function () {
       return new Promise((resolve) => {
         currentResolve = resolve;
@@ -61,14 +61,14 @@ export class Agent {
    * Initialize Agent for the `Match`
    * User should edit this according to their `Design`
    */
-  async initialize() {
+  async initialize(): Promise<void> {
     // use (await this.getLine()) to get a parsed line of commands from the match engine
     // This parsed line is an object from which you can get the nextInt, nextFloat, nextIntArr etc..
 
     // get agent ID
     this.id = (await this.getLine()).nextInt();
     // get some other necessary initial input
-    let maxRounds = (await this.getLine()).nextInt();
+    const maxRounds = (await this.getLine()).nextInt();
   }
   /**
    * Updates agent's own known state of `Match`
@@ -76,11 +76,11 @@ export class Agent {
    */
   async update() {
     // wait for the engine to send the result of the last round, which is the ID of the agent who won
-    let result = (await this.getLine()).nextInt();
+    const result = (await this.getLine()).nextInt();
     this.roundResults.push(result);
 
     // wait for the engine to send you the opponent's last move, which is either 'R', 'P', or 'S'
-    let lastOpponentMove = (await this.getLine()).nextStr();
+    const lastOpponentMove = (await this.getLine()).nextStr();
   }
 
   /**

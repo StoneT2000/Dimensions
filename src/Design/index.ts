@@ -40,7 +40,7 @@ export abstract class Design {
    * @param designOptions - The options for this design
    */
   constructor(
-    public name: String,
+    public name: string,
     designOptions: DeepPartial<DesignOptions> = {}
   ) {
     // Copy defaults
@@ -59,7 +59,7 @@ export abstract class Design {
    * Set log level of the design
    * @param level - level to set design logger to
    */
-  setLogLevel(level: Logger.LEVEL) {
+  setLogLevel(level: Logger.LEVEL): void {
     this.log.level = level;
   }
 
@@ -124,7 +124,7 @@ export abstract class Design {
   public static createCustom(
     name: string,
     overrideOptions: DeepPartial<Design.OverrideOptions>
-  ) {
+  ): Design {
     return new CustomDesign(name, overrideOptions);
   }
 }
@@ -219,7 +219,7 @@ export const DefaultDesignOptions: DesignOptions = {
         agent: Agent,
         match: Match,
         engineOptions: EngineOptions
-      ) => {
+      ): void => {
         match.kill(agent.id, 'timed out');
         match.log.error(
           `agent ${agent.id} - '${agent.name}' timed out after ${engineOptions.timeout.max} ms`
@@ -239,7 +239,7 @@ export const DefaultDesignOptions: DesignOptions = {
         agent: Agent,
         match: Match,
         engineOptions: EngineOptions
-      ) => {
+      ): void => {
         match.kill(agent.id, 'exceed memory limit');
         match.log.error(
           `agent ${agent.id} - '${agent.name}' reached the memory limit of ${
@@ -260,7 +260,7 @@ export const DefaultDesignOptions: DesignOptions = {
   },
 };
 
-export module Design {
+export namespace Design {
   /**
    * The override options interface
    * This is used to provide configurations for a custom {@link Design} outside the scope and infrastructure of

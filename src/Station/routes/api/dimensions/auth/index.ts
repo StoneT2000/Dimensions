@@ -3,8 +3,6 @@
  */
 import express, { Request, Response, NextFunction } from 'express';
 import * as error from '../../../../error';
-import { requiresDatabase } from '..';
-import { Database } from '../../../../../Plugin/Database';
 const router = express.Router();
 
 /**
@@ -14,7 +12,7 @@ export const requireAuth = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   if (!req.data.dimension.hasDatabase()) {
     next();
     return;
@@ -28,7 +26,7 @@ export const requireAuth = (
     authHead[1].length === 0;
   if (invalidAuthFormat)
     return next(new error.Unauthorized('Invalid auth token format'));
-  let dimension = req.data.dimension;
+  const dimension = req.data.dimension;
   dimension.databasePlugin
     .verifyToken(authHead[1])
     .then((data) => {
@@ -41,7 +39,11 @@ export const requireAuth = (
 /**
  * Doesn't require auth, just stores user data if supplied
  */
-export const storeAuth = (req: Request, res: Response, next: NextFunction) => {
+export const storeAuth = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   if (!req.data.dimension.hasDatabase()) {
     next();
     return;
@@ -54,7 +56,7 @@ export const storeAuth = (req: Request, res: Response, next: NextFunction) => {
     authHead[0] !== 'Bearer' ||
     authHead[1].length === 0;
   if (invalidAuthFormat) return next();
-  let dimension = req.data.dimension;
+  const dimension = req.data.dimension;
   dimension.databasePlugin
     .verifyToken(authHead[1])
     .then((data) => {
@@ -73,7 +75,7 @@ export const requireAdmin = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   if (!req.data.dimension.hasDatabase()) {
     next();
     return;
@@ -87,7 +89,7 @@ export const requireAdmin = (
     authHead[1].length === 0;
   if (invalidAuthFormat)
     return next(new error.Unauthorized('Invalid auth token format'));
-  let dimension = req.data.dimension;
+  const dimension = req.data.dimension;
   dimension.databasePlugin
     .verifyToken(authHead[1])
     .then((data) => {
@@ -109,10 +111,10 @@ router.post('/register', (req, res, next) => {
   if (!req.body.username) return next(new error.BadRequest('Missing username'));
   if (!req.body.password) return next(new error.BadRequest('Missing password'));
 
-  let dimension = req.data.dimension;
+  const dimension = req.data.dimension;
   dimension.databasePlugin
     .registerUser(req.body.username, req.body.password, req.body.userData)
-    .then((user) => {
+    .then(() => {
       res.json({ error: null, msg: 'success' });
     })
     .catch(next);
@@ -127,7 +129,7 @@ router.post('/login', (req, res, next) => {
   if (!req.body.username) return next(new error.BadRequest('Missing username'));
   if (!req.body.password) return next(new error.BadRequest('Missing password'));
 
-  let dimension = req.data.dimension;
+  const dimension = req.data.dimension;
   dimension.databasePlugin
     .loginUser(req.body.username, req.body.password)
     .then((jwt) => {
@@ -159,7 +161,7 @@ router.post('/verify', (req, res, next) => {
       authenticated: false,
     });
 
-  let dimension = req.data.dimension;
+  const dimension = req.data.dimension;
   dimension.databasePlugin
     .verifyToken(authHead[1])
     .then(() => {

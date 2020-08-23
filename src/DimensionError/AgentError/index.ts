@@ -1,5 +1,3 @@
-import { nanoid } from '../..';
-
 const AGENT_ERROR = 'AgentError';
 const AGENT_INSTALL_ERROR = 'AgentInstallError';
 const AGENT_INSTALL_TIMEOUT_ERROR = 'AgentInstallTimeoutError';

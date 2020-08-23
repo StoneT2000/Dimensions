@@ -17,7 +17,7 @@ export function deepCopy<T>(obj: T): T {
   // Handle Array
   if (obj instanceof Array) {
     copy = [];
-    for (var i = 0, len = obj.length; i < len; i++) {
+    for (let i = 0, len = obj.length; i < len; i++) {
       copy[i] = deepCopy(obj[i]);
     }
     return copy;
@@ -26,7 +26,8 @@ export function deepCopy<T>(obj: T): T {
   // Handle Object
   if (obj instanceof Object) {
     copy = {};
-    for (var attr in obj) {
+    for (const attr in obj) {
+      //eslint-disable-next-line no-prototype-builtins
       if (obj.hasOwnProperty(attr)) copy[attr] = deepCopy(obj[attr]);
     }
     return copy;

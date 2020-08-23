@@ -2,16 +2,13 @@ import { Tournament, Player } from '..';
 import { DeepPartial } from '../../utils/DeepPartial';
 import { Design } from '../../Design';
 import { deepMerge } from '../../utils/DeepMerge';
-import {
-  FatalError,
-  TournamentError,
-  NotSupportedError,
-} from '../../DimensionError';
+import { TournamentError, NotSupportedError } from '../../DimensionError';
 import { Agent } from '../../Agent';
 import { Logger } from '../../Logger';
 import RankSystem = Tournament.RankSystem;
 import { sprintf } from 'sprintf-js';
 import { Dimension, NanoID } from '../../Dimension';
+import { nanoid } from '../..';
 
 /**
  * The Round Robin Tournament Class
@@ -36,7 +33,7 @@ export class RoundRobin extends Tournament {
 
   type = Tournament.Type.ROUND_ROBIN;
 
-  private shouldStop: boolean = false;
+  private shouldStop = false;
   private resumePromise: Promise<void>;
   private resumeResolver: Function;
   private resolveStopPromise: Function;
@@ -55,7 +52,7 @@ export class RoundRobin extends Tournament {
     id: NanoID,
     dimension: Dimension
   ) {
-    super(design, files, id, tournamentConfigs, dimension);
+    super(design, id, tournamentConfigs, dimension);
     if (tournamentConfigs.consoleDisplay) {
       this.configs.consoleDisplay = tournamentConfigs.consoleDisplay;
     }
@@ -100,10 +97,8 @@ export class RoundRobin extends Tournament {
    * @param configs - the configs to use for this run
    */
   public async run(
-    configs?: DeepPartial<
-      Tournament.TournamentConfigs<Tournament.RoundRobin.Configs>
-    >
-  ) {
+    configs?: DeepPartial<Tournament.TournamentConfigs<RoundRobin.Configs>>
+  ): Promise<RoundRobin.State> {
     this.status = Tournament.Status.RUNNING;
     this.log.info('Running Tournament');
     this.configs = deepMerge(this.configs, configs, true);
@@ -119,7 +114,7 @@ export class RoundRobin extends Tournament {
         this.log.info('Resumed Tournament');
         this.shouldStop = false;
       }
-      let matchInfo = this.matchQueue.shift();
+      const matchInfo = this.matchQueue.shift();
       await this.handleMatch(matchInfo);
     }
     this.status = Tournament.Status.FINISHED;
@@ -131,20 +126,20 @@ export class RoundRobin extends Tournament {
    * @param matchInfo
    */
   private async handleMatch(queuedMatchInfo: Tournament.QueuedMatch) {
-    let matchInfo = await this.getMatchInfoFromQueuedMatch(queuedMatchInfo);
+    const matchInfo = await this.getMatchInfoFromQueuedMatch(queuedMatchInfo);
 
     if (this.configs.consoleDisplay) {
       this.printTournamentStatus();
       console.log();
       console.log('Current Matches: ' + (this.matches.size + 1));
       this.matches.forEach((match) => {
-        let names: Array<string> = [];
+        const names: Array<string> = [];
         match.agents.forEach((agent) => {
           names.push(agent.name);
         });
         console.log(names);
       });
-      let names = [];
+      const names = [];
       matchInfo.forEach((player) => {
         names.push(player.tournamentID.name);
       });
@@ -155,8 +150,8 @@ export class RoundRobin extends Tournament {
       'Running match - Competitors: ',
       matchInfo.map((player) => player.tournamentID.name)
     );
-    let matchRes = await this.runMatch(matchInfo);
-    let resInfo = <Tournament.RankSystem.WINS.Results>(
+    const matchRes = await this.runMatch(matchInfo);
+    const resInfo = <Tournament.RankSystem.WINS.Results>(
       this.configs.resultHandler(matchRes.results)
     );
 
@@ -177,7 +172,7 @@ export class RoundRobin extends Tournament {
     this.state.statistics.totalMatches++;
     // update matches played per player
     matchInfo.map((player) => {
-      let oldplayerStat = this.state.playerStats.get(player.tournamentID.id);
+      const oldplayerStat = this.state.playerStats.get(player.tournamentID.id);
       oldplayerStat.matchesPlayed++;
       this.state.playerStats.set(player.tournamentID.id, oldplayerStat);
     });
@@ -185,24 +180,26 @@ export class RoundRobin extends Tournament {
     // handle winners, tied, and losers players and update their stats
     resInfo.winners.forEach((winnerID: Agent.ID) => {
       // resInfo contains agentIDs, which need to be remapped to tournament IDs
-      let tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(winnerID);
-      let oldplayerStat = this.state.playerStats.get(tournamentID.id);
+      const tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(
+        winnerID
+      );
+      const oldplayerStat = this.state.playerStats.get(tournamentID.id);
       oldplayerStat.wins++;
       this.state.playerStats.set(tournamentID.id, oldplayerStat);
     });
     resInfo.ties.forEach((tieplayerID: Agent.ID) => {
-      let tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(
+      const tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(
         tieplayerID
       );
-      let oldplayerStat = this.state.playerStats.get(tournamentID.id);
+      const oldplayerStat = this.state.playerStats.get(tournamentID.id);
       oldplayerStat.ties++;
       this.state.playerStats.set(tournamentID.id, oldplayerStat);
     });
     resInfo.losers.forEach((loserplayerID: Agent.ID) => {
-      let tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(
+      const tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(
         loserplayerID
       );
-      let oldplayerStat = this.state.playerStats.get(tournamentID.id);
+      const oldplayerStat = this.state.playerStats.get(tournamentID.id);
       oldplayerStat.losses++;
       this.state.playerStats.set(tournamentID.id, oldplayerStat);
     });
@@ -211,7 +208,7 @@ export class RoundRobin extends Tournament {
       console.log();
       console.log('Current Matches: ' + this.matches.size);
       this.matches.forEach((match) => {
-        let names = [];
+        const names = [];
         match.agents.forEach((agent) => {
           names.push(agent.name);
         });
@@ -224,7 +221,7 @@ export class RoundRobin extends Tournament {
    * Stops the tournament
    */
   public stop(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (this.status !== Tournament.Status.RUNNING) {
         throw new TournamentError(`Can't stop a tournament that isn't running`);
       }
@@ -251,14 +248,23 @@ export class RoundRobin extends Tournament {
     this.resumeResolver();
   }
 
-  // TODO: move sorting to run function. It's ok too sort like this for small leagues, but larger will become slow.
+  // TODO: move sorting to run function. It's ok to sort like this for small leagues, but larger will become slow.
   /**
    * Returns the current rankings
    */
-  public getRankings() {
-    let ranks = [];
+  public getRankings(): Array<{
+    player: Player;
+    name: string;
+    id: nanoid;
+    score: number;
+    wins: number;
+    losses: number;
+    ties: number;
+    matchesPlayed: number;
+  }> {
+    const ranks = [];
     this.state.playerStats.forEach((playerStat) => {
-      let score =
+      const score =
         playerStat.wins * this.configs.rankSystemConfigs.winValue +
         playerStat.ties * this.configs.rankSystemConfigs.tieValue +
         playerStat.losses * this.configs.rankSystemConfigs.lossValue;
@@ -299,10 +305,8 @@ export class RoundRobin extends Tournament {
    * @param configs - configs to use
    */
   public setConfigs(
-    configs: DeepPartial<
-      Tournament.TournamentConfigs<Tournament.RoundRobin.Configs>
-    > = {}
-  ) {
+    configs: DeepPartial<Tournament.TournamentConfigs<RoundRobin.Configs>> = {}
+  ): void {
     this.configs = deepMerge(this.configs, configs, true);
   }
 
@@ -329,32 +333,33 @@ export class RoundRobin extends Tournament {
    */
   private schedule() {
     this.log.detail('Scheduling... ');
-    let matchSets: Array<Tournament.QueuedMatch> = [];
+    const matchSets: Array<Tournament.QueuedMatch> = [];
     for (let i = 0; i < this.configs.tournamentConfigs.times; i++) {
       matchSets.push(...this.generateARound());
     }
     this.matchQueue = matchSets;
   }
   private generateARound() {
-    let roundQueue: Array<Tournament.QueuedMatch> = [];
+    const roundQueue: Array<Tournament.QueuedMatch> = [];
 
-    let comp = Array.from(this.competitors.values());
+    const comp = Array.from(this.competitors.values());
     for (let i = 0; i < this.competitors.size; i++) {
       for (let j = i + 1; j < this.competitors.size; j++) {
-        let player1 = comp[i];
-        let player2 = comp[j];
+        const player1 = comp[i];
+        const player2 = comp[j];
         roundQueue.push([player1.tournamentID.id, player2.tournamentID.id]);
       }
     }
     return roundQueue;
   }
 
-  async internalAddPlayer(player: Player) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async internalAddPlayer(player: Player): Promise<void> {
     return;
   }
-  async updatePlayer(player: Player, oldname: string, oldfile: string) {
+  async updatePlayer(): Promise<void> {
     throw new TournamentError(
-      'You are not allowed to update a player during elimination tournaments'
+      'You are not allowed to update a player during round robin tournaments'
     );
   }
 
@@ -366,7 +371,7 @@ export class RoundRobin extends Tournament {
         `Tournament - ID: ${this.id}, Name: ${this.name} | Dimension - ID: ${this.dimension.id}, Name: ${this.dimension.name}\nStatus: ${this.status} | Competitors: ${this.competitors.size} | Rank System: ${this.configs.rankSystem}\n`
       );
       console.log('Total Matches: ' + this.state.statistics.totalMatches);
-      let ranks = this.getRankings();
+      const ranks = this.getRankings();
       switch (this.configs.rankSystem) {
         case Tournament.RankSystem.WINS:
           console.log(

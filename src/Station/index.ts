@@ -5,6 +5,7 @@ import dimensionsAPI from './routes/api/dimensions';
 
 import { Dimension } from '../Dimension';
 import { Logger } from '../Logger';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Match } from '../Match';
 
 import * as error from './error';
@@ -12,9 +13,12 @@ import * as error from './error';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { Server } from 'http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Tournament } from '../Tournament';
 import { existsSync, mkdirSync } from 'fs';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Agent } from '../Agent';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Plugin } from '../Plugin';
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
@@ -39,14 +43,14 @@ declare global {
 }
 export class Station {
   public app: express.Application;
-  public static _id: number = 0;
-  public id: number = 0;
+  public static _id = 0;
+  public id = 0;
   public name: string;
-  public port: number = 9000;
+  public port = 9000;
 
-  public webport: number = 3000;
+  public webport = 3000;
 
-  public maxAttempts: number = 16;
+  public maxAttempts = 16;
   private log: Logger = new Logger(Logger.LEVEL.INFO, 'Station Log');
   private server: Server;
 
@@ -56,7 +60,7 @@ export class Station {
   };
 
   constructor(
-    name: string = '',
+    name = '',
     observedDimensions: Dimension | Array<Dimension>,
     configs: DeepPartial<Station.Configs> = {}
   ) {
@@ -89,13 +93,13 @@ export class Station {
 
     // store all observed dimensions
     if (observedDimensions instanceof Array) {
-      let dimensionsMap = new Map();
+      const dimensionsMap = new Map();
       observedDimensions.forEach((dim) => {
         dimensionsMap.set(dim.id, dim);
       });
       this.app.set('dimensions', dimensionsMap);
     } else {
-      let m = new Map();
+      const m = new Map();
       m.set(observedDimensions.id, observedDimensions);
       this.app.set('dimensions', m);
     }
@@ -136,7 +140,7 @@ export class Station {
       this.log.info(
         `Running '${this.name}' API at port ${this.port}. API served at http://localhost:${this.port}`
       );
-      let dims = [];
+      const dims = [];
       this.app
         .get('dimensions')
         .forEach((dim: Dimension) => dims.push(dim.name));
@@ -187,7 +191,7 @@ export class Station {
     });
   }
 
-  public setLogLevel(level: Logger.LEVEL) {
+  public setLogLevel(level: Logger.LEVEL): void {
     this.log.level = level;
   }
 
@@ -218,14 +222,14 @@ export class Station {
     });
   }
 
-  public observe(dimension: Dimension) {
-    let dimMap = this.app.get('dimensions');
+  public observe(dimension: Dimension): void {
+    const dimMap = this.app.get('dimensions');
     dimMap.set(dimension.id, dimension);
     this.app.set('dimensions', dimMap);
   }
 }
 
-export module Station {
+export namespace Station {
   export interface Configs {
     /**
      * Whether or not to allow bot uploads through the Station API. Note that you can still upload bots by changing the

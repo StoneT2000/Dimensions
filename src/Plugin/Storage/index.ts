@@ -65,9 +65,10 @@ export abstract class Storage extends Plugin {
   abstract async getDownloadURL(key: string): Promise<string>;
 }
 
-export module Storage {
+export namespace Storage {
   /**
    * Storage configs interface
    */
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
   export interface Configs {}
 }

@@ -12,7 +12,6 @@ import userAPI from './user';
 import authAPI from './auth';
 import { handleBotUpload } from '../../../handleBotUpload';
 import path from 'path';
-import { spawn } from 'child_process';
 import { removeDirectory } from '../../../../utils/System';
 
 const router = express.Router();
@@ -23,8 +22,8 @@ const router = express.Router();
  * Gets all observed dimensions
  */
 router.get('/', (req: Request, res: Response) => {
-  let dimMap = req.app.get('dimensions');
-  let data = {};
+  const dimMap = req.app.get('dimensions');
+  const data = {};
   dimMap.forEach((dimension: Dimension) => {
     data[dimension.id] = pickDimension(dimension);
   });
@@ -37,10 +36,10 @@ router.get('/', (req: Request, res: Response) => {
  * Get a dimension from id
  */
 const getDimension = (req: Request, res, next: express.NextFunction) => {
-  let id = req.params.id;
+  const id = req.params.id;
   // TODO: the following line may never occur actually
   if (!id) return next(new error.BadRequest('ID must be provided'));
-  let dimension: Dimension = req.app.get('dimensions').get(id);
+  const dimension: Dimension = req.app.get('dimensions').get(id);
   if (!dimension) {
     return next(new error.BadRequest('No Dimension found'));
   }
@@ -48,13 +47,16 @@ const getDimension = (req: Request, res, next: express.NextFunction) => {
   next();
 };
 const pickDesign = (d: Design) => {
-  let picked = { ...pick(d, 'log', 'name') };
+  const picked = { ...pick(d, 'log', 'name') };
   picked['designOptions'] = d.getDesignOptions();
   return picked;
 };
 const pickDimension = (d: Dimension) => {
-  let picked = { ...pick(d, 'configs', 'id', 'log', 'name', 'statistics') };
-  let pickedDesign = pickDesign(d.design);
+  const picked = {
+    ...pick(d, 'configs', 'id', 'log', 'name', 'statistics'),
+    design: null,
+  };
+  const pickedDesign = pickDesign(d.design);
   picked.design = pickedDesign;
   return picked;
 };
@@ -79,7 +81,7 @@ router.use('/:id/match', matchAPI);
  * Returns all matches in the dimension
  */
 router.get('/:id/match', (req: Request, res: Response) => {
-  let matchData = {};
+  const matchData = {};
   req.data.dimension.matches.forEach((match, key) => {
     matchData[key] = pickMatch(match);
   });
@@ -97,15 +99,15 @@ router.post(
   '/:id/match',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      let data = await handleBotUpload(req);
-      let dim = req.data.dimension;
-      let match = await dim.createMatch(data);
+      const data = await handleBotUpload(req);
+      const dim = req.data.dimension;
+      const match = await dim.createMatch(data);
       match
         .run()
         .then(() => {
           // delete all bot files and their directories as they are temporary and generated
           data.forEach(({ file }) => {
-            let dir = path.dirname(file);
+            const dir = path.dirname(file);
             removeDirectory(dir);
           });
         })
@@ -142,7 +144,7 @@ router.delete('/:id/match/:matchID', async (req, res, next) => {
  * Gets all tournaments in a dimension
  */
 router.get('/:id/tournaments', (req: Request, res: Response) => {
-  let pickedTournaments = {};
+  const pickedTournaments = {};
   req.data.dimension.tournaments.forEach((t) => {
     pickedTournaments[t.id] = pickTournament(t);
   });
@@ -158,9 +160,9 @@ export const requiresDatabase = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   // throw a error if no database detected
-  let dimension = req.data.dimension;
+  const dimension = req.data.dimension;
   if (dimension.hasDatabase()) {
     next();
   } else {

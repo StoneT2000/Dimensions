@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-let Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
 import { MongoDB } from '..';
 import { DeepPartial } from '../../../utils/DeepPartial';
@@ -12,13 +12,13 @@ const defaultUserSchemaOptions: MongoDB.UserSchemaOptions = {
 };
 const UserSchemaCreator = (
   options: DeepPartial<MongoDB.UserSchemaOptions> = {}
-) => {
-  let schemaOptions: MongoDB.UserSchemaOptions = deepMerge(
+): mongoose.Schema<any> => {
+  const schemaOptions: MongoDB.UserSchemaOptions = deepMerge(
     deepCopy(defaultUserSchemaOptions),
     options
   );
 
-  let schema = new Schema(
+  const schema = new Schema(
     {
       username: { type: String, index: true, required: true, unique: true },
       passwordHash: { type: String, required: true },

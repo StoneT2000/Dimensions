@@ -15,6 +15,7 @@ export enum RankSystem {
 }
 
 export namespace RankSystem {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
   export interface ConfigsBase {}
 
   /**

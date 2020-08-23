@@ -24,83 +24,83 @@ export class Logger {
   ) {
     this.identifier = identifier;
   }
-  getIdentifier() {
+  getIdentifier(): string {
     return this.identifierColor(this.identifier);
   }
-  bar(type: string = '') {
+  bar(type = ''): string {
     return `\n-=-=-=-=-=-=-=-=-=-=-=-| ${type} ${this.getIdentifier()} |-=-=-=-=-=-=-=-=-=-=-=-\n`;
   }
 
   // important are messages that cannot be removed, they will always display
-  importantBar() {
+  importantBar(): void {
     console.log(this.bar(colors.red('[IMPORTANT]')));
   }
-  important(...message: any[]) {
+  important(...message: any[]): void {
     console.log(
       `${colors.red('[IMPORTANT]')} (${this.identifier}) -`,
       ...message
     );
   }
-  systemIObar() {
+  systemIObar(): void {
     if (this.level >= Logger.LEVEL.SYSTEM_IO)
       console.log(this.bar(colors.red('[SYSTEM I/O]')));
   }
-  systemIO(...message: any[]) {
+  systemIO(...message: any[]): void {
     if (this.level >= Logger.LEVEL.SYSTEM_IO)
       console.log(
         `${colors.red('[SYSTEM I/O]')} (${this.identifier}) -`,
         ...message
       );
   }
-  systembar() {
+  systembar(): void {
     if (this.level >= Logger.LEVEL.SYSTEM)
       console.log(this.bar(colors.red('[SYSTEM]')));
   }
-  system(...message: any[]) {
+  system(...message: any[]): void {
     if (this.level >= Logger.LEVEL.SYSTEM)
       console.log(
         `${colors.red('[SYSTEM]')} (${this.identifier}) -`,
         ...message
       );
   }
-  detailbar() {
+  detailbar(): void {
     if (this.level >= Logger.LEVEL.DETAIL)
       console.log(this.bar(colors.grey('[DETAIL]')));
   }
-  detail(...message: any[]) {
+  detail(...message: any[]): void {
     if (this.level >= Logger.LEVEL.DETAIL)
       console.log(
         `${colors.grey('[DETAIL]')} (${this.identifier}) -`,
         ...message
       );
   }
-  infobar() {
+  infobar(): void {
     if (this.level >= Logger.LEVEL.INFO)
       console.log(this.bar(colors.blue('[INFO]')));
   }
-  info(...message: any[]) {
+  info(...message: any[]): void {
     if (this.level >= Logger.LEVEL.INFO)
       console.log(
         `${colors.blue('[INFO]')} (${this.identifier}) -`,
         ...message
       );
   }
-  warnbar() {
+  warnbar(): void {
     if (this.level >= Logger.LEVEL.WARN)
       console.log(this.bar(colors.yellow('[WARN]')));
   }
-  warn(...message: any[]) {
+  warn(...message: any[]): void {
     if (this.level >= Logger.LEVEL.WARN)
       console.log(
         `${colors.yellow('[WARN]')} (${this.identifier}) -`,
         ...message
       );
   }
-  errorbar() {
+  errorbar(): void {
     if (this.level >= Logger.LEVEL.ERROR)
       console.log(this.bar(colors.red('[ERROR]')));
   }
-  error(...message: any[]) {
+  error(...message: any[]): void {
     if (this.level >= Logger.LEVEL.ERROR)
       console.log(
         `${colors.red('[ERROR]')} (${this.identifier}) -`,
@@ -108,7 +108,7 @@ export class Logger {
       );
   }
 }
-export module Logger {
+export namespace Logger {
   /**
    * Logging Levels where the order of levels are NONE, ERROR, ..., SYSTEM_IO, ALL
    */

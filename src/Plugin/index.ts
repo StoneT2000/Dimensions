@@ -31,7 +31,7 @@ import StorageDefault = require('./Storage');
 /** @ignore */
 import _Storage = StorageDefault.Storage;
 
-export module Plugin {
+export namespace Plugin {
   /**
    * Enumeration for plugin types
    */
@@ -55,6 +55,8 @@ export module Plugin {
   }
 
   // re-export some classes
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   export import Database = _Database;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   export import Storage = _Storage;
 }

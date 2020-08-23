@@ -1,13 +1,14 @@
 import { Database } from './index';
 import jwt from 'jsonwebtoken';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
 /**
  * Generate a jwt for a user
  * @param user
  */
-export function generateToken(user: Database.User) {
-  let u = {
+export const generateToken = (user: Database.User): string => {
+  const u = {
     username: user.username,
     playerID: user.playerID,
     creationDate: user.creationDate,
@@ -17,7 +18,7 @@ export function generateToken(user: Database.User) {
   return jwt.sign(u, process.env.JWT_SECRET, {
     expiresIn: 7 * 60 * 60 * 24, // expires in 1 week
   });
-}
+};
 
 /**
  * Verify a jwt
