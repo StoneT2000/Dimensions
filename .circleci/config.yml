@@ -13,9 +13,9 @@ executors:
           MONGO_INITDB_ROOT_PASSWORD: rootpassword
 
 jobs:
-  executor:
-    name: language-build
   lint:
+    executor:
+      name: language-build
     steps:
       - checkout
       - node/with-cache:
