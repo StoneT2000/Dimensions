@@ -20,21 +20,20 @@ import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
 import { deepCopy } from '../utils/DeepCopy';
 
-
 export const BOT_DIR = path.join(__dirname, '../../../../local/bots');
 
-// declare global and merge declaration with Express Request to allow storage of data across middleware in typescript 
+// declare global and merge declaration with Express Request to allow storage of data across middleware in typescript
 declare global {
   namespace Express {
     interface Request {
       data: {
-        dimension?: Dimension,
-        match?: Match,
-        tournament?: Tournament
-        agent?: Agent,
-        user?: Plugin.Database.User
-        [x: string]: any
-      }
+        dimension?: Dimension;
+        match?: Match;
+        tournament?: Tournament;
+        agent?: Agent;
+        user?: Plugin.Database.User;
+        [x: string]: any;
+      };
     }
   }
 }
@@ -47,44 +46,46 @@ export class Station {
 
   public webport: number = 3000;
 
-  public maxAttempts:number = 16;
+  public maxAttempts: number = 16;
   private log: Logger = new Logger(Logger.LEVEL.INFO, 'Station Log');
   private server: Server;
 
   public configs: Station.Configs = {
     disableUploads: false,
-    loggingLevel: Logger.LEVEL.INFO
-  }
+    loggingLevel: Logger.LEVEL.INFO,
+  };
 
-  constructor(name: string = '', observedDimensions: Dimension | Array<Dimension>, configs: DeepPartial<Station.Configs> = {}) {
-
+  constructor(
+    name: string = '',
+    observedDimensions: Dimension | Array<Dimension>,
+    configs: DeepPartial<Station.Configs> = {}
+  ) {
     this.configs = deepMerge(this.configs, deepCopy(configs));
 
     // set logging level
     this.log.level = this.configs.loggingLevel;
-    
 
     // store ID, set name and logger identifier
     this.id = Station._id;
     if (name) {
       this.name = name;
-    }
-    else {
+    } else {
       this.name = `Station_${this.id}`;
     }
     Station._id++;
 
     this.log.identifier = this.name + ' Log';
-     
 
     this.app = express(); // api app
 
     // CORS
     this.app.use(cors());
-    this.app.use(bodyParser.json());    
-    this.app.use(bodyParser.urlencoded({
-      extended: true
-    })); 
+    this.app.use(bodyParser.json());
+    this.app.use(
+      bodyParser.urlencoded({
+        extended: true,
+      })
+    );
 
     // store all observed dimensions
     if (observedDimensions instanceof Array) {
@@ -93,25 +94,28 @@ export class Station {
         dimensionsMap.set(dim.id, dim);
       });
       this.app.set('dimensions', dimensionsMap);
-    }
-    else {
+    } else {
       let m = new Map();
       m.set(observedDimensions.id, observedDimensions);
       this.app.set('dimensions', m);
     }
 
     // store in each request a data object
-    const initReqData = (req: Express.Request, res: Express.Response, next: NextFunction) => {
+    const initReqData = (
+      req: Express.Request,
+      res: Express.Response,
+      next: NextFunction
+    ) => {
       req.data = {};
       next();
-    }
-    this.app.use('/**/*', initReqData)
-    
+    };
+    this.app.use('/**/*', initReqData);
+
     this.app.get('/', (req, res) => {
-      res.json({msg: 'api live at /api'});
+      res.json({ msg: 'api live at /api' });
     });
     this.app.get('/api', (req, res) => {
-      res.json({msg: 'api live at /api'});
+      res.json({ msg: 'api live at /api' });
     });
 
     /**
@@ -129,46 +133,58 @@ export class Station {
 
     // Successful start of app messages and setups
     const successStart = () => {
-      this.log.info(`Running '${this.name}' API at port ${this.port}. API served at http://localhost:${this.port}`);
+      this.log.info(
+        `Running '${this.name}' API at port ${this.port}. API served at http://localhost:${this.port}`
+      );
       let dims = [];
-      this.app.get('dimensions').forEach((dim: Dimension) => dims.push(dim.name));
+      this.app
+        .get('dimensions')
+        .forEach((dim: Dimension) => dims.push(dim.name));
       this.log.info(`Observing dimensions: ${dims}`);
-    }
-    this.tryToListen(this.app, this.port).then((port: number) => {
-      this.port = port;
-      successStart();
-    }).catch(() => {
-      this.log.error(`Station: ${this.name}, couldn't find an open port after 16 attempts`);
-    });
+    };
+    this.tryToListen(this.app, this.port)
+      .then((port: number) => {
+        this.port = port;
+        successStart();
+      })
+      .catch(() => {
+        this.log.error(
+          `Station: ${this.name}, couldn't find an open port after 16 attempts`
+        );
+      });
 
     // make local bot directories if not made yet
     if (!existsSync(BOT_DIR)) {
       mkdirSync(BOT_DIR, { recursive: true });
     }
-    
   }
   /**
    * Try to listen to this.maxAttempts ports. Resolves with the port nunber used
    */
-  private tryToListen(app: express.Application, startingPort: number): Promise<number> {
+  private tryToListen(
+    app: express.Application,
+    startingPort: number
+  ): Promise<number> {
     // Try to listen function without breaking if port is busy. try up to an 16 ports (16 is arbitrary #)
     let attempts = 0;
     return new Promise((resolve, reject) => {
-      this.server = app.listen(startingPort).on('error', () => {
-        attempts++;
-        // this.log.warn(`${this.name} - Failed attempt ${attempts}`);
-        if (attempts < this.maxAttempts) {
-          this.tryToListen(app, startingPort + 1).then(() => {
-            resolve(startingPort + 1)
-          });
-        }
-        else {
-          reject();
-        }
-      }).on('listening', () => {
-        resolve(startingPort);
-      });
-    })
+      this.server = app
+        .listen(startingPort)
+        .on('error', () => {
+          attempts++;
+          // this.log.warn(`${this.name} - Failed attempt ${attempts}`);
+          if (attempts < this.maxAttempts) {
+            this.tryToListen(app, startingPort + 1).then(() => {
+              resolve(startingPort + 1);
+            });
+          } else {
+            reject();
+          }
+        })
+        .on('listening', () => {
+          resolve(startingPort);
+        });
+    });
   }
 
   public setLogLevel(level: Logger.LEVEL) {
@@ -181,12 +197,12 @@ export class Station {
    */
   public restart(): Promise<number> {
     return new Promise((resolve, reject) => {
-      this.log.warn("RESTARTING");
+      this.log.warn('RESTARTING');
       this.server.close((err) => {
         if (err) reject(err);
         this.tryToListen(this.app, this.port).then(resolve).catch(reject);
       });
-    })
+    });
   }
 
   /**
@@ -194,7 +210,7 @@ export class Station {
    */
   public stop(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.log.warn("Stopping");
+      this.log.warn('Stopping');
       this.server.close((err) => {
         if (err) reject(err);
         resolve();
@@ -211,19 +227,18 @@ export class Station {
 
 export module Station {
   export interface Configs {
-
     /**
      * Whether or not to allow bot uploads through the Station API. Note that you can still upload bots by changing the
-     * row entry for the user's bot and updating the botKey and directly calling {@link Tournament.AddPlayer} and 
+     * row entry for the user's bot and updating the botKey and directly calling {@link Tournament.AddPlayer} and
      * providing full detils
-     * 
+     *
      * @default `false`
      */
-    disableUploads: boolean
+    disableUploads: boolean;
 
     /**
      * Logging level of station
      */
-    loggingLevel: Logger.LEVEL
+    loggingLevel: Logger.LEVEL;
   }
 }

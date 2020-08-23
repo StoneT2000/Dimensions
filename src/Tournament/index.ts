@@ -1,6 +1,11 @@
 import { Match } from '../Match';
 import { Design } from '../Design';
-import { FatalError, TournamentPlayerDoesNotExistError, TournamentError, DatabaseGetUserError } from '../DimensionError'
+import {
+  FatalError,
+  TournamentPlayerDoesNotExistError,
+  TournamentError,
+  DatabaseGetUserError,
+} from '../DimensionError';
 
 import { DeepPartial } from '../utils/DeepPartial';
 import { Logger } from '../Logger';
@@ -14,9 +19,8 @@ import { removeDirectory, removeDirectorySync } from '../utils/System';
 import { Database } from '../Plugin/Database';
 import EventEmitter from 'events';
 
-
 import TournamentStatusDefault = require('./TournamentStatus');
-import TournamentTypeDefault = require('./TournamentTypes')
+import TournamentTypeDefault = require('./TournamentTypes');
 
 /** @ignore */
 import _RankSystem = RankSystemDefault.RankSystem;
@@ -29,10 +33,9 @@ import _TournamentStatus = TournamentStatusDefault.TournamentStatus;
  * Player class that persists data for the same ephemereal agent across multiple matches. Used for {@link Tournament | Tournaments}
  */
 export class Player {
-  
-  /** 
-   * Whether this player is anonymous and not tied to a user on the back end 
-   * 
+  /**
+   * Whether this player is anonymous and not tied to a user on the back end
+   *
    * If this is ever false, then that means 1. we have a backend setup 2. there is an actual user entry
    */
   public anonymous: boolean = true;
@@ -51,8 +54,8 @@ export class Player {
   public botkey: string = undefined;
 
   /**
-   * Whether or not this player is disabled and won't be used in in the default match scheduling for 
-   * {@link Tournament.Ladder | Ladder Tournaments}. Is set to true if this player's bot throws an error during 
+   * Whether or not this player is disabled and won't be used in in the default match scheduling for
+   * {@link Tournament.Ladder | Ladder Tournaments}. Is set to true if this player's bot throws an error during
    * the initialization stage of a {@link Match}.
    */
   public disabled: boolean = false;
@@ -62,7 +65,12 @@ export class Player {
    */
   public zipFile: string = undefined;
 
-  constructor(public tournamentID: Tournament.ID, public file: string, zipFile: string, botkey?: string) {
+  constructor(
+    public tournamentID: Tournament.ID,
+    public file: string,
+    zipFile: string,
+    botkey?: string
+  ) {
     this.botkey = botkey;
     this.zipFile = zipFile;
   }
@@ -75,20 +83,18 @@ export class Player {
   }
 }
 
-
 /**
  * The tournament class and module extended by all concrete Tournament Classes. Tournament Types available now are
- * {@link RoundRobin}, {@link Ladder}, {@link Elimination}. A tournament is composed of players, which can either be 
- * all locally stored, or a split between locally stored anonymous players and database stored user owned players. 
+ * {@link RoundRobin}, {@link Ladder}, {@link Elimination}. A tournament is composed of players, which can either be
+ * all locally stored, or a split between locally stored anonymous players and database stored user owned players.
  * Ladder is the only tournament where it can be made distributed, other tournament types may only be run as a single
  * instance
- * 
+ *
  * Notes: `this.competitors` map is used when no DB is used. When a DB is used, locally stored players are only in
  * `this.anonymousCompetitors` and other players are pulled from DB. Hence, a lot of code requires checking if database
  * exists and if so, pull from there and the anonymous competitors map, other wise use this.state or this.competitors
  */
 export abstract class Tournament extends EventEmitter {
-
   /** Tournament configs */
   abstract configs: Tournament.TournamentConfigsBase;
 
@@ -97,7 +103,7 @@ export abstract class Tournament extends EventEmitter {
 
   /** A queue whose elements are each arrays of players that are to compete against each other */
   public matchQueue: Array<Tournament.QueuedMatch> = [];
-  
+
   /** The current status of the tournament */
   public status: Tournament.Status = Tournament.Status.UNINITIALIZED;
 
@@ -136,7 +142,7 @@ export abstract class Tournament extends EventEmitter {
 
   constructor(
     protected design: Design,
-    files: Array<string> | Array<{file: string, name:string}>, 
+    files: Array<string> | Array<{ file: string; name: string }>,
     id: NanoID,
     tournamentConfigs: Tournament.TournamentConfigsBase,
     dimension: Dimension
@@ -149,51 +155,69 @@ export abstract class Tournament extends EventEmitter {
       this.id = tournamentConfigs.id;
     }
 
-    this.log.level = (tournamentConfigs.loggingLevel !== undefined) ? tournamentConfigs.loggingLevel : Logger.LEVEL.INFO;
-    this.name = tournamentConfigs.name ? tournamentConfigs.name : `tournament_${this.id}`;
+    this.log.level =
+      tournamentConfigs.loggingLevel !== undefined
+        ? tournamentConfigs.loggingLevel
+        : Logger.LEVEL.INFO;
+    this.name = tournamentConfigs.name
+      ? tournamentConfigs.name
+      : `tournament_${this.id}`;
 
-    
     this.log.identifier = this.name;
     this.dimension = dimension;
 
     this.log.info(`Created Tournament - ID: ${this.id}, Name: ${this.name}`);
-    
+
     // if no name is provided but database is being used, log an error
     if (!tournamentConfigs.name && dimension.hasDatabase()) {
-      this.log.error(`A name has to be specified for a tournament otherwise tournament player data will not be reused across runs of the tournament`)
+      this.log.error(
+        `A name has to be specified for a tournament otherwise tournament player data will not be reused across runs of the tournament`
+      );
     }
   }
 
   /**
-   * Add a player to the tournament. Can specify an ID to use. If that ID exists already, this will update the file for 
-   * that player instead. First time a player is added (doesn't exist in competitors map yet), if there is existing 
+   * Add a player to the tournament. Can specify an ID to use. If that ID exists already, this will update the file for
+   * that player instead. First time a player is added (doesn't exist in competitors map yet), if there is existing
    * stats they won't be reset. Subsequent adds will change the stats.
-   * 
+   *
    * If the player is to exist beyond the tournament, an existingID must always be provided and generated somewhere else
-   * 
+   *
    * Resolves with the new player or updated player
-   * 
+   *
    * @param file - The file to the bot or an object with the file and a name for the player specified
-   * @param existingID - The optional id of the player 
-   * 
+   * @param existingID - The optional id of the player
+   *
    */
-  public async addplayer(file: string | {file: string, name: string, zipFile?: string, botdir?: string, botkey?: string, existingID?: NanoID}, existingID?: NanoID): Promise<Player> {
+  public async addplayer(
+    file:
+      | string
+      | {
+          file: string;
+          name: string;
+          zipFile?: string;
+          botdir?: string;
+          botkey?: string;
+          existingID?: NanoID;
+        },
+    existingID?: NanoID
+  ): Promise<Player> {
     let id: NanoID;
-    
+
     if (typeof file !== 'string') {
       if (!existingID) {
         existingID = file.existingID;
       }
     }
-    
+
     if (existingID) {
       let { playerStat } = await this.getPlayerStat(existingID);
       if (playerStat) {
         // bot has stats in tournament already
-        let player = playerStat.player
+        let player = playerStat.player;
         // undisable the player
         player.disabled = false;
-        
+
         let oldname = player.tournamentID.name;
         let oldfile = player.file;
         // remove the oldfile
@@ -204,8 +228,7 @@ export abstract class Tournament extends EventEmitter {
         }
         if (typeof file === 'string') {
           player.file = file;
-        }
-        else {
+        } else {
           player.file = file.file;
           player.tournamentID.name = file.name;
           player.botDirPath = file.botdir;
@@ -213,72 +236,74 @@ export abstract class Tournament extends EventEmitter {
           player.botkey = file.botkey;
         }
         // update bot instead and call a tournament's updateBot function
-        await this.updatePlayer(player, oldname, oldfile)
+        await this.updatePlayer(player, oldname, oldfile);
         id = existingID;
         return player;
-      }
-      else {
+      } else {
         // otherwise bot doesn't exist locally or in db row statistics field, and we use this id as our id to generate a new player
         id = existingID;
       }
-
-
-    }
-    else {
+    } else {
       id = this.generateNextTournamentIDString();
     }
-    
+
     // add new competitor and call internal add so tournaments can perform any internal operations for the
     // addition of a new player
     if (typeof file === 'string') {
       let name = `player-${id}`;
-      let newPlayer = new Player({id: id, name: name, username: undefined}, file, undefined);
+      let newPlayer = new Player(
+        { id: id, name: name, username: undefined },
+        file,
+        undefined
+      );
 
       // check database
       if (this.dimension.hasDatabase()) {
-        let user = await this.dimension.databasePlugin.getUser(newPlayer.tournamentID.id);
+        let user = await this.dimension.databasePlugin.getUser(
+          newPlayer.tournamentID.id
+        );
         if (user) {
           newPlayer.anonymous = false;
           newPlayer.username = user.username;
           newPlayer.tournamentID.username = user.username;
-        }
-        else {
+        } else {
           this.competitors.set(id, newPlayer);
         }
-      }
-      else {
+      } else {
         this.competitors.set(id, newPlayer);
       }
 
       if (newPlayer.anonymous) {
         this.anonymousCompetitors.set(id, newPlayer);
       }
-  
+
       await this.internalAddPlayer(newPlayer);
       return newPlayer;
-    }
-    else {
-      let newPlayer = new Player({id: id, name: file.name, username: undefined}, file.file, file.zipFile, file.botkey);
+    } else {
+      let newPlayer = new Player(
+        { id: id, name: file.name, username: undefined },
+        file.file,
+        file.zipFile,
+        file.botkey
+      );
       newPlayer.botDirPath = file.botdir;
       // check database
       if (this.dimension.hasDatabase()) {
-        
-        let user = await this.dimension.databasePlugin.getUser(newPlayer.tournamentID.id);
+        let user = await this.dimension.databasePlugin.getUser(
+          newPlayer.tournamentID.id
+        );
         if (user) {
           newPlayer.tournamentID.name = file.name;
           newPlayer.anonymous = false;
           newPlayer.username = user.username;
           newPlayer.tournamentID.username = user.username;
-        }
-        else {
+        } else {
           this.competitors.set(id, newPlayer);
         }
-      }
-      else {
+      } else {
         this.competitors.set(id, newPlayer);
       }
-      
-      
+
       if (newPlayer.anonymous) {
         this.anonymousCompetitors.set(id, newPlayer);
       }
@@ -290,7 +315,7 @@ export abstract class Tournament extends EventEmitter {
 
   /**
    * Function to be implemented by a tournament type that performs further tasks to integrate a new player
-   * @param player 
+   * @param player
    */
   abstract async internalAddPlayer(player: Player): Promise<void>;
 
@@ -308,7 +333,10 @@ export abstract class Tournament extends EventEmitter {
    * @param master - whether or not the instance calling stop was the first one, the "master" instance. Used only in
    * distributed scenarios
    */
-  public abstract async run(configs?: DeepPartial<Tournament.TournamentConfigsBase>, master?: boolean): Promise<any>;
+  public abstract async run(
+    configs?: DeepPartial<Tournament.TournamentConfigsBase>,
+    master?: boolean
+  ): Promise<any>;
 
   /**
    * Stops the tournament while running
@@ -325,9 +353,9 @@ export abstract class Tournament extends EventEmitter {
   public abstract async resume(master?: boolean): Promise<any>;
 
   /**
-   * Retrieve some form of rankings from the tournament's current state. The params offset and limit only apply to 
+   * Retrieve some form of rankings from the tournament's current state. The params offset and limit only apply to
    * {@link Tournament.Ladder | Ladder Tournaments}, used for scaling purposes.
-   * 
+   *
    * @param offset - the starting ranking to retrieve from
    * @param limit - the number of rankings to retrieve
    */
@@ -339,8 +367,11 @@ export abstract class Tournament extends EventEmitter {
    * @param oldname - the previous name for the player
    * @param oldfile - the previous file for the player
    */
-  abstract async updatePlayer(player: Player, oldname: string, oldfile: string): Promise<void>;
-
+  abstract async updatePlayer(
+    player: Player,
+    oldname: string,
+    oldfile: string
+  ): Promise<void>;
 
   /**
    * Disables the player with id playerID
@@ -351,18 +382,19 @@ export abstract class Tournament extends EventEmitter {
     if (playerStat) {
       playerStat.player.disabled = true;
       if (this.dimension.hasDatabase() && user) {
-        await this.dimension.databasePlugin.updateUser(playerID, user)
+        await this.dimension.databasePlugin.updateUser(playerID, user);
       }
-    }
-    else {
-      throw new TournamentPlayerDoesNotExistError(`Player ${playerID} was not found in this tournament`);
+    } else {
+      throw new TournamentPlayerDoesNotExistError(
+        `Player ${playerID} was not found in this tournament`
+      );
     }
   }
 
   /**
    * Removes the competitor/player with id `playerID` (a {@link nanoid}). Resolves if succesful, otherwise rejects if
    * player doesn't exist or couldn't be removed
-   * 
+   *
    * @param playerID - ID of the player to remove
    */
   public async removePlayer(playerID: nanoid) {
@@ -373,49 +405,61 @@ export abstract class Tournament extends EventEmitter {
       // disable player
       playerStat.player.disabled = true;
       if (this.dimension.hasDatabase() && user) {
-        
-        await this.dimension.databasePlugin.updateUser(playerID, user)
+        await this.dimension.databasePlugin.updateUser(playerID, user);
       }
       await this.internalRemovePlayer(playerID);
-    }
-    else {
+    } else {
       throw new TournamentPlayerDoesNotExistError('Not a player');
     }
   }
 
-  protected async internalRemovePlayer(playerID: nanoid) {
-
-  }
+  protected async internalRemovePlayer(playerID: nanoid) {}
 
   /**
    * Set configs for this tournament
    * @param configs the configs to deep merge with the current configs
    */
-  abstract setConfigs(configs: DeepPartial<Tournament.TournamentConfigsBase>): void
+  abstract setConfigs(
+    configs: DeepPartial<Tournament.TournamentConfigsBase>
+  ): void;
 
   /**
    * Set configs for this tournament
    * @param configs the configs to deep merge with the current configs
    */
-  abstract getConfigs(): Tournament.TournamentConfigsBase
+  abstract getConfigs(): Tournament.TournamentConfigsBase;
 
   /**
    * Runs a match
    * @param players - the players to compete together
    * @returns a promise that resolves with the results and the associated match
    */
-  protected async runMatch(players: Array<Player>): Promise<{results: any, match: Match, err?: any}> {
+  protected async runMatch(
+    players: Array<Player>
+  ): Promise<{ results: any; match: Match; err?: any }> {
     if (!players.length) throw new FatalError('No players provided for match');
 
     let matchConfigs = deepCopy(this.getConfigs().defaultMatchConfigs);
-    
+
     let match: Match;
-    let filesAndNamesAndIDs: Array<{file: string, tournamentID: Tournament.ID, botkey?: string}> 
-      = players.map((player) => {
+    let filesAndNamesAndIDs: Array<{
+      file: string;
+      tournamentID: Tournament.ID;
+      botkey?: string;
+    }> = players.map((player) => {
       // if player has a botkey, use that, otherwise use whats in player.file
-      return {file: player.file, tournamentID: player.tournamentID, botkey: player.botkey}
+      return {
+        file: player.file,
+        tournamentID: player.tournamentID,
+        botkey: player.botkey,
+      };
     });
-    match = new Match(this.design, filesAndNamesAndIDs, matchConfigs, this.dimension);
+    match = new Match(
+      this.design,
+      filesAndNamesAndIDs,
+      matchConfigs,
+      this.dimension
+    );
 
     // store match into the tournament locally
     this.matches.set(match.id, match);
@@ -436,31 +480,34 @@ export abstract class Tournament extends EventEmitter {
 
       // remove the match from the active matches list
       this.matches.delete(match.id);
-      
+
       // Resolve the results
-      return {results: results, match: match};
-    }
-    catch(err) {
+      return { results: results, match: match };
+    } catch (err) {
       this.emit(Tournament.Events.MATCH_RAN);
       return {
         results: false,
         err: err,
-        match: match
-      }
+        match: match,
+      };
     }
   }
 
   /**
    * Return an Array of Players corresponding to the player ids stored in `queuedMatchInfo`
-   * @param queuedMatchInfo 
+   * @param queuedMatchInfo
    */
-  public async getMatchInfoFromQueuedMatch(queuedMatchInfo: Tournament.QueuedMatch) {
+  public async getMatchInfoFromQueuedMatch(
+    queuedMatchInfo: Tournament.QueuedMatch
+  ) {
     // Consider adding possibility to use cached player meta data to reduce db reads
     let retrievePlayerPromises: Array<Promise<Player>> = [];
     for (let i = 0; i < queuedMatchInfo.length; i++) {
       let playerId = queuedMatchInfo[i];
-      
-      retrievePlayerPromises.push(this.getPlayerStat(playerId).then(({ playerStat }) => playerStat.player));
+
+      retrievePlayerPromises.push(
+        this.getPlayerStat(playerId).then(({ playerStat }) => playerStat.player)
+      );
     }
 
     return await Promise.all(retrievePlayerPromises);
@@ -483,12 +530,12 @@ export abstract class Tournament extends EventEmitter {
    */
   public async destroy(): Promise<void> {
     await this.preInternalDestroy();
-    
+
     // stop if running
     if (this.status === Tournament.Status.RUNNING) this.stop();
-    
+
     let destroyPromises = [];
-    
+
     // now remove all match processes
     this.matches.forEach((match) => {
       destroyPromises.push(match.destroy());
@@ -500,16 +547,12 @@ export abstract class Tournament extends EventEmitter {
   /**
    * Pre run function before generic destroy takes place
    */
-  protected async preInternalDestroy() {
-
-  }
+  protected async preInternalDestroy() {}
 
   /**
    * Post run function before generic destroy takes place
    */
-  protected async postInternalDestroy() {
-
-  }
+  protected async postInternalDestroy() {}
 
   /**
    * Generates a 6 character tournament ID identifying this tournament class instance. Not to be confused with
@@ -536,32 +579,33 @@ export abstract class Tournament extends EventEmitter {
   /**
    * Resolves with player stats if player with the id exists. Includes database user if db contains the player
    * Fields are null if they don't exist. If playerStat field is null, then this player does not exist
-   * 
+   *
    * @param id - id of player to get
    */
-  public async getPlayerStat(id: nanoid): Promise<{user: Database.User, playerStat: Tournament.PlayerStatBase}> {
+  public async getPlayerStat(
+    id: nanoid
+  ): Promise<{ user: Database.User; playerStat: Tournament.PlayerStatBase }> {
     // TODO: Add caching as an option
     if (!this.state.playerStats.has(id)) {
       if (this.dimension.hasDatabase()) {
         let user: Database.User;
         try {
           user = await this.dimension.databasePlugin.getUser(id);
-        }
-        catch(err)  {
+        } catch (err) {
           this.log.error(err);
-          throw new DatabaseGetUserError(`failed to get database user with id: ${id}`);
+          throw new DatabaseGetUserError(
+            `failed to get database user with id: ${id}`
+          );
         }
         if (user && user.statistics[this.getKeyName()]) {
-          return {user: user, playerStat: user.statistics[this.getKeyName()]};
+          return { user: user, playerStat: user.statistics[this.getKeyName()] };
         }
       }
+    } else {
+      return { user: null, playerStat: this.state.playerStats.get(id) };
     }
-    else {
-      return {user: null, playerStat: this.state.playerStats.get(id)};
-    }
-    return {user: null, playerStat: null};
+    return { user: null, playerStat: null };
   }
-
 }
 
 // some imports moved to here to avoid circular issues with using values
@@ -579,9 +623,8 @@ import SchedulerDefault = require('./Scheduler');
 import SchedulerClass = SchedulerDefault.Scheduler;
 
 export module Tournament {
-
   // Re-export tournament classes/namespaces
-  export import Ladder = LadderTournament; 
+  export import Ladder = LadderTournament;
   export import RoundRobin = RoundRobinTournament;
   export import Elimination = EliminationTournament;
   export import Scheduler = SchedulerClass;
@@ -593,21 +636,21 @@ export module Tournament {
 
   /**
    * @deprecated since v2.1.0
-   * 
+   *
    * Use {@link Tournament.RankSystem} instead
    */
   export import RANK_SYSTEM = _RankSystem;
 
   /**
-   * @deprecated since v2.1.0 
-   * 
+   * @deprecated since v2.1.0
+   *
    * Use {@link Tournament.Type} instead.
    */
   export import TOURNAMENT_TYPE = _TOURNAMENT_TYPE;
 
   /**
-   * @deprecated since v2.1.0 
-   * 
+   * @deprecated since v2.1.0
+   *
    * Use {@link Tournament.Status} instead.
    */
   export import TournamentStatus = _TournamentStatus;
@@ -619,102 +662,99 @@ export module Tournament {
     /**
      * The default match configurations to be applied throughout all tournament matches
      */
-    defaultMatchConfigs?: DeepPartial<Match.Configs>
+    defaultMatchConfigs?: DeepPartial<Match.Configs>;
     /**
      * The tournament type to run. See {@link Tournament.Type}
      */
-    type: Type,
+    type: Type;
     /**
      * The ranking system to use for this tournament
      */
-    rankSystem: RankSystem,
+    rankSystem: RankSystem;
 
     /**
      * The result handler for returning the appropriate results to the tournament for processing.
-     * 
-     * To find what kind of result should be returned, find the Results interface for the rank system you are using. 
-     * 
+     *
+     * To find what kind of result should be returned, find the Results interface for the rank system you are using.
+     *
      * Example: For {@link Tournament.RankSystem.TRUESKILL}, go to {@link Tournament.RankSystem.TRUESKILL.Results}
      */
-    resultHandler: 
-    /**
+    resultHandler: /**
      * @param results - the results received from calling the {@link Design.getResults} function
      */
-    (results: any) => any
+    (results: any) => any;
 
     /**
-     * The configurations for a specified rank system. For example, see {@link RankSystem.WINS.Configs}, 
+     * The configurations for a specified rank system. For example, see {@link RankSystem.WINS.Configs},
      * {@link RankSystem.TRUESKILL.Configs}
      */
-    rankSystemConfigs?: any,
+    rankSystemConfigs?: any;
 
     /**
      * The tournament wide logging level to enforce
      */
-    loggingLevel?: Logger.LEVEL
+    loggingLevel?: Logger.LEVEL;
 
     /**
      * The name of the tournament
      */
-    name?: string
+    name?: string;
 
     /**
      * Tournament configurations. Dependent on the type of tournament chosen
      * Example: For {@link RoundRobin}, go to {@link RoundRobin.Configs}
      */
-    tournamentConfigs?: any
+    tournamentConfigs?: any;
 
     /**
-     * An array of valid number of players that can compete in a match. For Rock Paper Scissors for example this would 
+     * An array of valid number of players that can compete in a match. For Rock Paper Scissors for example this would
      * be [2]
      * @default `[2]`
      */
-    agentsPerMatch: Array<number> // an array of valid players per match
+    agentsPerMatch: Array<number>; // an array of valid players per match
 
     /**
      * Whether or not to display a continuous console log of the current tournament as it runs
      * @default `true`
      */
-    consoleDisplay?: boolean
+    consoleDisplay?: boolean;
 
     /**
-     * Set this ID to override the generated ID 
+     * Set this ID to override the generated ID
      */
-    id?: string
-
+    id?: string;
   }
 
   /**
    * Queued match information, consisting of player IDs of players to compete
    */
-  export type QueuedMatch = Array<nanoid>
+  export type QueuedMatch = Array<nanoid>;
 
   /**
    * Internally used type.
    */
   export interface TournamentConfigs<ConfigType> extends TournamentConfigsBase {
-    tournamentConfigs: ConfigType
-    rankSystemConfigs: any
+    tournamentConfigs: ConfigType;
+    rankSystemConfigs: any;
   }
 
-  export interface TournamentTypeConfig  {
+  export interface TournamentTypeConfig {
     /**
      * Whether or not to store past results using the specified option of the dimension (database or in memory)
      * @default `true`
      */
-    storePastResults: boolean
+    storePastResults: boolean;
   }
-  export interface TournamentTypeState  {
-
+  export interface TournamentTypeState {
     /**
      * Past results stored. Each element is what is returned by {@link Design.getResults}
      */
-    results: Array<any>
+    results: Array<any>;
 
     /**
      * Map from player ID to player stats
      */
-    playerStats: Map<NanoID, PlayerStatBase>
+    playerStats: Map<NanoID, PlayerStatBase>;
   }
 
   /**
@@ -722,26 +762,25 @@ export module Tournament {
    */
   export interface ID {
     /** A string id. This should never change */
-    readonly id: NanoID
+    readonly id: NanoID;
     /** A display name */
-    name: string
+    name: string;
 
     /** Associated username if there is one. */
-    username: string
+    username: string;
   }
 
   export interface PlayerStatBase {
-    player: Player,
-    matchesPlayed: number
+    player: Player;
+    matchesPlayed: number;
   }
 
   export enum Events {
     /**
-     * Event is emitted when initialAddPlayerPromises resolves. This involves all players initialized to tournament 
+     * Event is emitted when initialAddPlayerPromises resolves. This involves all players initialized to tournament
      * upon initialization of tournament instance
      */
     INITIAL_PLAYERS_INITIALIZED = 'initial_players_initialized',
-
 
     /**
      * Event is emitted whenever a match runs
@@ -754,5 +793,3 @@ export module Tournament {
     MATCH_HANDLED = 'match_handled',
   }
 }
-
-

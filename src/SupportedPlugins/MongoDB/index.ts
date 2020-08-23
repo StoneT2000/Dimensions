@@ -29,13 +29,16 @@ export class MongoDB extends Database {
   public models: MongoDB.Models = {
     user: null,
     match: null,
-    tournamentConfigs: null
-  }
+    tournamentConfigs: null,
+  };
 
   /** The MongoDB connection string used to connect to the database and read/write to it */
   public connectionString: string;
 
-  constructor(connectionString: string, configs: DeepPartial<Database.Configs> = {}) {
+  constructor(
+    connectionString: string,
+    configs: DeepPartial<Database.Configs> = {}
+  ) {
     super(configs);
     this.mongoose = new mongoose.Mongoose();
     this.mongoose.set('useFindAndModify', false);
@@ -44,22 +47,24 @@ export class MongoDB extends Database {
     let matchSchema = MatchSchemaCreator();
     this.models.match = this.mongoose.model('Match', matchSchema);
     let userSchema = UserSchemaCreator();
-    this.models.user = this.mongoose.model('User', userSchema)
+    this.models.user = this.mongoose.model('User', userSchema);
 
-    this.models.tournamentConfigs = this.mongoose.model('TournamentConfigs', TournamentConfigSchema);
-
+    this.models.tournamentConfigs = this.mongoose.model(
+      'TournamentConfigs',
+      TournamentConfigSchema
+    );
   }
 
   /**
    * Connects to the mongo database and returns the Connection object
    */
   public async connect(): Promise<mongoose.Connection> {
-    this.mongoose.connect(this.connectionString, {useNewUrlParser: true});
+    this.mongoose.connect(this.connectionString, { useNewUrlParser: true });
     this.db = this.mongoose.connection;
     this.db.on('error', console.error.bind(console, 'connection error:'));
     return this.db;
   }
-  
+
   public async initialize(dimension: Dimension) {
     await this.connect();
     // create admin user
@@ -72,200 +77,236 @@ export class MongoDB extends Database {
   }
 
   public async storeMatch(match: Match, governID: nanoid): Promise<any> {
-    let data = {...pickMatch(match), governID: governID};
+    let data = { ...pickMatch(match), governID: governID };
     // store all relevant data
     return this.models.match.create(data);
   }
   public async getMatch(id: NanoID) {
-    return this.models.match.findOne({id: id});
+    return this.models.match.findOne({ id: id });
   }
 
   public async getPlayerMatches(
-    playerID: nanoid, governID: nanoid, offset: number = 0, limit: number = 10, order: number = -1
+    playerID: nanoid,
+    governID: nanoid,
+    offset: number = 0,
+    limit: number = 10,
+    order: number = -1
   ): Promise<Array<Match>> {
-    return this.models.match.aggregate(
-      [
-        { 
-          "$match": {
-            "governID": {
-              "$eq": governID
-            },
-            "agents.tournamentID.id": {
-              "$eq": playerID
-            }
-          }
+    return this.models.match.aggregate([
+      {
+        $match: {
+          governID: {
+            $eq: governID,
+          },
+          'agents.tournamentID.id': {
+            $eq: playerID,
+          },
         },
-        {
-          "$sort": {
-            "creationDate": order
-          }
+      },
+      {
+        $sort: {
+          creationDate: order,
         },
-        {
-          "$skip": offset
-        },
-        {
-          "$limit": limit
-        }
-      ]
-    );
+      },
+      {
+        $skip: offset,
+      },
+      {
+        $limit: limit,
+      },
+    ]);
   }
 
-  public async getRanks(tournament: Tournament.Ladder, offset: number, limit: number): Promise<Array<Ladder.PlayerStat>> {
+  public async getRanks(
+    tournament: Tournament.Ladder,
+    offset: number,
+    limit: number
+  ): Promise<Array<Ladder.PlayerStat>> {
     let keyname = tournament.getKeyName();
     if (tournament.configs.rankSystem === Tournament.RANK_SYSTEM.TRUESKILL) {
       let agg: Array<Object> = [
         {
           // select all users with stats in this tournament, implying they are still in the tourney
-          "$match":  {
-            ["statistics." + keyname]: {
-              "$exists": true
-            }
-          }
+          $match: {
+            ['statistics.' + keyname]: {
+              $exists: true,
+            },
+          },
         },
         {
-          "$project": {
-            ["statistics." + keyname]: 1
-          }
+          $project: {
+            ['statistics.' + keyname]: 1,
+          },
         },
         {
-          "$addFields": {
-            "score": {
-              "$subtract": [
+          $addFields: {
+            score: {
+              $subtract: [
                 `$statistics.${keyname}.rankState.rating.mu`,
                 {
-                  "$multiply": [`$statistics.${keyname}.rankState.rating.sigma`, 3]
-                }
-              ]
-            }
-          }
+                  $multiply: [
+                    `$statistics.${keyname}.rankState.rating.sigma`,
+                    3,
+                  ],
+                },
+              ],
+            },
+          },
         },
         {
-          "$sort": {
-            "score": -1
-          }
+          $sort: {
+            score: -1,
+          },
         },
         {
-          "$skip": offset
-        }
+          $skip: offset,
+        },
       ];
       if (limit !== -1) {
         agg.push({
-          "$limit": limit
+          $limit: limit,
         });
       }
       let rankData = await this.models.user.aggregate(agg);
       return rankData.map((data) => {
         return data.statistics[keyname];
       });
-
-    }
-    else if (tournament.configs.rankSystem === Tournament.RANK_SYSTEM.ELO) {
+    } else if (tournament.configs.rankSystem === Tournament.RANK_SYSTEM.ELO) {
       let agg: Array<Object> = [
         {
           // select all users with stats in this tournament, implying they are still in the tourney
-          "$match":  {
-            ["statistics." + keyname]: {
-              "$exists": true
-            }
-          }
+          $match: {
+            ['statistics.' + keyname]: {
+              $exists: true,
+            },
+          },
         },
         {
-          "$project": {
-            ["statistics." + keyname]: 1
-          }
+          $project: {
+            ['statistics.' + keyname]: 1,
+          },
         },
         {
-          "$addFields": {
-            "score": `$statistics.${keyname}.rankState.rating.score`
-          }
+          $addFields: {
+            score: `$statistics.${keyname}.rankState.rating.score`,
+          },
         },
         {
-          "$sort": {
-            "score": -1
-          }
+          $sort: {
+            score: -1,
+          },
         },
         {
-          "$skip": offset
-        }
+          $skip: offset,
+        },
       ];
       if (limit !== -1) {
         agg.push({
-          "$limit": limit
+          $limit: limit,
         });
       }
       let rankData = await this.models.user.aggregate(agg);
       return rankData.map((data) => {
         return data.statistics[keyname];
       });
-    }
-    else {
-      throw new TournamentError("This rank system is not supported for retrieving ranks from MongoDB");
+    } else {
+      throw new TournamentError(
+        'This rank system is not supported for retrieving ranks from MongoDB'
+      );
     }
   }
 
-  public async registerUser(username: string, password: string, userData?: any) {
+  public async registerUser(
+    username: string,
+    password: string,
+    userData?: any
+  ) {
     const hash = bcrypt.hashSync(password, salt);
     return this.models.user.create({
       username: username,
       passwordHash: hash,
       statistics: {},
       meta: {
-        ...userData
-      }
+        ...userData,
+      },
     });
   }
 
   /**
    * Gets user information. If public is false, will retrieve all information other than password
-   * @param usernameOrID 
+   * @param usernameOrID
    */
   public async getUser(usernameOrID: string, publicView: boolean = true) {
-    return this.models.user.findOne( {$or: [ { username: usernameOrID }, { playerID: usernameOrID } ]} ).then((user) => {
-      let obj: Database.User;
-      if (user) {
-        obj = user.toObject();
-        if (!publicView) return obj;
-        let d = <Database.User>pick(obj, 'creationDate', 'meta', 'statistics', 'playerID', 'username');
-        obj = {...d, passwordHash: ""}
-        return obj;
-      }
-      return null;
-    });
-  } 
-
-  public async loginUser(username: string, password: string) {
-    return this.models.user.findOne({ username: username}).then((user: mongoose.Document & Database.User) => {
-      if (user) {
-        if (bcrypt.compareSync(password, user.passwordHash)) {
-          return generateToken(user);
+    return this.models.user
+      .findOne({
+        $or: [{ username: usernameOrID }, { playerID: usernameOrID }],
+      })
+      .then((user) => {
+        let obj: Database.User;
+        if (user) {
+          obj = user.toObject();
+          if (!publicView) return obj;
+          let d = <Database.User>(
+            pick(
+              obj,
+              'creationDate',
+              'meta',
+              'statistics',
+              'playerID',
+              'username'
+            )
+          );
+          obj = { ...d, passwordHash: '' };
+          return obj;
         }
-        else {
-          throw new Error('Invalid password');
-        }
-      }
-      else {
-        throw new Error('Not a valid user');
-      }
-    });
+        return null;
+      });
   }
 
-  public async updateUser(usernameOrID: string, update: Partial<Database.User>) {
-    return this.models.user.findOneAndUpdate({$or: [ { username: usernameOrID }, { playerID: usernameOrID } ]}, update).then((user) => {
-      if (user) {
-        return user.toObject();
-      }
-      else {
-        throw new Error('Not a valid user');
-      }
-    });
+  public async loginUser(username: string, password: string) {
+    return this.models.user
+      .findOne({ username: username })
+      .then((user: mongoose.Document & Database.User) => {
+        if (user) {
+          if (bcrypt.compareSync(password, user.passwordHash)) {
+            return generateToken(user);
+          } else {
+            throw new Error('Invalid password');
+          }
+        } else {
+          throw new Error('Not a valid user');
+        }
+      });
+  }
+
+  public async updateUser(
+    usernameOrID: string,
+    update: Partial<Database.User>
+  ) {
+    return this.models.user
+      .findOneAndUpdate(
+        { $or: [{ username: usernameOrID }, { playerID: usernameOrID }] },
+        update
+      )
+      .then((user) => {
+        if (user) {
+          return user.toObject();
+        } else {
+          throw new Error('Not a valid user');
+        }
+      });
   }
 
   public async deleteUser(usernameOrID: string) {
-    return this.models.user.findOneAndDelete( {$or: [ { username: usernameOrID }, { playerID: usernameOrID } ]} ).then((user) => {
-      if (!user) {
-        throw new Error('Not a valid user');
-      }
-    });
+    return this.models.user
+      .findOneAndDelete({
+        $or: [{ username: usernameOrID }, { playerID: usernameOrID }],
+      })
+      .then((user) => {
+        if (!user) {
+          throw new Error('Not a valid user');
+        }
+      });
   }
 
   public async verifyToken(jwt: string) {
@@ -277,18 +318,25 @@ export class MongoDB extends Database {
     return false;
   }
 
-  public async getUsersInTournament(tournamentKey: string, offset: number = 0, limit: number = -1) {
+  public async getUsersInTournament(
+    tournamentKey: string,
+    offset: number = 0,
+    limit: number = -1
+  ) {
     let key = `statistics.${tournamentKey}`;
     if (limit == -1) {
       limit = 0;
-    }
-    else if (limit == 0) {
+    } else if (limit == 0) {
       return [];
     }
-    return this.models.user.find({ [key]: {$exists: true} }).skip(offset).limit(limit).then((users) => {
-      let mapped = users.map(user => user.toObject());
-      return mapped;
-    });
+    return this.models.user
+      .find({ [key]: { $exists: true } })
+      .skip(offset)
+      .limit(limit)
+      .then((users) => {
+        let mapped = users.map((user) => user.toObject());
+        return mapped;
+      });
   }
 
   public async manipulate(dimension: Dimension) {
@@ -296,44 +344,58 @@ export class MongoDB extends Database {
     return;
   }
 
-  public async storeTournamentConfigs(tournamentID: nanoid, tournamentConfigs: Tournament.TournamentConfigsBase, status: TournamentStatus) {
-    return this.models.tournamentConfigs.updateOne({ id: tournamentID }, { configs: tournamentConfigs, id: tournamentID, status: status, modificationDate: new Date()}, { upsert: true });
+  public async storeTournamentConfigs(
+    tournamentID: nanoid,
+    tournamentConfigs: Tournament.TournamentConfigsBase,
+    status: TournamentStatus
+  ) {
+    return this.models.tournamentConfigs.updateOne(
+      { id: tournamentID },
+      {
+        configs: tournamentConfigs,
+        id: tournamentID,
+        status: status,
+        modificationDate: new Date(),
+      },
+      { upsert: true }
+    );
   }
 
   public async getTournamentConfigsModificationDate(tournamentID: nanoid) {
-    return this.models.tournamentConfigs.findOne({ id: tournamentID }).select({ modificationDate: 1 }).then((date) => {
-      if (date) {
-        return new Date(date.toObject().modificationDate);
-      }
-      else {
-        return null;
-      }
-      
-    });
+    return this.models.tournamentConfigs
+      .findOne({ id: tournamentID })
+      .select({ modificationDate: 1 })
+      .then((date) => {
+        if (date) {
+          return new Date(date.toObject().modificationDate);
+        } else {
+          return null;
+        }
+      });
   }
   public async getTournamentConfigs(tournamentID: nanoid) {
-    return this.models.tournamentConfigs.findOne({ id: tournamentID }).then((data) => {
-      if (data) {
-        return data.toObject();
-      }
-      else {
-        return null;
-      }
-    });
+    return this.models.tournamentConfigs
+      .findOne({ id: tournamentID })
+      .then((data) => {
+        if (data) {
+          return data.toObject();
+        } else {
+          return null;
+        }
+      });
   }
 }
 export module MongoDB {
-
   /**
    * See {@link Match} class for what these fields represent. They are copied here letter for letter. If set true, the
    * field will be included into the database
    */
   export interface MatchSchemaOptions {
-    state: boolean,
-    results: boolean
-    creationDate: boolean,
-    finishDate: boolean,
-    agents: boolean
+    state: boolean;
+    results: boolean;
+    creationDate: boolean;
+    finishDate: boolean;
+    agents: boolean;
   }
 
   /**
@@ -341,12 +403,12 @@ export module MongoDB {
    */
   export interface UserSchemaOptions {
     /** Creation date of the user */
-    creationDate: boolean,
+    creationDate: boolean;
   }
 
   export interface Models {
-    user: mongoose.Model<mongoose.Document, {}>,
-    match: mongoose.Model<mongoose.Document, {}>,
-    tournamentConfigs: mongoose.Model<mongoose.Document, {}>
+    user: mongoose.Model<mongoose.Document, {}>;
+    match: mongoose.Model<mongoose.Document, {}>;
+    tournamentConfigs: mongoose.Model<mongoose.Document, {}>;
   }
 }

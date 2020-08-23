@@ -18,17 +18,30 @@ export const getAgent = (req: Request, res: Response, next: NextFunction) => {
   let agent: Agent;
   agent = req.data.match.agents[parseInt(req.params.agentID)];
   if (!agent) {
-    return next(new error.BadRequest(`No agent found with id of '${req.params.agentID}' in match '${req.data.match.id}' in dimension ${req.data.dimension.id} - '${req.data.dimension.name}'`));
+    return next(
+      new error.BadRequest(
+        `No agent found with id of '${req.params.agentID}' in match '${req.data.match.id}' in dimension ${req.data.dimension.id} - '${req.data.dimension.name}'`
+      )
+    );
   }
   req.data.agent = agent;
   next();
-}
+};
 
 /**
  * Picks out relevant fields of the agent
  */
 export const pickAgent = (agent: Agent) => {
-  let picked = pick(agent, 'creationDate', 'id', 'name', 'src', 'status', 'tournamentID', 'logkey');
+  let picked = pick(
+    agent,
+    'creationDate',
+    'id',
+    'name',
+    'src',
+    'status',
+    'tournamentID',
+    'logkey'
+  );
   return picked;
 };
 
@@ -39,14 +52,14 @@ router.use('/:agentID', getAgent);
  */
 router.get('/', (req: Request, res: Response) => {
   let agentData = req.data.match.agents.map((agent) => pickAgent(agent));
-  res.json({error: null, agents: agentData})
+  res.json({ error: null, agents: agentData });
 });
 
 /**
  * Get agent details
  */
 router.get('/:agentID', (req, res) => {
-  res.json({error: null, agent: pickAgent(req.data.agent)});
+  res.json({ error: null, agent: pickAgent(req.data.agent) });
 });
 
 /**
@@ -56,17 +69,16 @@ router.get('/:agentID/logs', async (req, res, next) => {
   let agent = req.data.agent;
   if (agent.logkey) {
     if (req.data.dimension.hasStorage()) {
-      let url = await req.data.dimension.storagePlugin.getDownloadURL(agent.logkey);
-      res.json({error: null, url: url});
-    }
-    else {
+      let url = await req.data.dimension.storagePlugin.getDownloadURL(
+        agent.logkey
+      );
+      res.json({ error: null, url: url });
+    } else {
       res.sendFile(agent.logkey);
     }
-  }
-  else {
+  } else {
     return next(new error.BadRequest(`No agent logs found`));
   }
-  
 });
 
 export default router;

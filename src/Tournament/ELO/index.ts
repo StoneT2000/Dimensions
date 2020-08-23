@@ -1,10 +1,7 @@
-import { FatalError } from "../../DimensionError";
+import { FatalError } from '../../DimensionError';
 
 export class ELOSystem {
-
-  constructor(public kfactor: number, public startingScore: number) {
-
-  } 
+  constructor(public kfactor: number, public startingScore: number) {}
 
   createRating(startingScore: number = this.startingScore) {
     return new ELORating(startingScore);
@@ -15,7 +12,7 @@ export class ELOSystem {
     let Q_2 = Math.pow(10, p2.score / 400);
     let E_1 = Q_1 / (Q_1 + Q_2); // expected for player 1
     let E_2 = Q_2 / (Q_1 + Q_2); // expected for player 2
-    return [E_1, E_2]
+    return [E_1, E_2];
   }
   rate1v1(p1: ELORating, p2: ELORating, scores: Array<number>) {
     let [E_1, E_2] = this.expectedScores1v1(p1, p2);
@@ -24,9 +21,10 @@ export class ELOSystem {
     p2.score = Math.round(p2.score + this.kfactor * (scores[1] - E_1));
   }
   rate(ratings: Array<ELORating>, ranks: Array<number>) {
-    if (ranks.length != ratings.length) throw new FatalError('Ratings and ranks lengths do not match!');
+    if (ranks.length != ratings.length)
+      throw new FatalError('Ratings and ranks lengths do not match!');
     let expectedMatrix = []; // element at i, j is expected score of player i against j.
-    
+
     let scoreDeltas = new Array(ratings.length); // stores the change in scores
 
     let actualScores = []; // store the actual scores against all other players based on ranks argument
@@ -54,19 +52,18 @@ export class ELOSystem {
           // store actual total scores for player i
           if (ranks[i] > ranks[j]) {
             actualScores[i] += 1;
-          }
-          else if (ranks[i] == ranks[j]) {
+          } else if (ranks[i] == ranks[j]) {
             actualScores[i] += 0.5;
           }
         }
       }
       // update player scores
-      ratings[i].score = Math.round(ratings[i].score + this.kfactor * (E_i_total - actualScores[i]));
+      ratings[i].score = Math.round(
+        ratings[i].score + this.kfactor * (E_i_total - actualScores[i])
+      );
     }
   }
 }
 export class ELORating {
-  constructor(public score: number) {
-
-  }
+  constructor(public score: number) {}
 }
