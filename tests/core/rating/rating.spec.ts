@@ -9,26 +9,26 @@ chai.use(chaiAsPromised);
 
 describe('Test ELO System', () => {
   it('should initialize ELO ratings correctly', () => {
-    let elo = new ELOSystem(32, 1000);
-    let p1 = elo.createRating();
-    let p2 = elo.createRating();
+    const elo = new ELOSystem(32, 1000);
+    const p1 = elo.createRating();
+    const p2 = elo.createRating();
     expect(p1.score).to.equal(1000);
     expect(p2.score).to.equal(1000);
     expect(elo.kfactor).to.equal(32);
   });
   describe('should evaluate ratings correctly', () => {
     it('should calculate 1v1 scores correctly', () => {
-      let elo = new ELOSystem(32, 1000);
-      let p1 = elo.createRating();
-      let p2 = elo.createRating();
+      const elo = new ELOSystem(32, 1000);
+      const p1 = elo.createRating();
+      const p2 = elo.createRating();
       elo.rate([p1, p2], [1, 2]);
       expect(p1.score).to.equal(1016);
       expect(p2.score).to.equal(984);
     });
     it('should calculate n agent scores correctly', () => {
-      let elo = new ELOSystem(32, 1000);
-      let ratings = [];
-      let ranks = [1, 2, 3, 3, 4];
+      const elo = new ELOSystem(32, 1000);
+      const ratings = [];
+      const ranks = [1, 2, 3, 3, 4];
       for (let i = 0; i < 5; i++) {
         ratings.push(elo.createRating());
       }

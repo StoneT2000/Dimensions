@@ -4,8 +4,6 @@ import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
 import sinonChai from 'sinon-chai';
 import 'mocha';
-import { Logger } from '../../../src';
-import { RockPaperScissorsDesign } from '../../rps';
 import {
   AgentDirectoryError,
   AgentFileError,
@@ -19,20 +17,6 @@ chai.use(chaiSubset);
 process.setMaxListeners(20);
 
 describe('Testing Agent', () => {
-  let dimension: Dimension.DimensionType;
-  before(() => {
-    let rpsDesign = new RockPaperScissorsDesign('RPS');
-    dimension = Dimension.create(rpsDesign, {
-      activateStation: false,
-      observe: false,
-      loggingLevel: Logger.LEVEL.NONE,
-      id: 'abcdef',
-      defaultMatchConfigs: {
-        storeErrorLogs: false,
-      },
-    });
-  });
-
   describe('Testing Agent Errors', () => {
     it('should throw directory errors', () => {
       expect(() => {
@@ -48,14 +32,14 @@ describe('Testing Agent', () => {
 
   describe('Testing Agent Initialization', () => {
     it('should work in non-securemode', () => {
-      let a = new Dimension.Agent('./tests/kits/js/normal/rock.js', {
+      const a = new Dimension.Agent('./tests/kits/js/normal/rock.js', {
         id: 0,
         secureMode: false,
       });
       validateAgent(a, { id: 0, secureMode: false });
     });
     it('should work in securemode', () => {
-      let a = new Dimension.Agent('./tests/kits/js/normal/rock.js', {
+      const a = new Dimension.Agent('./tests/kits/js/normal/rock.js', {
         id: 0,
         secureMode: true,
       });
@@ -65,8 +49,8 @@ describe('Testing Agent', () => {
 });
 
 const validateAgent = (a: Dimension.Agent, providedConfigs: any) => {
-  let vals = Dimension.Agent.OptionDefaults;
-  for (let key in providedConfigs) {
+  const vals = Dimension.Agent.OptionDefaults;
+  for (const key in providedConfigs) {
     vals[key] = providedConfigs[key];
   }
   expect(a.isTerminated()).to.equal(false);

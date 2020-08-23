@@ -1,13 +1,13 @@
 /**
  * Parser class to help parse a input line of data
  */
-export function parse(str, delimmiter): Parsed {
-  return new Parsed(str, this.delimiter);
+export function parse(str: string, delimiter: string): Parsed {
+  return new Parsed(str, delimiter);
 }
 export class Parsed {
   public contents: Array<string> = [];
-  public index: number = 0;
-  constructor(public str, d: string) {
+  public index = 0;
+  constructor(public str: string, d: string) {
     this.str = str;
     this.contents = str.split(d);
 
@@ -26,7 +26,7 @@ export class Parsed {
   // Returns the remainder of the line as an array of integers
   nextIntArr(): Array<number> {
     if (this.index < this.contents.length) {
-      let remainder = this.contents
+      const remainder = this.contents
         .slice(this.index, this.contents.length)
         .map((val) => parseInt(val));
       return remainder;
@@ -35,13 +35,13 @@ export class Parsed {
     }
   }
   nextInt(): number {
-    let str = this._nextStr();
+    const str = this._nextStr();
     return parseInt(str);
   }
   // Returns the remainder of the line as an array of floats
   nextFloatArr(): Array<number> {
     if (this.index < this.contents.length) {
-      let remainder = this.contents
+      const remainder = this.contents
         .slice(this.index++)
         .map((val) => parseFloat(val));
       return remainder;
@@ -50,13 +50,13 @@ export class Parsed {
     }
   }
   nextFloat(): number {
-    let str = this._nextStr();
+    const str = this._nextStr();
     return parseFloat(str);
   }
   // Returns the remainder of the line as an array of strings
   nextStrArr(): Array<string> {
     if (this.index < this.contents.length) {
-      let remainder = this.contents.slice(this.index++);
+      const remainder = this.contents.slice(this.index++);
       return remainder;
     } else {
       throw new Error('No more contents to consume from line');

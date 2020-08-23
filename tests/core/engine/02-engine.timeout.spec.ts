@@ -15,7 +15,7 @@ chai.use(chaiSubset);
 
 describe('Testing MatchEngine Timeout Mechanism', () => {
   let d: Dimension.DimensionType;
-  let rpsDesign = new RockPaperScissorsDesign('RPS');
+  const rpsDesign = new RockPaperScissorsDesign('RPS');
   const tf = [true, false];
   before(() => {
     d = Dimension.create(rpsDesign, {
@@ -29,7 +29,7 @@ describe('Testing MatchEngine Timeout Mechanism', () => {
   });
   describe('Test timeout mechanism', () => {
     // TODO: add tests for bot that timeout before match starts
-    for (let bool of tf) {
+    for (const bool of tf) {
       it(`should timeout bots accordingly; secureMode: ${bool}`, async () => {
         let match = await d.createMatch(
           [
@@ -87,9 +87,9 @@ describe('Testing MatchEngine Timeout Mechanism', () => {
           },
         },
       };
-      let sandbox = sinon.createSandbox();
+      const sandbox = sinon.createSandbox();
 
-      let match = await d.createMatch(
+      const match = await d.createMatch(
         [
           './tests/kits/js/normal/rockdelayed.js',
           './tests/kits/js/normal/paper.js',
@@ -99,16 +99,15 @@ describe('Testing MatchEngine Timeout Mechanism', () => {
           engineOptions: customEngineOptions,
         }
       );
-      let killSpy = sandbox.spy(match, 'kill');
-      let logspy = sandbox.spy(match.log, 'detail');
-      let results = await match.run();
+      const killSpy = sandbox.spy(match, 'kill');
+      const results = await match.run();
       expect(results.terminated[0]).to.equal('terminated');
       expect(killSpy).to.be.calledWithExactly(0);
       expect(callbacked).to.equal(true);
     });
 
     it('should allow for turning off timeout', async () => {
-      let match = await d.createMatch(
+      const match = await d.createMatch(
         [
           './tests/kits/js/normal/rockdelayed.js',
           './tests/kits/js/normal/paper.js',
@@ -122,9 +121,9 @@ describe('Testing MatchEngine Timeout Mechanism', () => {
           },
         }
       );
-      let sandbox = sinon.createSandbox();
-      let killSpy = sandbox.spy(match, 'kill');
-      let results = await match.run();
+      const sandbox = sinon.createSandbox();
+      const killSpy = sandbox.spy(match, 'kill');
+      const results = await match.run();
       // match.kill should never get called
       expect(killSpy).to.be.callCount(0);
       expect(results.scores).to.eql({ '0': 0, '1': 3 });

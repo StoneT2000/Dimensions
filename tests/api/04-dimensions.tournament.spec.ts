@@ -9,7 +9,6 @@ import { Logger, Tournament } from '../../src';
 import { RockPaperScissorsDesign } from '../rps';
 import { Ladder } from '../../src/Tournament/Ladder';
 import { createLadderTourney } from '../core/tourney/utils';
-import { sleep } from '../../src/utils';
 chai.should();
 chai.use(sinonChai);
 chai.use(chaiSubset);
@@ -44,7 +43,7 @@ describe('Testing /api/dimensions/:dimensionID/tournaments API', () => {
     },
   ];
   before(() => {
-    let rpsDesign = new RockPaperScissorsDesign('RPS');
+    const rpsDesign = new RockPaperScissorsDesign('RPS');
     dimension = Dimension.create(rpsDesign, {
       activateStation: true,
       observe: true,
@@ -61,7 +60,7 @@ describe('Testing /api/dimensions/:dimensionID/tournaments API', () => {
     });
   });
   it(`GET ${base}/tournaments - should return all tournaments`, async () => {
-    let res = await chai.request(endpoint).get(`/tournaments`);
+    const res = await chai.request(endpoint).get(`/tournaments`);
     expect(res.status).to.equal(200);
     expect({
       error: null,
@@ -72,7 +71,7 @@ describe('Testing /api/dimensions/:dimensionID/tournaments API', () => {
   });
 
   it(`GET ${base}/tournaments/:tournamentID - should return tournament with id tournamentID`, async () => {
-    let res = await chai.request(endpoint).get(`/tournaments/${t.id}`);
+    const res = await chai.request(endpoint).get(`/tournaments/${t.id}`);
     expect(res.status).to.equal(200);
     expect({
       error: null,
@@ -81,7 +80,9 @@ describe('Testing /api/dimensions/:dimensionID/tournaments API', () => {
   });
 
   it(`GET ${base}/tournaments/:tournamentID - should return 400, if tournament with id tournamentID does not exist`, async () => {
-    let res = await chai.request(endpoint).get(`/tournaments/faketournamentID`);
+    const res = await chai
+      .request(endpoint)
+      .get(`/tournaments/faketournamentID`);
     expect(res.status).to.equal(400);
     expect(res.body).to.eql({
       error: {
@@ -92,8 +93,9 @@ describe('Testing /api/dimensions/:dimensionID/tournaments API', () => {
   });
 
   it(`POST ${base}/tournaments/:tournamentID/match-queue - should schedule matches`, async () => {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
-      let t = createLadderTourney(dimension, botListWithIDs, {
+      const t = createLadderTourney(dimension, botListWithIDs, {
         id: 'ladderWithoutSelfMatchmake',
         tournamentConfigs: {
           selfMatchMake: false,
@@ -102,12 +104,12 @@ describe('Testing /api/dimensions/:dimensionID/tournaments API', () => {
           bestOf: 9,
         },
       });
-      let matchQueue = [
+      const matchQueue = [
         ['rock1', 'rock2'],
         ['rock2', 'rock3'],
       ];
       await t.run();
-      let res = await chai
+      const res = await chai
         .request(endpoint)
         .post(`/tournaments/${t.id}/match-queue`)
         .send({ matchQueue });

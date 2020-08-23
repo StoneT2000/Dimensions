@@ -5,9 +5,8 @@ import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
 import sinonChai from 'sinon-chai';
 import 'mocha';
-import { Logger, Match, MongoDB } from '../../src';
+import { Logger, MongoDB } from '../../src';
 import { RockPaperScissorsDesign } from '../rps';
-import MatchSchemaCreator from '../../src/SupportedPlugins/MongoDB/models/match';
 chai.should();
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -20,16 +19,11 @@ describe('Testing /api/dimensions/:dimensionID/users API', () => {
   let origin = 'http://localhost:';
   let endpoint = '';
   let d: Dimension.DimensionType;
-  let match: Dimension.Match;
-  let botList = [
-    './tests/kits/js/normal/rock.js',
-    './tests/kits/js/normal/paper.js',
-  ];
-  let mongo = new MongoDB(
+  const mongo = new MongoDB(
     'mongodb://root:rootpassword@localhost:27017/test?authSource=admin&readPreference=primary'
   );
   before(async () => {
-    let rpsDesign = new RockPaperScissorsDesign('RPS');
+    const rpsDesign = new RockPaperScissorsDesign('RPS');
     d = Dimension.create(rpsDesign, {
       activateStation: true,
       observe: true,

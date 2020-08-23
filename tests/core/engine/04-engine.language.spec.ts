@@ -5,7 +5,6 @@ import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
 import 'mocha';
 import { Logger } from '../../../src';
-import { bold } from 'colors';
 const expect = chai.expect;
 chai.should();
 chai.use(chaiAsPromised);
@@ -13,7 +12,7 @@ chai.use(chaiSubset);
 
 describe('Testing MatchEngine Multi Language Support', () => {
   let d: Dimension.DimensionType;
-  let rpsDesign = new RockPaperScissorsDesign('RPS');
+  const rpsDesign = new RockPaperScissorsDesign('RPS');
 
   // For consistency and testing, the js bot throws paper and all other bots throw rock
   const bots = {
@@ -42,7 +41,7 @@ describe('Testing MatchEngine Multi Language Support', () => {
     describe(`Testing langs with secureMode: ${bool}`, () => {
       describe('Test python', () => {
         it('should run', async () => {
-          let results = await d.runMatch([bots.python, bots.js], {
+          const results = await d.runMatch([bots.python, bots.js], {
             bestOf: 9,
             secureMode: bool,
             agentOptions: {
@@ -57,7 +56,7 @@ describe('Testing MatchEngine Multi Language Support', () => {
 
       describe('Test typescript', () => {
         it('should run', async () => {
-          let results = await d.runMatch([bots.ts, bots.js], {
+          const results = await d.runMatch([bots.ts, bots.js], {
             secureMode: bool,
             bestOf: 9,
           });
@@ -67,7 +66,7 @@ describe('Testing MatchEngine Multi Language Support', () => {
 
       describe('Test java', () => {
         it('should run', async () => {
-          let results = await d.runMatch([bots.java, bots.js], {
+          const results = await d.runMatch([bots.java, bots.js], {
             bestOf: 9,
             secureMode: bool,
           });
@@ -77,7 +76,7 @@ describe('Testing MatchEngine Multi Language Support', () => {
 
       describe('Test c++', () => {
         it('should run', async () => {
-          let results = await d.runMatch([bots.cpp, bots.js], {
+          const results = await d.runMatch([bots.cpp, bots.js], {
             bestOf: 9,
             secureMode: bool,
           });
@@ -87,7 +86,7 @@ describe('Testing MatchEngine Multi Language Support', () => {
 
       describe('Test c', () => {
         it('should run', async () => {
-          let results = await d.runMatch([bots.c, bots.js], {
+          const results = await d.runMatch([bots.c, bots.js], {
             bestOf: 9,
             secureMode: bool,
           });
@@ -97,7 +96,7 @@ describe('Testing MatchEngine Multi Language Support', () => {
 
       describe('Test go', () => {
         it('should run', async () => {
-          let results = await d.runMatch([bots.go, bots.js], {
+          const results = await d.runMatch([bots.go, bots.js], {
             bestOf: 9,
             secureMode: bool,
           });
@@ -107,7 +106,7 @@ describe('Testing MatchEngine Multi Language Support', () => {
 
       describe('Test php', () => {
         it('should run', async () => {
-          let results = await d.runMatch([bots.php, bots.js], {
+          const results = await d.runMatch([bots.php, bots.js], {
             bestOf: 9,
             secureMode: bool,
           });

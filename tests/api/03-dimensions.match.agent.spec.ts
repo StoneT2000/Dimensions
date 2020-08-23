@@ -7,7 +7,6 @@ import sinonChai from 'sinon-chai';
 import 'mocha';
 import { Logger, Match } from '../../src';
 import { RockPaperScissorsDesign } from '../rps';
-import MatchSchemaCreator from '../../src/SupportedPlugins/MongoDB/models/match';
 chai.should();
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -21,12 +20,12 @@ describe('Testing /api/dimensions/:dimensionID/match/:matchID/agent API', () => 
   let endpoint = '';
   let dimension: Dimension.DimensionType;
   let match: Dimension.Match;
-  let botList = [
+  const botList = [
     './tests/kits/js/normal/rock.js',
     './tests/kits/js/normal/paper.js',
   ];
   before(async () => {
-    let rpsDesign = new RockPaperScissorsDesign('RPS');
+    const rpsDesign = new RockPaperScissorsDesign('RPS');
     dimension = Dimension.create(rpsDesign, {
       activateStation: true,
       observe: true,
@@ -44,10 +43,10 @@ describe('Testing /api/dimensions/:dimensionID/match/:matchID/agent API', () => 
   it(`GET ${base}/agents - should return all agents`, async () => {
     const res = await chai.request(endpoint).get(`/agents`);
     expect(res.status).to.equal(200);
-    for (let agent of match.agents) {
+    for (const agent of match.agents) {
       delete agent.creationDate;
     }
-    for (let agent of res.body.agents) {
+    for (const agent of res.body.agents) {
       delete agent.creationDate;
     }
     verifyAgentWithResponse(match, res);
@@ -56,7 +55,7 @@ describe('Testing /api/dimensions/:dimensionID/match/:matchID/agent API', () => 
   it(`GET ${base}/agents/:agentID - should return agent with id agentID`, async () => {
     const res = await chai.request(endpoint).get(`/agents/0`);
     expect(res.status).to.equal(200);
-    for (let agent of match.agents) {
+    for (const agent of match.agents) {
       delete agent.creationDate;
     }
     delete res.body.agent.creationDate;
@@ -81,10 +80,10 @@ describe('Testing /api/dimensions/:dimensionID/match/:matchID/agent API', () => 
 
 const verifyAgentWithResponse = (match: Match, res: any) => {
   // remove dates because they are stored as strings in api response
-  for (let agent of match.agents) {
+  for (const agent of match.agents) {
     delete agent.creationDate;
   }
-  for (let agent of res.body.agents) {
+  for (const agent of res.body.agents) {
     delete agent.creationDate;
   }
   expect(match.agents).to.containSubset(res.body.agents);
