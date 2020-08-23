@@ -38,9 +38,9 @@ describe('Testing /api/dimensions/:dimensionID/match/:matchID/agent API', () => 
     endpoint = origin + `/api/dimensions/${dimension.id}/match/${match.id}`
   });
 
-  it(`GET ${base}/ - should return all agents`, async () => {
+  it(`GET ${base}/agents - should return all agents`, async () => {
     const res = await chai.request(endpoint)
-    .get(`/agent`);
+    .get(`/agents`);
     expect(res.status).to.equal(200)
     for (let agent of match.agents) {
       delete agent.creationDate
@@ -51,9 +51,9 @@ describe('Testing /api/dimensions/:dimensionID/match/:matchID/agent API', () => 
     verifyAgentWithResponse(match, res)
   });
 
-  it(`GET ${base}/:agentID - should return agent with id agentID`, async () => {
+  it(`GET ${base}/agents/:agentID - should return agent with id agentID`, async () => {
     const res = await chai.request(endpoint)
-    .get(`/agent/0`);
+    .get(`/agents/0`);
     expect(res.status).to.equal(200)
     for (let agent of match.agents) {
       delete agent.creationDate
@@ -62,9 +62,9 @@ describe('Testing /api/dimensions/:dimensionID/match/:matchID/agent API', () => 
     expect(match.agents[0]).to.containSubset(res.body.agent);
   });
 
-  it(`GET ${base}/:agentID - should return 400, if agent with id agentID does not exist`, async () => {
+  it(`GET ${base}/agents/:agentID - should return 400, if agent with id agentID does not exist`, async () => {
     const res = await chai.request(endpoint)
-    .get(`/agent/20`);
+    .get(`/agents/20`);
     expect(res.status).to.equal(400)
     expect(res.body).to.be.eql({
       error: {

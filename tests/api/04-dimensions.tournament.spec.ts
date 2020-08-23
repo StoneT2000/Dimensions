@@ -16,7 +16,7 @@ chai.use(chaiSubset)
 chai.use(chaiAsPromised);
 chai.use(chaiHttp)
 
-describe('Testing /api/dimensions/:dimensionID/tournament API', () => {
+describe('Testing /api/dimensions/:dimensionID/tournaments API', () => {
   const base = '/api/dimensions/:dimensionID';
   let origin = "http://localhost:"
   let endpoint = '';
@@ -50,7 +50,7 @@ describe('Testing /api/dimensions/:dimensionID/tournament API', () => {
   });
   it(`GET ${base}/tournaments - should return all tournaments`, async () => {
     let res = await chai.request(endpoint)
-    .get(`/tournament`)
+    .get(`/tournaments`)
     expect(res.status).to.equal(200);
     expect({
       error: null,
