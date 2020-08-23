@@ -6,18 +6,17 @@ import chaiSubset from 'chai-subset';
 import sinonChai from 'sinon-chai';
 import 'mocha';
 import { Logger } from '../../../src';
-import { createElimTourney } from './utils';
 import { noop } from '../../../src/utils';
-const expect = chai.expect;
+// const expect = chai.expect;
 chai.should();
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.use(chaiSubset);
 
 describe('Testing Tournament Scheduler Core', () => {
-  const paper = { file: './tests/kits/js/normal/paper.js', name: 'paper' };
-  const rock = { file: './tests/kits/js/normal/rock.js', name: 'rock' };
-  const botList = [rock, paper];
+  // const paper = { file: './tests/kits/js/normal/paper.js', name: 'paper' };
+  // const rock = { file: './tests/kits/js/normal/rock.js', name: 'rock' };
+  // const botList = [rock, paper];
   const rpsDesign = new RockPaperScissorsDesign('RPS');
   const d = Dimension.create(rpsDesign, {
     activateStation: false,
