@@ -13,6 +13,8 @@ executors:
           MONGO_INITDB_ROOT_PASSWORD: rootpassword
 
 jobs:
+  executor:
+    name: language-build
   lint:
     steps:
       - checkout
