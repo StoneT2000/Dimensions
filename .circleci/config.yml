@@ -13,6 +13,13 @@ executors:
           MONGO_INITDB_ROOT_PASSWORD: rootpassword
 
 jobs:
+  lint:
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: npm install
+            - run: npm run lint
   build-and-test:
     executor:
       name: language-build
@@ -21,7 +28,7 @@ jobs:
       - setup_remote_docker:
           version: 19.03.8
       - run: apk add docker-cli
-      - run: 
+      - run:
           name: Pull standard images for Dimensions
           command: docker pull docker.io/stonezt2000/dimensions_langs
       - run:
@@ -33,7 +40,7 @@ jobs:
           name: Wait for db
           command: |
             dockerize -timeout 1m \
-              -wait tcp://localhost:27017 `# mongo` 
+              -wait tcp://localhost:27017 `# mongo`
       - node/with-cache:
           steps:
             - run: npm install
@@ -47,6 +54,9 @@ jobs:
           file: coverage.lcov
 
 workflows:
-    build-and-test:
-      jobs:
-        - build-and-test
+  build-and-test:
+    jobs:
+      - build-and-test
+  lint:
+    jobs:
+      - lint
