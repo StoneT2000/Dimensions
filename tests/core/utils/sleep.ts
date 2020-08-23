@@ -4,4 +4,4 @@ export const sleep = async (time: number) => {
       res();
     }, time);
   });
-}
+};

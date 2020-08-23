@@ -16,7 +16,8 @@
     "build": "rm -rf lib && tsc",
     "clean": "./cleanup.sh",
     "services:start": "docker-compose -f tests/dimension-docker/docker-compose.yml up -d",
-    "services:stop": "docker-compose -f tests/dimension-docker/docker-compose.yml down"
+    "services:stop": "docker-compose -f tests/dimension-docker/docker-compose.yml down",
+    "prettier": "prettier --write 'src/**/*.ts' 'tests/**/*.ts'"
   },
   "keywords": [
     "AI",

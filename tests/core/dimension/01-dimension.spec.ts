@@ -3,21 +3,23 @@ import { RockPaperScissorsDesign } from '../../rps';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
-import sinonChai from "sinon-chai";
+import sinonChai from 'sinon-chai';
 import 'mocha';
 import { Tournament, Logger } from '../../../src';
 const expect = chai.expect;
-chai.should()
+chai.should();
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
-chai.use(chaiSubset)
-
+chai.use(chaiSubset);
 
 describe('Testing Dimension Class', () => {
   let ddefault: Dimension.DimensionType;
   let d: Dimension.DimensionType;
-  let botList = ['./tests/kits/js/normal/rock.js', './tests/kits/js/normal/paper.js']
-  before( async () => {
+  let botList = [
+    './tests/kits/js/normal/rock.js',
+    './tests/kits/js/normal/paper.js',
+  ];
+  before(async () => {
     let rpsDesign = new RockPaperScissorsDesign('RPS');
     ddefault = Dimension.create(rpsDesign, {
       activateStation: false,
@@ -26,11 +28,11 @@ describe('Testing Dimension Class', () => {
     d = Dimension.create(rpsDesign, {
       activateStation: false,
       observe: false,
-      id: "123456",
+      id: '123456',
       loggingLevel: Logger.LEVEL.NONE,
       defaultMatchConfigs: {
-        storeErrorLogs: false
-      }
+        storeErrorLogs: false,
+      },
     });
   });
   it('should initialize a dimension with default params correctly', () => {
@@ -40,16 +42,16 @@ describe('Testing Dimension Class', () => {
       observe: false,
       loggingLevel: Logger.LEVEL.INFO,
       secureMode: false,
-      backingDatabase: "none",
-      backingStorage: "none",
+      backingDatabase: 'none',
+      backingStorage: 'none',
       id: 'oLBptg',
       defaultMatchConfigs: {
         loggingLevel: Logger.LEVEL.INFO,
         secureMode: false,
       },
       stationConfigs: {
-        loggingLevel: Logger.LEVEL.INFO
-      }
+        loggingLevel: Logger.LEVEL.INFO,
+      },
     });
   });
   it('should initialize tournaments correctly', () => {
@@ -57,7 +59,7 @@ describe('Testing Dimension Class', () => {
       type: Tournament.Type.LADDER,
       agentsPerMatch: [2],
       rankSystem: Tournament.RankSystem.ELO,
-      resultHandler: () => {}
+      resultHandler: () => {},
     });
     expect(tourney.configs.type).to.be.eql(Tournament.Type.LADDER);
     expect(tourney.configs.rankSystem).to.be.eql(Tournament.RankSystem.ELO);
@@ -66,7 +68,7 @@ describe('Testing Dimension Class', () => {
       type: Tournament.Type.ROUND_ROBIN,
       agentsPerMatch: [2],
       rankSystem: Tournament.RankSystem.WINS,
-      resultHandler: () => {}
+      resultHandler: () => {},
     });
     expect(tourney.configs.type).to.be.eql(Tournament.Type.ROUND_ROBIN);
     expect(tourney.configs.rankSystem).to.be.eql(Tournament.RankSystem.WINS);
@@ -75,26 +77,26 @@ describe('Testing Dimension Class', () => {
       type: Tournament.Type.ELIMINATION,
       agentsPerMatch: [2],
       rankSystem: Tournament.RankSystem.WINS,
-      resultHandler: () => {}
+      resultHandler: () => {},
     });
     expect(tourney.configs.type).to.be.eql(Tournament.Type.ELIMINATION);
     expect(tourney.configs.rankSystem).to.be.eql(Tournament.RankSystem.WINS);
   });
 
   it('should be able to create matches and with matching configs', async () => {
-    let match = await d.createMatch(botList)
+    let match = await d.createMatch(botList);
     // configs should be superset of  dimension's match config defaults
-    expect(match.configs).to.containSubset(d.configs.defaultMatchConfigs)
+    expect(match.configs).to.containSubset(d.configs.defaultMatchConfigs);
   });
 
   it('should be able to remove matches in any state', async () => {
-    let match = await d.createMatch(botList)
-    expect(d.removeMatch(match.id)).to.eventually.equal(true)
+    let match = await d.createMatch(botList);
+    expect(d.removeMatch(match.id)).to.eventually.equal(true);
   });
   it('should not be able to remove non-existent matches', () => {
     expect(d.removeMatch('j13k2m')).to.eventually.equal(false);
   });
-  
+
   after(() => {
     ddefault.cleanupMatches();
     ddefault.cleanupTournaments();

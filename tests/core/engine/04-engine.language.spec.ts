@@ -7,7 +7,7 @@ import 'mocha';
 import { Logger } from '../../../src';
 import { bold } from 'colors';
 const expect = chai.expect;
-chai.should()
+chai.should();
 chai.use(chaiAsPromised);
 chai.use(chaiSubset);
 
@@ -33,91 +33,91 @@ describe('Testing MatchEngine Multi Language Support', () => {
       observe: false,
       loggingLevel: Logger.LEVEL.NONE,
       defaultMatchConfigs: {
-        storeErrorLogs: false
-      }
+        storeErrorLogs: false,
+      },
     });
   });
-  
+
   for (const bool of tf) {
     describe(`Testing langs with secureMode: ${bool}`, () => {
-      describe("Test python", () => {
-        it("should run", async () => {
+      describe('Test python', () => {
+        it('should run', async () => {
           let results = await d.runMatch([bots.python, bots.js], {
             bestOf: 9,
             secureMode: bool,
             agentOptions: {
               runCommands: {
-                '.py': ['python3']
-              }
-            }
+                '.py': ['python3'],
+              },
+            },
           });
-          expect(results.scores).to.eql({'0': 0, '1': 9});
+          expect(results.scores).to.eql({ '0': 0, '1': 9 });
         });
       });
-  
-      describe("Test typescript", () => {
-        it("should run", async () => {
+
+      describe('Test typescript', () => {
+        it('should run', async () => {
           let results = await d.runMatch([bots.ts, bots.js], {
             secureMode: bool,
-            bestOf: 9
+            bestOf: 9,
           });
-          expect(results.scores).to.eql({'0': 0, '1': 9});
+          expect(results.scores).to.eql({ '0': 0, '1': 9 });
         });
       });
-  
-      describe("Test java", () => {
-        it("should run", async () => {
+
+      describe('Test java', () => {
+        it('should run', async () => {
           let results = await d.runMatch([bots.java, bots.js], {
             bestOf: 9,
-            secureMode: bool
+            secureMode: bool,
           });
-          expect(results.scores).to.eql({'0': 0, '1': 9});
+          expect(results.scores).to.eql({ '0': 0, '1': 9 });
         });
       });
-  
-      describe("Test c++", () => {
-        it("should run", async () => {
+
+      describe('Test c++', () => {
+        it('should run', async () => {
           let results = await d.runMatch([bots.cpp, bots.js], {
             bestOf: 9,
-            secureMode: bool
+            secureMode: bool,
           });
-          expect(results.scores).to.eql({'0': 0, '1': 9});
+          expect(results.scores).to.eql({ '0': 0, '1': 9 });
         });
       });
-  
-      describe("Test c", () => {
-        it("should run", async () => {
+
+      describe('Test c', () => {
+        it('should run', async () => {
           let results = await d.runMatch([bots.c, bots.js], {
             bestOf: 9,
-            secureMode: bool
+            secureMode: bool,
           });
-          expect(results.scores).to.eql({'0': 0, '1': 9});
+          expect(results.scores).to.eql({ '0': 0, '1': 9 });
         });
       });
-  
-      describe("Test go", () => {
-        it("should run", async () => {
+
+      describe('Test go', () => {
+        it('should run', async () => {
           let results = await d.runMatch([bots.go, bots.js], {
             bestOf: 9,
-            secureMode: bool
+            secureMode: bool,
           });
-          expect(results.scores).to.eql({'0': 0, '1': 9});
+          expect(results.scores).to.eql({ '0': 0, '1': 9 });
         });
       });
-  
-      describe("Test php", () => {
-        it("should run", async () => {
+
+      describe('Test php', () => {
+        it('should run', async () => {
           let results = await d.runMatch([bots.php, bots.js], {
             bestOf: 9,
-            secureMode: bool
+            secureMode: bool,
           });
-          expect(results.scores).to.eql({'0': 0, '1': 9});
+          expect(results.scores).to.eql({ '0': 0, '1': 9 });
         });
       });
-    })
+    });
   }
   after(async () => {
     await d.cleanup();
-    console.log("cleaned up");
+    console.log('cleaned up');
   });
 });

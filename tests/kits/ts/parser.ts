@@ -10,7 +10,7 @@ export class Parsed {
   constructor(public str, d: string) {
     this.str = str;
     this.contents = str.split(d);
-    
+
     // remove the last element if its empty string
     if (this.contents[this.contents.length - 1] === '') {
       this.contents = this.contents.slice(0, this.contents.length - 1);
@@ -19,19 +19,19 @@ export class Parsed {
   _nextStr(): string {
     if (this.index < this.contents.length) {
       return this.contents[this.index++];
-    }
-    else {
-      throw new Error("No more contents to consume from line")
+    } else {
+      throw new Error('No more contents to consume from line');
     }
   }
   // Returns the remainder of the line as an array of integers
   nextIntArr(): Array<number> {
     if (this.index < this.contents.length) {
-      let remainder = this.contents.slice(this.index, this.contents.length).map((val) => parseInt(val));
+      let remainder = this.contents
+        .slice(this.index, this.contents.length)
+        .map((val) => parseInt(val));
       return remainder;
-    }
-    else {
-      throw new Error("No more contents to consume from line")
+    } else {
+      throw new Error('No more contents to consume from line');
     }
   }
   nextInt(): number {
@@ -41,11 +41,12 @@ export class Parsed {
   // Returns the remainder of the line as an array of floats
   nextFloatArr(): Array<number> {
     if (this.index < this.contents.length) {
-      let remainder = this.contents.slice(this.index++).map((val) => parseFloat(val));
+      let remainder = this.contents
+        .slice(this.index++)
+        .map((val) => parseFloat(val));
       return remainder;
-    }
-    else {
-      throw new Error("No more contents to consume from line")
+    } else {
+      throw new Error('No more contents to consume from line');
     }
   }
   nextFloat(): number {
@@ -57,9 +58,8 @@ export class Parsed {
     if (this.index < this.contents.length) {
       let remainder = this.contents.slice(this.index++);
       return remainder;
-    }
-    else {
-      throw new Error("No more contents to consume from line")
+    } else {
+      throw new Error('No more contents to consume from line');
     }
   }
   nextStr(): string {
