@@ -81,7 +81,7 @@ export class Match {
    * The current time step of the Match. This time step is independent of any {@link Design} and agents are coordianted
    * against this timeStep
    */
-  public timeStep: number = 0;
+  public timeStep = 0;
 
   /**
    * The associated {@link MatchEngine} that is running this match and serves as the backend for this match.
@@ -132,7 +132,7 @@ export class Match {
   matchProcessTimer: any;
 
   /** Signal to stop at next time step */
-  private shouldStop: boolean = false;
+  private shouldStop = false;
 
   /** Promise for resuming */
   private resumePromise: Promise<void>;
@@ -172,7 +172,7 @@ export class Match {
   constructor(
     public design: Design,
     public agentFiles:
-      | Array<String>
+      | Array<string>
       | Array<{ file: string; name: string; botkey?: string }>
       | Array<{ file: string; tournamentID: Tournament.ID; botkey?: string }>,
     configs: DeepPartial<Match.Configs> = {},
@@ -220,7 +220,7 @@ export class Match {
         `Design: ${this.design.name} | Initializing match - ID: ${this.id}, Name: ${this.name}`
       );
 
-      let overrideOptions = this.design.getDesignOptions().override;
+      const overrideOptions = this.design.getDesignOptions().override;
 
       this.log.detail('Match Configs', this.configs);
 
@@ -231,7 +231,7 @@ export class Match {
         if (!existsSync(this.configs.storeErrorDirectory)) {
           mkdirSync(this.configs.storeErrorDirectory);
         }
-        let matchErrorLogDirectory = this.getMatchErrorLogDirectory();
+        const matchErrorLogDirectory = this.getMatchErrorLogDirectory();
         if (!existsSync(matchErrorLogDirectory)) {
           mkdirSync(matchErrorLogDirectory);
         }
@@ -242,8 +242,8 @@ export class Match {
 
       // copy over any agent bot files if dimension has a backing storage servicde and the agent has botkey specified
       // copy them over the agent's specified file location to use
-      let retrieveBotFilePromises: Array<Promise<any>> = [];
-      let retrieveBotFileIndexes: Array<number> = [];
+      const retrieveBotFilePromises: Array<Promise<any>> = [];
+      const retrieveBotFileIndexes: Array<number> = [];
       if (this.dimension.hasStorage()) {
         this.agentFiles.forEach((agentFile, index) => {
           if (agentFile.botkey && agentFile.file) {
@@ -255,7 +255,7 @@ export class Match {
           }
         });
       }
-      let retrievedBotFiles = await Promise.all(retrieveBotFilePromises);
+      const retrievedBotFiles = await Promise.all(retrieveBotFilePromises);
       retrieveBotFileIndexes.forEach((val, index) => {
         if (!(typeof this.agentFiles[val] === 'string')) {
           //@ts-ignore
@@ -307,10 +307,10 @@ export class Match {
    * @param botkey
    */
   private async retrieveBot(botkey: string, file: string) {
-    let dir = BOT_DIR + '/anon-' + genID(18);
+    const dir = BOT_DIR + '/anon-' + genID(18);
     mkdirSync(dir);
 
-    let zipFile = path.join(dir, 'bot.zip');
+    const zipFile = path.join(dir, 'bot.zip');
     await this.dimension.storagePlugin.download(botkey, zipFile);
     await extract(zipFile, {
       dir: dir,
@@ -333,7 +333,7 @@ export class Match {
 
         // check if our design is a javascript/typescript based design or custom and to be executed with a
         // provided command
-        let overrideOptions = this.design.getDesignOptions().override;
+        const overrideOptions = this.design.getDesignOptions().override;
         if (overrideOptions.active) {
           this.log.system('Running custom');
           await this.matchEngine.runCustom(this);
@@ -364,10 +364,10 @@ export class Match {
               if (this.configs.storeReplay) {
                 this.replayFile = this.results.replayFile;
                 if (this.dimension.hasStorage()) {
-                  let fileName = path.basename(this.results.replayFile);
+                  const fileName = path.basename(this.results.replayFile);
 
                   // store to storage and get key
-                  let key = await this.dimension.storagePlugin.upload(
+                  const key = await this.dimension.storagePlugin.upload(
                     this.results.replayFile,
                     `${path.join(this.configs.storeReplayDirectory, fileName)}`
                   );
@@ -406,23 +406,23 @@ export class Match {
    * Handles log files and stores / uploads / deletes them as necessary
    */
   private async handleLogFiles() {
-    let uploadLogPromises: Array<Promise<{
+    const uploadLogPromises: Array<Promise<{
       key: string;
       agentID: number;
     }>> = [];
-    let fileLogsToRemove: Array<string> = [];
+    const fileLogsToRemove: Array<string> = [];
 
     // upload error logs if stored
     if (this.configs.storeErrorLogs) {
       // upload each agent error log
-      for (let agent of this.agents) {
-        let filepath = path.join(
+      for (const agent of this.agents) {
+        const filepath = path.join(
           this.getMatchErrorLogDirectory(),
           agent.getAgentErrorLogFilename()
         );
         if (existsSync(filepath)) {
           if (this.dimension.hasStorage()) {
-            let uploadKeyPromise = this.dimension.storagePlugin
+            const uploadKeyPromise = this.dimension.storagePlugin
               .upload(filepath, filepath)
               .then((key) => {
                 return { key: key, agentID: agent.id };
@@ -438,7 +438,7 @@ export class Match {
         }
       }
     }
-    let logkeys = await Promise.all(uploadLogPromises);
+    const logkeys = await Promise.all(uploadLogPromises);
     logkeys.forEach((val) => {
       this.idToAgentsMap.get(val.agentID).logkey = val.key;
     });
@@ -596,7 +596,7 @@ export class Match {
    */
   private async killAndCleanUp() {
     await this.matchEngine.killAndClean(this);
-    let removeNonLocalFilesPromises: Array<Promise<any>> = [];
+    const removeNonLocalFilesPromises: Array<Promise<any>> = [];
     this.nonLocalFiles.forEach((nonLocalFile) => {
       removeNonLocalFilesPromises.push(removeDirectory(nonLocalFile));
     });
@@ -633,7 +633,7 @@ export class Match {
    */
   public sendAll(message: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      let sendPromises = [];
+      const sendPromises = [];
       this.agents.forEach((agent: Agent) => {
         sendPromises.push(this.send(message, agent));
       });
@@ -743,7 +743,7 @@ export class Match {
   }
 }
 
-export module Match {
+export namespace Match {
   /**
    * Match Configurations. Has 5 specified fields. All other fields are up to user discretion
    */

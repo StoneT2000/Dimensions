@@ -27,7 +27,7 @@ export class Logger {
   getIdentifier() {
     return this.identifierColor(this.identifier);
   }
-  bar(type: string = '') {
+  bar(type = '') {
     return `\n-=-=-=-=-=-=-=-=-=-=-=-| ${type} ${this.getIdentifier()} |-=-=-=-=-=-=-=-=-=-=-=-\n`;
   }
 
@@ -108,7 +108,7 @@ export class Logger {
       );
   }
 }
-export module Logger {
+export namespace Logger {
   /**
    * Logging Levels where the order of levels are NONE, ERROR, ..., SYSTEM_IO, ALL
    */

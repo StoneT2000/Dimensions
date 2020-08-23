@@ -21,7 +21,7 @@ export class ParsedCommand {
   // Returns the remainder of the line as an array of integers
   nextIntArr() {
     if (this.index < this.contents.length) {
-      let remainder = this.contents
+      const remainder = this.contents
         .slice(this.index, this.contents.length)
         .map((val) => parseInt(val));
       return remainder;
@@ -30,13 +30,13 @@ export class ParsedCommand {
     }
   }
   nextInt() {
-    let str = this._nextStr();
+    const str = this._nextStr();
     return parseInt(str);
   }
   // Returns the remainder of the line as an array of floats
   nextFloatArr() {
     if (this.index < this.contents.length) {
-      let remainder = this.contents
+      const remainder = this.contents
         .slice(this.index++)
         .map((val) => parseFloat(val));
       return remainder;
@@ -45,13 +45,13 @@ export class ParsedCommand {
     }
   }
   nextFloat() {
-    let str = this._nextStr();
+    const str = this._nextStr();
     return parseFloat(str);
   }
   // Returns the remainder of the line as an array of strings
   nextStrArr() {
     if (this.index < this.contents.length) {
-      let remainder = this.contents.slice(this.index++);
+      const remainder = this.contents.slice(this.index++);
       return remainder;
     } else {
       throw new Error('No more contents to consume from line');

@@ -9,7 +9,7 @@ import { deepCopy } from './DeepCopy';
  * @param params - fields to pick out
  */
 export const pick = <T>(obj: T, ...params: Array<keyof T>): DeepPartial<T> => {
-  let picked: any = {};
+  const picked: any = {};
   params.forEach((key) => {
     picked[key] = obj[key];
   });
@@ -37,9 +37,9 @@ export const genID = (n: number) => {
 export const stripFunctions = <T extends { [x in string]: any }>(
   object: T
 ): T => {
-  let seen = new Set<Object>();
+  const seen = new Set<Object>();
   const helper = (object: T): T => {
-    for (let key in object) {
+    for (const key in object) {
       if (!seen.has(key)) {
         seen.add(key);
         if (typeof object[key] === 'function') {
@@ -61,9 +61,9 @@ export const stripFunctions = <T extends { [x in string]: any }>(
 };
 
 export const stripNull = <T extends { [x in string]: any }>(object: T): T => {
-  let seen = new Set<Object>();
+  const seen = new Set<Object>();
   const helper = (object: T): T => {
-    for (let key in object) {
+    for (const key in object) {
       if (!seen.has(key)) {
         seen.add(key);
         if (object[key] === null) {

@@ -44,9 +44,9 @@ export class MongoDB extends Database {
     this.mongoose.set('useFindAndModify', false);
     this.connectionString = connectionString;
 
-    let matchSchema = MatchSchemaCreator();
+    const matchSchema = MatchSchemaCreator();
     this.models.match = this.mongoose.model('Match', matchSchema);
-    let userSchema = UserSchemaCreator();
+    const userSchema = UserSchemaCreator();
     this.models.user = this.mongoose.model('User', userSchema);
 
     this.models.tournamentConfigs = this.mongoose.model(
@@ -68,7 +68,7 @@ export class MongoDB extends Database {
   public async initialize(dimension: Dimension) {
     await this.connect();
     // create admin user
-    let existingUser = await this.getUser('admin');
+    const existingUser = await this.getUser('admin');
     if (!existingUser) {
       await this.registerUser('admin', process.env.ADMIN_PASSWORD);
     }
@@ -77,7 +77,7 @@ export class MongoDB extends Database {
   }
 
   public async storeMatch(match: Match, governID: nanoid): Promise<any> {
-    let data = { ...pickMatch(match), governID: governID };
+    const data = { ...pickMatch(match), governID: governID };
     // store all relevant data
     return this.models.match.create(data);
   }
@@ -88,9 +88,9 @@ export class MongoDB extends Database {
   public async getPlayerMatches(
     playerID: nanoid,
     governID: nanoid,
-    offset: number = 0,
-    limit: number = 10,
-    order: number = -1
+    offset = 0,
+    limit = 10,
+    order = -1
   ): Promise<Array<Match>> {
     return this.models.match.aggregate([
       {
@@ -122,9 +122,9 @@ export class MongoDB extends Database {
     offset: number,
     limit: number
   ): Promise<Array<Ladder.PlayerStat>> {
-    let keyname = tournament.getKeyName();
+    const keyname = tournament.getKeyName();
     if (tournament.configs.rankSystem === Tournament.RANK_SYSTEM.TRUESKILL) {
-      let agg: Array<Object> = [
+      const agg: Array<Object> = [
         {
           // select all users with stats in this tournament, implying they are still in the tourney
           $match: {
@@ -167,12 +167,12 @@ export class MongoDB extends Database {
           $limit: limit,
         });
       }
-      let rankData = await this.models.user.aggregate(agg);
+      const rankData = await this.models.user.aggregate(agg);
       return rankData.map((data) => {
         return data.statistics[keyname];
       });
     } else if (tournament.configs.rankSystem === Tournament.RANK_SYSTEM.ELO) {
-      let agg: Array<Object> = [
+      const agg: Array<Object> = [
         {
           // select all users with stats in this tournament, implying they are still in the tourney
           $match: {
@@ -205,7 +205,7 @@ export class MongoDB extends Database {
           $limit: limit,
         });
       }
-      let rankData = await this.models.user.aggregate(agg);
+      const rankData = await this.models.user.aggregate(agg);
       return rankData.map((data) => {
         return data.statistics[keyname];
       });
@@ -236,7 +236,7 @@ export class MongoDB extends Database {
    * Gets user information. If public is false, will retrieve all information other than password
    * @param usernameOrID
    */
-  public async getUser(usernameOrID: string, publicView: boolean = true) {
+  public async getUser(usernameOrID: string, publicView = true) {
     return this.models.user
       .findOne({
         $or: [{ username: usernameOrID }, { playerID: usernameOrID }],
@@ -246,7 +246,7 @@ export class MongoDB extends Database {
         if (user) {
           obj = user.toObject();
           if (!publicView) return obj;
-          let d = <Database.User>(
+          const d = <Database.User>(
             pick(
               obj,
               'creationDate',
@@ -320,10 +320,10 @@ export class MongoDB extends Database {
 
   public async getUsersInTournament(
     tournamentKey: string,
-    offset: number = 0,
-    limit: number = -1
+    offset = 0,
+    limit = -1
   ) {
-    let key = `statistics.${tournamentKey}`;
+    const key = `statistics.${tournamentKey}`;
     if (limit == -1) {
       limit = 0;
     } else if (limit == 0) {
@@ -334,7 +334,7 @@ export class MongoDB extends Database {
       .skip(offset)
       .limit(limit)
       .then((users) => {
-        let mapped = users.map((user) => user.toObject());
+        const mapped = users.map((user) => user.toObject());
         return mapped;
       });
   }
@@ -385,7 +385,7 @@ export class MongoDB extends Database {
       });
   }
 }
-export module MongoDB {
+export namespace MongoDB {
   /**
    * See {@link Match} class for what these fields represent. They are copied here letter for letter. If set true, the
    * field will be included into the database

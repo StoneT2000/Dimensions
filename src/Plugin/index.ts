@@ -31,7 +31,7 @@ import StorageDefault = require('./Storage');
 /** @ignore */
 import _Storage = StorageDefault.Storage;
 
-export module Plugin {
+export namespace Plugin {
   /**
    * Enumeration for plugin types
    */

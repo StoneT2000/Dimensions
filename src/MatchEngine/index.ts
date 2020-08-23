@@ -47,7 +47,7 @@ export class MatchEngine {
   killOffSignal = false;
 
   /** approx extra buffer time given to agents due to engine processing for timeout mechanism */
-  static timeoutBuffer: number = 25;
+  static timeoutBuffer = 25;
 
   private docker: Dockerode;
 
@@ -92,7 +92,7 @@ export class MatchEngine {
   async initialize(agents: Array<Agent>, match: Match): Promise<void> {
     this.log.systembar();
 
-    let agentSetupPromises: Array<Promise<void>> = [];
+    const agentSetupPromises: Array<Promise<void>> = [];
 
     match.agents.forEach((agent: Agent, index: number) => {
       agentSetupPromises.push(this.initializeAgent(agent, match));
@@ -118,7 +118,7 @@ export class MatchEngine {
 
     // create container in secureMode
     if (match.configs.secureMode) {
-      let name = `${match.id}_agent_${agent.id}`;
+      const name = `${match.id}_agent_${agent.id}`;
       await agent.setupContainer(name, this.docker, this.engineOptions);
     }
 
@@ -130,7 +130,7 @@ export class MatchEngine {
     // note to self, do a Promise.all for each stage before going to the next, split initializeAgent into
     // initializeAgentCompile, initializeAgentInstall, initializeAgentSpawn....
 
-    let errorLogFilepath = path.join(
+    const errorLogFilepath = path.join(
       match.getMatchErrorLogDirectory(),
       agent.getAgentErrorLogFilename()
     );
@@ -181,10 +181,10 @@ export class MatchEngine {
       agent.streams.out = p.out;
       agent.streams.err = p.err;
 
-      let containerExec = p.exec;
+      const containerExec = p.exec;
 
       p.stream.on('end', async () => {
-        let endRes = await containerExec.inspect();
+        const endRes = await containerExec.inspect();
         agent.emit(Agent.AGENT_EVENTS.CLOSE, endRes.ExitCode);
       });
     }
@@ -217,7 +217,7 @@ export class MatchEngine {
       let data: Array<string>;
       while ((data = agent.streams.out.read())) {
         // split chunks into line by line and handle each line of commands
-        let strs = `${data}`.split('\n');
+        const strs = `${data}`.split('\n');
 
         // first store data into a buffer and process later if no newline character is detected
 
@@ -370,7 +370,7 @@ export class MatchEngine {
    * @param match - the match to stop
    */
   public async stop(match: Match) {
-    let stopPromises: Array<Promise<void>> = [];
+    const stopPromises: Array<Promise<void>> = [];
     match.agents.forEach((agent) => {
       stopPromises.push(agent.stop());
     });
@@ -383,7 +383,7 @@ export class MatchEngine {
    * @param match - the match to resume
    */
   public async resume(match: Match) {
-    let resumePromises: Array<Promise<void>> = [];
+    const resumePromises: Array<Promise<void>> = [];
     match.agents.forEach((agent) => {
       resumePromises.push(agent.resume());
     });
@@ -401,7 +401,7 @@ export class MatchEngine {
     // set to true to ensure no more processes are being spawned.
     this.killOffSignal = true;
     clearInterval(this.memoryWatchInterval);
-    let cleanUpPromises: Array<Promise<any>> = [];
+    const cleanUpPromises: Array<Promise<any>> = [];
     if (match.agents) {
       match.agents.forEach((agent) => {
         cleanUpPromises.push(this.kill(agent, 'cleanup'));
@@ -414,7 +414,7 @@ export class MatchEngine {
    * Kills an agent and closes the process, and no longer attempts to receive coommands from it anymore
    * @param agent - the agent to kill off
    */
-  public async kill(agent: Agent, reason: string = 'unspecified') {
+  public async kill(agent: Agent, reason = 'unspecified') {
     try {
       await agent._terminate();
       this.log.system(
@@ -436,11 +436,11 @@ export class MatchEngine {
    */
   public getCommands(match: Match): Promise<Array<MatchEngine.Command>> {
     return new Promise((resolve) => {
-      let commands: Array<MatchEngine.Command> = [];
-      let nonTerminatedAgents = match.agents.filter((agent: Agent) => {
+      const commands: Array<MatchEngine.Command> = [];
+      const nonTerminatedAgents = match.agents.filter((agent: Agent) => {
         return !agent.isTerminated();
       });
-      let allAgentMovePromises = nonTerminatedAgents.map((agent: Agent) => {
+      const allAgentMovePromises = nonTerminatedAgents.map((agent: Agent) => {
         return agent._currentMovePromise;
       });
       Promise.all(allAgentMovePromises).then(() => {
@@ -488,7 +488,7 @@ export class MatchEngine {
     agentID: Agent.ID
   ): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      let agent = match.idToAgentsMap.get(agentID);
+      const agent = match.idToAgentsMap.get(agentID);
       if (!agent.inputDestroyed() && !agent.isTerminated()) {
         agent.write(`${message}\n`, (error: Error) => {
           if (error) reject(error);
@@ -527,9 +527,9 @@ export class MatchEngine {
           )
         );
       }
-      let cmd = this.overrideOptions.command;
+      const cmd = this.overrideOptions.command;
 
-      let parsed = this.parseCustomArguments(
+      const parsed = this.parseCustomArguments(
         match,
         this.overrideOptions.arguments
       );
@@ -546,7 +546,7 @@ export class MatchEngine {
         `${match.name} | id: ${match.id} - spawned: ${cmd} ${parsed.join(' ')}`
       );
 
-      let errorLogFilepath = path.join(
+      const errorLogFilepath = path.join(
         match.getMatchErrorLogDirectory(),
         `match_error.log`
       );
@@ -577,9 +577,9 @@ export class MatchEngine {
         let data: string[];
         while ((data = match.matchProcess.stdout.read())) {
           // split chunks into line by line and handle each line of output
-          let strs = `${data}`.split('\n');
+          const strs = `${data}`.split('\n');
           for (let i = 0; i < strs.length; i++) {
-            let str = strs[i];
+            const str = strs[i];
 
             // skip empties
             if (str === '') continue;
@@ -615,7 +615,7 @@ export class MatchEngine {
         // remove the agent files if on secureMode and double check it is the temporary directory
         match.agents.forEach((agent) => {
           if (agent.options.secureMode) {
-            let tmpdir = os.tmpdir();
+            const tmpdir = os.tmpdir();
             if (agent.cwd.slice(0, tmpdir.length) === tmpdir) {
               exec(`sudo rm -rf ${agent.cwd}`);
             } else {
@@ -671,7 +671,7 @@ export class MatchEngine {
       );
     }
 
-    let parsed = [];
+    const parsed = [];
 
     for (let i = 0; i < args.length; i++) {
       switch (args[i]) {
@@ -722,7 +722,7 @@ export class MatchEngine {
   }
 }
 
-export module MatchEngine {
+export namespace MatchEngine {
   /**
    * Various policies available that describe the requirements before an agent is marked as done with sending commands
    * at some time step

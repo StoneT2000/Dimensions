@@ -50,7 +50,7 @@ export class Elimination extends Tournament {
 
   type = Tournament.Type.ELIMINATION;
 
-  private shouldStop: boolean = false;
+  private shouldStop = false;
   private resumePromise: Promise<void>;
   private resumeResolver: Function;
   private resolveStopPromise: Function;
@@ -70,7 +70,7 @@ export class Elimination extends Tournament {
     switch (tournamentConfigs.rankSystem) {
       case RankSystem.WINS:
         // set default rank system configs
-        let winsConfigs: RankSystem.WINS.Configs = {
+        const winsConfigs: RankSystem.WINS.Configs = {
           winValue: 3,
           lossValue: 0,
           tieValue: 0,
@@ -112,7 +112,7 @@ export class Elimination extends Tournament {
    * Gets the rankings of the tournament. This will return the tournament rankings in the elimination tournament
    */
   public getRankings() {
-    let ranks = Array.from(this.state.playerStats).sort(
+    const ranks = Array.from(this.state.playerStats).sort(
       (a, b) => a[1].rank - b[1].rank
     );
     return ranks.map((a) => a[1]);
@@ -173,8 +173,8 @@ export class Elimination extends Tournament {
         this.log.info('Resumed Tournament');
         this.shouldStop = false;
       }
-      let queuedMatchInfo = this.matchQueue.shift();
-      let matchHash = this.matchHashes.shift();
+      const queuedMatchInfo = this.matchQueue.shift();
+      const matchHash = this.matchHashes.shift();
       await this.handleMatch(queuedMatchInfo, matchHash);
       if (this.state.currentRound === 2) {
         break;
@@ -196,7 +196,7 @@ export class Elimination extends Tournament {
     queuedMatchInfo: Tournament.QueuedMatch,
     matchHash: string
   ) {
-    let matchInfo = await this.getMatchInfoFromQueuedMatch(queuedMatchInfo);
+    const matchInfo = await this.getMatchInfoFromQueuedMatch(queuedMatchInfo);
     if (matchInfo.length != 2) {
       throw new FatalError(
         `This shouldn't happen, tried to run a match with player count not equal to 2 in an elimination tournament`
@@ -204,12 +204,12 @@ export class Elimination extends Tournament {
     }
     // deal with case when one is a null, likely meaning a competitor has a bye
     if (matchInfo[0] == null) {
-      let winner = matchInfo[1];
+      const winner = matchInfo[1];
       // store result into with matchHash key
       this.state.resultsMap.set(matchHash, { winner: winner, loser: null });
       return;
     } else if (matchInfo[1] == null) {
-      let winner = matchInfo[0];
+      const winner = matchInfo[0];
       // store result into with matchHash key
       this.state.resultsMap.set(matchHash, { winner: winner, loser: null });
       return;
@@ -221,8 +221,8 @@ export class Elimination extends Tournament {
         return player.tournamentID.name;
       })
     );
-    let matchRes = await this.runMatch(matchInfo);
-    let res: RankSystem.WINS.Results = this.configs.resultHandler(
+    const matchRes = await this.runMatch(matchInfo);
+    const res: RankSystem.WINS.Results = this.configs.resultHandler(
       matchRes.results
     );
 
@@ -240,26 +240,26 @@ export class Elimination extends Tournament {
     }
     this.state.statistics.totalMatches++;
 
-    let rankSystemConfigs: RankSystem.WINS.Configs = this.configs
+    const rankSystemConfigs: RankSystem.WINS.Configs = this.configs
       .rankSystemConfigs;
     // maps tournament ID to scores
-    let parsedRes = {};
-    let p0ID = matchInfo[0].tournamentID.id;
-    let p1ID = matchInfo[1].tournamentID.id;
+    const parsedRes = {};
+    const p0ID = matchInfo[0].tournamentID.id;
+    const p1ID = matchInfo[1].tournamentID.id;
     parsedRes[p0ID] = 0;
     parsedRes[p1ID] = 0;
 
     // update scores based on winners, ties, and losers
     res.winners.forEach((winnerID: Agent.ID) => {
-      let tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(winnerID);
+      const tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(winnerID);
       parsedRes[tournamentID.id] += rankSystemConfigs.winValue;
     });
     res.ties.forEach((winnerID: Agent.ID) => {
-      let tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(winnerID);
+      const tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(winnerID);
       parsedRes[tournamentID.id] += rankSystemConfigs.tieValue;
     });
     res.losers.forEach((winnerID: Agent.ID) => {
-      let tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(winnerID);
+      const tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(winnerID);
       parsedRes[tournamentID.id] += rankSystemConfigs.lossValue;
     });
 
@@ -306,7 +306,7 @@ export class Elimination extends Tournament {
         }
 
         // find the leftover seeds that are not used
-        let leftOverSeeds: Set<number> = new Set();
+        const leftOverSeeds: Set<number> = new Set();
         for (let i = 0; i < this.competitors.size; i++) {
           leftOverSeeds.add(i + 1);
         }
@@ -326,8 +326,8 @@ export class Elimination extends Tournament {
 
         // setup the stats
         this.competitors.forEach((player, index) => {
-          let seed = seeding[index];
-          let playerStat = {
+          const seed = seeding[index];
+          const playerStat = {
             player: player,
             wins: 0,
             losses: 0,
@@ -339,8 +339,8 @@ export class Elimination extends Tournament {
         });
         break;
     }
-    let pow = Math.ceil(Math.log2(this.competitors.size));
-    let round = Math.pow(2, pow);
+    const pow = Math.ceil(Math.log2(this.competitors.size));
+    const round = Math.pow(2, pow);
     this.state.currentRound = round;
     // generate rounds to play
     this.generateFirstRounds();
@@ -349,14 +349,14 @@ export class Elimination extends Tournament {
 
   private generateFirstRounds() {
     // get players in order of seed
-    let round = this.state.currentRound;
-    let seededArr = Array.from(this.state.playerStats).sort(
+    const round = this.state.currentRound;
+    const seededArr = Array.from(this.state.playerStats).sort(
       (a, b) => a[1].seed - b[1].seed
     );
     // 1 goes against round, 2 goes against round - 1...
     for (let i = 0; i < round / 2; i++) {
-      let p1 = seededArr[i][1].player;
-      let oseed = round - (i + 1);
+      const p1 = seededArr[i][1].player;
+      const oseed = round - (i + 1);
       let p2: Player = null; // a null is a bye
       if (seededArr.length > oseed) {
         p2 = seededArr[oseed][1].player;
@@ -370,27 +370,27 @@ export class Elimination extends Tournament {
   }
 
   private generateRound() {
-    let oldRound = this.state.currentRound;
-    let nextRound = Math.floor(oldRound / 2);
+    const oldRound = this.state.currentRound;
+    const nextRound = Math.floor(oldRound / 2);
 
     // generate new hashes
-    let hashes: Array<Array<number>> = [];
+    const hashes: Array<Array<number>> = [];
     for (let i = 0; i < nextRound / 2; i++) {
-      let oseed = nextRound - (i + 1);
+      const oseed = nextRound - (i + 1);
       hashes.push([i + 1, oseed + 1]);
     }
     // for each hash is a new match to queue up, find the winners from the previous rounds
     for (let i = 0; i < hashes.length; i++) {
-      let hash = hashes[i];
+      const hash = hashes[i];
       // we can generate the match right before this one in the winners bracket through simple arithmetic
       // and knowing that each hash[i] represents the better seed as it is in the next round
-      let oldOpponent1 = oldRound - hash[0] + 1;
-      let res1 = this.state.resultsMap.get(`${hash[0]},${oldOpponent1}`);
-      let p1 = res1.winner;
+      const oldOpponent1 = oldRound - hash[0] + 1;
+      const res1 = this.state.resultsMap.get(`${hash[0]},${oldOpponent1}`);
+      const p1 = res1.winner;
 
-      let oldOpponent2 = oldRound - hash[1] + 1;
-      let res2 = this.state.resultsMap.get(`${hash[1]},${oldOpponent2}`);
-      let p2 = res2.winner;
+      const oldOpponent2 = oldRound - hash[1] + 1;
+      const res2 = this.state.resultsMap.get(`${hash[1]},${oldOpponent2}`);
+      const p2 = res2.winner;
       this.matchHashes.push(`${hash[0]},${hash[1]}`);
       this.matchQueue.push([p1.tournamentID.id, p2.tournamentID.id]);
     }
@@ -403,8 +403,8 @@ export class Elimination extends Tournament {
    */
   private shuffle(arr: any[]) {
     for (let i = arr.length - 1; i >= 1; i--) {
-      let j = Math.floor(Math.random() * i);
-      let tmp = arr[i];
+      const j = Math.floor(Math.random() * i);
+      const tmp = arr[i];
       arr[i] = arr[j];
       arr[j] = tmp;
     }

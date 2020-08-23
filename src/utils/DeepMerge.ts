@@ -7,10 +7,10 @@
 export const deepMerge = (
   obj1: any,
   obj2: any,
-  clobberArrays: boolean = false
+  clobberArrays = false
 ) => {
   if (obj2 == undefined || obj2 == null) return obj1;
-  let rootKeys = Object.keys(obj2);
+  const rootKeys = Object.keys(obj2);
 
   rootKeys.forEach((key: string) => {
     // if obj2 field is not an object and not an array, override obj1

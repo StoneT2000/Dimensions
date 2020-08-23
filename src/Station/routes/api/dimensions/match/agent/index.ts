@@ -32,7 +32,7 @@ export const getAgent = (req: Request, res: Response, next: NextFunction) => {
  * Picks out relevant fields of the agent
  */
 export const pickAgent = (agent: Agent) => {
-  let picked = pick(
+  const picked = pick(
     agent,
     'creationDate',
     'id',
@@ -51,7 +51,7 @@ router.use('/:agentID', getAgent);
  * Get all agents in match
  */
 router.get('/', (req: Request, res: Response) => {
-  let agentData = req.data.match.agents.map((agent) => pickAgent(agent));
+  const agentData = req.data.match.agents.map((agent) => pickAgent(agent));
   res.json({ error: null, agents: agentData });
 });
 
@@ -66,10 +66,10 @@ router.get('/:agentID', (req, res) => {
  * Get agent error logs
  */
 router.get('/:agentID/logs', async (req, res, next) => {
-  let agent = req.data.agent;
+  const agent = req.data.agent;
   if (agent.logkey) {
     if (req.data.dimension.hasStorage()) {
-      let url = await req.data.dimension.storagePlugin.getDownloadURL(
+      const url = await req.data.dimension.storagePlugin.getDownloadURL(
         agent.logkey
       );
       res.json({ error: null, url: url });

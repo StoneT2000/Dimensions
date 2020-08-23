@@ -62,7 +62,7 @@ export const getMatch = async (
  * Pick relevant fields of a match
  */
 export const pickMatch = (match: Match) => {
-  let picked = pick(
+  const picked = pick(
     match,
     'configs',
     'creationDate',
@@ -106,7 +106,7 @@ router.get('/:matchID/results', (req, res) => {
 router.get('/:matchID/replay', async (req, res, next) => {
   if (req.data.dimension.hasStorage()) {
     if (req.data.match.replayFileKey) {
-      let storage = req.data.dimension.storagePlugin;
+      const storage = req.data.dimension.storagePlugin;
       res.send({
         error: null,
         url: await storage.getDownloadURL(req.data.match.replayFileKey),

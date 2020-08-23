@@ -7,7 +7,7 @@ require('dotenv').config();
  * @param user
  */
 export function generateToken(user: Database.User) {
-  let u = {
+  const u = {
     username: user.username,
     playerID: user.playerID,
     creationDate: user.creationDate,

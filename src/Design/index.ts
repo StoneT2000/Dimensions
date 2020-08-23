@@ -40,7 +40,7 @@ export abstract class Design {
    * @param designOptions - The options for this design
    */
   constructor(
-    public name: String,
+    public name: string,
     designOptions: DeepPartial<DesignOptions> = {}
   ) {
     // Copy defaults
@@ -260,7 +260,7 @@ export const DefaultDesignOptions: DesignOptions = {
   },
 };
 
-export module Design {
+export namespace Design {
   /**
    * The override options interface
    * This is used to provide configurations for a custom {@link Design} outside the scope and infrastructure of

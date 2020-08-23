@@ -319,10 +319,10 @@ export class Dimension {
       | Array<{ file: string; name: string; botkey?: string }>,
     configs?: DeepPartial<Match.Configs>
   ): Promise<any> {
-    let match = await this.createMatch(files, configs);
+    const match = await this.createMatch(files, configs);
 
     // Get results
-    let results = await match.run();
+    const results = await match.run();
 
     // if database plugin is active and saveMatches is set to true, store match
     if (this.hasDatabase()) {
@@ -353,7 +353,7 @@ export class Dimension {
       | Array<{ file: string; name: string; existingId?: string }>,
     configs: Tournament.TournamentConfigsBase
   ): Tournament {
-    let id = Tournament.genTournamentClassID();
+    const id = Tournament.genTournamentClassID();
     let newTourney: Tournament;
     if (configs.loggingLevel === undefined) {
       // set default logging level to that of the dimension
@@ -361,7 +361,7 @@ export class Dimension {
     }
 
     // merge default match configs from dimension
-    let dimensionDefaultMatchConfigs = deepCopy(
+    const dimensionDefaultMatchConfigs = deepCopy(
       this.configs.defaultMatchConfigs
     );
     configs = deepMerge(
@@ -416,7 +416,7 @@ export class Dimension {
    */
   public async removeMatch(matchID: NanoID) {
     if (this.matches.has(matchID)) {
-      let match = this.matches.get(matchID);
+      const match = this.matches.get(matchID);
       await match.destroy();
       return this.matches.delete(matchID);
     }
@@ -488,7 +488,7 @@ export class Dimension {
       return this.cleaningUp;
     }
     this.log.info('Cleaning up');
-    let cleanUpPromises: Array<Promise<any>> = [];
+    const cleanUpPromises: Array<Promise<any>> = [];
     cleanUpPromises.push(this.cleanupMatches());
     cleanUpPromises.push(this.cleanupTournaments());
     if (this.getStation()) {
@@ -499,7 +499,7 @@ export class Dimension {
   }
 
   async cleanupMatches() {
-    let cleanUpPromises: Array<Promise<void>> = [];
+    const cleanUpPromises: Array<Promise<void>> = [];
     this.matches.forEach((match) => {
       cleanUpPromises.push(match.destroy());
     });
@@ -507,7 +507,7 @@ export class Dimension {
   }
 
   async cleanupTournaments() {
-    let cleanUpPromises: Array<Promise<void>> = [];
+    const cleanUpPromises: Array<Promise<void>> = [];
     this.tournaments.forEach((tournament) => {
       cleanUpPromises.push(tournament.destroy());
     });

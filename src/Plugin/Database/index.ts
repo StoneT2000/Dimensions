@@ -177,7 +177,7 @@ export abstract class Database extends Plugin {
   ): Promise<void>;
 }
 
-export module Database {
+export namespace Database {
   /**
    * Configuration interface for the {@link Database} plugin
    */

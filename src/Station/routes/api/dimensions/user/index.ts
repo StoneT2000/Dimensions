@@ -12,7 +12,7 @@ const router = express.Router();
  * Retrieves public user data for the user with the username userid or id userid
  */
 router.get('/:userid', storeAuth, (req, res, next) => {
-  let dimension = req.data.dimension;
+  const dimension = req.data.dimension;
   let publicView = true;
   if (req.data.user) {
     if (
@@ -33,8 +33,8 @@ router.get('/:userid', storeAuth, (req, res, next) => {
 });
 
 router.get('/', requireAuth, (req, res, next) => {
-  let dimension = req.data.dimension;
-  let publicView = false;
+  const dimension = req.data.dimension;
+  const publicView = false;
   dimension.databasePlugin
     .getUser(req.data.user.playerID, publicView)
     .then((user) => {

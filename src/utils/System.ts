@@ -18,7 +18,7 @@ export const removeFileSync = (file: string) => {
  */
 export const removeFile = (file: string) => {
   return new Promise((resolve, reject) => {
-    let p = spawn('rm', ['-f', file]);
+    const p = spawn('rm', ['-f', file]);
     p.on('error', (err) => {
       reject(err);
     });
@@ -55,7 +55,7 @@ export const removeDirectorySync = (dir: string) => {
  */
 export const removeDirectory = (dir: string) => {
   return new Promise((resolve, reject) => {
-    let p = spawn('find', [dir, '-exec', 'rm', '-rf', '{}', '+']);
+    const p = spawn('find', [dir, '-exec', 'rm', '-rf', '{}', '+']);
     p.on('error', (err) => {
       reject(err);
     });
@@ -81,7 +81,7 @@ export const dockerCopy = (
   targetPath: string
 ) => {
   return new Promise((resolve, reject) => {
-    let p = spawn('docker', [
+    const p = spawn('docker', [
       'cp',
       fileOrDirectoryPath,
       `${containerID}:${targetPath}`,
