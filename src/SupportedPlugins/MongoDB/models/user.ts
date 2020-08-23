@@ -12,7 +12,7 @@ const defaultUserSchemaOptions: MongoDB.UserSchemaOptions = {
 };
 const UserSchemaCreator = (
   options: DeepPartial<MongoDB.UserSchemaOptions> = {}
-) => {
+): mongoose.Schema<any> => {
   const schemaOptions: MongoDB.UserSchemaOptions = deepMerge(
     deepCopy(defaultUserSchemaOptions),
     options

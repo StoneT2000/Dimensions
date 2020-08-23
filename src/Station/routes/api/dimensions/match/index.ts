@@ -22,7 +22,7 @@ export const getMatch = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): Promise<void> => {
   let match: Match;
   if (req.data.tournament) {
     match = req.data.tournament.matches.get(req.params.matchID);
@@ -61,21 +61,25 @@ export const getMatch = async (
 /**
  * Pick relevant fields of a match
  */
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const pickMatch = (match: Match) => {
-  const picked = pick(
-    match,
-    'configs',
-    'creationDate',
-    'id',
-    'log',
-    'mapAgentIDtoTournamentID',
-    'matchStatus',
-    'name',
-    'finishDate',
-    'results',
-    'replayFileKey',
-    'replayFile'
-  );
+  const picked = {
+    ...pick(
+      match,
+      'configs',
+      'creationDate',
+      'id',
+      'log',
+      'mapAgentIDtoTournamentID',
+      'matchStatus',
+      'name',
+      'finishDate',
+      'results',
+      'replayFileKey',
+      'replayFile'
+    ),
+    agents: [],
+  };
   if (match.agents) {
     picked.agents = match.agents.map((agent) => pickAgent(agent));
   }
@@ -162,6 +166,7 @@ router.post(
       } else {
         // run and do nothing with the error
         // match should be in ready state
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         req.data.match.run().catch(() => {});
       }
       res.json({ error: null, msg: 'Running Match' });

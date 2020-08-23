@@ -3,7 +3,6 @@ import { Design } from '../Design';
 import {
   FatalError,
   TournamentPlayerDoesNotExistError,
-  TournamentError,
   DatabaseGetUserError,
 } from '../DimensionError';
 
@@ -15,7 +14,7 @@ import { deepCopy } from '../utils/DeepCopy';
 import { Dimension, NanoID } from '../Dimension';
 import { genID } from '../utils';
 import { nanoid } from '..';
-import { removeDirectory, removeDirectorySync } from '../utils/System';
+import { removeDirectorySync } from '../utils/System';
 import { Database } from '../Plugin/Database';
 import EventEmitter from 'events';
 
@@ -78,7 +77,7 @@ export class Player {
   /**
    * Generates a 12 character player id string
    */
-  public static generatePlayerID() {
+  public static generatePlayerID(): string {
     return genID(12);
   }
 }
@@ -119,8 +118,6 @@ export abstract class Tournament extends EventEmitter {
   /** All competitors that are anonymous competitors and not registered in database */
   public anonymousCompetitors: Map<NanoID, Player> = new Map();
 
-  private playerID = 0;
-
   /** A reference to the dimension this tournament was spawned from */
   public dimension: Dimension;
 
@@ -142,7 +139,6 @@ export abstract class Tournament extends EventEmitter {
 
   constructor(
     protected design: Design,
-    files: Array<string> | Array<{ file: string; name: string }>,
     id: NanoID,
     tournamentConfigs: Tournament.TournamentConfigsBase,
     dimension: Dimension
@@ -323,7 +319,7 @@ export abstract class Tournament extends EventEmitter {
    * Returns a new id for identifying a player in a tournament
    * Only used when adding a plyaer to a tournament is done without specifying an id to use.
    */
-  public generateNextTournamentIDString() {
+  public generateNextTournamentIDString(): string {
     return Player.generatePlayerID();
   }
 
@@ -377,7 +373,7 @@ export abstract class Tournament extends EventEmitter {
    * Disables the player with id playerID
    * @param playerID - the player's id to disable
    */
-  public async disablePlayer(playerID: nanoid) {
+  public async disablePlayer(playerID: nanoid): Promise<void> {
     const { user, playerStat } = await this.getPlayerStat(playerID);
     if (playerStat) {
       playerStat.player.disabled = true;
@@ -397,7 +393,7 @@ export abstract class Tournament extends EventEmitter {
    *
    * @param playerID - ID of the player to remove
    */
-  public async removePlayer(playerID: nanoid) {
+  public async removePlayer(playerID: nanoid): Promise<void> {
     const { user, playerStat } = await this.getPlayerStat(playerID);
     if (playerStat) {
       this.competitors.delete(playerID);
@@ -413,7 +409,8 @@ export abstract class Tournament extends EventEmitter {
     }
   }
 
-  protected async internalRemovePlayer(playerID: nanoid) {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+  protected async internalRemovePlayer(playerID: nanoid): Promise<void> {}
 
   /**
    * Set configs for this tournament
@@ -441,7 +438,6 @@ export abstract class Tournament extends EventEmitter {
 
     const matchConfigs = deepCopy(this.getConfigs().defaultMatchConfigs);
 
-    let match: Match;
     const filesAndNamesAndIDs: Array<{
       file: string;
       tournamentID: Tournament.ID;
@@ -454,7 +450,7 @@ export abstract class Tournament extends EventEmitter {
         botkey: player.botkey,
       };
     });
-    match = new Match(
+    const match = new Match(
       this.design,
       filesAndNamesAndIDs,
       matchConfigs,
@@ -499,7 +495,7 @@ export abstract class Tournament extends EventEmitter {
    */
   public async getMatchInfoFromQueuedMatch(
     queuedMatchInfo: Tournament.QueuedMatch
-  ) {
+  ): Promise<Array<Player>> {
     // Consider adding possibility to use cached player meta data to reduce db reads
     const retrievePlayerPromises: Array<Promise<Player>> = [];
     for (let i = 0; i < queuedMatchInfo.length; i++) {
@@ -516,7 +512,7 @@ export abstract class Tournament extends EventEmitter {
   /**
    * Removes a match by id. Returns true if deleted, false if nothing was deleted
    */
-  public async removeMatch(matchID: NanoID) {
+  public async removeMatch(matchID: NanoID): Promise<boolean> {
     if (this.matches.has(matchID)) {
       const match = this.matches.get(matchID);
       await match.destroy();
@@ -547,32 +543,34 @@ export abstract class Tournament extends EventEmitter {
   /**
    * Pre run function before generic destroy takes place
    */
-  protected async preInternalDestroy() {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  protected async preInternalDestroy(): Promise<void> {}
 
   /**
    * Post run function before generic destroy takes place
    */
-  protected async postInternalDestroy() {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  protected async postInternalDestroy(): Promise<void> {}
 
   /**
    * Generates a 6 character tournament ID identifying this tournament class instance. Not to be confused with
    * {@link Tournament.ID} which is the ID for competitors in the tournament
    */
-  public static genTournamentClassID() {
+  public static genTournamentClassID(): string {
     return genID(6);
   }
 
   /**
    * Returns the name of the tournament but formatted (no spaces)
    */
-  public getSafeName() {
+  public getSafeName(): string {
     return this.name.replace(/ /g, '_');
   }
 
   /**
    * Returns a key name to be used when storing a tournament by a combination of its name and id
    */
-  public getKeyName() {
+  public getKeyName(): string {
     return `${this.getSafeName()}_${this.id}`;
   }
 
@@ -624,6 +622,7 @@ import SchedulerClass = SchedulerDefault.Scheduler;
 
 export namespace Tournament {
   // Re-export tournament classes/namespaces
+  /* eslint-disable */
   export import Ladder = LadderTournament;
   export import RoundRobin = RoundRobinTournament;
   export import Elimination = EliminationTournament;
@@ -654,6 +653,8 @@ export namespace Tournament {
    * Use {@link Tournament.Status} instead.
    */
   export import TournamentStatus = _TournamentStatus;
+
+  /* eslint-enable */
 
   /**
    * Required and Optional Tournament configurations

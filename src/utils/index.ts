@@ -1,20 +1,21 @@
-import { DeepPartial } from './DeepPartial';
 import { customAlphabet } from 'nanoid';
 import { NanoID } from '../Dimension';
-import { deepCopy } from './DeepCopy';
 
 /**
  * Pick stuff
  * @param obj - object to pick out from
  * @param params - fields to pick out
  */
-export const pick = <T>(obj: T, ...params: Array<keyof T>): DeepPartial<T> => {
+export const pick = <T, K extends keyof T>(
+  obj: T,
+  ...params: Array<K>
+): Pick<T, K> => {
   const picked: any = {};
   params.forEach((key) => {
     picked[key] = obj[key];
   });
 
-  return <DeepPartial<T>>picked;
+  return picked;
 };
 
 const ALPHA_NUM_STRING =
@@ -30,14 +31,14 @@ for (let i = 4; i <= 22; i++) {
  * Generate unique IDs using nanoid
  * @param n - length of id
  */
-export const genID = (n: number) => {
+export const genID = (n: number): NanoID => {
   return idGenFunctionMap.get(n)();
 };
 
 export const stripFunctions = <T extends { [x in string]: any }>(
   object: T
 ): T => {
-  const seen = new Set<Object>();
+  const seen = new Set<any>();
   const helper = (object: T): T => {
     for (const key in object) {
       if (!seen.has(key)) {
@@ -61,7 +62,7 @@ export const stripFunctions = <T extends { [x in string]: any }>(
 };
 
 export const stripNull = <T extends { [x in string]: any }>(object: T): T => {
-  const seen = new Set<Object>();
+  const seen = new Set<any>();
   const helper = (object: T): T => {
     for (const key in object) {
       if (!seen.has(key)) {
@@ -82,7 +83,7 @@ export const stripNull = <T extends { [x in string]: any }>(object: T): T => {
  * Async function that resolves after `ms` milliseconds
  * @param ms - number of milliseconds to sleep for
  */
-export const sleep = async (ms: number) => {
+export const sleep = async (ms: number): Promise<void> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve();

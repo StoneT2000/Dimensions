@@ -27,6 +27,7 @@ export function deepCopy<T>(obj: T): T {
   if (obj instanceof Object) {
     copy = {};
     for (const attr in obj) {
+      //eslint-disable-next-line no-prototype-builtins
       if (obj.hasOwnProperty(attr)) copy[attr] = deepCopy(obj[attr]);
     }
     return copy;

@@ -73,6 +73,7 @@ export abstract class Database extends Plugin {
   abstract registerUser(
     username: string,
     password: string,
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     userData?: any
   ): Promise<any>;
 

@@ -62,13 +62,13 @@ export class Elimination extends Tournament {
     id: NanoID,
     dimension: Dimension
   ) {
-    super(design, files, id, tournamentConfigs, dimension);
+    super(design, id, tournamentConfigs, dimension);
     if (tournamentConfigs.consoleDisplay) {
       this.configs.consoleDisplay = tournamentConfigs.consoleDisplay;
     }
     this.configs = deepMerge(this.configs, tournamentConfigs, true);
     switch (tournamentConfigs.rankSystem) {
-      case RankSystem.WINS:
+      case RankSystem.WINS: {
         // set default rank system configs
         const winsConfigs: RankSystem.WINS.Configs = {
           winValue: 3,
@@ -80,6 +80,7 @@ export class Elimination extends Tournament {
           this.configs.rankSystemConfigs = winsConfigs;
         }
         break;
+      }
       default:
         throw new NotSupportedError(
           'We currently do not support this rank system for ladder tournaments'
@@ -104,14 +105,21 @@ export class Elimination extends Tournament {
    */
   public setConfigs(
     configs: DeepPartial<Tournament.TournamentConfigs<EliminationConfigs>> = {}
-  ) {
+  ): void {
     this.configs = deepMerge(this.configs, configs, true);
   }
 
   /**
    * Gets the rankings of the tournament. This will return the tournament rankings in the elimination tournament
    */
-  public getRankings() {
+  public getRankings(): Array<{
+    player: Player;
+    wins: number;
+    losses: number;
+    matchesPlayed: number;
+    seed: number;
+    rank: number;
+  }> {
     const ranks = Array.from(this.state.playerStats).sort(
       (a, b) => a[1].rank - b[1].rank
     );
@@ -156,7 +164,7 @@ export class Elimination extends Tournament {
    */
   public async run(
     configs?: DeepPartial<Tournament.TournamentConfigs<EliminationConfigs>>
-  ) {
+  ): Promise<Elimination.State> {
     this.configs = deepMerge(this.configs, configs, true);
     this.initialize();
 
@@ -251,27 +259,36 @@ export class Elimination extends Tournament {
 
     // update scores based on winners, ties, and losers
     res.winners.forEach((winnerID: Agent.ID) => {
-      const tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(winnerID);
+      const tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(
+        winnerID
+      );
       parsedRes[tournamentID.id] += rankSystemConfigs.winValue;
     });
     res.ties.forEach((winnerID: Agent.ID) => {
-      const tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(winnerID);
+      const tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(
+        winnerID
+      );
       parsedRes[tournamentID.id] += rankSystemConfigs.tieValue;
     });
     res.losers.forEach((winnerID: Agent.ID) => {
-      const tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(winnerID);
+      const tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(
+        winnerID
+      );
       parsedRes[tournamentID.id] += rankSystemConfigs.lossValue;
     });
 
     // using scores, determine winner
     let winner = this.state.playerStats.get(p0ID);
     let loser = this.state.playerStats.get(p1ID);
-    if (parsedRes[p0ID] > parsedRes[p1ID]) {
-    } else if (parsedRes[p0ID] < parsedRes[p1ID]) {
+    if (parsedRes[p0ID] < parsedRes[p1ID]) {
       winner = this.state.playerStats.get(p1ID);
       loser = this.state.playerStats.get(p0ID);
-    } else {
+    } else if (parsedRes[p0ID] === parsedRes[p1ID]) {
       // TODO: randomly decide who gets to win because score was tied
+      if (Math.random() > 0.5) {
+        winner = this.state.playerStats.get(p1ID);
+        loser = this.state.playerStats.get(p0ID);
+      }
     }
 
     // update stats
@@ -292,7 +309,7 @@ export class Elimination extends Tournament {
     this.state.playerStats = new Map();
     this.state.results = [];
     switch (this.configs.rankSystem) {
-      case RankSystem.WINS:
+      case RankSystem.WINS: {
         // set up the seeding array and fill it up with null to fill up all empty spots
         let seeding = this.configs.tournamentConfigs.seeding;
         if (seeding == null) seeding = [];
@@ -338,6 +355,7 @@ export class Elimination extends Tournament {
           this.state.playerStats.set(player.tournamentID.id, playerStat);
         });
         break;
+      }
     }
     const pow = Math.ceil(Math.log2(this.competitors.size));
     const round = Math.pow(2, pow);
@@ -411,7 +429,7 @@ export class Elimination extends Tournament {
     return arr;
   }
 
-  async internalAddPlayer(player: Player) {
+  async internalAddPlayer(): Promise<void> {
     if (
       this.status === Tournament.Status.INITIALIZED ||
       this.status === Tournament.Status.RUNNING
@@ -420,7 +438,7 @@ export class Elimination extends Tournament {
         'You are not allowed to add a player during the middle or after initialization of elimination tournaments'
       );
   }
-  async updatePlayer(player: Player, oldname: string, oldfile: string) {
+  async updatePlayer(): Promise<void> {
     throw new TournamentError(
       'You are not allowed to update a player during elimination tournaments'
     );

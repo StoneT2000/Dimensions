@@ -7,16 +7,14 @@ import {
   TournamentError,
   NotSupportedError,
   TournamentPlayerDoesNotExistError,
-  AgentFileError,
   AgentCompileError,
   AgentInstallError,
 } from '../../DimensionError';
 import { Agent } from '../../Agent';
-import { Rating, rate, quality, TrueSkill } from 'ts-trueskill';
+import { Rating, rate } from 'ts-trueskill';
 import { sprintf } from 'sprintf-js';
 import { Logger } from '../../Logger';
 import { ELOSystem, ELORating } from '../ELO';
-import { Match } from '../../Match';
 import { Dimension, NanoID } from '../../Dimension';
 import { Database } from '../../Plugin/Database';
 import { TournamentStatus } from '../TournamentStatus';
@@ -105,7 +103,7 @@ export class Ladder extends Tournament {
     id: NanoID,
     dimension: Dimension
   ) {
-    super(design, files, id, tournamentConfigs, dimension);
+    super(design, id, tournamentConfigs, dimension);
     this.configs = deepMerge(this.configs, tournamentConfigs, true);
 
     switch (this.configs.rankSystem) {
@@ -259,7 +257,7 @@ export class Ladder extends Tournament {
   /**
    * Set tournament status and updates DB / propagates the message to every other tournament instance
    */
-  public async setStatus(status: Tournament.Status) {
+  public async setStatus(status: Tournament.Status): Promise<void> {
     if (
       this.dimension.hasDatabase() &&
       this.configs.tournamentConfigs.syncConfigs
@@ -280,7 +278,7 @@ export class Ladder extends Tournament {
    */
   public async setConfigs(
     configs: DeepPartial<Tournament.TournamentConfigs<LadderConfigs>> = {}
-  ) {
+  ): Promise<void> {
     if (configs.id) {
       throw new TournamentError(
         'You cannot change the tournament ID after constructing the tournament'
@@ -430,7 +428,7 @@ export class Ladder extends Tournament {
   /**
    * Resets rankings of all competitors loaded to initial scores
    */
-  public async resetRankings() {
+  public async resetRankings(): Promise<void> {
     // TODO: Some instances of tournament might still be running once this one is stopped, and reset won't work
     // correctly
     if (this.status == TournamentStatus.RUNNING) {
@@ -460,7 +458,7 @@ export class Ladder extends Tournament {
     playerStatsList.forEach((stats, i) => {
       const resetPlayer = async () => {
         switch (this.configs.rankSystem) {
-          case RankSystem.TRUESKILL:
+          case RankSystem.TRUESKILL: {
             stats.matchesPlayed = 0;
             const trueskillConfigs: RankSystem.TRUESKILL.Configs = this.configs
               .rankSystemConfigs;
@@ -475,7 +473,8 @@ export class Ladder extends Tournament {
               await this.updateDatabaseTrueskillPlayerStats(stats, userList[i]);
             }
             break;
-          case RankSystem.ELO:
+          }
+          case RankSystem.ELO: {
             stats.matchesPlayed = 0;
             stats.rankState = {
               rating: this.elo.createRating(),
@@ -484,6 +483,7 @@ export class Ladder extends Tournament {
               await this.updateDatabaseELOPlayerStats(stats, userList[i]);
             }
             break;
+          }
         }
       };
       updatePromises.push(resetPlayer());
@@ -493,15 +493,15 @@ export class Ladder extends Tournament {
 
   /**
    * Stops the tournament if it was running.
-   * @param master - whether or not the instance calling stop was the first one, the "master" instance
+   * @param primary - whether or not the instance calling stop was the first one, the "primary" instance
    */
-  public async stop(master = false) {
+  public async stop(primary = false): Promise<void> {
     if (this.status !== TournamentStatus.RUNNING) {
       throw new TournamentError(`Can't stop a tournament that isn't running`);
     }
     this.log.info('Stopping Tournament...');
     clearInterval(this.runInterval);
-    if (master) {
+    if (primary) {
       await this.setStatus(TournamentStatus.STOPPED);
     } else {
       this.status = TournamentStatus.STOPPED;
@@ -510,14 +510,14 @@ export class Ladder extends Tournament {
 
   /**
    * Resumes the tournament if it was stopped.
-   * @param master - whether or not the instance calling stop was the first one, the "master" instance
+   * @param primary - whether or not the instance calling stop was the first one, the "primary" instance
    */
-  public async resume(master = false) {
+  public async resume(primary = false): Promise<void> {
     if (this.status !== TournamentStatus.STOPPED) {
       throw new TournamentError(`Can't resume a tournament that isn't stopped`);
     }
     this.log.info('Resuming Tournament...');
-    if (master) {
+    if (primary) {
       await this.setStatus(TournamentStatus.RUNNING);
     } else {
       this.status = TournamentStatus.RUNNING;
@@ -536,7 +536,7 @@ export class Ladder extends Tournament {
   public async run(
     configs?: DeepPartial<Tournament.TournamentConfigs<LadderConfigs>>,
     master = false
-  ) {
+  ): Promise<void> {
     this.log.info('Running Tournament');
     this.configs = deepMerge(this.configs, configs, true);
     await this.initialize();
@@ -861,7 +861,7 @@ export class Ladder extends Tournament {
    *
    * Does not read in any DB players
    */
-  async initialize() {
+  async initialize(): Promise<void> {
     // wait for all players to add in.
     await Promise.all(this.initialAddPlayerPromises);
 
@@ -902,14 +902,14 @@ export class Ladder extends Tournament {
   }
 
   /** Schedule a match using match info */
-  public scheduleMatches(...matchInfos: Array<Tournament.QueuedMatch>) {
+  public scheduleMatches(...matchInfos: Array<Tournament.QueuedMatch>): void {
     this.matchQueue.push(...matchInfos);
     // kick off the runner to process any matches
     this.tourneyRunner();
   }
 
   // called adding a new player
-  async internalAddPlayer(player: Player) {
+  async internalAddPlayer(player: Player): Promise<void> {
     switch (this.configs.rankSystem) {
       case RankSystem.TRUESKILL:
         await this.initializeTrueskillPlayerStats(player);
@@ -921,8 +921,10 @@ export class Ladder extends Tournament {
   }
 
   // should be called only for DB users
-  async updatePlayer(player: Player, oldname: string, oldfile: string) {
-    const { user, playerStat } = await this.getPlayerStat(player.tournamentID.id);
+  async updatePlayer(player: Player): Promise<void> {
+    const { user, playerStat } = await this.getPlayerStat(
+      player.tournamentID.id
+    );
     const playerStats = <Ladder.PlayerStat>playerStat;
     playerStats.player = player;
     playerStats.matchesPlayed = 0;
@@ -970,7 +972,7 @@ export class Ladder extends Tournament {
    * Removes player from tournament. Removes from state and stats from database
    * @param playerID
    */
-  async internalRemovePlayer(playerID: nanoid) {
+  async internalRemovePlayer(playerID: nanoid): Promise<void> {
     // TODO: we sometimes do a redudant call to get player stats when we really just need to check for existence
     const { user, playerStat } = await this.getPlayerStat(playerID);
     if (playerStat) {
@@ -1140,8 +1142,7 @@ export class Ladder extends Tournament {
         return player.tournamentID.name;
       })
     );
-    let matchRes: { results: any; match: Match; err?: any };
-    matchRes = await this.runMatch(matchInfo);
+    const matchRes = await this.runMatch(matchInfo);
     if (matchRes.err) {
       if (matchRes.err instanceof AgentCompileError) {
         const tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(
@@ -1388,7 +1389,7 @@ export class Ladder extends Tournament {
     this.emit(Tournament.Events.MATCH_HANDLED);
   }
 
-  protected async preInternalDestroy() {
+  protected async preInternalDestroy(): Promise<void> {
     if (this.runInterval) clearInterval(this.runInterval);
     if (this.configSyncInterval) clearInterval(this.configSyncInterval);
   }

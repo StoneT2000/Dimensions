@@ -15,6 +15,7 @@ import { deepMerge } from '../../utils/DeepMerge';
 import { deepCopy } from '../../utils/DeepCopy';
 import { stripFunctions } from '../../utils';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 const salt = bcrypt.genSaltSync();
 
@@ -32,7 +33,7 @@ export class GCloudDataStore extends Database {
     this.datastore = new Datastore({ keyFile: gcpConfigs.keyFile });
   }
 
-  public async initialize(dimension: Dimension) {
+  public async initialize(): Promise<void> {
     const existingUser = await this.getUser('admin');
 
     if (!existingUser) {
@@ -51,7 +52,7 @@ export class GCloudDataStore extends Database {
       data: data,
     });
   }
-  public async getMatch(id: NanoID) {
+  public async getMatch(id: NanoID): Promise<any> {
     const key = this.getMatchDatastoreKey(id);
     return (await this.datastore.get(key))[0];
   }
@@ -69,15 +70,17 @@ export class GCloudDataStore extends Database {
       .filter('governID', '=', governID)
       .offset(offset)
       .limit(limit)
-      .order('creationDate', { descending: true });
+      .order('creationDate', { descending: order === -1 });
     return (await this.datastore.runQuery(query))[0];
   }
 
   // TODO: Use offset and limit in future
   public async getRanks(
     tournament: Tournament.Ladder,
+    /* eslint-disable */
     offset: number,
     limit: number
+    /* eslint-enable */
   ): Promise<Array<Ladder.PlayerStat>> {
     const keyname = tournament.getKeyName();
     const query = this.datastore
@@ -117,8 +120,9 @@ export class GCloudDataStore extends Database {
   public async registerUser(
     username: string,
     password: string,
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     userData?: any
-  ) {
+  ): Promise<void> {
     const hash = bcrypt.hashSync(password, salt);
     const playerID = Player.generatePlayerID();
     // const key = this.getUserDatastoreKey(username);
@@ -172,7 +176,10 @@ export class GCloudDataStore extends Database {
    * Gets user information. If public is false, will retrieve all information other than password
    * @param usernameOrID
    */
-  public async getUser(usernameOrID: string, publicView = true) {
+  public async getUser(
+    usernameOrID: string,
+    publicView = true
+  ): Promise<Database.User> {
     let user: Database.User | undefined;
 
     // query by playerID first, then by username
@@ -191,7 +198,7 @@ export class GCloudDataStore extends Database {
     return user;
   }
 
-  public async loginUser(username: string, password: string) {
+  public async loginUser(username: string, password: string): Promise<string> {
     const userKey = this.getUserDatastoreKey(username);
     const user = (await this.datastore.get(userKey))[0];
     if (user) {
@@ -208,7 +215,7 @@ export class GCloudDataStore extends Database {
   public async updateUser(
     usernameOrID: string,
     update: Partial<Database.User>
-  ) {
+  ): Promise<void> {
     let user = await this.getUser(usernameOrID);
     const userKey = this.getUserDatastoreKey(user.username);
     user = deepMerge(user, update);
@@ -218,7 +225,7 @@ export class GCloudDataStore extends Database {
     });
   }
 
-  public async deleteUser(usernameOrID: string) {
+  public async deleteUser(usernameOrID: string): Promise<void> {
     const user = await this.getUser(usernameOrID);
     const userKey = this.getUserDatastoreKey(user.username);
     await this.datastore.delete({
@@ -226,11 +233,11 @@ export class GCloudDataStore extends Database {
     });
   }
 
-  public async verifyToken(jwt: string) {
+  public async verifyToken(jwt: string): Promise<any> {
     return verify(jwt);
   }
 
-  public isAdmin(user: Database.PublicUser) {
+  public isAdmin(user: Database.PublicUser): boolean {
     if (user.username === 'admin') return true;
     return false;
   }
@@ -239,7 +246,7 @@ export class GCloudDataStore extends Database {
     tournamentKey: string,
     offset = 0,
     limit = -1
-  ) {
+  ): Promise<Array<Database.User>> {
     const key = `statistics.${tournamentKey}`;
     if (limit == -1) {
       limit = 0;
@@ -248,11 +255,12 @@ export class GCloudDataStore extends Database {
     }
     const q = this.datastore
       .createQuery(GCloudDataStore.Kinds.USERS)
-      .filter(`${key}.matchesPlayed`, '>=', 0);
+      .filter(`${key}.matchesPlayed`, '>=', 0)
+      .offset(offset);
     return (await this.datastore.runQuery(q))[0];
   }
 
-  public async manipulate(dimension: Dimension) {
+  public async manipulate(dimension: Dimension): Promise<void> {
     dimension.configs.backingDatabase = this.name;
     return;
   }
@@ -261,9 +269,9 @@ export class GCloudDataStore extends Database {
     tournamentID: NanoID,
     tournamentConfigs: Tournament.TournamentConfigsBase,
     status: Tournament.Status
-  ) {
+  ): Promise<void> {
     const key = this.getTournamentConfigsDatastoreKey(tournamentID);
-    this.datastore.upsert({
+    await this.datastore.upsert({
       key: key,
       data: {
         configs: stripFunctions(deepCopy(tournamentConfigs)),
@@ -274,7 +282,9 @@ export class GCloudDataStore extends Database {
     });
   }
 
-  public async getTournamentConfigsModificationDate(tournamentID: NanoID) {
+  public async getTournamentConfigsModificationDate(
+    tournamentID: NanoID
+  ): Promise<Date> {
     const key = this.getTournamentConfigsDatastoreKey(tournamentID);
     const data = (await this.datastore.get(key))[0];
     if (data) {
@@ -282,7 +292,12 @@ export class GCloudDataStore extends Database {
     }
     return null;
   }
-  public async getTournamentConfigs(tournamentID: NanoID) {
+  public async getTournamentConfigs(
+    tournamentID: NanoID
+  ): Promise<{
+    configs: Tournament.TournamentConfigsBase;
+    status: Tournament.Status;
+  }> {
     const key = this.getTournamentConfigsDatastoreKey(tournamentID);
     const data = (await this.datastore.get(key))[0];
     if (data) {

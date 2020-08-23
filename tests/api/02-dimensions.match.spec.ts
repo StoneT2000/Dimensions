@@ -19,12 +19,12 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
   let origin = 'http://localhost:';
   let endpoint = '';
   let dimension: Dimension.DimensionType;
-  let botList = [
+  const botList = [
     './tests/kits/js/normal/rock.js',
     './tests/kits/js/normal/paper.js',
   ];
   before(() => {
-    let rpsDesign = new RockPaperScissorsDesign('RPS');
+    const rpsDesign = new RockPaperScissorsDesign('RPS');
     dimension = Dimension.create(rpsDesign, {
       activateStation: true,
       observe: true,
@@ -39,18 +39,18 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
   });
 
   it(`GET ${base}/match - should return all matches`, async () => {
-    let match1 = await dimension.createMatch(botList);
-    let match2 = await dimension.createMatch(botList);
+    const match1 = await dimension.createMatch(botList);
+    const match2 = await dimension.createMatch(botList);
     const res = await chai.request(endpoint).get(`/match`);
-    let matches = [match1, match2];
+    const matches = [match1, match2];
     expect(res.status).to.equal(200);
-    for (let match of matches) {
+    for (const match of matches) {
       verifyMatchWithResponse(match, res.body.matches[match.id]);
     }
   });
 
   it(`GET ${base}/match/:matchID - should return match with id matchID`, async () => {
-    let match = await dimension.createMatch(botList);
+    const match = await dimension.createMatch(botList);
     const res = await chai.request(endpoint).get(`/match/${match.id}`);
     expect(res.status).to.equal(200);
     verifyMatchWithResponse(match, res.body.match);
@@ -69,7 +69,7 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
   });
 
   it(`GET ${base}/match/:matchID/results - should return match results for match with id matchID`, async () => {
-    let match = await dimension.createMatch(botList);
+    const match = await dimension.createMatch(botList);
     await match.run();
     const res = await chai.request(endpoint).get(`/match/${match.id}/results`);
     expect(res.status).to.equal(200);
@@ -77,7 +77,7 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
   });
 
   it(`GET ${base}/match/:matchID/state - should return match state for match with id matchID`, async () => {
-    let match = await dimension.createMatch(botList);
+    const match = await dimension.createMatch(botList);
     await match.run();
     const res = await chai.request(endpoint).get(`/match/${match.id}/state`);
     expect(res.status).to.equal(200);
@@ -85,7 +85,7 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
   });
 
   it(`POST ${base}/match/:matchID/run - should run/resume match with id matchID if match is ready or stopped`, async () => {
-    let match = await dimension.createMatch(botList, {
+    const match = await dimension.createMatch(botList, {
       bestOf: 101,
     });
     expect(match.matchStatus).to.equal(Match.Status.READY);
@@ -101,7 +101,7 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
   });
 
   it(`POST ${base}/match/:matchID/run - should run/resume match with id matchID if match is finished`, async () => {
-    let match = await dimension.createMatch(botList, {
+    const match = await dimension.createMatch(botList, {
       bestOf: 91,
     });
     try {
@@ -116,7 +116,7 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
   });
 
   it(`POST ${base}/match/:matchID/run - should return 400, match already running, if match already running`, async () => {
-    let match = await dimension.createMatch(botList, {
+    const match = await dimension.createMatch(botList, {
       bestOf: 101,
     });
 
@@ -134,16 +134,16 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
   });
 
   it(`POST ${base}/match/:matchID/stop - should stop match with id matchID`, async () => {
-    let match = await dimension.createMatch(botList, {
+    const match = await dimension.createMatch(botList, {
       bestOf: 9,
     });
     match.run().catch(() => {});
-    let res = await chai.request(endpoint).post(`/match/${match.id}/stop`);
+    const res = await chai.request(endpoint).post(`/match/${match.id}/stop`);
     expect(res.status).to.equal(200);
   });
 
   it(`POST ${base}/match/:matchID/stop - should return 400, match can't be stopped while in uninitialized, ready, stopped, or finished conditions`, async () => {
-    let match = await dimension.createMatch(botList, {
+    const match = await dimension.createMatch(botList, {
       bestOf: 101,
     });
 
@@ -168,7 +168,7 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
         status: 400,
       },
     });
-    let runPromise = match.run().catch(() => {});
+    const runPromise = match.run().catch(() => {});
     await match.stop();
     expect(match.matchStatus).to.equal(Match.Status.STOPPED);
     res = await chai.request(endpoint).post(`/match/${match.id}/stop`);

@@ -17,6 +17,7 @@ import { Ladder } from '../../Tournament/Ladder';
 import { TournamentError } from '../../DimensionError';
 import TournamentConfigSchema from './models/tournamentConfig';
 import { TournamentStatus } from '../../Tournament/TournamentStatus';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 const salt = bcrypt.genSaltSync();
 
@@ -65,7 +66,7 @@ export class MongoDB extends Database {
     return this.db;
   }
 
-  public async initialize(dimension: Dimension) {
+  public async initialize(): Promise<void> {
     await this.connect();
     // create admin user
     const existingUser = await this.getUser('admin');
@@ -81,7 +82,7 @@ export class MongoDB extends Database {
     // store all relevant data
     return this.models.match.create(data);
   }
-  public async getMatch(id: NanoID) {
+  public async getMatch(id: NanoID): Promise<any> {
     return this.models.match.findOne({ id: id });
   }
 
@@ -124,7 +125,7 @@ export class MongoDB extends Database {
   ): Promise<Array<Ladder.PlayerStat>> {
     const keyname = tournament.getKeyName();
     if (tournament.configs.rankSystem === Tournament.RANK_SYSTEM.TRUESKILL) {
-      const agg: Array<Object> = [
+      const agg: Array<object> = [
         {
           // select all users with stats in this tournament, implying they are still in the tourney
           $match: {
@@ -172,7 +173,7 @@ export class MongoDB extends Database {
         return data.statistics[keyname];
       });
     } else if (tournament.configs.rankSystem === Tournament.RANK_SYSTEM.ELO) {
-      const agg: Array<Object> = [
+      const agg: Array<object> = [
         {
           // select all users with stats in this tournament, implying they are still in the tourney
           $match: {
@@ -219,8 +220,9 @@ export class MongoDB extends Database {
   public async registerUser(
     username: string,
     password: string,
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     userData?: any
-  ) {
+  ): Promise<any> {
     const hash = bcrypt.hashSync(password, salt);
     return this.models.user.create({
       username: username,
@@ -236,7 +238,10 @@ export class MongoDB extends Database {
    * Gets user information. If public is false, will retrieve all information other than password
    * @param usernameOrID
    */
-  public async getUser(usernameOrID: string, publicView = true) {
+  public async getUser(
+    usernameOrID: string,
+    publicView = true
+  ): Promise<Database.User> {
     return this.models.user
       .findOne({
         $or: [{ username: usernameOrID }, { playerID: usernameOrID }],
@@ -263,7 +268,7 @@ export class MongoDB extends Database {
       });
   }
 
-  public async loginUser(username: string, password: string) {
+  public async loginUser(username: string, password: string): Promise<string> {
     return this.models.user
       .findOne({ username: username })
       .then((user: mongoose.Document & Database.User) => {
@@ -282,7 +287,7 @@ export class MongoDB extends Database {
   public async updateUser(
     usernameOrID: string,
     update: Partial<Database.User>
-  ) {
+  ): Promise<Database.User> {
     return this.models.user
       .findOneAndUpdate(
         { $or: [{ username: usernameOrID }, { playerID: usernameOrID }] },
@@ -297,7 +302,7 @@ export class MongoDB extends Database {
       });
   }
 
-  public async deleteUser(usernameOrID: string) {
+  public async deleteUser(usernameOrID: string): Promise<void> {
     return this.models.user
       .findOneAndDelete({
         $or: [{ username: usernameOrID }, { playerID: usernameOrID }],
@@ -309,11 +314,11 @@ export class MongoDB extends Database {
       });
   }
 
-  public async verifyToken(jwt: string) {
+  public async verifyToken(jwt: string): Promise<string> {
     return verify(jwt);
   }
 
-  public isAdmin(user: Database.PublicUser) {
+  public isAdmin(user: Database.PublicUser): boolean {
     if (user.username === 'admin') return true;
     return false;
   }
@@ -322,7 +327,7 @@ export class MongoDB extends Database {
     tournamentKey: string,
     offset = 0,
     limit = -1
-  ) {
+  ): Promise<Array<Database.User>> {
     const key = `statistics.${tournamentKey}`;
     if (limit == -1) {
       limit = 0;
@@ -339,7 +344,7 @@ export class MongoDB extends Database {
       });
   }
 
-  public async manipulate(dimension: Dimension) {
+  public async manipulate(dimension: Dimension): Promise<void> {
     dimension.configs.backingDatabase = DatabaseType.MONGO;
     return;
   }
@@ -348,7 +353,7 @@ export class MongoDB extends Database {
     tournamentID: nanoid,
     tournamentConfigs: Tournament.TournamentConfigsBase,
     status: TournamentStatus
-  ) {
+  ): Promise<void> {
     return this.models.tournamentConfigs.updateOne(
       { id: tournamentID },
       {
@@ -361,7 +366,9 @@ export class MongoDB extends Database {
     );
   }
 
-  public async getTournamentConfigsModificationDate(tournamentID: nanoid) {
+  public async getTournamentConfigsModificationDate(
+    tournamentID: nanoid
+  ): Promise<Date> {
     return this.models.tournamentConfigs
       .findOne({ id: tournamentID })
       .select({ modificationDate: 1 })
@@ -373,7 +380,12 @@ export class MongoDB extends Database {
         }
       });
   }
-  public async getTournamentConfigs(tournamentID: nanoid) {
+  public async getTournamentConfigs(
+    tournamentID: nanoid
+  ): Promise<{
+    configs: Tournament.TournamentConfigsBase;
+    status: Tournament.Status;
+  }> {
     return this.models.tournamentConfigs
       .findOne({ id: tournamentID })
       .then((data) => {
@@ -407,8 +419,8 @@ export namespace MongoDB {
   }
 
   export interface Models {
-    user: mongoose.Model<mongoose.Document, {}>;
-    match: mongoose.Model<mongoose.Document, {}>;
-    tournamentConfigs: mongoose.Model<mongoose.Document, {}>;
+    user: mongoose.Model<mongoose.Document, object>;
+    match: mongoose.Model<mongoose.Document, object>;
+    tournamentConfigs: mongoose.Model<mongoose.Document, object>;
   }
 }

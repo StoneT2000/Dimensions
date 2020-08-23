@@ -3,29 +3,27 @@ import { FatalError } from '../../DimensionError';
 export class ELOSystem {
   constructor(public kfactor: number, public startingScore: number) {}
 
-  createRating(startingScore: number = this.startingScore) {
+  createRating(startingScore: number = this.startingScore): ELORating {
     return new ELORating(startingScore);
   }
 
-  expectedScores1v1(p1: ELORating, p2: ELORating) {
+  expectedScores1v1(p1: ELORating, p2: ELORating): Array<number> {
     const Q_1 = Math.pow(10, p1.score / 400);
     const Q_2 = Math.pow(10, p2.score / 400);
     const E_1 = Q_1 / (Q_1 + Q_2); // expected for player 1
     const E_2 = Q_2 / (Q_1 + Q_2); // expected for player 2
     return [E_1, E_2];
   }
-  rate1v1(p1: ELORating, p2: ELORating, scores: Array<number>) {
+  rate1v1(p1: ELORating, p2: ELORating, scores: Array<number>): void {
     const [E_1, E_2] = this.expectedScores1v1(p1, p2);
     // actual should be two length array with the scores of each player
     p1.score = Math.round(p1.score + this.kfactor * (scores[0] - E_1));
-    p2.score = Math.round(p2.score + this.kfactor * (scores[1] - E_1));
+    p2.score = Math.round(p2.score + this.kfactor * (scores[1] - E_2));
   }
-  rate(ratings: Array<ELORating>, ranks: Array<number>) {
+  rate(ratings: Array<ELORating>, ranks: Array<number>): void {
     if (ranks.length != ratings.length)
       throw new FatalError('Ratings and ranks lengths do not match!');
     const expectedMatrix = []; // element at i, j is expected score of player i against j.
-
-    const scoreDeltas = new Array(ratings.length); // stores the change in scores
 
     const actualScores = []; // store the actual scores against all other players based on ranks argument
 

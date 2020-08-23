@@ -24,7 +24,7 @@ export class GCloudStorage extends DStorage {
   /**
    * Initializer. Initializes the storage object and creates necessary buckets
    */
-  async initialize(dimension: Dimension) {
+  async initialize(dimension: Dimension): Promise<void> {
     const bucketName =
       dimension.name.toLowerCase().replace(/ /g, '_') +
       '_' +
@@ -44,7 +44,7 @@ export class GCloudStorage extends DStorage {
     file: string,
     user: Database.User,
     tournament: Tournament
-  ) {
+  ): Promise<string> {
     const dest = `users/${user.username}_${
       user.playerID
     }/tournaments/${tournament.getKeyName()}/bot.zip`;
@@ -57,7 +57,7 @@ export class GCloudStorage extends DStorage {
       });
   }
 
-  async upload(file: string, destination?: string) {
+  async upload(file: string, destination?: string): Promise<string> {
     const dest = `${destination ? destination : path.basename(file)}`;
     return this.dimensionBucket
       .upload(file, {
@@ -68,7 +68,11 @@ export class GCloudStorage extends DStorage {
       });
   }
 
-  async uploadUserFile(file: string, userID: nanoid, destination?: string) {
+  async uploadUserFile(
+    file: string,
+    userID: nanoid,
+    destination?: string
+  ): Promise<string> {
     const dest = `users/${userID}/${
       destination ? destination : path.basename(file)
     }`;
@@ -81,10 +85,12 @@ export class GCloudStorage extends DStorage {
       });
   }
 
-  async download(key: string, destination: string) {
-    return new Promise((resolve, reject) => {
+  async download(key: string, destination: string): Promise<string> {
+    return new Promise((resolve) => {
       const file = this.dimensionBucket.file(key);
-      const ws = file.createReadStream().pipe(fs.createWriteStream(destination));
+      const ws = file
+        .createReadStream()
+        .pipe(fs.createWriteStream(destination));
       ws.on('close', () => {
         resolve();
       });
@@ -95,7 +101,7 @@ export class GCloudStorage extends DStorage {
    * Returns a download URL to use to download an object
    * @param key - key referencing the object to download
    */
-  async getDownloadURL(key: string) {
+  async getDownloadURL(key: string): Promise<string> {
     const options: GetSignedUrlConfig = {
       version: 'v4',
       action: 'read',
@@ -109,7 +115,7 @@ export class GCloudStorage extends DStorage {
       });
   }
 
-  public async manipulate(dimension: Dimension) {
+  public async manipulate(dimension: Dimension): Promise<void> {
     dimension.configs.backingDatabase = StorageType.GCLOUD;
     return;
   }

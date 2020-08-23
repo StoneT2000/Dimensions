@@ -1,9 +1,7 @@
 /**
  * API for dimension's matches
  */
-import express, { Request, Response, NextFunction } from 'express';
-import * as error from '../../../../error';
-import { requiresDatabase } from '..';
+import express from 'express';
 import { requireAuth, storeAuth } from '../auth';
 const router = express.Router();
 

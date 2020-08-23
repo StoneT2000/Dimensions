@@ -3,20 +3,20 @@
  */
 import express, { Request, Response, NextFunction } from 'express';
 import * as error from '../../../../../error';
-import { Match } from '../../../../../../Match';
 import { Agent } from '../../../../../../Agent';
 import { pick } from '../../../../../../utils';
-
-import { getMatch } from '../';
 
 const router = express.Router();
 
 /**
  * Gets agent by agentID in request. Requires a match to be stored
  */
-export const getAgent = (req: Request, res: Response, next: NextFunction) => {
-  let agent: Agent;
-  agent = req.data.match.agents[parseInt(req.params.agentID)];
+export const getAgent = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  const agent = req.data.match.agents[parseInt(req.params.agentID)];
   if (!agent) {
     return next(
       new error.BadRequest(
@@ -31,7 +31,12 @@ export const getAgent = (req: Request, res: Response, next: NextFunction) => {
 /**
  * Picks out relevant fields of the agent
  */
-export const pickAgent = (agent: Agent) => {
+export const pickAgent = (
+  agent: Agent
+): Pick<
+  Agent,
+  'creationDate' | 'id' | 'name' | 'src' | 'status' | 'tournamentID' | 'logkey'
+> => {
   const picked = pick(
     agent,
     'creationDate',

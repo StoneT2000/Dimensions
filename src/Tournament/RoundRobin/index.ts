@@ -2,16 +2,13 @@ import { Tournament, Player } from '..';
 import { DeepPartial } from '../../utils/DeepPartial';
 import { Design } from '../../Design';
 import { deepMerge } from '../../utils/DeepMerge';
-import {
-  FatalError,
-  TournamentError,
-  NotSupportedError,
-} from '../../DimensionError';
+import { TournamentError, NotSupportedError } from '../../DimensionError';
 import { Agent } from '../../Agent';
 import { Logger } from '../../Logger';
 import RankSystem = Tournament.RankSystem;
 import { sprintf } from 'sprintf-js';
 import { Dimension, NanoID } from '../../Dimension';
+import { nanoid } from '../..';
 
 /**
  * The Round Robin Tournament Class
@@ -55,7 +52,7 @@ export class RoundRobin extends Tournament {
     id: NanoID,
     dimension: Dimension
   ) {
-    super(design, files, id, tournamentConfigs, dimension);
+    super(design, id, tournamentConfigs, dimension);
     if (tournamentConfigs.consoleDisplay) {
       this.configs.consoleDisplay = tournamentConfigs.consoleDisplay;
     }
@@ -100,10 +97,8 @@ export class RoundRobin extends Tournament {
    * @param configs - the configs to use for this run
    */
   public async run(
-    configs?: DeepPartial<
-      Tournament.TournamentConfigs<Tournament.RoundRobin.Configs>
-    >
-  ) {
+    configs?: DeepPartial<Tournament.TournamentConfigs<RoundRobin.Configs>>
+  ): Promise<RoundRobin.State> {
     this.status = Tournament.Status.RUNNING;
     this.log.info('Running Tournament');
     this.configs = deepMerge(this.configs, configs, true);
@@ -185,7 +180,9 @@ export class RoundRobin extends Tournament {
     // handle winners, tied, and losers players and update their stats
     resInfo.winners.forEach((winnerID: Agent.ID) => {
       // resInfo contains agentIDs, which need to be remapped to tournament IDs
-      const tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(winnerID);
+      const tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(
+        winnerID
+      );
       const oldplayerStat = this.state.playerStats.get(tournamentID.id);
       oldplayerStat.wins++;
       this.state.playerStats.set(tournamentID.id, oldplayerStat);
@@ -224,7 +221,7 @@ export class RoundRobin extends Tournament {
    * Stops the tournament
    */
   public stop(): Promise<void> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       if (this.status !== Tournament.Status.RUNNING) {
         throw new TournamentError(`Can't stop a tournament that isn't running`);
       }
@@ -251,11 +248,20 @@ export class RoundRobin extends Tournament {
     this.resumeResolver();
   }
 
-  // TODO: move sorting to run function. It's ok too sort like this for small leagues, but larger will become slow.
+  // TODO: move sorting to run function. It's ok to sort like this for small leagues, but larger will become slow.
   /**
    * Returns the current rankings
    */
-  public getRankings() {
+  public getRankings(): Array<{
+    player: Player;
+    name: string;
+    id: nanoid;
+    score: number;
+    wins: number;
+    losses: number;
+    ties: number;
+    matchesPlayed: number;
+  }> {
     const ranks = [];
     this.state.playerStats.forEach((playerStat) => {
       const score =
@@ -299,10 +305,8 @@ export class RoundRobin extends Tournament {
    * @param configs - configs to use
    */
   public setConfigs(
-    configs: DeepPartial<
-      Tournament.TournamentConfigs<Tournament.RoundRobin.Configs>
-    > = {}
-  ) {
+    configs: DeepPartial<Tournament.TournamentConfigs<RoundRobin.Configs>> = {}
+  ): void {
     this.configs = deepMerge(this.configs, configs, true);
   }
 
@@ -349,12 +353,13 @@ export class RoundRobin extends Tournament {
     return roundQueue;
   }
 
-  async internalAddPlayer(player: Player) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async internalAddPlayer(player: Player): Promise<void> {
     return;
   }
-  async updatePlayer(player: Player, oldname: string, oldfile: string) {
+  async updatePlayer(): Promise<void> {
     throw new TournamentError(
-      'You are not allowed to update a player during elimination tournaments'
+      'You are not allowed to update a player during round robin tournaments'
     );
   }
 

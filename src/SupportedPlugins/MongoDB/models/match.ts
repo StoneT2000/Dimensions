@@ -4,7 +4,6 @@ import { DeepPartial } from '../../../utils/DeepPartial';
 import { deepMerge } from '../../../utils/DeepMerge';
 import { deepCopy } from '../../../utils/DeepCopy';
 const Schema = mongoose.Schema;
-const ObjectId = mongoose.Schema.Types.ObjectId;
 const defaultMatchSchemaOptions: MongoDB.MatchSchemaOptions = {
   state: false,
   results: true,
@@ -14,7 +13,7 @@ const defaultMatchSchemaOptions: MongoDB.MatchSchemaOptions = {
 };
 const MatchSchemaCreator = (
   options: DeepPartial<MongoDB.MatchSchemaOptions> = {}
-) => {
+): mongoose.Schema<any> => {
   const schemaOptions: MongoDB.MatchSchemaOptions = deepMerge(
     deepCopy(defaultMatchSchemaOptions),
     options

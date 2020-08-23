@@ -14,7 +14,6 @@ import { handleBotUpload, UploadData } from '../../../../handleBotUpload';
 import { TournamentPlayerDoesNotExistError } from '../../../../../DimensionError';
 import { removeDirectorySync } from '../../../../../utils/System';
 import { spawnSync } from 'child_process';
-import { Ladder } from '../../../../../Tournament/Ladder';
 import { TournamentType } from '../../../../../Tournament/TournamentTypes';
 
 const router = express.Router();
@@ -23,7 +22,9 @@ const router = express.Router();
  * Get tournament by tournamentID in request. Requires dimension to be stored.
  */
 const getTournament = (req: Request, res: Response, next: NextFunction) => {
-  const tournament = req.data.dimension.tournaments.get(req.params.tournamentID);
+  const tournament = req.data.dimension.tournaments.get(
+    req.params.tournamentID
+  );
   if (!tournament) {
     return next(
       new error.BadRequest(
@@ -39,7 +40,9 @@ router.use('/:tournamentID', getTournament);
 /**
  * Picks out relevant fields for a tournament
  */
-export const pickTournament = (t: Tournament) => {
+export const pickTournament = (
+  t: Tournament
+): Pick<Tournament, 'configs' | 'id' | 'log' | 'name' | 'status'> => {
   return pick(t, 'configs', 'id', 'log', 'name', 'status');
 };
 
@@ -199,7 +202,7 @@ router.delete(
         res.json({ error: null });
       })
       .catch((err) => {
-        return next(new error.InternalServerError('Something went wrong'));
+        return next(new error.InternalServerError(err));
       });
     // TODO: There should be a better way to abstract this so we don't need to store something related to the match API
     // in the dimensions API.
@@ -252,11 +255,9 @@ router.delete(
  *
  * Retrieves player stat of the ongoing tournament
  */
-router.get('/:tournamentID/players/:playerID', async (req, res, next) => {
+router.get('/:tournamentID/players/:playerID', async (req, res) => {
   const tournament = req.data.tournament;
-  const { user, playerStat } = await tournament.getPlayerStat(
-    req.params.playerID
-  );
+  const { playerStat } = await tournament.getPlayerStat(req.params.playerID);
   if (playerStat) {
     res.json({ error: null, player: playerStat });
   } else {
@@ -272,7 +273,6 @@ router.get('/:tournamentID/players/:playerID', async (req, res, next) => {
 router.get('/:tournamentID/players/:playerID/match', async (req, res, next) => {
   if (!req.query.offset || !req.query.limit || !req.query.order)
     return next(new error.BadRequest('Missing params'));
-  const tournament = req.data.tournament;
   const db = req.data.dimension.databasePlugin;
   if (req.data.dimension.hasDatabase()) {
     try {

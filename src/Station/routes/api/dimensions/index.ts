@@ -53,7 +53,10 @@ const pickDesign = (d: Design) => {
   return picked;
 };
 const pickDimension = (d: Dimension) => {
-  const picked = { ...pick(d, 'configs', 'id', 'log', 'name', 'statistics') };
+  const picked = {
+    ...pick(d, 'configs', 'id', 'log', 'name', 'statistics'),
+    design: null,
+  };
   const pickedDesign = pickDesign(d.design);
   picked.design = pickedDesign;
   return picked;

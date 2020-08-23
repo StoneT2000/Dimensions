@@ -1,4 +1,4 @@
-import { Tournament, Player } from '..';
+import { Tournament } from '..';
 import seedrandom from 'seedrandom';
 import { chooseKRandomElements } from './utils';
 /**
