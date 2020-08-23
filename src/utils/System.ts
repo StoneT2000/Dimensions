@@ -2,15 +2,15 @@
  * Various system related utilities
  */
 
-import { spawnSync, spawn } from "child_process";
+import { spawnSync, spawn } from 'child_process';
 
 /**
  * Removes a file synchronously
  * @param file - file to remove
  */
 export const removeFileSync = (file: string) => {
-  spawnSync('rm', ['-f', file])
-}
+  spawnSync('rm', ['-f', file]);
+};
 
 /**
  * Removes a file
@@ -21,35 +21,33 @@ export const removeFile = (file: string) => {
     let p = spawn('rm', ['-f', file]);
     p.on('error', (err) => {
       reject(err);
-    })
+    });
     p.on('close', (code) => {
       if (code === 0) {
         resolve();
-      }
-      else {
+      } else {
         reject('exited with code ' + code);
       }
-    })
-  })
-}
+    });
+  });
+};
 
 export const processIsRunning = (pid: number): boolean => {
   try {
     // this actually returns a boolean, not sure why its not in @types/node
-    return <boolean>(<unknown>(process.kill(pid, 0)));
+    return <boolean>(<unknown>process.kill(pid, 0));
+  } catch (e) {
+    return e.code === 'EPERM';
   }
-  catch (e) {
-    return e.code === 'EPERM'
-  }
-}
+};
 
 /**
  * Removes files in the given directory synchronously
- * @param dir 
+ * @param dir
  */
 export const removeDirectorySync = (dir: string) => {
   spawnSync('find', [dir, '-exec', 'rm', '-rf', '{}', '+']);
-}
+};
 
 /**
  * Removes files in the given directory
@@ -59,39 +57,46 @@ export const removeDirectory = (dir: string) => {
   return new Promise((resolve, reject) => {
     let p = spawn('find', [dir, '-exec', 'rm', '-rf', '{}', '+']);
     p.on('error', (err) => {
-      
       reject(err);
-    })
+    });
     p.on('close', (code) => {
       if (code === 0) {
         resolve();
-      }
-      else {
+      } else {
         reject(`removeDirectory on ${dir} exited with code ${code}`);
       }
-    })
-  })
-}
+    });
+  });
+};
 
 /**
  * Effectively runs the `docker cp` command
- * @param fileOrDirectoryPath 
- * @param container 
- * @param targetPath 
+ * @param fileOrDirectoryPath
+ * @param container
+ * @param targetPath
  */
-export const dockerCopy = (fileOrDirectoryPath: string, containerID: string, targetPath: string) => {
+export const dockerCopy = (
+  fileOrDirectoryPath: string,
+  containerID: string,
+  targetPath: string
+) => {
   return new Promise((resolve, reject) => {
-    let p = spawn('docker', ['cp', fileOrDirectoryPath, `${containerID}:${targetPath}`]);
+    let p = spawn('docker', [
+      'cp',
+      fileOrDirectoryPath,
+      `${containerID}:${targetPath}`,
+    ]);
     p.on('error', (err) => {
       reject(err);
-    })
+    });
     p.on('close', (code) => {
       if (code === 0) {
         resolve();
+      } else {
+        reject(
+          `dockerCopy from ${fileOrDirectoryPath} to ${containerID}:${targetPath} exited with code ${code}`
+        );
       }
-      else {
-        reject(`dockerCopy from ${fileOrDirectoryPath} to ${containerID}:${targetPath} exited with code ${code}`);
-      }
-    })
-  })
-}
+    });
+  });
+};

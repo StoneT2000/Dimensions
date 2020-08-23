@@ -1,20 +1,20 @@
-import { Storage as DStorage } from "../../Plugin/Storage";
+import { Storage as DStorage } from '../../Plugin/Storage';
 import { Storage, Bucket, GetSignedUrlConfig } from '@google-cloud/storage';
-import { DeepPartial } from "../../utils/DeepPartial";
-import { Dimension, StorageType } from "../../Dimension";
-import { Plugin } from "../../Plugin";
-import { nanoid } from "../..";
+import { DeepPartial } from '../../utils/DeepPartial';
+import { Dimension, StorageType } from '../../Dimension';
+import { Plugin } from '../../Plugin';
+import { nanoid } from '../..';
 import path from 'path';
-import fs from "fs";
-import { Database } from "../../Plugin/Database";
-import { Tournament } from "../../Tournament";
+import fs from 'fs';
+import { Database } from '../../Plugin/Database';
+import { Tournament } from '../../Tournament';
 
 export class GCloudStorage extends DStorage {
-  public name: string = 'GCloudStorage'
-  public type: Plugin.Type = Plugin.Type.STORAGE
+  public name: string = 'GCloudStorage';
+  public type: Plugin.Type = Plugin.Type.STORAGE;
   public storage: Storage;
   public configs: GCloudStorage.Configs;
-  
+
   public dimensionBucket: Bucket;
 
   constructor(configs: GCloudStorage.Configs) {
@@ -25,8 +25,14 @@ export class GCloudStorage extends DStorage {
    * Initializer. Initializes the storage object and creates necessary buckets
    */
   async initialize(dimension: Dimension) {
-    let bucketName = dimension.name.toLowerCase().replace(/ /g, "_") + '_' + dimension.id.toLowerCase();
-    this.storage = new Storage({ keyFilename: this.configs.keyFilename, projectId: this.configs.projectId});
+    let bucketName =
+      dimension.name.toLowerCase().replace(/ /g, '_') +
+      '_' +
+      dimension.id.toLowerCase();
+    this.storage = new Storage({
+      keyFilename: this.configs.keyFilename,
+      projectId: this.configs.projectId,
+    });
     let exists = await this.storage.bucket(bucketName).exists();
     if (!exists[0]) {
       await this.storage.createBucket(bucketName);
@@ -34,32 +40,45 @@ export class GCloudStorage extends DStorage {
     this.dimensionBucket = this.storage.bucket(bucketName);
   }
 
-  async uploadTournamentFile(file: string, user: Database.User, tournament: Tournament) {
-    let dest = 
-      `users/${user.username}_${user.playerID}/tournaments/${tournament.getKeyName()}/bot.zip`
-    return this.dimensionBucket.upload(file, {
-      destination: dest
-    }).then(() => {
-      return dest;
-    });
+  async uploadTournamentFile(
+    file: string,
+    user: Database.User,
+    tournament: Tournament
+  ) {
+    let dest = `users/${user.username}_${
+      user.playerID
+    }/tournaments/${tournament.getKeyName()}/bot.zip`;
+    return this.dimensionBucket
+      .upload(file, {
+        destination: dest,
+      })
+      .then(() => {
+        return dest;
+      });
   }
 
   async upload(file: string, destination?: string) {
     let dest = `${destination ? destination : path.basename(file)}`;
-    return this.dimensionBucket.upload(file, {
-      destination: dest
-    }).then(() => {
-      return dest;
-    });
+    return this.dimensionBucket
+      .upload(file, {
+        destination: dest,
+      })
+      .then(() => {
+        return dest;
+      });
   }
 
   async uploadUserFile(file: string, userID: nanoid, destination?: string) {
-    let dest = `users/${userID}/${destination ? destination : path.basename(file)}`;
-    return this.dimensionBucket.upload(file, {
-      destination: dest
-    }).then(() => {
-      return dest;
-    })
+    let dest = `users/${userID}/${
+      destination ? destination : path.basename(file)
+    }`;
+    return this.dimensionBucket
+      .upload(file, {
+        destination: dest,
+      })
+      .then(() => {
+        return dest;
+      });
   }
 
   async download(key: string, destination: string) {
@@ -69,7 +88,7 @@ export class GCloudStorage extends DStorage {
       ws.on('close', () => {
         resolve();
       });
-    })
+    });
   }
 
   /**
@@ -80,11 +99,14 @@ export class GCloudStorage extends DStorage {
     let options: GetSignedUrlConfig = {
       version: 'v4',
       action: 'read',
-      expires: (new Date()).getTime() + 15 * 60 * 1000
-    }
-    return this.dimensionBucket.file(key).getSignedUrl(options).then((url) => {
-      return url[0];
-    });
+      expires: new Date().getTime() + 15 * 60 * 1000,
+    };
+    return this.dimensionBucket
+      .file(key)
+      .getSignedUrl(options)
+      .then((url) => {
+        return url[0];
+      });
   }
 
   public async manipulate(dimension: Dimension) {
@@ -101,11 +123,11 @@ export module GCloudStorage {
     /**
      * Path to key file from a google account service key
      */
-    keyFilename: string
+    keyFilename: string;
 
     /**
      * Project ID
      */
-    projectId: string
+    projectId: string;
   }
 }

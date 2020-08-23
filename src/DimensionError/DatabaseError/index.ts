@@ -1,5 +1,5 @@
-const DATABASE_ERROR = 'DatabaseError'
-const DATABASE_GET_USER_ERROR = 'DatabaseGetUserError'
+const DATABASE_ERROR = 'DatabaseError';
+const DATABASE_GET_USER_ERROR = 'DatabaseGetUserError';
 /**
  * Errors thrown that are related to databases
  */

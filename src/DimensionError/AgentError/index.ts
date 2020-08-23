@@ -1,4 +1,4 @@
-import { nanoid } from "../..";
+import { nanoid } from '../..';
 
 const AGENT_ERROR = 'AgentError';
 const AGENT_INSTALL_ERROR = 'AgentInstallError';
@@ -17,7 +17,7 @@ const AGENT_MISSING_ID_ERROR = 'AgentMissingIDError';
  */
 export class AgentError extends Error {
   /**
-   * The id of the {@link Agent} that caused the error. If it is -1, then there is no one specific 
+   * The id of the {@link Agent} that caused the error. If it is -1, then there is no one specific
    * agent that caused the agent error
    */
   public agentID = -1;
@@ -53,7 +53,7 @@ export class AgentInstallTimeoutError extends AgentInstallError {
 }
 
 /**
- * Errors thrown during the compile step of an {@link Agent}. The compile step is when we run something such as 
+ * Errors thrown during the compile step of an {@link Agent}. The compile step is when we run something such as
  * `javac Bot.java`.
  */
 

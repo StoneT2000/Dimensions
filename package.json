@@ -16,7 +16,8 @@
     "build": "rm -rf lib && tsc",
     "clean": "./cleanup.sh",
     "services:start": "docker-compose -f tests/dimension-docker/docker-compose.yml up -d",
-    "services:stop": "docker-compose -f tests/dimension-docker/docker-compose.yml down"
+    "services:stop": "docker-compose -f tests/dimension-docker/docker-compose.yml down",
+    "prettier": "prettier --write 'src/**/*.ts' 'tests/**/*.ts'"
   },
   "keywords": [
     "AI",
@@ -72,6 +73,7 @@
     "mocha": "^7.1.1",
     "mongo-seeding": "^3.4.1",
     "nyc": "^15.0.1",
+    "prettier": "2.0.5",
     "sinon": "^9.0.1",
     "sinon-chai": "^3.5.0",
     "ts-node": "^8.8.2",

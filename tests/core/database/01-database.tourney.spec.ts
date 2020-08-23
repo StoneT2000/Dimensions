@@ -3,7 +3,7 @@ import { RockPaperScissorsDesign } from '../../rps';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
-import sinonChai from "sinon-chai";
+import sinonChai from 'sinon-chai';
 import 'mocha';
 import { Logger, MongoDB, Tournament, GCloudDataStore } from '../../../src';
 import { sleep } from '../utils/sleep';
@@ -11,58 +11,79 @@ import { createLadderTourney, createLadderELOTourney } from '../tourney/utils';
 import { Ladder } from '../../../src/Tournament/Ladder';
 import { RankSystem } from '../../../src/Tournament/RankSystem';
 const expect = chai.expect;
-chai.should()
+chai.should();
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
 chai.use(chaiSubset);
 
-const paper = {file: './tests/kits/js/normal/paper.js', name: 'paper'};
-const rock = {file: './tests/kits/js/normal/rock.js', name: 'rock'};
-const disabled = {file: './tests/kits/js/normal/rock.js', name: 'disabled', existingID:'disabled'};
+const paper = { file: './tests/kits/js/normal/paper.js', name: 'paper' };
+const rock = { file: './tests/kits/js/normal/rock.js', name: 'rock' };
+const disabled = {
+  file: './tests/kits/js/normal/rock.js',
+  name: 'disabled',
+  existingID: 'disabled',
+};
 
 const users = {
   // in seed, rock1 has stats in tourneys already
-  rock1: {file: './tests/kits/js/normal/rock.js', name: 'rock1', existingID:'rock1'},
-  rock2: {file: './tests/kits/js/normal/rock.js', name: 'rock2', existingID:'rock2'},
-  rock3: {file: './tests/kits/js/normal/rock.js', name: 'rock3', existingID:'rock3'},
-}
+  rock1: {
+    file: './tests/kits/js/normal/rock.js',
+    name: 'rock1',
+    existingID: 'rock1',
+  },
+  rock2: {
+    file: './tests/kits/js/normal/rock.js',
+    name: 'rock2',
+    existingID: 'rock2',
+  },
+  rock3: {
+    file: './tests/kits/js/normal/rock.js',
+    name: 'rock3',
+    existingID: 'rock3',
+  },
+};
 
-const paperBot = {file: './tests/kits/js/normal/paper.js', name: 'paperbot', existingID: 'paperbot'};
+const paperBot = {
+  file: './tests/kits/js/normal/paper.js',
+  name: 'paperbot',
+  existingID: 'paperbot',
+};
 const botList = [rock, paper];
 const userBotList = [disabled, users.rock2, paperBot]; // new bots to add
 
 describe('Testing Database with Tournament Singletons (no distribution)', () => {
-
   const rpsDesign = new RockPaperScissorsDesign('RPS');
   const d = Dimension.create(rpsDesign, {
     activateStation: false,
     observe: false,
-    id: "12345678",
+    id: '12345678',
     loggingLevel: Logger.LEVEL.NONE,
     defaultMatchConfigs: {
       bestOf: 5,
-      storeErrorLogs: false
-    }
+      storeErrorLogs: false,
+    },
   });
-  let mongo = new MongoDB('mongodb://root:rootpassword@localhost:27017/test?authSource=admin&readPreference=primary');
+  let mongo = new MongoDB(
+    'mongodb://root:rootpassword@localhost:27017/test?authSource=admin&readPreference=primary'
+  );
   // let datastore = new GCloudDataStore({
   //   keyFile: "./tests/keys/owneraccess.json"
   // });
-  before( async () => {
+  before(async () => {
     await d.use(mongo);
     // await d.use(datastore);
   });
-  
-  describe("Test running", () => {
-    it("should run", async () => {
-      return new Promise( async (resolve, reject) => {
+
+  describe('Test running', () => {
+    it('should run', async () => {
+      return new Promise(async (resolve, reject) => {
         // note, each tourney needs to be of a different id or else we lose track of one and can't clean up
         let tourney = createLadderTourney(d, botList, {
-          name: "Ladder Tournament",
-          id: "123456ts",
+          name: 'Ladder Tournament',
+          id: '123456ts',
           tournamentConfigs: {
-            syncConfigs: false
-          }
+            syncConfigs: false,
+          },
         });
         await tourney.run();
         let count = 0;
@@ -70,30 +91,32 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
           if (++count > 4) {
             try {
               let ranks = await tourney.getRankings();
-              expect(tourney.state.statistics.totalMatches).to.be.greaterThan(1);
+              expect(tourney.state.statistics.totalMatches).to.be.greaterThan(
+                1
+              );
               expect(ranks[0].player.file).to.equal(paper.file);
               expect(ranks[1].player.file).to.equal(rock.file);
               // expect all players to be anonymous players as db is used, but no ids given
               expect(tourney.anonymousCompetitors.size).to.equal(2);
               await tourney.destroy();
               resolve();
-            } catch(err) {
+            } catch (err) {
               await tourney.destroy();
-              reject(err)
+              reject(err);
             }
           }
         });
       });
     });
-    it("should run elo", async () => {
-      return new Promise( async (resolve, reject) => {
+    it('should run elo', async () => {
+      return new Promise(async (resolve, reject) => {
         // note, each tourney needs to be of a different id or else we lose track of one and can't clean up
         let tourney = createLadderELOTourney(d, botList, {
-          name: "Ladder Tournament",
-          id: "123456elo",
+          name: 'Ladder Tournament',
+          id: '123456elo',
           tournamentConfigs: {
             syncConfigs: false,
-          }
+          },
         });
         await tourney.run();
         let count = 0;
@@ -101,40 +124,56 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
           if (++count > 4) {
             try {
               let ranks = await tourney.getRankings();
-              expect(tourney.state.statistics.totalMatches).to.be.greaterThan(4, "run more than 4 matches");
-              expect(ranks[0].player.file).to.equal(paper.file, "paper is first place");
-              expect(ranks[1].player.file).to.equal(rock.file, "rock is second place");
-              expect(tourney.anonymousCompetitors.size).to.equal(2, "both bots in tourney should be anonymous competitors");
+              expect(tourney.state.statistics.totalMatches).to.be.greaterThan(
+                4,
+                'run more than 4 matches'
+              );
+              expect(ranks[0].player.file).to.equal(
+                paper.file,
+                'paper is first place'
+              );
+              expect(ranks[1].player.file).to.equal(
+                rock.file,
+                'rock is second place'
+              );
+              expect(tourney.anonymousCompetitors.size).to.equal(
+                2,
+                'both bots in tourney should be anonymous competitors'
+              );
               await tourney.destroy();
               resolve();
-            } catch(err) {
+            } catch (err) {
               await tourney.destroy();
-              reject(err)
+              reject(err);
             }
           }
         });
       });
     });
-    describe("Test on Trueskill", () => {
+    describe('Test on Trueskill', () => {
       let t: Ladder;
       before(() => {
         t = createLadderTourney(d, userBotList, {
-          name: "Ladder Tournament",
-          id: "12345ts",
+          name: 'Ladder Tournament',
+          id: '12345ts',
           tournamentConfigs: {
             syncConfigs: false,
             selfMatchMake: false,
           },
-          loggingLevel: Logger.LEVEL.ERROR
+          loggingLevel: Logger.LEVEL.ERROR,
         });
       });
-      after( async () => {
+      after(async () => {
         await t.destroy();
       });
-      it("should run with users and store user data + match data", async () => {
-        return new Promise( async (resolve, reject) => {
+      it('should run with users and store user data + match data', async () => {
+        return new Promise(async (resolve, reject) => {
           await t.run();
-          t.scheduleMatches([paperBot.existingID, disabled.existingID], [paperBot.existingID, users.rock2.existingID], [paperBot.existingID, users.rock1.existingID]);
+          t.scheduleMatches(
+            [paperBot.existingID, disabled.existingID],
+            [paperBot.existingID, users.rock2.existingID],
+            [paperBot.existingID, users.rock1.existingID]
+          );
           let count = 0;
           t.on(Tournament.Events.MATCH_HANDLED, async () => {
             if (++count > 2) {
@@ -142,17 +181,31 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
                 await t.stop();
                 let ranks = await t.getRankings();
 
-                expect(t.state.statistics.totalMatches).to.be.greaterThan(2, "run more than 2 matches");
-                expect(ranks[0].player.tournamentID.id).to.equal(paperBot.existingID, "paper bot should be first");
+                expect(t.state.statistics.totalMatches).to.be.greaterThan(
+                  2,
+                  'run more than 2 matches'
+                );
+                expect(ranks[0].player.tournamentID.id).to.equal(
+                  paperBot.existingID,
+                  'paper bot should be first'
+                );
                 let { user } = await t.getPlayerStat(paperBot.existingID);
 
                 // check database stored value is same
-                expect(user.statistics[t.getKeyName()].rankState.rating.mu)
-                  .to.approximately(ranks[0].rankState.rating.mu, 0.01, "user rank mu should match what was returned from getRankings");
+                expect(
+                  user.statistics[t.getKeyName()].rankState.rating.mu
+                ).to.approximately(
+                  ranks[0].rankState.rating.mu,
+                  0.01,
+                  'user rank mu should match what was returned from getRankings'
+                );
                 // there shouldn't be any anon competitors if all are using ids
-                expect(t.anonymousCompetitors.size).to.equal(0, "no competitor should be anonymous if ids are provided");
+                expect(t.anonymousCompetitors.size).to.equal(
+                  0,
+                  'no competitor should be anonymous if ids are provided'
+                );
                 resolve();
-              } catch(err) {
+              } catch (err) {
                 reject(err);
               }
             }
@@ -160,16 +213,24 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
         });
       });
 
-      it("should reset rankings", async () => {
+      it('should reset rankings', async () => {
         await t.resetRankings();
-        let { playerStat } = await t.getPlayerStat(paperBot.existingID)
-        let rankState: RankSystem.TRUESKILL.RankState = (<Tournament.Ladder.PlayerStat>playerStat).rankState;
-        expect(rankState.rating.mu).to.equal(t.configs.rankSystemConfigs.initialMu, "reset ranking to initialMu")
+        let { playerStat } = await t.getPlayerStat(paperBot.existingID);
+        let rankState: RankSystem.TRUESKILL.RankState = (<
+          Tournament.Ladder.PlayerStat
+        >playerStat).rankState;
+        expect(rankState.rating.mu).to.equal(
+          t.configs.rankSystemConfigs.initialMu,
+          'reset ranking to initialMu'
+        );
       });
-      it("should allow new bots and bot updates that the bot stats", async () => {
-        return new Promise( async (resolve, reject) => {
+      it('should allow new bots and bot updates that the bot stats', async () => {
+        return new Promise(async (resolve, reject) => {
           await t.resume();
-          t.scheduleMatches([paperBot.existingID, disabled.existingID], [paperBot.existingID, users.rock2.existingID]);
+          t.scheduleMatches(
+            [paperBot.existingID, disabled.existingID],
+            [paperBot.existingID, users.rock2.existingID]
+          );
           let count = 0;
           t.on(Tournament.Events.MATCH_HANDLED, async () => {
             if (++count > 1) {
@@ -177,14 +238,19 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
                 let { playerStat } = await t.getPlayerStat(paperBot.existingID);
                 let paperbotMatchCount = playerStat.matchesPlayed;
                 await t.addplayer(paperBot);
-                playerStat = (await t.getPlayerStat(paperBot.existingID)).playerStat;
-                expect(playerStat.matchesPlayed).to.be.lessThan(paperbotMatchCount, "updated bot should reset stats and matches played should be less than before");
-  
+                playerStat = (await t.getPlayerStat(paperBot.existingID))
+                  .playerStat;
+                expect(playerStat.matchesPlayed).to.be.lessThan(
+                  paperbotMatchCount,
+                  'updated bot should reset stats and matches played should be less than before'
+                );
+
                 await t.addplayer(users.rock3);
-                playerStat = (await t.getPlayerStat(users.rock3.existingID)).playerStat;
-                expect(playerStat).to.be.not.equal(null, "new bot exists");
+                playerStat = (await t.getPlayerStat(users.rock3.existingID))
+                  .playerStat;
+                expect(playerStat).to.be.not.equal(null, 'new bot exists');
                 resolve();
-              } catch(err) {
+              } catch (err) {
                 reject(err);
               }
             }
@@ -193,40 +259,58 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
       });
     });
 
-    describe("Test on ELO", () => {
+    describe('Test on ELO', () => {
       let t: Ladder;
       before(() => {
         t = createLadderELOTourney(d, userBotList, {
-          name: "Ladder Tournament",
-          id: "12345elo",
+          name: 'Ladder Tournament',
+          id: '12345elo',
           tournamentConfigs: {
             syncConfigs: false,
             selfMatchMake: false,
-          }
+          },
         });
       });
-      after( async () => {
+      after(async () => {
         await t.destroy();
-      })
-      it("should run with users and store user data + match data", async () => {
-        return new Promise( async (resolve, reject) => {
+      });
+      it('should run with users and store user data + match data', async () => {
+        return new Promise(async (resolve, reject) => {
           await t.run();
-          t.scheduleMatches([paperBot.existingID, disabled.existingID], [paperBot.existingID, users.rock2.existingID], [paperBot.existingID, users.rock1.existingID]);
+          t.scheduleMatches(
+            [paperBot.existingID, disabled.existingID],
+            [paperBot.existingID, users.rock2.existingID],
+            [paperBot.existingID, users.rock1.existingID]
+          );
           let count = 0;
           t.on(Tournament.Events.MATCH_HANDLED, async () => {
             if (++count > 2) {
               try {
                 await t.stop();
                 let ranks = await t.getRankings();
-                expect(t.state.statistics.totalMatches).to.be.greaterThan(2, "run more than 2 matches");
-                expect(ranks[0].player.tournamentID.id).to.equal(paperBot.existingID, "first place should be paper bot");
-                let { user } = await t.getPlayerStat(paperBot.existingID)
+                expect(t.state.statistics.totalMatches).to.be.greaterThan(
+                  2,
+                  'run more than 2 matches'
+                );
+                expect(ranks[0].player.tournamentID.id).to.equal(
+                  paperBot.existingID,
+                  'first place should be paper bot'
+                );
+                let { user } = await t.getPlayerStat(paperBot.existingID);
                 // check database stored value is same
-                expect(user.statistics[t.getKeyName()].rankState.rating.score).to.equal(ranks[0].rankState.rating.score, "user stored score should be same returned from getRankings");
+                expect(
+                  user.statistics[t.getKeyName()].rankState.rating.score
+                ).to.equal(
+                  ranks[0].rankState.rating.score,
+                  'user stored score should be same returned from getRankings'
+                );
                 // there shouldn't be any anon competitors if all are using ids
-                expect(t.anonymousCompetitors.size).to.equal(0, "should be no anonymous competitors");
+                expect(t.anonymousCompetitors.size).to.equal(
+                  0,
+                  'should be no anonymous competitors'
+                );
                 resolve();
-              } catch(err) {
+              } catch (err) {
                 reject(err);
               }
             }
@@ -234,16 +318,24 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
         });
       });
 
-      it("should reset rankings", async () => {
+      it('should reset rankings', async () => {
         await t.resetRankings();
-        let { playerStat } = await t.getPlayerStat(paperBot.existingID)
-        let rankState: RankSystem.ELO.RankState = (<Tournament.Ladder.PlayerStat>playerStat).rankState;
-        expect(rankState.rating.score).to.equal(t.configs.rankSystemConfigs.startingScore, "elo score should reset to startingScore when tournament does not do a hard stop");
+        let { playerStat } = await t.getPlayerStat(paperBot.existingID);
+        let rankState: RankSystem.ELO.RankState = (<
+          Tournament.Ladder.PlayerStat
+        >playerStat).rankState;
+        expect(rankState.rating.score).to.equal(
+          t.configs.rankSystemConfigs.startingScore,
+          'elo score should reset to startingScore when tournament does not do a hard stop'
+        );
       });
-      it("should allow bots to be added and initialize / update bot stats", async () => {
-        return new Promise( async (resolve, reject) => {
+      it('should allow bots to be added and initialize / update bot stats', async () => {
+        return new Promise(async (resolve, reject) => {
           await t.resume();
-          t.scheduleMatches([paperBot.existingID, disabled.existingID], [paperBot.existingID, users.rock2.existingID]);
+          t.scheduleMatches(
+            [paperBot.existingID, disabled.existingID],
+            [paperBot.existingID, users.rock2.existingID]
+          );
           let count = 0;
           t.on(Tournament.Events.MATCH_HANDLED, async () => {
             if (++count > 1) {
@@ -252,15 +344,20 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
                 let paperbotMatchCount = playerStat.matchesPlayed;
                 // addplayer to update the bot
                 await t.addplayer(paperBot);
-                playerStat = (await t.getPlayerStat(paperBot.existingID)).playerStat;
-                expect(playerStat.matchesPlayed).to.be.lessThan(paperbotMatchCount, "updated bot should reset stats and matches played should be less than before");
-        
+                playerStat = (await t.getPlayerStat(paperBot.existingID))
+                  .playerStat;
+                expect(playerStat.matchesPlayed).to.be.lessThan(
+                  paperbotMatchCount,
+                  'updated bot should reset stats and matches played should be less than before'
+                );
+
                 // addplayer to add new bot
                 await t.addplayer(users.rock3);
-                playerStat = (await t.getPlayerStat(users.rock3.existingID)).playerStat;
-                expect(playerStat).to.be.not.equal(null, "new bot exists");
+                playerStat = (await t.getPlayerStat(users.rock3.existingID))
+                  .playerStat;
+                expect(playerStat).to.be.not.equal(null, 'new bot exists');
                 resolve();
-              } catch(err) {
+              } catch (err) {
                 reject(err);
               }
             }
@@ -269,7 +366,7 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
       });
     });
   });
-  
+
   after(async () => {
     await d.cleanup();
     await mongo.db.close();

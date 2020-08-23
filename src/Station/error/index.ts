@@ -79,19 +79,25 @@ export class NotImplemented extends HttpError {
   }
 }
 
-
 /**
  * General error handling middleware. Attaches to Express so that throwing or calling next() with
  * an error ends up here and all errors are handled uniformly.
  */
-export const errorHandler = (log: Logger) => (err: HttpError, req: Request, res: Response, next: NextFunction) => {
-  if (!err) err = new InternalServerError('An unknown error occurred in the errorHandler');
+export const errorHandler = (log: Logger) => (
+  err: HttpError,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!err)
+    err = new InternalServerError(
+      'An unknown error occurred in the errorHandler'
+    );
   if (!err.status) err = new InternalServerError(err.message);
 
   if (err.status >= 500) {
     log.error(`${err.status}`, err);
-  }
-  else {
+  } else {
     // otherwise just log the error message at the warning level
     log.warn(`${err.status}: ${err.message}`);
   }

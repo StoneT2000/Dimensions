@@ -5,14 +5,12 @@ const agent = new Agent();
 
 // first initialize the agent, and then proceed to go in a loop waiting for updates and running the AI
 agent.initialize().then(async () => {
-  while(true) {
-    
-    console.log("R")
-    
+  while (true) {
+    console.log('R');
+
     // now we end our turn
     agent.endTurn();
     // wait for update from match engine
     await agent.update();
-    
   }
 });

@@ -5,7 +5,7 @@ import { deepMerge } from '../utils/DeepMerge';
 import { genID } from '../utils';
 import { deepCopy } from '../utils/DeepCopy';
 
-import { Logger} from '../Logger';
+import { Logger } from '../Logger';
 import { Match } from '../Match';
 import { Station } from '../Station';
 import { MissingFilesError } from '../DimensionError';
@@ -15,8 +15,6 @@ import { Tournament } from '../Tournament';
 import { Plugin } from '../Plugin';
 import { Database } from '../Plugin/Database';
 import { Storage } from '../Plugin/Storage';
-
-
 
 /**
  * Some standard database type strings
@@ -29,7 +27,7 @@ export enum DatabaseType {
   /**
    * Represents mongodb database used
    */
-  MONGO = 'mongo'
+  MONGO = 'mongo',
 }
 export enum StorageType {
   /**
@@ -39,7 +37,7 @@ export enum StorageType {
   /**
    * Represents gcloud storage used
    */
-  GCLOUD = 'gcloud'
+  GCLOUD = 'gcloud',
 }
 
 /**
@@ -52,55 +50,54 @@ export type NanoID = string;
  */
 export interface DimensionConfigs {
   /** Name of the dimension */
-  name: string
-  /** 
-   * Whether or not to activate the Station 
+  name: string;
+  /**
+   * Whether or not to activate the Station
    * @default `true`
    */
-  activateStation: boolean
-  /** 
-   * Whether the station should observe this Dimension 
+  activateStation: boolean;
+  /**
+   * Whether the station should observe this Dimension
    * @default `true`
    */
-  observe: boolean,
+  observe: boolean;
   /** The logging level for this Dimension */
-  loggingLevel: Logger.LEVEL,
+  loggingLevel: Logger.LEVEL;
   /** The default match configurations to use when creating matches using this Dimension */
-  defaultMatchConfigs: DeepPartial<Match.Configs>,
+  defaultMatchConfigs: DeepPartial<Match.Configs>;
 
   /** An overriding ID to use for the dimension instead of generating a new one */
-  id: NanoID,
+  id: NanoID;
 
   /**
    * Whether to run Dimension in a more secure environment.
    * Requires rbash and setting up users beforehand and running dimensions in sudo mode
    * @default `false`
    */
-  secureMode: boolean,
+  secureMode: boolean;
 
   /**
    * String denoting what kind of backing database is being used
    * @default {@link DatabaseType.NONE}
    */
-  backingDatabase: string | DatabaseType
+  backingDatabase: string | DatabaseType;
 
   /**
    * String denoting what kind of backing storage is being used
    * @default {@link DatabaseType.NONE}
    */
-  backingStorage: string | StorageType
+  backingStorage: string | StorageType;
 
   /**
    * Station configs to use
    */
-  stationConfigs: DeepPartial<Station.Configs>
+  stationConfigs: DeepPartial<Station.Configs>;
 }
 /**
- * The Dimension framework for intiating a {@link Design} to then run instances of a {@link Match} or 
+ * The Dimension framework for intiating a {@link Design} to then run instances of a {@link Match} or
  * {@link Tournament} on.
  */
 export class Dimension {
-  
   /**
    * A map of the matches running in this Dimension
    */
@@ -127,7 +124,7 @@ export class Dimension {
   public log = new Logger();
 
   /**
-   * The database plugin being used. Allows Dimensions to interact with a database and store {@link Match}, 
+   * The database plugin being used. Allows Dimensions to interact with a database and store {@link Match},
    * {@link Tournament}, and user data, allowing for data persistance across instances.
    */
   public databasePlugin: Database;
@@ -149,7 +146,7 @@ export class Dimension {
   public statistics = {
     tournamentsCreated: 0,
     matchesCreated: 0,
-  }
+  };
 
   /**
    * Dimension configs. Set to defaults
@@ -160,75 +157,78 @@ export class Dimension {
     observe: true,
     loggingLevel: Logger.LEVEL.INFO,
     defaultMatchConfigs: {
-      secureMode: false
+      secureMode: false,
     },
     secureMode: false,
     backingDatabase: DatabaseType.NONE,
     backingStorage: StorageType.NONE,
     id: 'oLBptg',
-    stationConfigs: {}
-  }
+    stationConfigs: {},
+  };
 
   /**
    * Indicator of whether cleanup was called already or not
    */
   private cleaningUp: Promise<any> = null;
 
-  constructor(public design: Design, configs: DeepPartial<DimensionConfigs> = {}) {
-
+  constructor(
+    public design: Design,
+    configs: DeepPartial<DimensionConfigs> = {}
+  ) {
     // override configs with user provided configs
     this.configs = deepMerge(this.configs, configs);
-    
+
     // generate ID if not provided
     if (!configs.id) {
       this.id = Dimension.genDimensionID();
-    }
-    else {
+    } else {
       this.id = configs.id;
     }
-    
+
     this.log.level = this.configs.loggingLevel;
     if (this.configs.stationConfigs.loggingLevel === undefined) {
       this.configs.stationConfigs.loggingLevel = this.configs.loggingLevel;
     }
-    
 
-    // open up a new station for the current node process if it hasn't been opened yet and there is a dimension that 
+    // open up a new station for the current node process if it hasn't been opened yet and there is a dimension that
     // is asking for a station to be initiated
     if (this.configs.activateStation === true && Dimension.Station == null) {
-      Dimension.Station = new Station('Station', [], this.configs.stationConfigs);
+      Dimension.Station = new Station(
+        'Station',
+        [],
+        this.configs.stationConfigs
+      );
     }
 
     // default match log level and design log level is the same as passed into the dimension
     this.configs.defaultMatchConfigs.loggingLevel = this.configs.loggingLevel;
     this.design.setLogLevel(this.configs.loggingLevel);
-    
+
     // set name
     if (this.configs.name) {
       this.name = this.configs.name;
-    }
-    else {
+    } else {
       this.name = `dimension_${this.id}`;
     }
-    this.log.identifier = `${this.name} Log`
+    this.log.identifier = `${this.name} Log`;
 
     // log important messages regarding security
     if (this.configs.secureMode) {
       try {
         this.setupSecurity();
-      }
-      catch(error) {
+      } catch (error) {
         throw error;
       }
-    }
-    else {
-      this.log.warn(`WARNING: Running in non-secure mode. You will not be protected against malicious bots`);
+    } else {
+      this.log.warn(
+        `WARNING: Running in non-secure mode. You will not be protected against malicious bots`
+      );
     }
     // setting securemode in dimension config also sets it for default match configs
     this.configs.defaultMatchConfigs.secureMode = this.configs.secureMode;
-    
+
     // set up cleanup functions
-    process.on("exit", async () => {
+    process.on('exit', async () => {
       try {
         await this.cleanup();
       } catch (err) {
@@ -236,8 +236,8 @@ export class Dimension {
       }
       process.exit();
     });
-    
-    process.on("SIGINT", async () => {
+
+    process.on('SIGINT', async () => {
       try {
         await this.cleanup();
       } catch (err) {
@@ -247,25 +247,29 @@ export class Dimension {
     });
 
     // make the station observe this dimension when this dimension is created
-    if (this.configs.observe === true && Dimension.Station != null) Dimension.Station.observe(this);
+    if (this.configs.observe === true && Dimension.Station != null)
+      Dimension.Station.observe(this);
 
     this.log.info(`Created Dimension - ID: ${this.id}, Name: ${this.name}`);
     this.log.detail('Dimension Configs', this.configs);
   }
 
   /**
-   * Create a match with the given files and any optional {@link Match.Configs}. Resolves with the initialized 
+   * Create a match with the given files and any optional {@link Match.Configs}. Resolves with the initialized
    * {@link Match} object as specified by the {@link Design} of this {@link Dimension}
-   * 
+   *
    * Rejects if an error occurs.
-   * 
+   *
    * @param files - List of files or objects to use to generate agents and use for a new match
    * @param matchOptions - Options for the created match
    * @param configs - Configurations that are {@link Design} dependent
    */
-  public async createMatch(files: Array<string> | Array<{file: string, name: string, botkey?: string}>, 
-    configs?: DeepPartial<Match.Configs>): Promise<Match> {
-
+  public async createMatch(
+    files:
+      | Array<string>
+      | Array<{ file: string; name: string; botkey?: string }>,
+    configs?: DeepPartial<Match.Configs>
+  ): Promise<Match> {
     if (!files.length) {
       throw new MissingFilesError('No files provided for match');
     }
@@ -277,9 +281,14 @@ export class Dimension {
     // create new match
     let match: Match;
     if (typeof files[0] === 'string') {
-      match = new Match(this.design, <Array<string>> files, matchConfigs, this);
+      match = new Match(this.design, <Array<string>>files, matchConfigs, this);
     } else {
-      match = new Match(this.design, <Array<{file: string, name: string, botkey?: string}>> files, matchConfigs, this);
+      match = new Match(
+        this.design,
+        <Array<{ file: string; name: string; botkey?: string }>>files,
+        matchConfigs,
+        this
+      );
     }
     this.statistics.matchesCreated++;
 
@@ -292,25 +301,26 @@ export class Dimension {
   }
 
   /**
-   * Runs a match with the given files and any optional {@link Match.Configs}. It rejects if an error occurs. Some 
+   * Runs a match with the given files and any optional {@link Match.Configs}. It rejects if an error occurs. Some
    * errors include {@link MatchDestroyedError} which happens when {@link Match.destroy} is called.
-   * 
+   *
    * This also automatically stores matches into the {@link Database} if database is active and configured to save
-   * 
+   *
    * Resolves with the results of the match as specified by the {@link Design} of this {@link Dimension}
-   * 
+   *
    * @param files - List of files or objects to use to generate agents and use for a new match
    * @param matchOptions - Options for the created match
    * @param configs - Configurations that are `Design` dependent. These configs are passed into `Design.initialize`
    * `Design.update` and `Design.storeResults`
    */
   public async runMatch(
-    files: Array<string> | Array<{file: string, name: string, botkey?: string}>, 
+    files:
+      | Array<string>
+      | Array<{ file: string; name: string; botkey?: string }>,
     configs?: DeepPartial<Match.Configs>
   ): Promise<any> {
-
     let match = await this.createMatch(files, configs);
-    
+
     // Get results
     let results = await match.run();
 
@@ -322,50 +332,75 @@ export class Dimension {
     }
 
     // Return the results
-    return results
+    return results;
   }
 
   /**
    * Create a tournament
-   * 
-   * @param files - The initial files to make competitors in this tournament. Can also specify the name and an 
+   *
+   * @param files - The initial files to make competitors in this tournament. Can also specify the name and an
    * existingID, which is the playerID. If database is used, this existingID is used to find the assocciated user with
    * this ID.
-   * 
+   *
    * @param configs - Configuration for the tournament
-   * 
+   *
    * @see {@link Tournament} for the different tournament types
    * @returns a Tournament of the specified type
    */
   public createTournament(
-    files: Array<string> | Array<{file: string, name: string, existingId?: string}>,
+    files:
+      | Array<string>
+      | Array<{ file: string; name: string; existingId?: string }>,
     configs: Tournament.TournamentConfigsBase
   ): Tournament {
-      let id = Tournament.genTournamentClassID();
-      let newTourney: Tournament;
-      if (configs.loggingLevel === undefined) {
-        // set default logging level to that of the dimension
-        configs.loggingLevel = this.log.level;
-      }
+    let id = Tournament.genTournamentClassID();
+    let newTourney: Tournament;
+    if (configs.loggingLevel === undefined) {
+      // set default logging level to that of the dimension
+      configs.loggingLevel = this.log.level;
+    }
 
-      // merge default match configs from dimension
-      let dimensionDefaultMatchConfigs = deepCopy(this.configs.defaultMatchConfigs);
-      configs = deepMerge({defaultMatchConfigs: dimensionDefaultMatchConfigs}, configs);
-      
-      switch(configs.type) {
-        case Tournament.Type.ROUND_ROBIN:
-          newTourney = new Tournament.RoundRobin(this.design, files, configs, id, this);
-          break;
-        case Tournament.Type.LADDER:
-          newTourney = new Tournament.Ladder(this.design, files, configs, id, this);
-          break;
-        case Tournament.Type.ELIMINATION:
-          newTourney = new Tournament.Elimination(this.design, files, configs, id, this);
-          break;
-      }
-      this.statistics.tournamentsCreated++;
-      this.tournaments.set(newTourney.id, newTourney);
-      return newTourney;
+    // merge default match configs from dimension
+    let dimensionDefaultMatchConfigs = deepCopy(
+      this.configs.defaultMatchConfigs
+    );
+    configs = deepMerge(
+      { defaultMatchConfigs: dimensionDefaultMatchConfigs },
+      configs
+    );
+
+    switch (configs.type) {
+      case Tournament.Type.ROUND_ROBIN:
+        newTourney = new Tournament.RoundRobin(
+          this.design,
+          files,
+          configs,
+          id,
+          this
+        );
+        break;
+      case Tournament.Type.LADDER:
+        newTourney = new Tournament.Ladder(
+          this.design,
+          files,
+          configs,
+          id,
+          this
+        );
+        break;
+      case Tournament.Type.ELIMINATION:
+        newTourney = new Tournament.Elimination(
+          this.design,
+          files,
+          configs,
+          id,
+          this
+        );
+        break;
+    }
+    this.statistics.tournamentsCreated++;
+    this.tournaments.set(newTourney.id, newTourney);
+    return newTourney;
   }
   // TODO give option to directly create a Ladder/RoundRobin ... tourney with createLadderTournament etc.
 
@@ -391,10 +426,8 @@ export class Dimension {
   /**
    * Sets up necessary security and checks if everything is in place
    */
-  private setupSecurity() {
-  }
+  private setupSecurity() {}
 
-  
   /**
    * Generates a 6 character nanoID string for identifying dimensions
    */
@@ -404,11 +437,11 @@ export class Dimension {
 
   /**
    * Uses a particular plugin in the dimensions framework.
-   * 
+   *
    * @param plugin - the plugin
    */
   public async use(plugin: Plugin) {
-    switch(plugin.type) {
+    switch (plugin.type) {
       case Plugin.Type.DATABASE:
         this.log.info('Attaching Database Plugin ' + plugin.name);
         // set to unknown to tell dimensions that there is some kind of database, we dont what it is yet
@@ -418,7 +451,7 @@ export class Dimension {
         break;
       case Plugin.Type.STORAGE:
         this.log.info('Attaching Storage Plugin ' + plugin.name);
-        this.configs.backingStorage = 'unknown;'
+        this.configs.backingStorage = 'unknown;';
         this.storagePlugin = <Storage>plugin;
         await this.storagePlugin.initialize(this);
       default:
@@ -431,14 +464,19 @@ export class Dimension {
    * Returns true if dimension has a database backing it
    */
   public hasDatabase() {
-    return this.databasePlugin !== undefined && this.configs.backingDatabase !== DatabaseType.NONE;
+    return (
+      this.databasePlugin !== undefined &&
+      this.configs.backingDatabase !== DatabaseType.NONE
+    );
   }
 
   /**
    * Returns true if dimension has a storage plugin backing it
    */
   public hasStorage() {
-    return this.storagePlugin && this.configs.backingStorage !== StorageType.NONE;
+    return (
+      this.storagePlugin && this.configs.backingStorage !== StorageType.NONE
+    );
   }
 
   /**
@@ -451,8 +489,8 @@ export class Dimension {
     }
     this.log.info('Cleaning up');
     let cleanUpPromises: Array<Promise<any>> = [];
-    cleanUpPromises.push(this.cleanupMatches())
-    cleanUpPromises.push(this.cleanupTournaments())
+    cleanUpPromises.push(this.cleanupMatches());
+    cleanUpPromises.push(this.cleanupTournaments());
     if (this.getStation()) {
       cleanUpPromises.push(this.getStation().stop());
     }
@@ -475,7 +513,6 @@ export class Dimension {
     });
     return Promise.all(cleanUpPromises);
   }
-
 }
 
 /**
@@ -483,6 +520,9 @@ export class Dimension {
  * @param design - the design to use
  * @param configs - optional configurations for the dimension
  */
-export function create(design: Design, configs?: DeepPartial<DimensionConfigs>): Dimension {
+export function create(
+  design: Design,
+  configs?: DeepPartial<DimensionConfigs>
+): Dimension {
   return new Dimension(design, configs);
 }

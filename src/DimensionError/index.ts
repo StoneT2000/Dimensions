@@ -19,13 +19,12 @@ export class DimensionError extends Error {
 
     /**
      * See https://github.com/Microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
-     * for why we use this setPrototypeOf workaround. 
+     * for why we use this setPrototypeOf workaround.
      * This is so we can use the `instanceof` syntax instead of user defined type guards
      */
     Object.setPrototypeOf(this, DimensionError.prototype);
   }
 }
-
 
 /**
  * @class MatchWarn
@@ -35,14 +34,14 @@ export class DimensionError extends Error {
 export class MatchWarn extends Error {
   constructor(m: string) {
     super(m);
-    this.name = MATCH_WARN
+    this.name = MATCH_WARN;
     Object.setPrototypeOf(this, MatchWarn.prototype);
   }
 }
 
 /**
  * @class FatalError
- * @classdesc A generic fatal error that caused the Dimension framework to break. When thrown, this should stop the 
+ * @classdesc A generic fatal error that caused the Dimension framework to break. When thrown, this should stop the
  * process
  */
 export class FatalError extends Error {

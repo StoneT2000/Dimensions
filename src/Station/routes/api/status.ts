@@ -4,14 +4,11 @@
 import express, { Request, Response } from 'express';
 const router = express.Router();
 
-router.get('/test', (req:Request, res: Response) => res.send('API online!'));
+router.get('/test', (req: Request, res: Response) => res.send('API online!'));
 
 router.get('/dimensions', (req, res) => {
   res.json(req.app.get('dimensions'));
   res.send(JSON.stringify(res.app));
 });
 
-
-export default router
-
-
+export default router;

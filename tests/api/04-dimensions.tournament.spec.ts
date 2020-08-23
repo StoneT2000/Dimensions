@@ -1,35 +1,47 @@
 import * as Dimension from '../../src';
 import chai, { expect } from 'chai';
-import chaiHttp from 'chai-http'
+import chaiHttp from 'chai-http';
 import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
-import sinonChai from "sinon-chai";
+import sinonChai from 'sinon-chai';
 import 'mocha';
 import { Logger, Tournament } from '../../src';
 import { RockPaperScissorsDesign } from '../rps';
 import { Ladder } from '../../src/Tournament/Ladder';
 import { createLadderTourney } from '../core/tourney/utils';
 import { sleep } from '../../src/utils';
-chai.should()
+chai.should();
 chai.use(sinonChai);
-chai.use(chaiSubset)
+chai.use(chaiSubset);
 chai.use(chaiAsPromised);
-chai.use(chaiHttp)
+chai.use(chaiHttp);
 
 describe('Testing /api/dimensions/:dimensionID/tournaments API', () => {
   const base = '/api/dimensions/:dimensionID';
-  let origin = "http://localhost:"
+  let origin = 'http://localhost:';
   let endpoint = '';
-  let dimension: Dimension.DimensionType
+  let dimension: Dimension.DimensionType;
   let t: Ladder;
   const paper = './tests/kits/js/normal/paper.js';
-  const rock = './tests/kits/js/normal/rock.js'
+  const rock = './tests/kits/js/normal/rock.js';
   const botList = [rock, paper];
   // list of bots
   const botListWithIDs = [
-    {file: './tests/kits/js/normal/rock.js', name: 'rock1', existingID:'rock1'},
-    {file: './tests/kits/js/normal/rock.js', name: 'rock2', existingID:'rock2'},
-    {file: './tests/kits/js/normal/rock.js', name: 'rock3', existingID:'rock3'},
+    {
+      file: './tests/kits/js/normal/rock.js',
+      name: 'rock1',
+      existingID: 'rock1',
+    },
+    {
+      file: './tests/kits/js/normal/rock.js',
+      name: 'rock2',
+      existingID: 'rock2',
+    },
+    {
+      file: './tests/kits/js/normal/rock.js',
+      name: 'rock3',
+      existingID: 'rock3',
+    },
   ];
   before(() => {
     let rpsDesign = new RockPaperScissorsDesign('RPS');
@@ -37,53 +49,50 @@ describe('Testing /api/dimensions/:dimensionID/tournaments API', () => {
       activateStation: true,
       observe: true,
       loggingLevel: Logger.LEVEL.NONE,
-      id: "abcdef4",
+      id: 'abcdef4',
       defaultMatchConfigs: {
-        storeErrorLogs: false
-      }
+        storeErrorLogs: false,
+      },
     });
-    origin += dimension.getStation().port
-    endpoint = origin + `/api/dimensions/${dimension.id}`
+    origin += dimension.getStation().port;
+    endpoint = origin + `/api/dimensions/${dimension.id}`;
     t = createLadderTourney(dimension, botList, {
-      id: 'tournamentid'
+      id: 'tournamentid',
     });
   });
   it(`GET ${base}/tournaments - should return all tournaments`, async () => {
-    let res = await chai.request(endpoint)
-    .get(`/tournaments`)
+    let res = await chai.request(endpoint).get(`/tournaments`);
     expect(res.status).to.equal(200);
     expect({
       error: null,
       tournaments: {
-        tournamentid: t
-      }
-    }).to.containSubset(res.body)
+        tournamentid: t,
+      },
+    }).to.containSubset(res.body);
   });
 
   it(`GET ${base}/tournaments/:tournamentID - should return tournament with id tournamentID`, async () => {
-    let res = await chai.request(endpoint)
-    .get(`/tournaments/${t.id}`)
+    let res = await chai.request(endpoint).get(`/tournaments/${t.id}`);
     expect(res.status).to.equal(200);
     expect({
       error: null,
-      tournament: t
-    }).to.containSubset(res.body)
+      tournament: t,
+    }).to.containSubset(res.body);
   });
 
   it(`GET ${base}/tournaments/:tournamentID - should return 400, if tournament with id tournamentID does not exist`, async () => {
-    let res = await chai.request(endpoint)
-    .get(`/tournaments/faketournamentID`)
+    let res = await chai.request(endpoint).get(`/tournaments/faketournamentID`);
     expect(res.status).to.equal(400);
     expect(res.body).to.eql({
       error: {
         status: 400,
-        message: `No tournament found with name or id of 'faketournamentID' in dimension ${dimension.id} - '${dimension.name}'`
-      }
+        message: `No tournament found with name or id of 'faketournamentID' in dimension ${dimension.id} - '${dimension.name}'`,
+      },
     });
   });
 
   it(`POST ${base}/tournaments/:tournamentID/match-queue - should schedule matches`, async () => {
-    return new Promise( async (resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       let t = createLadderTourney(dimension, botListWithIDs, {
         id: 'ladderWithoutSelfMatchmake',
         tournamentConfigs: {
@@ -91,16 +100,21 @@ describe('Testing /api/dimensions/:dimensionID/tournaments API', () => {
         },
         defaultMatchConfigs: {
           bestOf: 9,
-        }
+        },
       });
-      let matchQueue = [['rock1', 'rock2'], ['rock2', 'rock3']]
+      let matchQueue = [
+        ['rock1', 'rock2'],
+        ['rock2', 'rock3'],
+      ];
       await t.run();
-      let res = await chai.request(endpoint)
-      .post(`/tournaments/${t.id}/match-queue`).send({ matchQueue })
+      let res = await chai
+        .request(endpoint)
+        .post(`/tournaments/${t.id}/match-queue`)
+        .send({ matchQueue });
       expect(res.status).to.equal(200);
       expect(res.body).to.eql({
         error: null,
-        message: `Queued ${matchQueue.length} matches`
+        message: `Queued ${matchQueue.length} matches`,
       });
       let count = 0;
       t.on(Tournament.Events.MATCH_HANDLED, async () => {
@@ -111,10 +125,9 @@ describe('Testing /api/dimensions/:dimensionID/tournaments API', () => {
             expect(t.state.playerStats.get('rock3').matchesPlayed).to.equal(1);
             await t.destroy();
             resolve();
-          }
-          catch(err) {
+          } catch (err) {
             await t.destroy();
-            reject(err)
+            reject(err);
           }
         }
       });

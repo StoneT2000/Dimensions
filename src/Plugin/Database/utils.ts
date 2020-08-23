@@ -8,27 +8,30 @@ require('dotenv').config();
  */
 export function generateToken(user: Database.User) {
   let u = {
-   username: user.username,
-   playerID: user.playerID,
-   creationDate: user.creationDate
+    username: user.username,
+    playerID: user.playerID,
+    creationDate: user.creationDate,
   };
 
   // Return the JWT Token
   return jwt.sign(u, process.env.JWT_SECRET, {
-     expiresIn: 7 * 60 * 60 * 24 // expires in 1 week
+    expiresIn: 7 * 60 * 60 * 24, // expires in 1 week
   });
 }
 
 /**
  * Verify a jwt
- * @param token - the jwt to verify 
+ * @param token - the jwt to verify
  */
-export async function verify(token: string) : Promise<any> {
-  return new Promise( (resolve, reject) => {
-    jwt.verify(token, process.env.JWT_SECRET, (err: Error, user: Database.User) => {
-      if (err) reject(err);
-      resolve(user);
-    });
-
-  })
+export async function verify(token: string): Promise<any> {
+  return new Promise((resolve, reject) => {
+    jwt.verify(
+      token,
+      process.env.JWT_SECRET,
+      (err: Error, user: Database.User) => {
+        if (err) reject(err);
+        resolve(user);
+      }
+    );
+  });
 }

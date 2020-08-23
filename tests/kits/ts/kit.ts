@@ -12,7 +12,6 @@ export class Agent {
   public id: number;
   public roundResults: Array<number> = [];
   _setup() {
-
     // Prepare to read input
     const rl = readline.createInterface({
       input: process.stdin,
@@ -21,7 +20,7 @@ export class Agent {
 
     let buffer = [];
     let currentResolve;
-    const makePromise = function() {
+    const makePromise = function () {
       return new Promise((resolve) => {
         currentResolve = resolve;
       });
@@ -35,7 +34,7 @@ export class Agent {
 
     // The current promise for retrieving the next line
     let currentPromise = makePromise();
-    
+
     // with await, we pause process until there is input
     const getLine = async (): Promise<Parsed> => {
       return new Promise(async (resolve) => {
@@ -63,10 +62,9 @@ export class Agent {
    * User should edit this according to their `Design`
    */
   async initialize() {
-
     // use (await this.getLine()) to get a parsed line of commands from the match engine
     // This parsed line is an object from which you can get the nextInt, nextFloat, nextIntArr etc..
-    
+
     // get agent ID
     this.id = (await this.getLine()).nextInt();
     // get some other necessary initial input
@@ -77,7 +75,6 @@ export class Agent {
    * User should edit this according to their `Design`.
    */
   async update() {
-
     // wait for the engine to send the result of the last round, which is the ID of the agent who won
     let result = (await this.getLine()).nextInt();
     this.roundResults.push(result);

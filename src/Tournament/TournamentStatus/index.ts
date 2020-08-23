@@ -13,5 +13,5 @@ export enum TournamentStatus {
   /** Tournament crashed some how */
   CRASHED = 'crashed',
   /** Tournament is done */
-  FINISHED = 'finished'
+  FINISHED = 'finished',
 }
