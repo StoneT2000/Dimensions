@@ -181,7 +181,7 @@ router.delete('/:tournamentID/match/:matchID', requireAdmin, (req, res, next) =>
  * 
  * Removes a player with specified playerID
  */
-router.delete('/:tournamentID/player/:playerID', requireAuth, (req, res, next) => {
+router.delete('/:tournamentID/players/:playerID', requireAuth, (req, res, next) => {
   if (!req.data.dimension.databasePlugin.isAdmin(req.data.user) && req.params.playerID !== req.data.user.playerID) {
     return next(new error.Unauthorized(`Insufficient permissions to delete this player`));
   }
@@ -202,7 +202,7 @@ router.delete('/:tournamentID/player/:playerID', requireAuth, (req, res, next) =
  * 
  * Retrieves player stat of the ongoing tournament
  */
-router.get('/:tournamentID/player/:playerID', async (req, res, next) => {
+router.get('/:tournamentID/players/:playerID', async (req, res, next) => {
   let tournament = req.data.tournament;
   let { user, playerStat } = await tournament.getPlayerStat(req.params.playerID);
   if (playerStat) {
@@ -219,7 +219,7 @@ router.get('/:tournamentID/player/:playerID', async (req, res, next) => {
  * 
  * Retrieves past player matches. Requires a backing database
  */
-router.get('/:tournamentID/player/:playerID/match', async (req, res, next) => {
+router.get('/:tournamentID/players/:playerID/match', async (req, res, next) => {
   if (!req.query.offset || !req.query.limit || !req.query.order) return next(new error.BadRequest('Missing params'));
   let tournament = req.data.tournament;
   let db = req.data.dimension.databasePlugin;
@@ -241,7 +241,7 @@ router.get('/:tournamentID/player/:playerID/match', async (req, res, next) => {
  * 
  * Returns a url to download the bot if a storage service is provided, otherwise directly returns the bot file
  */
-router.get('/:tournamentID/player/:playerID/bot', requireAuth, async (req, res, next) => {
+router.get('/:tournamentID/players/:playerID/bot', requireAuth, async (req, res, next) => {
   if (!req.data.dimension.databasePlugin.isAdmin(req.data.user) && req.params.playerID !== req.data.user.playerID) {
     return next(new error.Unauthorized(`Insufficient permissions to retrieve this player`));
   }

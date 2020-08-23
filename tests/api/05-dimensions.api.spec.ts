@@ -15,8 +15,8 @@ chai.use(chaiSubset)
 chai.use(chaiAsPromised);
 chai.use(chaiHttp)
 
-describe('Testing /api/dimensions/:dimensionID/user API', () => {
-  const base = '/api/dimensions/:dimensionID/user';
+describe('Testing /api/dimensions/:dimensionID/users API', () => {
+  const base = '/api/dimensions/:dimensionID/users';
   let origin = "http://localhost:"
   let endpoint = '';
   let d: Dimension.DimensionType;
@@ -35,7 +35,7 @@ describe('Testing /api/dimensions/:dimensionID/user API', () => {
       }
     });
     origin += d.getStation().port
-    endpoint = origin + `/api/dimensions/${d.id}/user`
+    endpoint = origin + `/api/dimensions/${d.id}/users`
     await d.use(mongo);
   });
 
