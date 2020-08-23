@@ -1,5 +1,3 @@
-import { exec } from 'child_process';
-
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
 import { genID } from '../utils';
@@ -410,7 +408,7 @@ export class Dimension {
   /**
    * Removes a match by id. Returns true if removed, false if nothing was removed
    */
-  public async removeMatch(matchID: NanoID) {
+  public async removeMatch(matchID: NanoID): Promise<boolean> {
     if (this.matches.has(matchID)) {
       const match = this.matches.get(matchID);
       await match.destroy();
@@ -422,12 +420,14 @@ export class Dimension {
   /**
    * Sets up necessary security and checks if everything is in place
    */
-  private setupSecurity() {}
+  private setupSecurity() {
+    //
+  }
 
   /**
    * Generates a 6 character nanoID string for identifying dimensions
    */
-  public static genDimensionID() {
+  public static genDimensionID(): string {
     return genID(6);
   }
 
@@ -436,7 +436,7 @@ export class Dimension {
    *
    * @param plugin - the plugin
    */
-  public async use(plugin: Plugin) {
+  public async use(plugin: Plugin): Promise<void> {
     switch (plugin.type) {
       case Plugin.Type.DATABASE:
         this.log.info('Attaching Database Plugin ' + plugin.name);
@@ -450,6 +450,7 @@ export class Dimension {
         this.configs.backingStorage = 'unknown;';
         this.storagePlugin = <Storage>plugin;
         await this.storagePlugin.initialize(this);
+        break;
       default:
         break;
     }
@@ -459,7 +460,7 @@ export class Dimension {
   /**
    * Returns true if dimension has a database backing it
    */
-  public hasDatabase() {
+  public hasDatabase(): boolean {
     return (
       this.databasePlugin !== undefined &&
       this.configs.backingDatabase !== DatabaseType.NONE
@@ -469,7 +470,7 @@ export class Dimension {
   /**
    * Returns true if dimension has a storage plugin backing it
    */
-  public hasStorage() {
+  public hasStorage(): boolean {
     return (
       this.storagePlugin && this.configs.backingStorage !== StorageType.NONE
     );
@@ -479,7 +480,7 @@ export class Dimension {
    * Cleanup function that cleans up any resources used and related to this dimension. For use right before
    * process exits and during testing.
    */
-  async cleanup() {
+  async cleanup(): Promise<void> {
     if (this.cleaningUp) {
       return this.cleaningUp;
     }
@@ -494,7 +495,7 @@ export class Dimension {
     await this.cleaningUp;
   }
 
-  async cleanupMatches() {
+  async cleanupMatches(): Promise<Array<void>> {
     const cleanUpPromises: Array<Promise<void>> = [];
     this.matches.forEach((match) => {
       cleanUpPromises.push(match.destroy());
@@ -502,7 +503,7 @@ export class Dimension {
     return Promise.all(cleanUpPromises);
   }
 
-  async cleanupTournaments() {
+  async cleanupTournaments(): Promise<Array<void>> {
     const cleanUpPromises: Array<Promise<void>> = [];
     this.tournaments.forEach((tournament) => {
       cleanUpPromises.push(tournament.destroy());

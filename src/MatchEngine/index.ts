@@ -71,15 +71,15 @@ export class MatchEngine {
   }
 
   /** Set log level */
-  setLogLevel(loggingLevel: Logger.LEVEL) {
+  setLogLevel(loggingLevel: Logger.LEVEL): void {
     this.log.level = loggingLevel;
   }
   /** Get the engine options */
-  getEngineOptions() {
+  getEngineOptions(): EngineOptions {
     return this.engineOptions;
   }
   /** Set the engine options */
-  setEngineOptions(newOptions: DeepPartial<EngineOptions> = {}) {
+  setEngineOptions(newOptions: DeepPartial<EngineOptions> = {}): void {
     this.engineOptions = deepMerge(this.engineOptions, newOptions);
   }
 
@@ -94,7 +94,7 @@ export class MatchEngine {
 
     const agentSetupPromises: Array<Promise<void>> = [];
 
-    match.agents.forEach((agent: Agent, index: number) => {
+    match.agents.forEach((agent: Agent) => {
       agentSetupPromises.push(this.initializeAgent(agent, match));
     }, this);
 
@@ -369,7 +369,7 @@ export class MatchEngine {
    * Attempts to gracefully and synchronously stop a match's agents
    * @param match - the match to stop
    */
-  public async stop(match: Match) {
+  public async stop(match: Match): Promise<void> {
     const stopPromises: Array<Promise<void>> = [];
     match.agents.forEach((agent) => {
       stopPromises.push(agent.stop());
@@ -382,7 +382,7 @@ export class MatchEngine {
    * Attempts to gracefully and synchronously resume a previously stopped match
    * @param match - the match to resume
    */
-  public async resume(match: Match) {
+  public async resume(match: Match): Promise<void> {
     const resumePromises: Array<Promise<void>> = [];
     match.agents.forEach((agent) => {
       resumePromises.push(agent.resume());
@@ -397,7 +397,7 @@ export class MatchEngine {
    *
    * @param match - the match to kill all agents in and clean up
    */
-  public async killAndClean(match: Match) {
+  public async killAndClean(match: Match): Promise<void> {
     // set to true to ensure no more processes are being spawned.
     this.killOffSignal = true;
     clearInterval(this.memoryWatchInterval);
@@ -414,7 +414,7 @@ export class MatchEngine {
    * Kills an agent and closes the process, and no longer attempts to receive coommands from it anymore
    * @param agent - the agent to kill off
    */
-  public async kill(agent: Agent, reason = 'unspecified') {
+  public async kill(agent: Agent, reason = 'unspecified'): Promise<void> {
     try {
       await agent._terminate();
       this.log.system(
@@ -506,7 +506,7 @@ export class MatchEngine {
   /**
    * @param match - The match to initialize with a custom design
    */
-  async initializeCustom(match: Match): Promise<boolean> {
+  async initializeCustom(): Promise<boolean> {
     // TODO: Initialize a custom design based match and run through some basic security measures
     return true;
   }
@@ -633,7 +633,7 @@ export class MatchEngine {
    * Attempts to stop a {@link Match} based on a custom {@link Design}
    * @param match - the match to stop
    */
-  public async stopCustom(match: Match) {
+  public async stopCustom(match: Match): Promise<void> {
     // attempt to stop the match
     match.matchProcess.kill('SIGSTOP');
     // TODO: stop the match process timer
@@ -643,7 +643,7 @@ export class MatchEngine {
    * Attempts to resume a {@link Match} based on a custom {@link Design}
    * @param match - the match to resume
    */
-  public async resumeCustom(match: Match) {
+  public async resumeCustom(match: Match): Promise<void> {
     // attempt to resume the match
     match.matchProcess.kill('SIGCONT');
   }
@@ -652,7 +652,7 @@ export class MatchEngine {
    * Attempts to kill and clean up anything else for a custom design based match
    * @param match - the match to kill and clean up
    */
-  public async killAndCleanCustom(match: Match) {
+  public async killAndCleanCustom(match: Match): Promise<void> {
     if (match.matchProcess) match.matchProcess.kill('SIGKILL');
   }
 
@@ -717,7 +717,7 @@ export class MatchEngine {
   /**
    * Returns the logger for this match engine
    */
-  public getLogger() {
+  public getLogger(): Logger {
     return this.log;
   }
 }

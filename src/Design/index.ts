@@ -59,7 +59,7 @@ export abstract class Design {
    * Set log level of the design
    * @param level - level to set design logger to
    */
-  setLogLevel(level: Logger.LEVEL) {
+  setLogLevel(level: Logger.LEVEL): void {
     this.log.level = level;
   }
 
@@ -124,7 +124,7 @@ export abstract class Design {
   public static createCustom(
     name: string,
     overrideOptions: DeepPartial<Design.OverrideOptions>
-  ) {
+  ): Design {
     return new CustomDesign(name, overrideOptions);
   }
 }
@@ -219,7 +219,7 @@ export const DefaultDesignOptions: DesignOptions = {
         agent: Agent,
         match: Match,
         engineOptions: EngineOptions
-      ) => {
+      ): void => {
         match.kill(agent.id, 'timed out');
         match.log.error(
           `agent ${agent.id} - '${agent.name}' timed out after ${engineOptions.timeout.max} ms`
@@ -239,7 +239,7 @@ export const DefaultDesignOptions: DesignOptions = {
         agent: Agent,
         match: Match,
         engineOptions: EngineOptions
-      ) => {
+      ): void => {
         match.kill(agent.id, 'exceed memory limit');
         match.log.error(
           `agent ${agent.id} - '${agent.name}' reached the memory limit of ${

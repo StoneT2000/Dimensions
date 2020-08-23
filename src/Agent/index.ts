@@ -20,6 +20,7 @@ import { processIsRunning, dockerCopy } from '../utils/System';
 import { deepCopy } from '../utils/DeepCopy';
 import { DeepPartial } from '../utils/DeepPartial';
 import { Writable, Readable, EventEmitter, Stream, Duplex } from 'stream';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import Dockerode, { HostConfig } from 'dockerode';
 import { isChildProcess } from '../utils/TypeGuards';
 import pidusage from 'pidusage';
@@ -231,7 +232,7 @@ export class Agent extends EventEmitter {
     name: string,
     docker: Dockerode,
     engineOptions: MatchEngine.EngineOptions
-  ) {
+  ): Promise<void> {
     const HostConfig: HostConfig = {
       // apply seccomp profile for security
       SecurityOpt: [`seccomp=${DefaultSeccompProfileString}`],
@@ -266,6 +267,7 @@ export class Agent extends EventEmitter {
     stdoutWritestream: Writable,
     engineOptions: MatchEngine.EngineOptions
   ): Promise<void> {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       // if there is a install.sh file, use it
       if (fs.existsSync(path.join(this.cwd, 'install.sh'))) {
@@ -377,6 +379,7 @@ export class Agent extends EventEmitter {
     stdoutWritestream: Writable,
     engineOptions: MatchEngine.EngineOptions
   ): Promise<void> {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       let p: ChildProcess | Agent.ContainerExecData;
       let stdout: Readable;
@@ -578,9 +581,10 @@ export class Agent extends EventEmitter {
       switch (this.ext) {
         case '.py':
         case '.js':
-        case '.php':
+        case '.php': {
           const p = this._spawnProcess(this.cmd, [this.src]);
           return p;
+        }
         case '.ts':
           return this._spawnProcess(this.cmd, [this.srcNoExt + '.js']);
         case '.java':
@@ -628,7 +632,7 @@ export class Agent extends EventEmitter {
   /**
    * Stop an agent provided it is not terminated. To terminate it, see {@link _terminate};
    */
-  async stop() {
+  async stop(): Promise<void> {
     if (!this.isTerminated()) {
       if (this.options.secureMode) {
         await this.container.pause();
@@ -642,7 +646,7 @@ export class Agent extends EventEmitter {
   /**
    * Resume an agent as long it is not terminated already
    */
-  async resume() {
+  async resume(): Promise<void> {
     if (!this.isTerminated()) {
       this._allowCommands();
       if (this.options.secureMode) {
@@ -657,7 +661,7 @@ export class Agent extends EventEmitter {
   /**
    * timeout the agent
    */
-  timeout() {
+  timeout(): void {
     if (this.errorLogWriteStream) {
       this.errorLogWriteStream.write('Agent timed out');
     }
@@ -667,7 +671,7 @@ export class Agent extends EventEmitter {
   /**
    * call out agent for exceeding memory limit
    */
-  overMemory() {
+  overMemory(): void {
     if (this.errorLogWriteStream) {
       this.errorLogWriteStream.write('Agent exceeded memory limit');
     }
@@ -677,7 +681,7 @@ export class Agent extends EventEmitter {
   /**
    * Whether or not input is destroyed
    */
-  inputDestroyed() {
+  inputDestroyed(): boolean {
     return this.streams.in.destroyed;
   }
 
@@ -686,14 +690,14 @@ export class Agent extends EventEmitter {
    * @param message - the message
    * @param callback - callback function
    */
-  write(message: string, callback: (error: Error) => void) {
+  write(message: string, callback: (error: Error) => void): void {
     this.streams.in.write(message, callback);
   }
 
   /**
    * Get process of agent
    */
-  _getProcess() {
+  _getProcess(): ChildProcess {
     return this.process;
   }
 
@@ -701,14 +705,14 @@ export class Agent extends EventEmitter {
    * Store process for agent
    * @param p - process to store
    */
-  _storeProcess(p: ChildProcess) {
+  _storeProcess(p: ChildProcess): void {
     this.process = p;
   }
 
   /**
    * Returns true if this agent was terminated and no longer send or receive emssages
    */
-  isTerminated() {
+  isTerminated(): boolean {
     return this.status === Agent.Status.KILLED;
   }
 
@@ -718,6 +722,7 @@ export class Agent extends EventEmitter {
    */
   _terminate(): Promise<void> {
     this.status = Agent.Status.KILLED;
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       if (this.options.secureMode) {
         if (this.container) {
@@ -762,28 +767,28 @@ export class Agent extends EventEmitter {
   /**
    * Disallow an agent from sending more commands
    */
-  _disallowCommands() {
+  _disallowCommands(): void {
     this.allowedToSendCommands = false;
   }
 
   /**
    * Allow agent to send commands again
    */
-  _allowCommands() {
+  _allowCommands(): void {
     this.allowedToSendCommands = true;
   }
 
   /**
    * Check if agent is set to be allowed to send commands. The {@link EngineOptions} affect when this is flipped
    */
-  isAllowedToSendCommands() {
+  isAllowedToSendCommands(): boolean {
     return this.allowedToSendCommands;
   }
 
   /**
    * Setup the agent timer clear out method
    */
-  _setTimeout(fn: Function, delay: number, ...args: any[]) {
+  _setTimeout(fn: Function, delay: number, ...args: any[]): void {
     const timer = setTimeout(() => {
       fn(...args);
     }, delay);
@@ -795,7 +800,7 @@ export class Agent extends EventEmitter {
   /**
    * Stop this agent from more outputs and mark it as done for now and awaiting for updates
    */
-  async _finishMove() {
+  async _finishMove(): Promise<void> {
     this._clearTimer();
 
     // Resolve move and tell engine in `getCommands` this agent is done outputting commands and awaits input
@@ -811,7 +816,7 @@ export class Agent extends EventEmitter {
   }
 
   // Start an Agent's move and setup the promise structures
-  _setupMove() {
+  _setupMove(): void {
     // allows agent to send commands; increment time; clear past commands; reset the promise structure
     this.allowedToSendCommands = true;
     this.agentTimeStep++;
@@ -826,7 +831,7 @@ export class Agent extends EventEmitter {
    * Used by {@link MatchEngine} only. Setups the memory watcher if docker is not used.
    * @param engineOptions - engine options to configure the agent with
    */
-  _setupMemoryWatcher(engineOptions: MatchEngine.EngineOptions) {
+  _setupMemoryWatcher(engineOptions: MatchEngine.EngineOptions): void {
     const checkAgentMemoryUsage = () => {
       // setting { maxage: 0 } because otherwise pidusage leaves interval "memory leaks" and process doesn't exit fast
       if (processIsRunning(this.process.pid)) {
@@ -861,8 +866,7 @@ export class Agent extends EventEmitter {
   static generateAgents(
     files:
       | Array<string>
-      | Array<{ file: string; name: string }>
-      | Array<{ file: string; tournamentID: Tournament.ID }>,
+      | Array<{ file: string; name?: string; tournamentID?: Tournament.ID }>,
     options: DeepPartial<Agent.Options>
   ): Array<Agent> {
     if (files.length === 0) {
@@ -877,32 +881,27 @@ export class Agent extends EventEmitter {
       files.forEach((file, index: number) => {
         const configs = deepCopy(options);
         configs.id = index;
-        //@ts-ignore
-        agents.push(new Agent(file, configs));
+        agents.push(new Agent(file, <Agent.Options>configs));
       });
-    }
-    //@ts-ignore
-    else if (files[0].name !== undefined) {
+    } else if (files[0].name !== undefined) {
       files.forEach((info, index: number) => {
         const configs = deepCopy(options);
         configs.id = index;
         configs.name = info.name;
-        //@ts-ignore
-        agents.push(new Agent(info.file, configs));
+        agents.push(new Agent(info.file, <Agent.Options>configs));
       });
     } else {
       files.forEach((info, index: number) => {
         const configs = deepCopy(options);
         configs.id = index;
         configs.tournamentID = info.tournamentID;
-        //@ts-ignore
-        agents.push(new Agent(info.file, configs));
+        agents.push(new Agent(info.file, <Agent.Options>configs));
       });
     }
     return agents;
   }
 
-  getAgentErrorLogFilename() {
+  getAgentErrorLogFilename(): string {
     return `agent_${this.id}.log`;
   }
 }

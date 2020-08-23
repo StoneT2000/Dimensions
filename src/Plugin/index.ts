@@ -55,6 +55,8 @@ export namespace Plugin {
   }
 
   // re-export some classes
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   export import Database = _Database;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   export import Storage = _Storage;
 }
