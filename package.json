@@ -17,7 +17,8 @@
     "clean": "./cleanup.sh",
     "services:start": "docker-compose -f tests/dimension-docker/docker-compose.yml up -d",
     "services:stop": "docker-compose -f tests/dimension-docker/docker-compose.yml down",
-    "prettier": "prettier --write 'src/**/*.ts' 'tests/**/*.ts'"
+    "prettier": "prettier --write 'src/**/*.ts' 'tests/**/*.ts'",
+    "lint": "eslint . --ext .ts"
   },
   "keywords": [
     "AI",
@@ -65,11 +66,14 @@
     "@types/seedrandom": "^2.4.28",
     "@types/sinon": "^9.0.0",
     "@types/sinon-chai": "^3.2.4",
+    "@typescript-eslint/eslint-plugin": "^3.9.1",
+    "@typescript-eslint/parser": "^3.9.1",
     "axios": "^0.19.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "chai-http": "^4.3.0",
     "chai-subset": "^1.6.0",
+    "eslint": "^7.7.0",
     "mocha": "^7.1.1",
     "mongo-seeding": "^3.4.1",
     "nyc": "^15.0.1",

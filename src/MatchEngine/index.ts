@@ -16,7 +16,6 @@ import { Agent } from '../Agent';
 import { Match } from '../Match';
 import Dockerode from 'dockerode';
 import { isChildProcess } from '../utils/TypeGuards';
-import { match } from 'sinon';
 
 /** @ignore */
 type EngineOptions = MatchEngine.EngineOptions;
