@@ -3,8 +3,6 @@
  */
 import express, { Request, Response, NextFunction } from 'express';
 import * as error from '../../../../error';
-import { requiresDatabase } from '..';
-import { Database } from '../../../../../Plugin/Database';
 const router = express.Router();
 
 /**
@@ -14,7 +12,7 @@ export const requireAuth = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   if (!req.data.dimension.hasDatabase()) {
     next();
     return;
@@ -41,7 +39,11 @@ export const requireAuth = (
 /**
  * Doesn't require auth, just stores user data if supplied
  */
-export const storeAuth = (req: Request, res: Response, next: NextFunction) => {
+export const storeAuth = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   if (!req.data.dimension.hasDatabase()) {
     next();
     return;
@@ -73,7 +75,7 @@ export const requireAdmin = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   if (!req.data.dimension.hasDatabase()) {
     next();
     return;
@@ -112,7 +114,7 @@ router.post('/register', (req, res, next) => {
   const dimension = req.data.dimension;
   dimension.databasePlugin
     .registerUser(req.body.username, req.body.password, req.body.userData)
-    .then((user) => {
+    .then(() => {
       res.json({ error: null, msg: 'success' });
     })
     .catch(next);

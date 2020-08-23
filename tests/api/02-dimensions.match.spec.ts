@@ -7,6 +7,7 @@ import sinonChai from 'sinon-chai';
 import 'mocha';
 import { Logger, Match } from '../../src';
 import { RockPaperScissorsDesign } from '../rps';
+import { noop } from '../../src/utils';
 chai.should();
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -106,7 +107,9 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
     });
     try {
       await match.run();
-    } catch (err) {}
+    } catch (err) {
+      // do nothing
+    }
     expect(match.matchStatus).to.equal(Match.Status.FINISHED);
     match.configs.bestOf = 101;
     const res = await chai.request(endpoint).post(`/match/${match.id}/run`);
@@ -121,7 +124,7 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
     });
 
     // run match and ignore error if it is destroyed
-    match.run().catch(() => {});
+    match.run().catch(noop);
     const res = await chai.request(endpoint).post(`/match/${match.id}/run`);
     expect(res.status).to.equal(400);
     expect(match.matchStatus).to.equal(Match.Status.RUNNING);
@@ -137,7 +140,7 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
     const match = await dimension.createMatch(botList, {
       bestOf: 9,
     });
-    match.run().catch(() => {});
+    match.run().catch(noop);
     const res = await chai.request(endpoint).post(`/match/${match.id}/stop`);
     expect(res.status).to.equal(200);
   });
@@ -168,7 +171,7 @@ describe('Testing /api/dimensions/:dimensionID/match API', () => {
         status: 400,
       },
     });
-    const runPromise = match.run().catch(() => {});
+    const runPromise = match.run().catch(noop);
     await match.stop();
     expect(match.matchStatus).to.equal(Match.Status.STOPPED);
     res = await chai.request(endpoint).post(`/match/${match.id}/stop`);

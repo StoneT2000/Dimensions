@@ -24,6 +24,7 @@ import Dockerode, { HostConfig } from 'dockerode';
 import { isChildProcess } from '../utils/TypeGuards';
 import pidusage from 'pidusage';
 import DefaultSeccompProfileJSON from '../Security/seccomp/default.json';
+import { noop } from '../utils';
 
 const DefaultSeccompProfileString = JSON.stringify(DefaultSeccompProfileJSON);
 
@@ -128,14 +129,14 @@ export class Agent extends EventEmitter {
   public _currentMovePromise: Promise<void>;
 
   /* istanbul ignore next */
-  public _currentMoveResolve: Function = () => {}; // set as a dummy function
+  public _currentMoveResolve: Function = noop; // set as a dummy function
   public _currentMoveReject: Function;
 
   /** A number that counts the number of times the agent has essentially interacted with the {@link MatchEngine} */
   public agentTimeStep = 0;
 
   /** Clears out the timer associated with the agent during a match */
-  public _clearTimer: Function = () => {};
+  public _clearTimer: Function = noop;
 
   errorLogWriteStream: WriteStream = null;
 

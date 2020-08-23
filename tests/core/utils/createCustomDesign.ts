@@ -1,8 +1,7 @@
-import { Dimension } from '../../../src/Dimension';
 import { Design, Tournament } from '../../../src';
 
-export const createCustomDesign = () => {
-  let c = Design.createCustom('custom game', {
+export const createCustomDesign = (): Design => {
+  const c = Design.createCustom('custom game', {
     command: './tests/customdesign/run.sh',
     arguments: [
       'D_FILES',
@@ -11,8 +10,8 @@ export const createCustomDesign = () => {
       'D_MATCH_NAME',
       'D_NAMEs',
     ],
-    resultHandler: (res) => {
-      let ranks: Tournament.RankSystem.TRUESKILL.Results = {
+    resultHandler: () => {
+      const ranks: Tournament.RankSystem.TRUESKILL.Results = {
         ranks: [
           { agentID: 0, rank: 1 },
           { agentID: 1, rank: 2 },

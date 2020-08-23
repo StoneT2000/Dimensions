@@ -1,9 +1,7 @@
-import { strip } from 'colors';
-
-export const stripFunctions = (object: Object) => {
-  let seen = new Set<Object>();
-  const helper = (object: Object) => {
-    for (let key in object) {
+export const stripFunctions = (object: object): any => {
+  const seen = new Set<string>();
+  const helper = (object: Record<string, any>) => {
+    for (const key in object) {
       if (!seen.has(key)) {
         seen.add(key);
         if (

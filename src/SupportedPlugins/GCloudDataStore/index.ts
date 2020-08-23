@@ -43,13 +43,13 @@ export class GCloudDataStore extends Database {
   }
 
   public async storeMatch(match: Match, governID: NanoID): Promise<any> {
-    let data = { ...pickMatch(match), governID: governID };
+    const data = { ...pickMatch(match), governID: governID };
     // store all relevant data and strip functions
-    data = stripFunctions(deepCopy(data));
+    const strippedData = stripFunctions(deepCopy(data));
     const key = this.getMatchDatastoreKey(match.id);
     return this.datastore.save({
       key: key,
-      data: data,
+      data: strippedData,
     });
   }
   public async getMatch(id: NanoID): Promise<any> {

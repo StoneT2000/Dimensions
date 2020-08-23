@@ -6,7 +6,7 @@
  * These classes descend from the base Error class, so they also automatically capture
  * stack traces--useful for debugging.
  */
-import express, { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { Logger } from '../../Logger';
 /**
  * Base error class.
@@ -15,19 +15,12 @@ import { Logger } from '../../Logger';
  * From the ACM Membership Portal Backend repository
  */
 export class HttpError extends Error {
-  public status;
-  constructor(name, status, message?) {
-    if (message === undefined) {
-      message = status;
-      status = name;
-      name = undefined;
-    }
+  constructor(public status: number, message: string | Error) {
+    super(message.toString());
 
-    super(message);
-
-    this.name = name || this.constructor.name;
+    this.name = this.constructor.name;
     this.status = status;
-    this.message = message;
+    this.message = message.toString();
   }
 }
 
@@ -87,8 +80,9 @@ export const errorHandler = (log: Logger) => (
   err: HttpError,
   req: Request,
   res: Response,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next: NextFunction
-) => {
+): void => {
   if (!err)
     err = new InternalServerError(
       'An unknown error occurred in the errorHandler'

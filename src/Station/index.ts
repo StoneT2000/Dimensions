@@ -5,6 +5,7 @@ import dimensionsAPI from './routes/api/dimensions';
 
 import { Dimension } from '../Dimension';
 import { Logger } from '../Logger';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Match } from '../Match';
 
 import * as error from './error';
@@ -12,9 +13,12 @@ import * as error from './error';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import { Server } from 'http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Tournament } from '../Tournament';
 import { existsSync, mkdirSync } from 'fs';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Agent } from '../Agent';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Plugin } from '../Plugin';
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
@@ -187,7 +191,7 @@ export class Station {
     });
   }
 
-  public setLogLevel(level: Logger.LEVEL) {
+  public setLogLevel(level: Logger.LEVEL): void {
     this.log.level = level;
   }
 
@@ -218,7 +222,7 @@ export class Station {
     });
   }
 
-  public observe(dimension: Dimension) {
+  public observe(dimension: Dimension): void {
     const dimMap = this.app.get('dimensions');
     dimMap.set(dimension.id, dimension);
     this.app.set('dimensions', dimMap);

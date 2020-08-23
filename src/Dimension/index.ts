@@ -214,11 +214,7 @@ export class Dimension {
 
     // log important messages regarding security
     if (this.configs.secureMode) {
-      try {
-        this.setupSecurity();
-      } catch (error) {
-        throw error;
-      }
+      this.setupSecurity();
     } else {
       this.log.warn(
         `WARNING: Running in non-secure mode. You will not be protected against malicious bots`

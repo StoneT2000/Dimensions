@@ -4,7 +4,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import * as error from '../../../../error';
 import { Match } from '../../../../../Match';
-import { pick } from '../../../../../utils';
+import { pick, noop } from '../../../../../utils';
 import agentRouter, { pickAgent } from './agent';
 import { requireAdmin } from '../auth';
 const router = express.Router();
@@ -166,8 +166,7 @@ router.post(
       } else {
         // run and do nothing with the error
         // match should be in ready state
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        req.data.match.run().catch(() => {});
+        req.data.match.run().catch(noop);
       }
       res.json({ error: null, msg: 'Running Match' });
     } catch (error) {

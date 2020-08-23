@@ -12,7 +12,6 @@ import userAPI from './user';
 import authAPI from './auth';
 import { handleBotUpload } from '../../../handleBotUpload';
 import path from 'path';
-import { spawn } from 'child_process';
 import { removeDirectory } from '../../../../utils/System';
 
 const router = express.Router();
@@ -161,7 +160,7 @@ export const requiresDatabase = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   // throw a error if no database detected
   const dimension = req.data.dimension;
   if (dimension.hasDatabase()) {

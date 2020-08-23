@@ -1,10 +1,9 @@
-import express, { Request, Response, NextFunction } from 'express';
+import { Request } from 'express';
 import * as error from '../error';
 import formidable from 'formidable';
 import extract from 'extract-zip';
 import { existsSync } from 'fs';
 import path from 'path';
-import { spawn } from 'child_process';
 import { BOT_DIR } from '..';
 import { genID } from '../../utils';
 import { removeDirectory } from '../../utils/System';
@@ -27,7 +26,8 @@ export const handleBotUpload = (
   user?: Database.PublicUser
 ): Promise<Array<UploadData>> => {
   return new Promise((resolve, reject) => {
-    //@ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore - this function is callable
     const form = formidable({ multiples: true });
     try {
       form.parse(req, async (err, fields, files) => {

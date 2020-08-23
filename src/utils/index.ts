@@ -37,9 +37,9 @@ export const genID = (n: number): NanoID => {
 
 export const stripFunctions = <T extends { [x in string]: any }>(
   object: T
-): T => {
+): NoFunctions<T> => {
   const seen = new Set<any>();
-  const helper = (object: T): T => {
+  const helper = (object: T): NoFunctions<T> => {
     for (const key in object) {
       if (!seen.has(key)) {
         seen.add(key);
@@ -56,10 +56,18 @@ export const stripFunctions = <T extends { [x in string]: any }>(
         helper(object[key]);
       }
     }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     return object;
   };
   return helper(object);
 };
+
+export type NoFunctions<T> = T extends object
+  ? T extends Function
+    ? null
+    : { [K in keyof T]: NoFunctions<T[K]> }
+  : T;
 
 export const stripNull = <T extends { [x in string]: any }>(object: T): T => {
   const seen = new Set<any>();
@@ -90,3 +98,6 @@ export const sleep = async (ms: number): Promise<void> => {
     }, ms);
   });
 };
+
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+export const noop = (): void => {};
