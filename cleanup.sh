@@ -8,4 +8,5 @@ rm -rf ./.nyc_output
 rm -rf ./coverage
 rm -rf /tmp/dbot
 
+# clean up files related to storage tests
 rm -rf ../../local/testname_test_dim_id
