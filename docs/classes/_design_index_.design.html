@@ -75,7 +75,7 @@
 						<dt>classdesc</dt>
 						<dd><p>Abstract class detailing a Design to be used as the platform that holds match lifecycle logic for
 							updating and manipulating ongoing matches</p>
-							<p>Refer to <a href="_match_index_.match.html">Match</a> class and the <a href="../modules/_index_.html#agent">Agent</a> for exposed fields available for user&#39;s use when making your own
+							<p>Refer to <a href="../modules/_index_.html#match">Match</a> class and the <a href="../modules/_index_.html#agent">Agent</a> for exposed fields available for user&#39;s use when making your own
 							Design</p>
 							<p>The important functions to implement are <a href="_design_index_.design.html#initialize">initialize</a>, <a href="_design_index_.design.html#update">update</a>, and <a href="_design_index_.design.html#getresults">getResults</a></p>
 						</dd>
@@ -139,13 +139,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Design<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">String</span>, designOptions<span class="tsd-signature-symbol">?: </span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_design_index_.designoptions.html" class="tsd-signature-type">DesignOptions</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_design_index_.design.html" class="tsd-signature-type">Design</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Design<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, designOptions<span class="tsd-signature-symbol">?: </span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_design_index_.designoptions.html" class="tsd-signature-type">DesignOptions</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_design_index_.design.html" class="tsd-signature-type">Design</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c0d6c37/src/Design/index.ts#L36">https://github.com/StoneT2000/Dimensions/blob/c0d6c37/src/Design/index.ts#L36</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Design/index.ts#L35">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Design/index.ts#L35</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -156,7 +156,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>name: <span class="tsd-signature-type">String</span></h5>
+									<h5>name: <span class="tsd-signature-type">string</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<div class="lead">
 											<p>The name of the design</p>
@@ -185,7 +185,7 @@
 					<div class="tsd-signature tsd-kind-icon">design<wbr>Options<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_design_index_.designoptions.html" class="tsd-signature-type">DesignOptions</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c0d6c37/src/Design/index.ts#L33">https://github.com/StoneT2000/Dimensions/blob/c0d6c37/src/Design/index.ts#L33</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Design/index.ts#L32">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Design/index.ts#L32</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -200,7 +200,7 @@
 					<div class="tsd-signature tsd-kind-icon">log<span class="tsd-signature-symbol">:</span> <a href="_logger_index_.logger.html" class="tsd-signature-type">Logger</a><span class="tsd-signature-symbol"> = new Logger()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c0d6c37/src/Design/index.ts#L36">https://github.com/StoneT2000/Dimensions/blob/c0d6c37/src/Design/index.ts#L36</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Design/index.ts#L35">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Design/index.ts#L35</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -212,10 +212,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="name" class="tsd-anchor"></a>
 					<h3>name</h3>
-					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">String</span></div>
+					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c0d6c37/src/Design/index.ts#L43">https://github.com/StoneT2000/Dimensions/blob/c0d6c37/src/Design/index.ts#L43</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Design/index.ts#L43">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Design/index.ts#L43</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -237,7 +237,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c0d6c37/src/Design/index.ts#L68">https://github.com/StoneT2000/Dimensions/blob/c0d6c37/src/Design/index.ts#L68</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Design/index.ts#L69">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Design/index.ts#L69</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -259,20 +259,20 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c0d6c37/src/Design/index.ts#L115">https://github.com/StoneT2000/Dimensions/blob/c0d6c37/src/Design/index.ts#L115</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Design/index.ts#L119">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Design/index.ts#L119</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Abstract function required to get the result of a <a href="_match_index_.match.html">Match</a>.</p>
+									<p>Abstract function required to get the result of a <a href="../modules/_index_.html#match">Match</a>.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>see</dt>
-									<dd><p><a href="_match_index_.match.html">Match</a> - This function is used by the match to update the results stored in the match and return
+									<dd><p><a href="../modules/_index_.html#match">Match</a> - This function is used by the match to update the results stored in the match and return
 										results</p>
 									</dd>
 									<dt>see</dt>
-									<dd><p><a href="_tournament_index_.tournament.html">Tournament</a> - This function is used to return results from a match and then is fed into a resultHandler
+									<dd><p><a href="../modules/_index_.html#tournament">Tournament</a> - This function is used to return results from a match and then is fed into a resultHandler
 										for a particular rankingSystem and tournament type.</p>
 									</dd>
 								</dl>
@@ -302,7 +302,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c0d6c37/src/Design/index.ts#L81">https://github.com/StoneT2000/Dimensions/blob/c0d6c37/src/Design/index.ts#L81</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Design/index.ts#L82">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Design/index.ts#L82</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -315,7 +315,7 @@
 									<dd><p><a href="../modules/_index_.html#agent">Agent</a> for what properties and methods related to agents are exposed to the user for use.</p>
 									</dd>
 									<dt>see</dt>
-									<dd><p><a href="_match_index_.match.html">Match</a> for what properties and methods are exposed to the user for use e.g match.send() and match.state</p>
+									<dd><p><a href="../modules/_index_.html#match">Match</a> for what properties and methods are exposed to the user for use e.g match.send() and match.state</p>
 									</dd>
 								</dl>
 							</div>
@@ -324,7 +324,7 @@
 								<li>
 									<h5>match: <a href="_match_index_.match.html" class="tsd-signature-type">Match</a></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The <a href="_match_index_.match.html">Match</a> to initialize state with</p>
+										<p>The <a href="../modules/_index_.html#match">Match</a> to initialize state with</p>
 									</div>
 								</li>
 							</ul>
@@ -343,7 +343,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c0d6c37/src/Design/index.ts#L61">https://github.com/StoneT2000/Dimensions/blob/c0d6c37/src/Design/index.ts#L61</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Design/index.ts#L62">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Design/index.ts#L62</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -374,7 +374,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c0d6c37/src/Design/index.ts#L99">https://github.com/StoneT2000/Dimensions/blob/c0d6c37/src/Design/index.ts#L99</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Design/index.ts#L100">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Design/index.ts#L100</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -385,7 +385,7 @@
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>see</dt>
-									<dd><p><a href="_match_index_.match.html">Match</a> - This function is used by the match to update the match state and move forward a time step</p>
+									<dd><p><a href="../modules/_index_.html#match">Match</a> - This function is used by the match to update the match state and move forward a time step</p>
 									</dd>
 									<dt>see</dt>
 									<dd><p><a href="../modules/_index_.html#agent">Agent</a> for what properties and methods related to agents are exposed to the user for use.</p>
@@ -422,13 +422,13 @@
 					<a name="createcustom" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> create<wbr>Custom</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Custom<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, overrideOptions<span class="tsd-signature-symbol">: </span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_design_index_.customdesign.overrideoptions.html" class="tsd-signature-type">OverrideOptions</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_design_index_.customdesign.html" class="tsd-signature-type">CustomDesign</a></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Custom<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, overrideOptions<span class="tsd-signature-symbol">: </span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_design_index_.customdesign.overrideoptions.html" class="tsd-signature-type">OverrideOptions</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_design_index_.design.html" class="tsd-signature-type">Design</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/c0d6c37/src/Design/index.ts#L120">https://github.com/StoneT2000/Dimensions/blob/c0d6c37/src/Design/index.ts#L120</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Design/index.ts#L124">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Design/index.ts#L124</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -445,7 +445,7 @@
 									<h5>overrideOptions: <a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_design_index_.customdesign.overrideoptions.html" class="tsd-signature-type">OverrideOptions</a><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_design_index_.customdesign.html" class="tsd-signature-type">CustomDesign</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_design_index_.design.html" class="tsd-signature-type">Design</a></h4>
 						</li>
 					</ul>
 				</section>
