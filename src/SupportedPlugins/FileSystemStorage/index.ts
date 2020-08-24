@@ -5,7 +5,6 @@ import path from 'path';
 import { Database } from '../../Plugin/Database';
 import { Tournament } from '../../Tournament';
 import { writeFileToDestination, LOCAL_DIR } from '../../utils/System';
-import { NotImplemented } from '../../Station/error';
 
 export class FileSystemStorage extends Storage {
   public name = 'FS-Storage';
@@ -63,8 +62,7 @@ export class FileSystemStorage extends Storage {
    * @param key - key referencing the object to download
    */
   async getDownloadURL(key: string): Promise<string> {
-    key;
-    throw new NotImplemented('download by url is not implemented yet');
+    return path.join(this.bucketPath, key);
   }
 
   public async manipulate(dimension: Dimension): Promise<void> {
