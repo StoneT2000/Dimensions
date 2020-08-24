@@ -1,4 +1,6 @@
-const { Seeder } = require('mongo-seeding');
+const {
+  Seeder
+} = require('mongo-seeding');
 const path = require('path');
 const config = {
   database: 'mongodb://root:rootpassword@localhost:27017/test?authSource=admin&readPreference=primary',
@@ -16,3 +18,10 @@ seeder
     // Handle errors
     console.error(err);
   });
+
+/**
+ * 
+ * admin:admin
+ * 
+ * otherusers:password
+ */

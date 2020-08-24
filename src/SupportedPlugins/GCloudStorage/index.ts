@@ -85,7 +85,7 @@ export class GCloudStorage extends DStorage {
       });
   }
 
-  async download(key: string, destination: string): Promise<string> {
+  async download(key: string, destination: string): Promise<void> {
     return new Promise((resolve) => {
       const file = this.dimensionBucket.file(key);
       const ws = file
