@@ -67,8 +67,8 @@ describe('Testing Storage with Tournament Singletons (no distribution)', () => {
   describe('Test bot upload', () => {
     it.skip('should upload and download a bot file', noop);
   });
-  describe('Test error logs', () => {
-    it('should upload and download error logs', async () => {
+  describe('Test error logs and replay files', () => {
+    it('should correctly store error logs and replay files', async () => {
       // eslint-disable-next-line no-async-promise-executor
       return new Promise(async (resolve, reject) => {
         const tourney = createLadderTourney(d, botList, {
@@ -80,6 +80,8 @@ describe('Testing Storage with Tournament Singletons (no distribution)', () => {
           defaultMatchConfigs: {
             storeErrorDirectory: 'errorlogs/',
             storeErrorLogs: true,
+            testReplays: true,
+            storeReplayDirectory: 'replaydir',
           },
         });
         await tourney.run();
@@ -97,7 +99,6 @@ describe('Testing Storage with Tournament Singletons (no distribution)', () => {
                 10
               );
               for (const match of matches) {
-                console.log(match.name, fsstore.bucketPath);
                 expect(
                   fs.existsSync(
                     path.join(
@@ -114,6 +115,15 @@ describe('Testing Storage with Tournament Singletons (no distribution)', () => {
                     )
                   )
                 ).to.equal(true, 'error log should exist');
+
+                expect(
+                  fs.existsSync(
+                    path.join(
+                      fsstore.bucketPath,
+                      `replaydir/${match.id}.replay`
+                    )
+                  )
+                ).to.equal(true, 'replay file should exist');
               }
               await tourney.destroy();
               resolve();
