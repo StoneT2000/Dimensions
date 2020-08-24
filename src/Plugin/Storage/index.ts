@@ -2,7 +2,6 @@ import { Plugin } from '..';
 import { DeepPartial } from '../../utils/DeepPartial';
 import { deepMerge } from '../../utils/DeepMerge';
 import { Dimension } from '../../Dimension';
-import { nanoid } from '../..';
 import { Database } from '../Database';
 import { Tournament } from '../../Tournament';
 
@@ -30,18 +29,6 @@ export abstract class Storage extends Plugin {
     file: string,
     user: Database.User,
     tournament: Tournament
-  ): Promise<string>;
-
-  /**
-   * Upload a file for a user. Resolves with a key to allow for future retrieval
-   * @param file - path to file to upload
-   * @param userID - id of user file belongs to
-   * @param destinationName - destination name
-   */
-  abstract async uploadUserFile(
-    file: string,
-    userID: nanoid,
-    destinationName: string
   ): Promise<string>;
 
   /**

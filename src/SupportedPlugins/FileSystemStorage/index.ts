@@ -1,7 +1,6 @@
 import { Storage } from '../../Plugin/Storage';
 import { Dimension, StorageType } from '../../Dimension';
 import { Plugin } from '../../Plugin';
-import { nanoid } from '../..';
 import path from 'path';
 import { Database } from '../../Plugin/Database';
 import { Tournament } from '../../Tournament';
@@ -51,18 +50,6 @@ export class FileSystemStorage extends Storage {
 
   async upload(file: string, destination?: string): Promise<string> {
     const dest = `${destination ? destination : path.basename(file)}`;
-    await this.writeFileToBucket(file, dest);
-    return dest;
-  }
-
-  async uploadUserFile(
-    file: string,
-    userID: nanoid,
-    destination?: string
-  ): Promise<string> {
-    const dest = `users/${userID}/${
-      destination ? destination : path.basename(file)
-    }`;
     await this.writeFileToBucket(file, dest);
     return dest;
   }

@@ -3,7 +3,6 @@ import { Storage, Bucket, GetSignedUrlConfig } from '@google-cloud/storage';
 import { DeepPartial } from '../../utils/DeepPartial';
 import { Dimension, StorageType } from '../../Dimension';
 import { Plugin } from '../../Plugin';
-import { nanoid } from '../..';
 import path from 'path';
 import fs from 'fs';
 import { Database } from '../../Plugin/Database';
@@ -59,23 +58,6 @@ export class GCloudStorage extends DStorage {
 
   async upload(file: string, destination?: string): Promise<string> {
     const dest = `${destination ? destination : path.basename(file)}`;
-    return this.dimensionBucket
-      .upload(file, {
-        destination: dest,
-      })
-      .then(() => {
-        return dest;
-      });
-  }
-
-  async uploadUserFile(
-    file: string,
-    userID: nanoid,
-    destination?: string
-  ): Promise<string> {
-    const dest = `users/${userID}/${
-      destination ? destination : path.basename(file)
-    }`;
     return this.dimensionBucket
       .upload(file, {
         destination: dest,
