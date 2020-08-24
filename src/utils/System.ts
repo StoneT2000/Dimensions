@@ -3,6 +3,10 @@
  */
 
 import { spawnSync, spawn } from 'child_process';
+import fs, { mkdirSync } from 'fs';
+import path from 'path';
+
+export const LOCAL_DIR = path.join(__dirname, '../../../../local');
 
 /**
  * Removes a file synchronously
@@ -66,6 +70,29 @@ export const removeDirectory = (dir: string): Promise<void> => {
         reject(`removeDirectory on ${dir} exited with code ${code}`);
       }
     });
+  });
+};
+
+/**
+ * Writes a file from given `file` path to `destination`. Auto creates directories as needed
+ * @param file
+ * @param destination
+ */
+export const writeFileToDestination = async (
+  file: string,
+  destination: string
+): Promise<void> => {
+  return new Promise((resolve) => {
+    if (!fs.existsSync(path.dirname(destination))) {
+      mkdirSync(path.dirname(destination), {
+        recursive: true,
+      });
+    }
+    fs.createReadStream(file)
+      .pipe(fs.createWriteStream(destination))
+      .on('close', () => {
+        resolve();
+      });
   });
 };
 

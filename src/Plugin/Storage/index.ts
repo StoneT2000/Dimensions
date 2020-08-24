@@ -2,7 +2,6 @@ import { Plugin } from '..';
 import { DeepPartial } from '../../utils/DeepPartial';
 import { deepMerge } from '../../utils/DeepMerge';
 import { Dimension } from '../../Dimension';
-import { nanoid } from '../..';
 import { Database } from '../Database';
 import { Tournament } from '../../Tournament';
 
@@ -33,18 +32,6 @@ export abstract class Storage extends Plugin {
   ): Promise<string>;
 
   /**
-   * Upload a file for a user. Resolves with a key to allow for future retrieval
-   * @param file - path to file to upload
-   * @param userID - id of user file belongs to
-   * @param destinationName - destination name
-   */
-  abstract async uploadUserFile(
-    file: string,
-    userID: nanoid,
-    destinationName: string
-  ): Promise<string>;
-
-  /**
    * Upload a file. Resolves with a key to allow for future retrieval
    * @param file - path tto file to upload
    * @param destinationName - destination name
@@ -56,7 +43,7 @@ export abstract class Storage extends Plugin {
    * @param key - the key referencing the object to download
    * @param destination - destination path to download to locally
    */
-  abstract async download(key: string, destination: string): Promise<any>;
+  abstract async download(key: string, destination: string): Promise<void>;
 
   /**
    * Get download url (signed url) for a objet with that key

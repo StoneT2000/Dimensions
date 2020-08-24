@@ -36,6 +36,8 @@ export enum StorageType {
    * Represents gcloud storage used
    */
   GCLOUD = 'gcloud',
+  /** Using local file system for storage*/
+  FS = 'fs-storage',
 }
 
 /**
