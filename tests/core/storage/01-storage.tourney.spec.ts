@@ -64,8 +64,30 @@ describe('Testing Storage with Tournament Singletons (no distribution)', () => {
     await d.use(mongo);
     await d.use(fsstore);
   });
-  describe('Test bot upload', () => {
-    it.skip('should upload and download a bot file', noop);
+  describe('Test bot upload and download', () => {
+    it('should upload and download a bot file', async () => {
+      const tourney = createLadderTourney(d, botList, {
+        name: 'Ladder Tournament',
+        id: 'storagetournamenttest0',
+        tournamentConfigs: {
+          syncConfigs: false,
+        },
+        defaultMatchConfigs: {
+          storeErrorDirectory: 'errorlogs/',
+          storeErrorLogs: true,
+          testReplays: true,
+          storeReplayDirectory: 'replaydir',
+        },
+      });
+      const user = await d.databasePlugin.getUser(users.rock1.existingID);
+      const key = await fsstore.uploadTournamentFile(
+        './tests/kits/js/normal/rock.zip',
+        user,
+        tourney
+      );
+      expect(fs.existsSync(path.join(fsstore.bucketPath, key))).to.equal(true);
+      expect(fs.existsSync(await fsstore.getDownloadURL(key))).to.equal(true);
+    });
   });
   describe('Test error logs and replay files', () => {
     it('should correctly store error logs and replay files', async () => {
