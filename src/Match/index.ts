@@ -395,6 +395,7 @@ export class Match {
             );
           }
         }
+        // TODO: possible race condition if we dont wait for log files to upload
         this.handleLogFiles();
         this.finishDate = new Date();
         resolve(this.results);

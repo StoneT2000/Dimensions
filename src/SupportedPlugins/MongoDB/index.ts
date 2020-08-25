@@ -41,7 +41,8 @@ export class MongoDB extends Database {
     configs: DeepPartial<Database.Configs> = {}
   ) {
     super(configs);
-    this.mongoose = new mongoose.Mongoose();
+    this.mongoose = new mongoose.Mongoose({ useUnifiedTopology: true });
+    this.mongoose.set('useCreateIndex', true);
     this.mongoose.set('useFindAndModify', false);
     this.connectionString = connectionString;
 
