@@ -10,7 +10,6 @@ import 'mocha';
 import { Logger, MongoDB, Tournament } from '../../../src';
 import { createLadderTourney } from '../tourney/utils';
 import { FileSystemStorage } from '../../../src/SupportedPlugins/FileSystemStorage';
-import { noop } from '../../../src/utils';
 const expect = chai.expect;
 chai.should();
 chai.use(sinonChai);
