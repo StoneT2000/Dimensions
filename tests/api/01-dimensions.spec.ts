@@ -24,12 +24,18 @@ describe('Testing /api/dimensions API', () => {
       observe: true,
       loggingLevel: Logger.LEVEL.NONE,
       id: 'abcdef',
+      stationConfigs: {
+        requireAuth: false,
+      },
     });
     dimension2 = Dimension.create(rpsDesign, {
       activateStation: true,
       observe: true,
       loggingLevel: Logger.LEVEL.NONE,
       id: 'abcdef2',
+      stationConfigs: {
+        requireAuth: false,
+      },
     });
     origin += dimension.getStation().port;
   });

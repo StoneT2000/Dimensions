@@ -9,9 +9,8 @@ import { Logger, Tournament, MongoDB } from '../../src';
 import { RockPaperScissorsDesign } from '../rps';
 import { Ladder } from '../../src/Tournament/Ladder';
 import { createLadderTourney } from '../core/tourney/utils';
-import { copyFile, copyFileSync, mkdirSync } from 'fs';
+import { copyFileSync, mkdirSync } from 'fs';
 import path from 'path';
-import { LOCAL_DIR } from '../../src/utils/System';
 import { FileSystemStorage } from '../../src/SupportedPlugins/FileSystemStorage';
 chai.should();
 chai.use(sinonChai);
@@ -28,7 +27,25 @@ describe('Testing /api/dimensions/:dimensionID/tournaments API', () => {
   const paper = './tests/kits/js/normal/paper.js';
   const rock = './tests/kits/js/normal/rock.js';
   const botList = [rock, paper];
-  // list of bots
+  // list of bots not in DB
+  const anonBotList = [
+    {
+      file: './tests/kits/js/normal/rock.js',
+      name: 'rock1',
+      existingID: 'anon1',
+    },
+    {
+      file: './tests/kits/js/normal/rock.js',
+      name: 'rock2',
+      existingID: 'anon2',
+    },
+    {
+      file: './tests/kits/js/normal/rock.js',
+      name: 'rock3',
+      existingID: 'anon3',
+    },
+  ];
+  // list of bots in DB
   const botListWithIDs = [
     {
       file: './tests/kits/js/normal/rock.js',
@@ -139,12 +156,13 @@ describe('Testing /api/dimensions/:dimensionID/tournaments API', () => {
     expect(playerStat.player.file).to.equal('paper.js');
     expect(playerStat.player.zipFile).to.equal(null);
     expect(res.status).to.equal(200);
+    await t.destroy();
   });
 
   it(`POST ${base}/tournaments/:tournamentID/match-queue - should schedule matches`, async () => {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
-      const t = createLadderTourney(dimension, botListWithIDs, {
+      const t = createLadderTourney(dimension, anonBotList, {
         id: 'ladderWithoutSelfMatchmake',
         tournamentConfigs: {
           selfMatchMake: false,
@@ -154,8 +172,8 @@ describe('Testing /api/dimensions/:dimensionID/tournaments API', () => {
         },
       });
       const matchQueue = [
-        ['rock1', 'rock2'],
-        ['rock2', 'rock3'],
+        ['anon1', 'anon2'],
+        ['anon2', 'anon3'],
       ];
       await t.run();
       const res = await chai
@@ -171,9 +189,9 @@ describe('Testing /api/dimensions/:dimensionID/tournaments API', () => {
       t.on(Tournament.Events.MATCH_HANDLED, async () => {
         if (++count === 2) {
           try {
-            expect(t.state.playerStats.get('rock1').matchesPlayed).to.equal(1);
-            expect(t.state.playerStats.get('rock2').matchesPlayed).to.equal(2);
-            expect(t.state.playerStats.get('rock3').matchesPlayed).to.equal(1);
+            expect(t.state.playerStats.get('anon1').matchesPlayed).to.equal(1);
+            expect(t.state.playerStats.get('anon2').matchesPlayed).to.equal(2);
+            expect(t.state.playerStats.get('anon3').matchesPlayed).to.equal(1);
             await t.destroy();
             resolve();
           } catch (err) {
@@ -186,6 +204,5 @@ describe('Testing /api/dimensions/:dimensionID/tournaments API', () => {
   });
   after(async () => {
     await mongo.db.close();
-    await dimension.cleanup();
   });
 });
