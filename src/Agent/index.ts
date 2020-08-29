@@ -151,7 +151,11 @@ export class Agent extends EventEmitter {
   /** whether agent is allowed to send commands. Used to help ignore extra output from agents */
   private allowedToSendCommands = true;
 
-  constructor(file: string, options: Partial<Agent.Options>) {
+  constructor(
+    file: string,
+    options: Partial<Agent.Options>,
+    languageSpecificOptions: Agent.LanguageSpecificOptions = {}
+  ) {
     super();
     this.creationDate = new Date();
     this.options = deepMerge(this.options, deepCopy(options));
@@ -159,6 +163,12 @@ export class Agent extends EventEmitter {
     this.log.level = this.options.loggingLevel;
 
     this.ext = path.extname(file);
+    if (languageSpecificOptions[this.ext]) {
+      this.options = deepMerge(
+        this.options,
+        deepCopy(languageSpecificOptions[this.ext])
+      );
+    }
     const pathparts = file.split('/');
     this.cwd = pathparts.slice(0, -1).join('/');
     this.src = pathparts.slice(-1).join('/');
@@ -867,7 +877,8 @@ export class Agent extends EventEmitter {
     files:
       | Array<string>
       | Array<{ file: string; name?: string; tournamentID?: Tournament.ID }>,
-    options: DeepPartial<Agent.Options>
+    options: DeepPartial<Agent.Options>,
+    languageSpecificOptions: Agent.LanguageSpecificOptions = {}
   ): Array<Agent> {
     if (files.length === 0) {
       throw new AgentFileError(
@@ -881,21 +892,27 @@ export class Agent extends EventEmitter {
       files.forEach((file, index: number) => {
         const configs = deepCopy(options);
         configs.id = index;
-        agents.push(new Agent(file, <Agent.Options>configs));
+        agents.push(
+          new Agent(file, <Agent.Options>configs, languageSpecificOptions)
+        );
       });
     } else if (files[0].name !== undefined) {
       files.forEach((info, index: number) => {
         const configs = deepCopy(options);
         configs.id = index;
         configs.name = info.name;
-        agents.push(new Agent(info.file, <Agent.Options>configs));
+        agents.push(
+          new Agent(info.file, <Agent.Options>configs, languageSpecificOptions)
+        );
       });
     } else {
       files.forEach((info, index: number) => {
         const configs = deepCopy(options);
         configs.id = index;
         configs.tournamentID = info.tournamentID;
-        agents.push(new Agent(info.file, <Agent.Options>configs));
+        agents.push(
+          new Agent(info.file, <Agent.Options>configs, languageSpecificOptions)
+        );
       });
     }
     return agents;
@@ -1004,13 +1021,22 @@ export namespace Agent {
     runCommands: { [x in string]: Array<string> };
 
     /**
-     * Image to use for docker container if Agent is being run in secureMode. The default is a standard image provided by Dimensions that has
-     * all supported languages built in so agents can use them.
+     * Image to use for docker container if Agent is being run in secureMode. The default is a standard image provided
+     * by Dimensions that has all supported languages built in so agents can use them. The requirement for these images
+     * is that they have bash installed.
+     *
+     * It is highly recommended
+     * to use the {@link Match.Configs.languageSpecificAgentOptions} field and set specific images for each programming
+     * language in a production environment to reduce overhead caused by docker.
      *
      * @default `docker.io/stonezt2000/dimensions_langs`
      */
     image: string;
   }
+
+  export type LanguageSpecificOptions = {
+    [x in string]?: DeepPartial<Agent.Options>;
+  };
 
   /**
    * Agent events

@@ -49,6 +49,11 @@ describe('Testing MatchEngine Multi Language Support', () => {
                 '.py': ['python3'],
               },
             },
+            languageSpecificAgentOptions: {
+              '.py': {
+                image: 'python:3.8.5-slim-buster',
+              },
+            },
           });
           expect(results.scores).to.eql({ '0': 0, '1': 9 });
         });
@@ -69,6 +74,11 @@ describe('Testing MatchEngine Multi Language Support', () => {
           const results = await d.runMatch([bots.java, bots.js], {
             bestOf: 9,
             secureMode: bool,
+            languageSpecificAgentOptions: {
+              '.go': {
+                image: 'openjdk',
+              },
+            },
           });
           expect(results.scores).to.eql({ '0': 0, '1': 9 });
         });
@@ -89,6 +99,11 @@ describe('Testing MatchEngine Multi Language Support', () => {
           const results = await d.runMatch([bots.c, bots.js], {
             bestOf: 9,
             secureMode: bool,
+            languageSpecificAgentOptions: {
+              '.go': {
+                image: 'gcc',
+              },
+            },
           });
           expect(results.scores).to.eql({ '0': 0, '1': 9 });
         });
@@ -99,6 +114,11 @@ describe('Testing MatchEngine Multi Language Support', () => {
           const results = await d.runMatch([bots.go, bots.js], {
             bestOf: 9,
             secureMode: bool,
+            languageSpecificAgentOptions: {
+              '.go': {
+                image: 'golang',
+              },
+            },
           });
           expect(results.scores).to.eql({ '0': 0, '1': 9 });
         });
@@ -109,6 +129,11 @@ describe('Testing MatchEngine Multi Language Support', () => {
           const results = await d.runMatch([bots.php, bots.js], {
             bestOf: 9,
             secureMode: bool,
+            languageSpecificAgentOptions: {
+              '.go': {
+                image: 'php',
+              },
+            },
           });
           expect(results.scores).to.eql({ '0': 0, '1': 9 });
         });

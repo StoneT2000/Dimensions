@@ -1,3 +1,9 @@
+#
+# This is a Docker file that installs every language necessary to use this for every agent regardless of language
+# provided the language is supported by Dimensions. This is also used to build the standard image used for testing on 
+# circleci
+#
+
 FROM alpine:3.11
 
 RUN apk update
