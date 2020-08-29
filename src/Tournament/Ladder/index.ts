@@ -559,7 +559,6 @@ export class Ladder extends Tournament {
   }
 
   private async tourneyRunner() {
-    console.log('call runner', { locked: this.matchQueueLocked });
     if (this.matchQueueLocked) {
       return;
     }
