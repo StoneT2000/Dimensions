@@ -119,6 +119,7 @@
 							<h3>Type aliases</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-type-alias tsd-parent-kind-class tsd-is-static"><a href="_agent_index_.agent.html#id" class="tsd-kind-icon">ID</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-class tsd-is-static"><a href="_agent_index_.agent.html#languagespecificoptions" class="tsd-kind-icon">Language<wbr>Specific<wbr>Options</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -224,7 +225,7 @@
 					<div class="tsd-signature tsd-kind-icon">ID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L950">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L950</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L967">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L967</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -234,6 +235,21 @@
 						<p>For example, in a 4 agent match, the ids are <code>0, 1, 2, 3</code>.</p>
 					</div>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
+					<a name="languagespecificoptions" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> Language<wbr>Specific<wbr>Options</h3>
+					<div class="tsd-signature tsd-kind-icon">Language<wbr>Specific<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1037">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1037</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+						</ul>
+					</div>
+				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Constructors</h2>
@@ -241,13 +257,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Agent<span class="tsd-signature-symbol">(</span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_agent_index_.agent.options.html" class="tsd-signature-type">Options</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Agent<span class="tsd-signature-symbol">(</span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_agent_index_.agent.options.html" class="tsd-signature-type">Options</a><span class="tsd-signature-symbol">&gt;</span>, languageSpecificOptions<span class="tsd-signature-symbol">?: </span><a href="_agent_index_.agent.html#languagespecificoptions" class="tsd-signature-type">LanguageSpecificOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L152">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L152</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L152">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L152</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -257,6 +273,9 @@
 								</li>
 								<li>
 									<h5>options: <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_agent_index_.agent.options.html" class="tsd-signature-type">Options</a><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> languageSpecificOptions: <a href="_agent_index_.agent.html#languagespecificoptions" class="tsd-signature-type">LanguageSpecificOptions</a><span class="tsd-signature-symbol"> = {}</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a></h4>
@@ -272,7 +291,7 @@
 					<div class="tsd-signature tsd-kind-icon">_buffer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = []</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L97">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L97</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L97">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L97</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -287,7 +306,7 @@
 					<div class="tsd-signature tsd-kind-icon">_clear<wbr>Timer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol"> = noop</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L140">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L140</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L140">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L140</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -302,7 +321,7 @@
 					<div class="tsd-signature tsd-kind-icon">_current<wbr>Move<wbr>Promise<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L130">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L130</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L130">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L130</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -317,7 +336,7 @@
 					<div class="tsd-signature tsd-kind-icon">_current<wbr>Move<wbr>Reject<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L134">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L134</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L134">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L134</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -327,7 +346,7 @@
 					<div class="tsd-signature tsd-kind-icon">_current<wbr>Move<wbr>Resolve<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol"> = noop</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L133">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L133</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L133">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L133</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -337,7 +356,7 @@
 					<div class="tsd-signature tsd-kind-icon">agent<wbr>Time<wbr>Step<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L137">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L137</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L137">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L137</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -352,7 +371,7 @@
 					<div class="tsd-signature tsd-kind-icon">allowed<wbr>ToSend<wbr>Commands<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = true</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L152">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L152</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L152">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L152</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -367,7 +386,7 @@
 					<div class="tsd-signature tsd-kind-icon">cmd<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L79">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L79</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L79">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L79</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -382,7 +401,7 @@
 					<div class="tsd-signature tsd-kind-icon">container<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Container</span><span class="tsd-signature-symbol"> = null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L110">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L110</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L110">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L110</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -397,7 +416,7 @@
 					<div class="tsd-signature tsd-kind-icon">creation<wbr>Date<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Date</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L94">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L94</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L94">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L94</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -412,7 +431,7 @@
 					<div class="tsd-signature tsd-kind-icon">current<wbr>Move<wbr>Commands<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = []</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L127">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L127</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L127">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L127</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -427,7 +446,7 @@
 					<div class="tsd-signature tsd-kind-icon">cwd<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L76">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L76</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L76">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L76</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -443,7 +462,7 @@
 					<div class="tsd-signature tsd-kind-icon">error<wbr>Log<wbr>Write<wbr>Stream<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WriteStream</span><span class="tsd-signature-symbol"> = null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L142">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L142</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L142">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L142</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -453,7 +472,7 @@
 					<div class="tsd-signature tsd-kind-icon">ext<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L67">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L67</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L67">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L67</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -468,7 +487,7 @@
 					<div class="tsd-signature tsd-kind-icon">file<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L84">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L84</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L84">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L84</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -483,7 +502,7 @@
 					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <a href="_agent_index_.agent.html#id" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol"> = 0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L50">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L50</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L50">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L50</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -499,7 +518,7 @@
 					<div class="tsd-signature tsd-kind-icon">log<span class="tsd-signature-symbol">:</span> <a href="_logger_index_.logger.html" class="tsd-signature-type">Logger</a><span class="tsd-signature-symbol"> = new Logger()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L144">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L144</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L144">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L144</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -509,7 +528,7 @@
 					<div class="tsd-signature tsd-kind-icon">logkey<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L149">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L149</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L149">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L149</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -524,7 +543,7 @@
 					<div class="tsd-signature tsd-kind-icon">memory<wbr>Watch<wbr>Interval<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L100">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L100</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L100">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L100</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -539,7 +558,7 @@
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L61">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L61</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L61">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L61</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -559,7 +578,7 @@
 					<div class="tsd-signature tsd-kind-icon">options<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_agent_index_.agent.options.html" class="tsd-signature-type">Options</a><span class="tsd-signature-symbol"> = deepCopy(Agent.OptionDefaults)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L89">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L89</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L89">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L89</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -574,7 +593,7 @@
 					<div class="tsd-signature tsd-kind-icon">process<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ChildProcess</span><span class="tsd-signature-symbol"> = null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L105">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L105</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L105">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L105</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -589,7 +608,7 @@
 					<div class="tsd-signature tsd-kind-icon">src<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L64">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L64</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L64">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L64</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -604,7 +623,7 @@
 					<div class="tsd-signature tsd-kind-icon">src<wbr>NoExt<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L70">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L70</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L70">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L70</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -619,7 +638,7 @@
 					<div class="tsd-signature tsd-kind-icon">status<span class="tsd-signature-symbol">:</span> <a href="../enums/_agent_index_.agent.status.html" class="tsd-signature-type">Status</a><span class="tsd-signature-symbol"> = Agent.Status.UNINITIALIZED</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L124">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L124</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L124">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L124</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -634,7 +653,7 @@
 					<div class="tsd-signature tsd-kind-icon">tournamentID<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_tournament_ladder_index_.ladder.id.html" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol"> = null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L55">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L55</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L55">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L55</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -666,7 +685,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L777">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L777</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L787">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L787</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -688,7 +707,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L377">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L377</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L387">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L387</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -723,7 +742,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L770">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L770</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L780">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L780</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -745,7 +764,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L803">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L803</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L813">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L813</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -767,7 +786,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L700">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L700</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L710">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L710</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -789,7 +808,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L265">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L265</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L275">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L275</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -823,7 +842,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L791">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L791</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L801">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L801</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -857,7 +876,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L834">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L834</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L844">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L844</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -888,7 +907,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L819">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L819</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L829">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L829</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -905,7 +924,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L574">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L574</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L584">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L584</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -927,7 +946,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L519">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L519</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L529">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L529</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -964,7 +983,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L611">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L611</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L621">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L621</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -998,7 +1017,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L708">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L708</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L718">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L718</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1029,7 +1048,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L723">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L723</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L733">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L733</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1097,7 +1116,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L543">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L543</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L553">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L553</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1176,7 +1195,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L904">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L904</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L921">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L921</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -1211,7 +1230,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L684">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L684</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L694">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L694</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1233,7 +1252,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L784">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L784</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L794">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L794</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1255,7 +1274,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L715">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L715</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L725">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L725</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1460,7 +1479,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L674">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L674</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L684">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L684</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1665,7 +1684,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L649">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L649</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L659">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L659</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1711,7 +1730,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L231">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L231</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L241">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L241</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1740,7 +1759,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L635">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L635</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L645">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L645</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1762,7 +1781,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L664">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L664</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L674">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L674</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1784,7 +1803,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L693">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L693</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L703">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L703</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1833,13 +1852,13 @@
 					<a name="generateagents" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> generate<wbr>Agents</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">generate<wbr>Agents<span class="tsd-signature-symbol">(</span>files<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>tournamentID<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_tournament_ladder_index_.ladder.id.html" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span>, options<span class="tsd-signature-symbol">: </span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_agent_index_.agent.options.html" class="tsd-signature-type">Options</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">generate<wbr>Agents<span class="tsd-signature-symbol">(</span>files<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>tournamentID<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_tournament_ladder_index_.ladder.id.html" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span>, options<span class="tsd-signature-symbol">: </span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_agent_index_.agent.options.html" class="tsd-signature-type">Options</a><span class="tsd-signature-symbol">&gt;</span>, languageSpecificOptions<span class="tsd-signature-symbol">?: </span><a href="_agent_index_.agent.html#languagespecificoptions" class="tsd-signature-type">LanguageSpecificOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L866">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L866</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L876">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L876</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1858,6 +1877,9 @@
 								</li>
 								<li>
 									<h5>options: <a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_agent_index_.agent.options.html" class="tsd-signature-type">Options</a><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> languageSpecificOptions: <a href="_agent_index_.agent.html#languagespecificoptions" class="tsd-signature-type">LanguageSpecificOptions</a><span class="tsd-signature-symbol"> = {}</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -1906,7 +1928,7 @@
 					<div class="tsd-signature tsd-kind-icon">streams<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L115">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L115</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L115">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L115</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1920,7 +1942,7 @@
 						<div class="tsd-signature tsd-kind-icon">err<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> = null</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L118">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L118</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L118">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L118</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -1930,7 +1952,7 @@
 						<div class="tsd-signature tsd-kind-icon">in<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> = null</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L116">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L116</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L116">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L116</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -1940,7 +1962,7 @@
 						<div class="tsd-signature tsd-kind-icon">out<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> = null</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L117">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L117</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L117">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L117</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -1951,7 +1973,7 @@
 					<div class="tsd-signature tsd-kind-icon">Option<wbr>Defaults<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1036">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1036</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1062">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1062</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -1965,7 +1987,7 @@
 						<div class="tsd-signature tsd-kind-icon">compile<wbr>Commands<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1045">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1045</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1071">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1071</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -1980,7 +2002,7 @@
 						<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> = null</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1039">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1039</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1065">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1065</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -1990,7 +2012,7 @@
 						<div class="tsd-signature tsd-kind-icon">image<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;docker.io/stonezt2000/dimensions_langs&quot;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1046">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1046</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1072">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1072</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -2000,7 +2022,7 @@
 						<div class="tsd-signature tsd-kind-icon">logging<wbr>Level<span class="tsd-signature-symbol">:</span> <a href="../enums/_logger_index_.logger.level.html#info" class="tsd-signature-type">INFO</a><span class="tsd-signature-symbol"> = Logger.LEVEL.INFO</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1038">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1038</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1064">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1064</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -2010,7 +2032,7 @@
 						<div class="tsd-signature tsd-kind-icon">max<wbr>Compile<wbr>Time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 60000</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1043">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1043</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1069">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1069</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -2020,7 +2042,7 @@
 						<div class="tsd-signature tsd-kind-icon">max<wbr>Install<wbr>Time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 300000</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1042">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1042</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1068">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1068</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -2030,7 +2052,7 @@
 						<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> = null</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1041">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1041</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1067">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1067</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -2040,7 +2062,7 @@
 						<div class="tsd-signature tsd-kind-icon">run<wbr>Commands<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1044">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1044</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1070">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1070</a></li>
 							</ul>
 						</aside>
 						<div class="tsd-type-declaration">
@@ -2055,7 +2077,7 @@
 						<div class="tsd-signature tsd-kind-icon">secure<wbr>Mode<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> = false</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1037">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1037</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1063">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1063</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -2065,7 +2087,7 @@
 						<div class="tsd-signature tsd-kind-icon">tournamentID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> = null</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1040">https://github.com/StoneT2000/Dimensions/blob/de44cdb/src/Agent/index.ts#L1040</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1066">https://github.com/StoneT2000/Dimensions/blob/456212e/src/Agent/index.ts#L1066</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -2107,6 +2129,9 @@
 							</li>
 							<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
 								<a href="_agent_index_.agent.html#id" class="tsd-kind-icon">ID</a>
+							</li>
+							<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
+								<a href="_agent_index_.agent.html#languagespecificoptions" class="tsd-kind-icon">Language<wbr>Specific<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="_agent_index_.agent.html#constructor" class="tsd-kind-icon">constructor</a>
