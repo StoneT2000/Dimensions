@@ -559,14 +559,17 @@ export class Ladder extends Tournament {
   }
 
   private async tourneyRunner() {
+    console.log('call runner', { locked: this.matchQueueLocked });
     if (this.matchQueueLocked) {
       return;
     }
     this.matchQueueLocked = true;
     if (
       this.matches.size >= this.configs.tournamentConfigs.maxConcurrentMatches
-    )
+    ) {
+      this.matchQueueLocked = false;
       return;
+    }
 
     const maxTotalMatches = this.configs.tournamentConfigs.maxTotalMatches;
     if (this.configs.tournamentConfigs.endDate) {
@@ -586,6 +589,7 @@ export class Ladder extends Tournament {
       if (this.state.statistics.totalMatches >= maxTotalMatches) {
         this.log.info('Reached max matches, shutting down tournament...');
         this.stop();
+        this.matchQueueLocked = false;
         return;
       }
     }
