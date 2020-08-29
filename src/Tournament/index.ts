@@ -60,7 +60,7 @@ export class Player {
   public disabled = false;
 
   /**
-   * Path to the zip file for the bot
+   * Path to the zip file for the bot. Used when no storage service is used
    */
   public zipFile: string = undefined;
 

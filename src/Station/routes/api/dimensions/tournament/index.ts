@@ -445,6 +445,57 @@ router.post(
 /**
  * POST
  *
+ * Upload a bot for a single player by corresponding key. This route does not verify the botkey, nor pathtofile
+ */
+router.post(
+  '/:tournamentID/upload-by-key',
+  requireAuth,
+  async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.data.dimension.hasStorage())
+      return next(
+        new error.NotImplemented('Server does not have storage setup')
+      );
+    if (!req.body.playerID)
+      return next(new error.BadRequest('Missing player ID'));
+    if (!req.body.botkey) return next(new error.BadRequest('Missing botkey'));
+    if (!req.body.botname) return next(new error.BadRequest('Missing botname'));
+    if (!req.body.pathtofile)
+      return next(new error.BadRequest('Missing pathtofile'));
+
+    let user = req.data.user;
+    if (req.data.dimension.hasDatabase()) {
+      if (req.data.dimension.databasePlugin.isAdmin(req.data.user)) {
+        user = await req.data.dimension.databasePlugin.getUser(
+          req.body.playerID
+        );
+        if (!user) return next(new error.BadRequest('Invalid player ID'));
+      }
+    }
+    try {
+      await req.data.tournament.addplayer(
+        {
+          file: req.body.pathtofile,
+          name: req.body.botname,
+          // the nulls are ok as these aren't used if storage is used
+          zipFile: null,
+          botdir: null,
+          botkey: req.body.botkey,
+        },
+        req.body.playerID
+      );
+    } catch (err) {
+      return next(new error.InternalServerError(err));
+    }
+    res.json({
+      error: null,
+      message: 'Succesfully uploaded bot',
+    });
+  }
+);
+
+/**
+ * POST
+ *
  * Create queued matches
  */
 router.post(

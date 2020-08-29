@@ -240,7 +240,7 @@ export class Match {
       // this allows engine to be reused after it ran once
       this.matchEngine.killOffSignal = false;
 
-      // copy over any agent bot files if dimension has a backing storage servicde and the agent has botkey specified
+      // copy over any agent bot files if dimension has a backing storage service and the agent has botkey specified
       // copy them over the agent's specified file location to use
       const retrieveBotFilePromises: Array<Promise<any>> = [];
       const retrieveBotFileIndexes: Array<number> = [];
