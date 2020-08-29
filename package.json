@@ -11,7 +11,7 @@
     "test-seed": "node tests/seed/seedmongo.js",
     "report": "nyc report",
     "codecov": "nyc report --reporter=text-lcov > coverage.lcov",
-    "docs": "typedoc --theme ./theme/dimensions/ --mode modules --exclude ./src/Station/ --out docs ./src && touch ./docs/.nojekyll ",
+    "docs": "typedoc --gitRevision master --theme ./theme/dimensions/ --mode modules --exclude ./src/Station/ --out docs ./src && touch ./docs/.nojekyll ",
     "watch": "tsc -w",
     "build": "rm -rf lib && tsc",
     "clean": "./cleanup.sh",
