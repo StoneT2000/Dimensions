@@ -139,10 +139,12 @@ export class Ladder extends Tournament {
 
     files.forEach((file) => {
       if (typeof file === 'string') {
-        this.initialAddPlayerPromises.push(this.addplayer(file));
+        this.initialAddPlayerPromises.push(
+          this.addplayer(file, undefined, true)
+        );
       } else {
         this.initialAddPlayerPromises.push(
-          this.addplayer(file, file.existingID)
+          this.addplayer(file, file.existingID, true)
         );
       }
     });
@@ -789,9 +791,6 @@ export class Ladder extends Tournament {
     if (!playerStat) {
       playerStat = {
         player: player,
-        wins: 0,
-        ties: 0,
-        losses: 0,
         matchesPlayed: 0,
         rankState: {
           rating: new Rating(
@@ -829,9 +828,6 @@ export class Ladder extends Tournament {
     if (!playerStat) {
       playerStat = {
         player: player,
-        wins: 0,
-        ties: 0,
-        losses: 0,
         matchesPlayed: 0,
         rankState: {
           rating: this.elo.createRating(),
@@ -928,9 +924,6 @@ export class Ladder extends Tournament {
     const playerStats = <Ladder.PlayerStat>playerStat;
     playerStats.player = player;
     playerStats.matchesPlayed = 0;
-    playerStats.losses = 0;
-    playerStats.wins = 0;
-    playerStats.ties = 0;
     switch (this.configs.rankSystem) {
       case RankSystem.ELO: {
         const rankSystemConfigs = <RankSystem.ELO.Configs>(
@@ -1476,11 +1469,8 @@ export namespace Ladder {
    * Player stat interface for ladder tournaments
    */
   export interface PlayerStat extends Tournament.PlayerStatBase {
-    wins: number;
-    ties: number;
-    losses: number;
     /**
-     * total matches played
+     * total matches played with current bot
      */
     matchesPlayed: number;
     /**

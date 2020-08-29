@@ -34,9 +34,9 @@
     "Ladder_Tournament_12345ts": {
       "player": {
         "tournamentID": {
-          "id": "disabled",
-          "name": "disabled",
-          "username": "disabled"
+          "id": "rock1",
+          "name": "rock1",
+          "username": "rock1"
         },
         "file": "./tests/kits/js/normal/rock.js",
         "anonymous": false,
@@ -46,9 +46,6 @@
         "disabled": false,
         "zipFile": null
       },
-      "wins": 0,
-      "ties": 0,
-      "losses": 0,
       "matchesPlayed": 2,
       "rankState": {
         "rating": {
@@ -62,21 +59,18 @@
     "Ladder_Tournament_12345elo": {
       "player": {
         "tournamentID": {
-          "id": "disabled",
-          "name": "disabled",
-          "username": "disabled"
+          "id": "rock1",
+          "name": "rock1",
+          "username": "rock1"
         },
         "file": "./tests/kits/js/normal/rock.js",
         "anonymous": false,
-        "username": "disabled",
+        "username": "rock1",
         "botDirPath": null,
         "botkey": null,
         "disabled": false,
         "zipFile": null
       },
-      "wins": 0,
-      "ties": 0,
-      "losses": 0,
       "matchesPlayed": 0,
       "rankState": {
         "rating": {

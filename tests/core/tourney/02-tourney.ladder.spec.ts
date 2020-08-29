@@ -114,6 +114,10 @@ describe('Testing Ladder Tournament Core', () => {
         await tourney.addplayer(testbot);
         expect(tourney.competitors.size).to.equal(3);
         expect(tourney.anonymousCompetitors.size).to.equal(3);
+        expect(
+          (await tourney.getPlayerStat(testbot.existingID)).playerStat.player
+            .version
+        ).to.equal(1, 'player version number should update');
       });
       it('should update players mid tourney', async () => {
         const tourney = createLadderTourney(d, [...botList, testbot]);
@@ -123,6 +127,10 @@ describe('Testing Ladder Tournament Core', () => {
         await tourney.addplayer(testbot);
         expect(tourney.competitors.size).to.equal(3);
         expect(tourney.anonymousCompetitors.size).to.equal(3);
+        expect(
+          (await tourney.getPlayerStat(testbot.existingID)).playerStat.player
+            .version
+        ).to.equal(1, 'player version number should update');
       });
       it('should remove players', async () => {
         const tourney = createLadderTourney(d, [...botList, testbot]);

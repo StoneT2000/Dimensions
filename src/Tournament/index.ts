@@ -43,7 +43,9 @@ export class Player {
   public username: string = undefined;
 
   /**
-   * Path to player's directory, not the file to be executed/used
+   * Path to player's directory, not the file to be executed/used. Value is necessary if storage system is not used or
+   * there is no bot key because the player is anonymous (locally stored). Used so tournament can clean up old bot
+   * directory when a new bot is uploaded
    */
   public botDirPath: string = undefined;
 
@@ -60,9 +62,14 @@ export class Player {
   public disabled = false;
 
   /**
-   * Path to the zip file for the bot. Used when no storage service is used
+   * Path to the zip file for the bot. Used when no storage service is used. Used to allow api to send zipped bot file
    */
   public zipFile: string = undefined;
+
+  /**
+   * The version of the bot associated with this player. Incremented whenever addPlayer is called
+   */
+  public version = 0;
 
   constructor(
     public tournamentID: Tournament.ID,
@@ -173,16 +180,22 @@ export abstract class Tournament extends EventEmitter {
   }
 
   /**
-   * Add a player to the tournament. Can specify an ID to use. If that ID exists already, this will update the file for
-   * that player instead. First time a player is added (doesn't exist in competitors map yet), if there is existing
-   * stats they won't be reset. Subsequent adds will change the stats.
+   * Add or update a player to the tournament
+   *
+   * If no existing ID is specified, this is treated as adding a completely new player.
+   *
+   * If existing ID is specified and that ID exists already, this will update the file for that player instead and
+   * effectively update the player. First time a player is added, if there is existing stats in a DB they won't be
+   * reset. Subsequent adds will change the stats.
    *
    * If the player is to exist beyond the tournament, an existingID must always be provided and generated somewhere else
    *
    * Resolves with the new player or updated player
    *
    * @param file - The file to the bot or an object with the file and a name for the player specified
-   * @param existingID - The optional id of the player
+   * @param existingID - The optional id of the player. Can also be provided in the first arg in a object
+   * @param calledFromInitialization - Whether or not the player was called from initialization. If true, player
+   * version does not increment
    *
    */
   public async addplayer(
@@ -196,7 +209,8 @@ export abstract class Tournament extends EventEmitter {
           botkey?: string;
           existingID?: NanoID;
         },
-    existingID?: NanoID
+    existingID?: NanoID,
+    calledFromInitialization = false
   ): Promise<Player> {
     let id: NanoID;
 
@@ -230,6 +244,9 @@ export abstract class Tournament extends EventEmitter {
           player.botDirPath = file.botdir;
           player.zipFile = file.zipFile;
           player.botkey = file.botkey;
+          if (!calledFromInitialization) {
+            player.version++;
+          }
         }
         // update bot instead and call a tournament's updateBot function
         await this.updatePlayer(player, oldname, oldfile);
