@@ -119,6 +119,7 @@ export class Match {
     engineOptions: {},
     secureMode: false,
     agentOptions: deepCopy(Agent.OptionDefaults),
+    languageSpecificAgentOptions: {},
     storeReplay: true,
     storeReplayDirectory: 'replays',
     storeErrorLogs: true,
@@ -269,7 +270,8 @@ export class Match {
       // Initialize agents with agent files
       this.agents = Agent.generateAgents(
         this.agentFiles,
-        this.configs.agentOptions
+        this.configs.agentOptions,
+        this.configs.languageSpecificAgentOptions
       );
       this.agents.forEach((agent) => {
         this.idToAgentsMap.set(agent.id, agent);
@@ -777,6 +779,12 @@ export namespace Match {
      * Default Agent options to use for all agents in a match. Commonly used for setting resource use boundaries
      */
     agentOptions: DeepPartial<Agent.Options>;
+
+    /**
+     * Agent options to override with depending on extension of file
+     * @default `{}` - an empty object
+     */
+    languageSpecificAgentOptions: Agent.LanguageSpecificOptions;
 
     /**
      * Whether or not to store a replay file if match results indicate a replay file was stored

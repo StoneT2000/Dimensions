@@ -34,6 +34,9 @@ jobs:
           name: Pull standard images for Dimensions
           command: docker pull docker.io/stonezt2000/dimensions_langs
       - run:
+          name: Pull other images used for testing
+          command: ./pull_all_test_docker_images.sh
+      - run:
           name: install dockerize
           command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
           environment:
