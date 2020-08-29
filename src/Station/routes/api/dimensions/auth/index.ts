@@ -17,6 +17,13 @@ export const requireAuth = (
     next();
     return;
   }
+  if (!req.data.dimension.getStation().configs.requireAuth) {
+    req.data.dimension.databasePlugin.getUser('admin', false).then((admin) => {
+      req.data.user = admin;
+      next();
+    });
+    return;
+  }
   const authHeader = req.get('Authorization');
   if (!authHeader) return next(new error.Unauthorized('Missing auth token'));
   const authHead = authHeader.split(' ');
@@ -48,6 +55,15 @@ export const storeAuth = (
     next();
     return;
   }
+
+  if (!req.data.dimension.getStation().configs.requireAuth) {
+    req.data.dimension.databasePlugin.getUser('admin', false).then((admin) => {
+      req.data.user = admin;
+      next();
+    });
+    return;
+  }
+
   const authHeader = req.get('Authorization');
   if (!authHeader) return next();
   const authHead = authHeader.split(' ');
@@ -80,6 +96,15 @@ export const requireAdmin = (
     next();
     return;
   }
+
+  if (!req.data.dimension.getStation().configs.requireAuth) {
+    req.data.dimension.databasePlugin.getUser('admin', false).then((admin) => {
+      req.data.user = admin;
+      next();
+    });
+    return;
+  }
+
   const authHeader = req.get('Authorization');
   if (!authHeader) return next(new error.Unauthorized('Missing auth token'));
   const authHead = authHeader.split(' ');

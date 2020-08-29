@@ -57,6 +57,7 @@ export class Station {
   public configs: Station.Configs = {
     disableUploads: false,
     loggingLevel: Logger.LEVEL.INFO,
+    requireAuth: true,
   };
 
   constructor(
@@ -244,5 +245,13 @@ export namespace Station {
      * Logging level of station
      */
     loggingLevel: Logger.LEVEL;
+
+    /**
+     * Whether or not requests need to be authenticated with a token or not. If false, all requests are assumed to be
+     * the admin
+     *
+     * @default `true`
+     */
+    requireAuth: boolean;
   }
 }

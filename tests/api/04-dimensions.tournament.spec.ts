@@ -5,10 +5,14 @@ import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
 import sinonChai from 'sinon-chai';
 import 'mocha';
-import { Logger, Tournament } from '../../src';
+import { Logger, Tournament, MongoDB } from '../../src';
 import { RockPaperScissorsDesign } from '../rps';
 import { Ladder } from '../../src/Tournament/Ladder';
 import { createLadderTourney } from '../core/tourney/utils';
+import { copyFile, copyFileSync, mkdirSync } from 'fs';
+import path from 'path';
+import { LOCAL_DIR } from '../../src/utils/System';
+import { FileSystemStorage } from '../../src/SupportedPlugins/FileSystemStorage';
 chai.should();
 chai.use(sinonChai);
 chai.use(chaiSubset);
@@ -42,7 +46,12 @@ describe('Testing /api/dimensions/:dimensionID/tournaments API', () => {
       existingID: 'rock3',
     },
   ];
-  before(() => {
+  const mongo = new MongoDB(
+    'mongodb://root:rootpassword@localhost:27017/test?authSource=admin&readPreference=primary'
+  );
+  const fsstore = new FileSystemStorage();
+
+  before(async () => {
     const rpsDesign = new RockPaperScissorsDesign('RPS');
     dimension = Dimension.create(rpsDesign, {
       activateStation: true,
@@ -52,12 +61,17 @@ describe('Testing /api/dimensions/:dimensionID/tournaments API', () => {
       defaultMatchConfigs: {
         storeErrorLogs: false,
       },
+      stationConfigs: {
+        requireAuth: false,
+      },
     });
     origin += dimension.getStation().port;
     endpoint = origin + `/api/dimensions/${dimension.id}`;
     t = createLadderTourney(dimension, botList, {
       id: 'tournamentid',
     });
+    await dimension.use(mongo);
+    await dimension.use(fsstore);
   });
   it(`GET ${base}/tournaments - should return all tournaments`, async () => {
     const res = await chai.request(endpoint).get(`/tournaments`);
@@ -90,6 +104,41 @@ describe('Testing /api/dimensions/:dimensionID/tournaments API', () => {
         message: `No tournament found with name or id of 'faketournamentID' in dimension ${dimension.id} - '${dimension.name}'`,
       },
     });
+  });
+
+  it(`POST ${base}/tournaments/:tournamentID/upload-by-key - should upload bot by key`, async () => {
+    const t = createLadderTourney(dimension, botListWithIDs, {
+      id: 'ladderTestWithUploadBykey',
+      tournamentConfigs: {
+        selfMatchMake: false,
+      },
+      defaultMatchConfigs: {
+        bestOf: 9,
+      },
+    });
+    mkdirSync(path.join(fsstore.bucketPath, 'testfolder'), {
+      recursive: true,
+    });
+    copyFileSync(
+      './tests/kits/js/normal/paper.zip',
+      path.join(fsstore.bucketPath, 'testfolder/bot.zip')
+    );
+    const res = await chai
+      .request(endpoint)
+      .post(`/tournaments/${t.id}/upload-by-key`)
+      .send({
+        botname: 'rock2withpaper',
+        botkey: 'testfolder/bot.zip',
+        playerID: 'rock2',
+        pathtofile: 'paper.js',
+      });
+    const { playerStat } = await t.getPlayerStat('rock2');
+    expect(playerStat.player.botDirPath).to.equal(null);
+    expect(playerStat.player.botkey).to.equal('testfolder/bot.zip');
+    expect(playerStat.player.disabled).to.equal(false);
+    expect(playerStat.player.file).to.equal('paper.js');
+    expect(playerStat.player.zipFile).to.equal(null);
+    expect(res.status).to.equal(200);
   });
 
   it(`POST ${base}/tournaments/:tournamentID/match-queue - should schedule matches`, async () => {
@@ -134,5 +183,9 @@ describe('Testing /api/dimensions/:dimensionID/tournaments API', () => {
         }
       });
     });
+  });
+  after(async () => {
+    await mongo.db.close();
+    await dimension.cleanup();
   });
 });
