@@ -62,11 +62,23 @@ jobs:
 
       - codecov/upload:
           file: coverage.lcov
-
+  test-storage:
+    executor:
+      name: language-build
+    steps:
+      - setup_services
+      - node/with-cache:
+          steps:
+            - run: npm install
+            - run: npm run clean
+            - run: npm run test-seed
+            - run: nyc --reporter=html --no-clean mocha tests/core/storage/**/*.spec.ts
+      - run: npm run codecov
 workflows:
   build-and-test:
     jobs:
       - build-and-test
+      - test-storage
   lint:
     jobs:
       - lint

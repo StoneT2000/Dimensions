@@ -15,7 +15,7 @@ tests/core/engine/04*.spec.ts \
 tests/core/utilstest/**/*.spec.ts \
 tests/core/agent/**/*.spec.ts \
 tests/core/database/**/*.spec.ts \
-tests/core/storage/**/*.spec.ts \
+# tests/core/storage/**/*.spec.ts \
 tests/core/dimension/**/*.spec.ts \
 tests/core/logger/**/*.spec.ts \
 tests/core/match/**/*.spec.ts \
