@@ -72,7 +72,7 @@ jobs:
             - run: npm install
             - run: npm run clean
             - run: npm run test-seed
-            - run: nyc --reporter=html --no-clean mocha tests/core/storage/**/*.spec.ts
+            - run: npm run test:storage
       - run: npm run codecov
 workflows:
   build-and-test:
