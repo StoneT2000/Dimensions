@@ -95,4 +95,24 @@ describe('Testing LRU File Caching system', () => {
       fs.existsSync(path.join(LOCAL_DIR, 'cache_test_3', 'key4', '8kb'))
     ).to.equal(true);
   });
+
+  it('should throw out least used files and allow them to be put back in', async () => {
+    const cachedir = 'cache_test_4';
+    const cache = new LRUFileCache(1024 * 9, path.join(LOCAL_DIR, cachedir));
+    await cache.add('key1', files['2kb']);
+
+    await cache.add('key2', files['2kb']);
+    await cache.add('key3', files['8kb']);
+    await cache.add('key1', files['2kb']);
+
+    expect(
+      fs.existsSync(path.join(LOCAL_DIR, cachedir, 'key1', '2kb'))
+    ).to.equal(true);
+    expect(
+      fs.existsSync(path.join(LOCAL_DIR, cachedir, 'key2', '2kb'))
+    ).to.equal(false);
+    expect(
+      fs.existsSync(path.join(LOCAL_DIR, cachedir, 'key3', '8kb'))
+    ).to.equal(false);
+  });
 });

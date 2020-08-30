@@ -2,7 +2,6 @@ import fs, { copyFileSync, mkdirSync } from 'fs';
 import constants from 'constants';
 import { removeDirectory } from './System';
 import path from 'path';
-import { threadId } from 'worker_threads';
 /**
  * A variant of the LRU cache where this cache stores mappings from keys to file paths. This throws out least recently
  * used items when adding a new file path to cache. Thrown out items are removed from cache and the file it pointed to
@@ -60,7 +59,11 @@ export default class LRUFileCache {
           )
         )
       );
-      this.queueTail = newtail;
+      this.cache.delete(this.queueTail.key);
+      if (newtail) {
+        newtail.next = null;
+        this.queueTail = newtail;
+      }
     }
     await Promise.all(removeFilePromises);
 
