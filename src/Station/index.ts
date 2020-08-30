@@ -157,11 +157,6 @@ export class Station {
           `Station: ${this.name}, couldn't find an open port after 16 attempts`
         );
       });
-
-    // make local bot directories if not made yet
-    if (!existsSync(BOT_DIR)) {
-      mkdirSync(BOT_DIR, { recursive: true });
-    }
   }
   /**
    * Try to listen to this.maxAttempts ports. Resolves with the port nunber used

@@ -5,7 +5,7 @@ import { deepCopy } from '../utils/DeepCopy';
 
 import { Logger } from '../Logger';
 import { Match } from '../Match';
-import { Station } from '../Station';
+import { Station, BOT_DIR } from '../Station';
 import { MissingFilesError } from '../DimensionError';
 import { Design } from '../Design';
 import { Tournament } from '../Tournament';
@@ -13,6 +13,7 @@ import { Tournament } from '../Tournament';
 import { Plugin } from '../Plugin';
 import { Database } from '../Plugin/Database';
 import { Storage } from '../Plugin/Storage';
+import { existsSync, mkdirSync } from 'fs';
 
 /**
  * Some standard database type strings
@@ -248,6 +249,11 @@ export class Dimension {
 
     this.log.info(`Created Dimension - ID: ${this.id}, Name: ${this.name}`);
     this.log.detail('Dimension Configs', this.configs);
+
+    // create bot directories
+    if (!existsSync(BOT_DIR)) {
+      mkdirSync(BOT_DIR, { recursive: true });
+    }
   }
 
   /**
