@@ -44,7 +44,8 @@
         "botDirPath": null,
         "botkey": null,
         "disabled": false,
-        "zipFile": null
+        "zipFile": null,
+        "version": 0
       },
       "matchesPlayed": 2,
       "rankState": {
@@ -69,7 +70,8 @@
         "botDirPath": null,
         "botkey": null,
         "disabled": false,
-        "zipFile": null
+        "zipFile": null,
+        "version": 0
       },
       "matchesPlayed": 0,
       "rankState": {

@@ -53,8 +53,9 @@ export class FileSystemStorage extends Storage {
     return dest;
   }
 
-  async download(key: string, destination: string): Promise<void> {
-    return this.writeFileFromBucket(key, destination);
+  async download(key: string, destination: string): Promise<string> {
+    await this.writeFileFromBucket(key, destination);
+    return destination;
   }
 
   /**

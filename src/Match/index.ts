@@ -124,6 +124,7 @@ export class Match {
     storeReplayDirectory: 'replays',
     storeErrorLogs: true,
     storeErrorDirectory: 'errorlogs',
+    agentSpecificOptions: [],
   };
 
   /** Match process used to store the process governing a match running on a custom design */
@@ -174,8 +175,8 @@ export class Match {
     public design: Design,
     public agentFiles:
       | Array<string>
-      | Array<{ file: string; name: string; botkey?: string }>
-      | Array<{ file: string; tournamentID: Tournament.ID; botkey?: string }>,
+      | Array<{ file: string; name: string; botkey?: string }> // used in createMatch
+      | Array<{ file: string; tournamentID: Tournament.ID; botkey?: string }>, // used by tournaments
     configs: DeepPartial<Match.Configs> = {},
     private dimension: Dimension
   ) {
@@ -220,7 +221,6 @@ export class Match {
       this.log.info(
         `Design: ${this.design.name} | Initializing match - ID: ${this.id}, Name: ${this.name}`
       );
-
       const overrideOptions = this.design.getDesignOptions().override;
 
       this.log.detail('Match Configs', this.configs);
@@ -248,9 +248,19 @@ export class Match {
       if (this.dimension.hasStorage()) {
         this.agentFiles.forEach((agentFile, index) => {
           if (agentFile.botkey && agentFile.file) {
-            // we know that the directory of the file should be the "root" directory of the bot
+            let useCachedBotFile = false;
+            if (
+              this.configs.agentSpecificOptions[index] &&
+              this.configs.agentSpecificOptions[index].useCachedBotFile
+            ) {
+              useCachedBotFile = true;
+            }
             retrieveBotFilePromises.push(
-              this.retrieveBot(agentFile.botkey, agentFile.file)
+              this.retrieveBot(
+                agentFile.botkey,
+                agentFile.file,
+                useCachedBotFile
+              )
             );
             retrieveBotFileIndexes.push(index);
           }
@@ -308,13 +318,16 @@ export class Match {
   /**
    * Retrieves a bot through its key and downloads it to a random generated folder. Returns the new file's path
    * @param botkey
+   * @param file
+   * @param useCached - if true, storage plugin will avoid redownloading data. If false, storage plugin will always
+   * redownload data
    */
-  private async retrieveBot(botkey: string, file: string) {
+  private async retrieveBot(botkey: string, file: string, useCached: boolean) {
     const dir = BOT_DIR + '/anon-' + genID(18);
     mkdirSync(dir);
 
     const zipFile = path.join(dir, 'bot.zip');
-    await this.dimension.storagePlugin.download(botkey, zipFile);
+    await this.dimension.storagePlugin.download(botkey, zipFile, useCached);
     await extract(zipFile, {
       dir: dir,
     });
@@ -785,6 +798,12 @@ export namespace Match {
      * @default `{}` - an empty object
      */
     languageSpecificAgentOptions: Agent.LanguageSpecificOptions;
+
+    /**
+     * Agent options to lastly overridde with depending on agent index
+     * @default `[]` - empty array meaning no more overrides
+     */
+    agentSpecificOptions: Array<DeepPartial<Agent.Options>>;
 
     /**
      * Whether or not to store a replay file if match results indicate a replay file was stored
