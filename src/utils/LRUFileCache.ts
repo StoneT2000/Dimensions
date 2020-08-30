@@ -47,7 +47,7 @@ export default class LRUFileCache {
     }
     let trimmedSize = this.size;
     const removeFilePromises: Array<Promise<void>> = [];
-    // console.log({ newfilesize, trimmedSize }, this.max);
+
     while (newfilesize + trimmedSize > this.max) {
       // find files until under max
       const newtail = this.queueTail.prev;
@@ -92,7 +92,7 @@ export default class LRUFileCache {
       recursive: true,
     });
     copyFileSync(filepath, cachedPath);
-    this.size += newfilesize;
+    this.size = trimmedSize + newfilesize;
     return cachedPath;
   }
 
@@ -113,21 +113,23 @@ export default class LRUFileCache {
   get(key: string): string {
     key = key.replace(/\//g, '_');
     if (this.has(key)) {
-      // move node to front
-      const node = this.cache.get(key);
-      if (node.prev) {
-        node.prev.next = node.next;
+      if (this.cache.size !== 1) {
+        // move node to front
+        const node = this.cache.get(key);
+        if (node.prev) {
+          node.prev.next = node.next;
+        }
+        if (node.next) {
+          node.next.prev = node.prev;
+        }
+        if (node === this.queueTail) {
+          this.queueTail = node.prev;
+        }
+        node.next = this.queueHead;
+        this.queueHead.prev = node;
+        node.prev = null;
+        this.queueHead = node;
       }
-      if (node.next) {
-        node.next.prev = node.prev;
-      }
-      if (node === this.queueTail) {
-        this.queueTail = node.prev;
-      }
-      node.next = this.queueHead;
-      this.queueHead.prev = node;
-      node.prev = null;
-      this.queueHead = node;
 
       // return cached path
       return this.getCachedFilePath(this.cache.get(key).filepath, key);

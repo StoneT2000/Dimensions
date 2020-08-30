@@ -20,7 +20,7 @@ export class FileSystemStorage extends Storage {
   public _useCacheCount = 0;
   public configs: FileSystemStorage.Configs = {
     maxCacheSize: 1024 * 1024 * 50,
-    cacheDir: path.join(LOCAL_DIR, 'cache'),
+    cacheDir: 'cache',
     loggingLevel: Logger.LEVEL.INFO,
   };
   constructor(configs?: DeepPartial<FileSystemStorage.Configs>) {
@@ -28,7 +28,7 @@ export class FileSystemStorage extends Storage {
     this.configs = deepMerge(this.configs, deepCopy(configs));
     this.lruFileCache = new LRUFileCache(
       this.configs.maxCacheSize,
-      this.configs.cacheDir
+      path.join(LOCAL_DIR, this.configs.cacheDir)
     );
     this.log = new Logger(this.configs.loggingLevel, 'FS-Storage');
   }

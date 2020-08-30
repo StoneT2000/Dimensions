@@ -115,4 +115,69 @@ describe('Testing LRU File Caching system', () => {
       fs.existsSync(path.join(LOCAL_DIR, cachedir, 'key3', '8kb'))
     ).to.equal(false);
   });
+
+  it('should throw out least used file when the same files are added and thrown out', async () => {
+    const cachedir = 'cache_test_5';
+    const cache = new LRUFileCache(1024 * 3, path.join(LOCAL_DIR, cachedir));
+    await cache.add('key1', files['2kb']);
+
+    await cache.add('key2', files['2kb']);
+    expect(cache.has('key1')).to.equal(false);
+    expect(
+      fs.existsSync(path.join(LOCAL_DIR, cachedir, 'key1', '2kb'))
+    ).to.equal(false);
+    expect(
+      fs.existsSync(path.join(LOCAL_DIR, cachedir, 'key2', '2kb'))
+    ).to.equal(true);
+
+    await cache.add('key1', files['2kb']);
+    expect(
+      fs.existsSync(path.join(LOCAL_DIR, cachedir, 'key1', '2kb'))
+    ).to.equal(true);
+    expect(
+      fs.existsSync(path.join(LOCAL_DIR, cachedir, 'key2', '2kb'))
+    ).to.equal(false);
+
+    await cache.add('key2', files['2kb']);
+    expect(
+      fs.existsSync(path.join(LOCAL_DIR, cachedir, 'key1', '2kb'))
+    ).to.equal(false);
+    expect(
+      fs.existsSync(path.join(LOCAL_DIR, cachedir, 'key2', '2kb'))
+    ).to.equal(true);
+  });
+
+  it('should work when there is only one file in cache and perform get operations', async () => {
+    const cachedir = 'cache_test_5';
+    const cache = new LRUFileCache(1024 * 3, path.join(LOCAL_DIR, cachedir)); // can hold one file max
+    await cache.add('key1', files['2kb']);
+
+    await cache.add('key2', files['2kb']);
+    cache.get('fakekey');
+    cache.get('key2');
+    expect(cache.has('key1')).to.equal(false);
+    expect(
+      fs.existsSync(path.join(LOCAL_DIR, cachedir, 'key1', '2kb'))
+    ).to.equal(false);
+    expect(
+      fs.existsSync(path.join(LOCAL_DIR, cachedir, 'key2', '2kb'))
+    ).to.equal(true);
+
+    await cache.add('key1', files['2kb']);
+    cache.get('key1');
+    expect(
+      fs.existsSync(path.join(LOCAL_DIR, cachedir, 'key1', '2kb'))
+    ).to.equal(true);
+    expect(
+      fs.existsSync(path.join(LOCAL_DIR, cachedir, 'key2', '2kb'))
+    ).to.equal(false);
+
+    await cache.add('key2', files['2kb']);
+    expect(
+      fs.existsSync(path.join(LOCAL_DIR, cachedir, 'key1', '2kb'))
+    ).to.equal(false);
+    expect(
+      fs.existsSync(path.join(LOCAL_DIR, cachedir, 'key2', '2kb'))
+    ).to.equal(true);
+  });
 });
