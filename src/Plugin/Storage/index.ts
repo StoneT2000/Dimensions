@@ -40,7 +40,7 @@ export abstract class Storage extends Plugin {
 
   /**
    * Download a file to a destination location. Resolves with path to file.
-   * If useCached is true and storage plugin does not needd to redownload, destination is ignored
+   * If useCached is true and storage plugin does not need to redownload, destination is ignored
    *
    * @param key - the key referencing the object to download
    * @param destination - destination path to download to locally

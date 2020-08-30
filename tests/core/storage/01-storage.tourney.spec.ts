@@ -58,7 +58,9 @@ describe('Testing Storage with Tournament Singletons (no distribution)', () => {
   const mongo = new MongoDB(
     'mongodb://root:rootpassword@localhost:27017/test?authSource=admin&readPreference=primary'
   );
-  const fsstore = new FileSystemStorage();
+  const fsstore = new FileSystemStorage({
+    cacheDir: 'cache_test_storage_tests_0',
+  });
   before(async () => {
     await d.use(mongo);
     await d.use(fsstore);
@@ -88,13 +90,77 @@ describe('Testing Storage with Tournament Singletons (no distribution)', () => {
       expect(fs.existsSync(await fsstore.getDownloadURL(key))).to.equal(true);
     });
   });
+  describe('Test caching', () => {
+    it('should cache bot files and use cache when possible if bots do not update', async () => {
+      // eslint-disable-next-line no-async-promise-executor
+      return new Promise(async (resolve, reject) => {
+        const tourney = createLadderTourney(d, [users.rock1, users.rock2], {
+          name: 'Ladder Tournament',
+          id: 'storagetournamenttest1',
+          tournamentConfigs: {
+            syncConfigs: false,
+          },
+          defaultMatchConfigs: {
+            storeErrorLogs: false,
+            testReplays: false,
+          },
+        });
+        const user1 = await d.databasePlugin.getUser(users.rock1.existingID);
+        const key1 = await fsstore.uploadTournamentFile(
+          './tests/kits/js/normal/rock.zip',
+          user1,
+          tourney
+        );
+        await tourney.addplayer(
+          {
+            file: 'rock.js',
+            name: 'rock1',
+            zipFile: null,
+            botdir: null,
+            botkey: key1,
+          },
+          user1.playerID
+        );
+        const user2 = await d.databasePlugin.getUser(users.rock2.existingID);
+        const key2 = await fsstore.uploadTournamentFile(
+          './tests/kits/js/normal/rock.zip',
+          user2,
+          tourney
+        );
+        await tourney.addplayer(
+          {
+            file: 'rock.js',
+            name: 'rock2',
+            zipFile: null,
+            botdir: null,
+            botkey: key2,
+          },
+          user1.playerID
+        );
+        await tourney.run();
+        let count = 0;
+        tourney.on(Tournament.Events.MATCH_HANDLED, async () => {
+          if (++count > 3) {
+            try {
+              expect(fsstore._useCacheCount).to.equal(4);
+              await tourney.destroy();
+              resolve();
+            } catch (err) {
+              await tourney.destroy();
+              reject(err);
+            }
+          }
+        });
+      });
+    });
+  });
   describe('Test error logs and replay files', () => {
     it('should correctly store error logs and replay files', async () => {
       // eslint-disable-next-line no-async-promise-executor
       return new Promise(async (resolve, reject) => {
         const tourney = createLadderTourney(d, botList, {
           name: 'Ladder Tournament',
-          id: 'storagetournamenttest1',
+          id: 'storagetournamenttest2',
           tournamentConfigs: {
             syncConfigs: false,
           },

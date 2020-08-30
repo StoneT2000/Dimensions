@@ -97,10 +97,12 @@ export default class LRUFileCache {
   }
 
   private getCachedFilePath(filepath: string, key: string) {
+    key = key.replace(/\//g, '_');
     return path.join(this.cachePath, key, path.basename(filepath));
   }
 
   has(key: string): boolean {
+    key = key.replace(/\//g, '_');
     return this.cache.has(key);
   }
 
@@ -109,6 +111,7 @@ export default class LRUFileCache {
    * @param key
    */
   get(key: string): string {
+    key = key.replace(/\//g, '_');
     if (this.has(key)) {
       // move node to front
       const node = this.cache.get(key);

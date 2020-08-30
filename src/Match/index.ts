@@ -23,7 +23,7 @@ import { genID } from '../utils';
 import { deepCopy } from '../utils/DeepCopy';
 import path from 'path';
 import extract = require('extract-zip');
-import { removeFileSync, removeDirectory, removeFile } from '../utils/System';
+import { removeDirectory, removeFile } from '../utils/System';
 import { BOT_DIR } from '../Station';
 import { mkdirSync, existsSync, statSync } from 'fs';
 
@@ -327,11 +327,19 @@ export class Match {
     mkdirSync(dir);
 
     const zipFile = path.join(dir, 'bot.zip');
-    await this.dimension.storagePlugin.download(botkey, zipFile, useCached);
-    await extract(zipFile, {
+    // if useCached is true, actualZipFileLocation will likely be different than zipFile, and we directly re-extract
+    // the bot from that zip file. It can be argued that it would be better to cache the unzipped bot instead but this
+    // could potentially be a security concern by repeatedly copying over unzipped bot files instead of the submitted
+    // zip file; and zip is smaller to cache
+    const actualZipFileLocation = await this.dimension.storagePlugin.download(
+      botkey,
+      zipFile,
+      useCached
+    );
+
+    await extract(actualZipFileLocation, {
       dir: dir,
     });
-    removeFileSync(zipFile);
     return path.join(dir, path.basename(file));
   }
 

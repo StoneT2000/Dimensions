@@ -20,6 +20,7 @@ tests/core/logger/**/*.spec.ts \
 tests/core/match/**/*.spec.ts \
 tests/core/rating/**/*.spec.ts \
 tests/core/tourney/**/*.spec.ts \
+tests/core/utilstest/**/*.spec.ts \
 tests/api/**/*.spec.ts \
 )
 
