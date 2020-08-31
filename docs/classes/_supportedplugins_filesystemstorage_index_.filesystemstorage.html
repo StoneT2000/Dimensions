@@ -101,8 +101,10 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html#_usecachecount" class="tsd-kind-icon">_use<wbr>Cache<wbr>Count</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html#bucketpath" class="tsd-kind-icon">bucket<wbr>Path</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html#configs-1" class="tsd-kind-icon">configs</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html#log" class="tsd-kind-icon">log</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html#lrufilecache" class="tsd-kind-icon">lru<wbr>File<wbr>Cache</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite"><a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html#name" class="tsd-kind-icon">name</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite"><a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html#type" class="tsd-kind-icon">type</a></li>
 							</ul>
@@ -120,6 +122,12 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html#writefiletobucket" class="tsd-kind-icon">write<wbr>File<wbr>ToBucket</a></li>
 							</ul>
 						</section>
+						<section class="tsd-index-section ">
+							<h3>Object literals</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-object-literal tsd-parent-kind-class tsd-is-overwrite"><a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html#configs-1" class="tsd-kind-icon">configs</a></li>
+							</ul>
+						</section>
 					</div>
 				</section>
 			</section>
@@ -129,16 +137,22 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>File<wbr>System<wbr>Storage<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html" class="tsd-signature-type">FileSystemStorage</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>File<wbr>System<wbr>Storage<span class="tsd-signature-symbol">(</span>configs<span class="tsd-signature-symbol">?: </span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Configs</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html" class="tsd-signature-type">FileSystemStorage</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_plugin_storage_index_.storage.html">Storage</a>.<a href="_plugin_storage_index_.storage.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L12">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L12</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L26">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L26</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> configs: <a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Configs</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html" class="tsd-signature-type">FileSystemStorage</a></h4>
 						</li>
 					</ul>
@@ -147,30 +161,44 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="_usecachecount" class="tsd-anchor"></a>
+					<h3>_use<wbr>Cache<wbr>Count</h3>
+					<div class="tsd-signature tsd-kind-icon">_use<wbr>Cache<wbr>Count<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L21">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L21</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="bucketpath" class="tsd-anchor"></a>
 					<h3>bucket<wbr>Path</h3>
 					<div class="tsd-signature tsd-kind-icon">bucket<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L12">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L12</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L18">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L18</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-					<a name="configs-1" class="tsd-anchor"></a>
-					<h3>configs</h3>
-					<div class="tsd-signature tsd-kind-icon">configs<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_plugin_storage_index_.storage.configs.html" class="tsd-signature-type">Configs</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="log" class="tsd-anchor"></a>
+					<h3>log</h3>
+					<div class="tsd-signature tsd-kind-icon">log<span class="tsd-signature-symbol">:</span> <a href="_logger_index_.logger.html" class="tsd-signature-type">Logger</a></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="_plugin_storage_index_.storage.html">Storage</a>.<a href="_plugin_storage_index_.storage.html#configs-1">configs</a></p>
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Storage/index.ts#L10">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Storage/index.ts#L10</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L20">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L20</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Default configs</p>
-						</div>
-					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="lrufilecache" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> lru<wbr>File<wbr>Cache</h3>
+					<div class="tsd-signature tsd-kind-icon">lru<wbr>File<wbr>Cache<span class="tsd-signature-symbol">:</span> <a href="_utils_lrufilecache_.lrufilecache.html" class="tsd-signature-type">LRUFileCache</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L19">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L19</a></li>
+						</ul>
+					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
 					<a name="name" class="tsd-anchor"></a>
@@ -179,7 +207,7 @@
 					<aside class="tsd-sources">
 						<p>Overrides <a href="_plugin_storage_index_.storage.html">Storage</a>.<a href="_plugin_storage_index_.storage.html#name">name</a></p>
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L10">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L10</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L16">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L16</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -190,7 +218,7 @@
 					<aside class="tsd-sources">
 						<p>Overrides <a href="_plugin_storage_index_.storage.html">Storage</a>.<a href="_plugin_storage_index_.storage.html#type-1">type</a></p>
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L11">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L11</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L17">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L17</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -201,14 +229,14 @@
 					<a name="download" class="tsd-anchor"></a>
 					<h3>download</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">download<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, destination<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">download<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, destination<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, useCached<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_plugin_storage_index_.storage.html">Storage</a>.<a href="_plugin_storage_index_.storage.html#download">download</a></p>
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L56">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L56</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L77">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L77</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -219,8 +247,11 @@
 								<li>
 									<h5>destination: <span class="tsd-signature-type">string</span></h5>
 								</li>
+								<li>
+									<h5>useCached: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -235,7 +266,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_plugin_storage_index_.storage.html">Storage</a>.<a href="_plugin_storage_index_.storage.html#getdownloadurl">getDownloadURL</a></p>
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L64">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L64</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L108">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L108</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -267,7 +298,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_plugin_storage_index_.storage.html">Storage</a>.<a href="_plugin_storage_index_.storage.html#initialize">initialize</a></p>
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L21">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L21</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L40">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L40</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -296,7 +327,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_plugin_storage_index_.storage.html">Storage</a>.<a href="_plugin_storage_index_.storage.html#manipulate">manipulate</a></p>
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L68">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L68</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L112">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L112</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -320,7 +351,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_plugin_storage_index_.storage.html">Storage</a>.<a href="_plugin_storage_index_.storage.html#upload">upload</a></p>
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L50">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L50</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L71">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L71</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -347,7 +378,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_plugin_storage_index_.storage.html">Storage</a>.<a href="_plugin_storage_index_.storage.html#uploadtournamentfile">uploadTournamentFile</a></p>
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L38">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L38</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L59">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L59</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -376,7 +407,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L34">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L34</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L54">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L54</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -402,7 +433,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L31">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L31</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L50">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L50</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -417,6 +448,50 @@
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Object literals</h2>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-class tsd-is-overwrite">
+					<a name="configs-1" class="tsd-anchor"></a>
+					<h3>configs</h3>
+					<div class="tsd-signature tsd-kind-icon">configs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<p>Overrides <a href="_plugin_storage_index_.storage.html">Storage</a>.<a href="_plugin_storage_index_.storage.html#configs-1">configs</a></p>
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L22">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L22</a></li>
+						</ul>
+					</aside>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="configs-1.cachedir" class="tsd-anchor"></a>
+						<h3>cache<wbr>Dir</h3>
+						<div class="tsd-signature tsd-kind-icon">cache<wbr>Dir<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;cache&quot;</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L24">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L24</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="configs-1.logginglevel" class="tsd-anchor"></a>
+						<h3>logging<wbr>Level</h3>
+						<div class="tsd-signature tsd-kind-icon">logging<wbr>Level<span class="tsd-signature-symbol">:</span> <a href="../enums/_logger_index_.logger.level.html#info" class="tsd-signature-type">INFO</a><span class="tsd-signature-symbol"> = Logger.LEVEL.INFO</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L25">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L25</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="configs-1.maxcachesize" class="tsd-anchor"></a>
+						<h3>max<wbr>Cache<wbr>Size</h3>
+						<div class="tsd-signature tsd-kind-icon">max<wbr>Cache<wbr>Size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 1024 * 1024 * 50</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L23">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/FileSystemStorage/index.ts#L23</a></li>
+							</ul>
+						</aside>
+					</section>
 				</section>
 			</section>
 		</div>
@@ -445,10 +520,16 @@
 								<a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html#_usecachecount" class="tsd-kind-icon">_use<wbr>Cache<wbr>Count</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html#bucketpath" class="tsd-kind-icon">bucket<wbr>Path</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html#configs-1" class="tsd-kind-icon">configs</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html#log" class="tsd-kind-icon">log</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html#lrufilecache" class="tsd-kind-icon">lru<wbr>File<wbr>Cache</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
 								<a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html#name" class="tsd-kind-icon">name</a>
@@ -479,6 +560,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html#writefiletobucket" class="tsd-kind-icon">write<wbr>File<wbr>ToBucket</a>
+							</li>
+							<li class=" tsd-kind-object-literal tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_supportedplugins_filesystemstorage_index_.filesystemstorage.html#configs-1" class="tsd-kind-icon">configs</a>
 							</li>
 						</ul>
 					</li>
@@ -514,7 +598,7 @@
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
 			</ul>
 		</div>
 	</div>

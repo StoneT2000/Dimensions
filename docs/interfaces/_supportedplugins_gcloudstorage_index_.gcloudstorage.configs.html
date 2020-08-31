@@ -100,7 +100,10 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_supportedplugins_gcloudstorage_index_.gcloudstorage.configs.html#cachedir" class="tsd-kind-icon">cache<wbr>Dir</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_supportedplugins_gcloudstorage_index_.gcloudstorage.configs.html#filecachemaxsize" class="tsd-kind-icon">file<wbr>Cache<wbr>Max<wbr>Size</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_supportedplugins_gcloudstorage_index_.gcloudstorage.configs.html#keyfilename" class="tsd-kind-icon">key<wbr>Filename</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_supportedplugins_gcloudstorage_index_.gcloudstorage.configs.html#logginglevel" class="tsd-kind-icon">logging<wbr>Level</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_supportedplugins_gcloudstorage_index_.gcloudstorage.configs.html#projectid" class="tsd-kind-icon">project<wbr>Id</a></li>
 							</ul>
 						</section>
@@ -110,12 +113,54 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="cachedir" class="tsd-anchor"></a>
+					<h3>cache<wbr>Dir</h3>
+					<div class="tsd-signature tsd-kind-icon">cache<wbr>Dir<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/GCloudStorage/index.ts#L178">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/GCloudStorage/index.ts#L178</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Location for all cached files. Actual location is a subdirectry of the local directory used for storing files
+							related to dimensions</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p><code>cache</code></p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="filecachemaxsize" class="tsd-anchor"></a>
+					<h3>file<wbr>Cache<wbr>Max<wbr>Size</h3>
+					<div class="tsd-signature tsd-kind-icon">file<wbr>Cache<wbr>Max<wbr>Size<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/GCloudStorage/index.ts#L171">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/GCloudStorage/index.ts#L171</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>When caching files to prevent downloading the same data files over and over, this is the max size of files to
+							try and cache before throwing out the largest least used files.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>default</dt>
+							<dd><p><code>1 GB = 1024 * 1024 * 1024</code></p>
+							</dd>
+						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="keyfilename" class="tsd-anchor"></a>
 					<h3>key<wbr>Filename</h3>
 					<div class="tsd-signature tsd-kind-icon">key<wbr>Filename<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/GCloudStorage/index.ts#L114">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/GCloudStorage/index.ts#L114</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/GCloudStorage/index.ts#L158">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/GCloudStorage/index.ts#L158</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -125,12 +170,27 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="logginglevel" class="tsd-anchor"></a>
+					<h3>logging<wbr>Level</h3>
+					<div class="tsd-signature tsd-kind-icon">logging<wbr>Level<span class="tsd-signature-symbol">:</span> <a href="../enums/_logger_index_.logger.level.html" class="tsd-signature-type">LEVEL</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/GCloudStorage/index.ts#L183">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/GCloudStorage/index.ts#L183</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Logging level for storage service</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="projectid" class="tsd-anchor"></a>
 					<h3>project<wbr>Id</h3>
 					<div class="tsd-signature tsd-kind-icon">project<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/GCloudStorage/index.ts#L119">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/GCloudStorage/index.ts#L119</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/GCloudStorage/index.ts#L163">https://github.com/StoneT2000/Dimensions/blob/master/src/SupportedPlugins/GCloudStorage/index.ts#L163</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -163,7 +223,16 @@
 								<a href="_supportedplugins_gcloudstorage_index_.gcloudstorage.configs.html" class="tsd-kind-icon">Configs</a>
 								<ul>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="_supportedplugins_gcloudstorage_index_.gcloudstorage.configs.html#cachedir" class="tsd-kind-icon">cache<wbr>Dir</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="_supportedplugins_gcloudstorage_index_.gcloudstorage.configs.html#filecachemaxsize" class="tsd-kind-icon">file<wbr>Cache<wbr>Max<wbr>Size</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
 										<a href="_supportedplugins_gcloudstorage_index_.gcloudstorage.configs.html#keyfilename" class="tsd-kind-icon">key<wbr>Filename</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="_supportedplugins_gcloudstorage_index_.gcloudstorage.configs.html#logginglevel" class="tsd-kind-icon">logging<wbr>Level</a>
 									</li>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
 										<a href="_supportedplugins_gcloudstorage_index_.gcloudstorage.configs.html#projectid" class="tsd-kind-icon">project<wbr>Id</a>
@@ -173,11 +242,14 @@
 							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 								<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
-								<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html#configs-1" class="tsd-kind-icon">configs</a>
-							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html#dimensionbucket" class="tsd-kind-icon">dimension<wbr>Bucket</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html#log" class="tsd-kind-icon">log</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html#lrufilecache" class="tsd-kind-icon">lru<wbr>File<wbr>Cache</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
 								<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html#name" class="tsd-kind-icon">name</a>
@@ -205,6 +277,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 								<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html#uploadtournamentfile" class="tsd-kind-icon">upload<wbr>Tournament<wbr>File</a>
+							</li>
+							<li class=" tsd-kind-object-literal tsd-parent-kind-class tsd-is-overwrite">
+								<a href="../classes/_supportedplugins_gcloudstorage_index_.gcloudstorage.html#configs-1" class="tsd-kind-icon">configs</a>
 							</li>
 						</ul>
 					</li>
