@@ -19,7 +19,8 @@ import { deepMerge } from '../utils/DeepMerge';
 import { processIsRunning, dockerCopy } from '../utils/System';
 import { deepCopy } from '../utils/DeepCopy';
 import { DeepPartial } from '../utils/DeepPartial';
-import { Writable, Readable, EventEmitter, Stream, Duplex } from 'stream';
+import { Writable, Readable, Stream, Duplex } from 'stream';
+import { EventEmitter } from 'events';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import Dockerode, { HostConfig } from 'dockerode';
 import { isChildProcess } from '../utils/TypeGuards';

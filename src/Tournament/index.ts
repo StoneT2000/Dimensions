@@ -1,4 +1,4 @@
-import EventEmitter from 'events';
+import { EventEmitter } from 'events';
 import { Agent } from '../Agent';
 import { Match } from '../Match';
 import { Design } from '../Design';
