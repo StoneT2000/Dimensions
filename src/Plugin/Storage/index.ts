@@ -39,11 +39,19 @@ export abstract class Storage extends Plugin {
   abstract async upload(file: string, destinationName: string): Promise<string>;
 
   /**
-   * Download a file to a destination location
+   * Download a file to a destination location. Resolves with path to file.
+   * If useCached is true and storage plugin does not need to redownload, destination is ignored
+   *
    * @param key - the key referencing the object to download
    * @param destination - destination path to download to locally
+   * @param useCached - if true, storage plugin should avoid downloading file at key if possible. otherwise always
+   * redownload
    */
-  abstract async download(key: string, destination: string): Promise<void>;
+  abstract async download(
+    key: string,
+    destination: string,
+    useCached: boolean
+  ): Promise<string>;
 
   /**
    * Get download url (signed url) for a objet with that key

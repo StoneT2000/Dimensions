@@ -226,7 +226,7 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
           'reset ranking to initialMu'
         );
       });
-      it('should allow new bots and bot updates that the bot stats', async () => {
+      it('should allow new bots and bot updates that update bot stats and versions', async () => {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
           await t.resume();
@@ -247,11 +247,22 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
                   paperbotMatchCount,
                   'updated bot should reset stats and matches played should be less than before'
                 );
+                expect(
+                  (await t.getPlayerStat(paperBot.existingID)).playerStat.player
+                    .version
+                ).to.equal(
+                  1,
+                  'player (paper bot) version number should update'
+                );
 
                 await t.addplayer(users.rock3);
                 playerStat = (await t.getPlayerStat(users.rock3.existingID))
                   .playerStat;
                 expect(playerStat).to.be.not.equal(null, 'new bot exists');
+                expect(
+                  (await t.getPlayerStat(users.rock3.existingID)).playerStat
+                    .player.version
+                ).to.equal(0, 'player version number should initialize with 0');
                 resolve();
               } catch (err) {
                 reject(err);
@@ -333,7 +344,7 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
           'elo score should reset to startingScore when tournament does not do a hard stop'
         );
       });
-      it('should allow bots to be added and initialize / update bot stats', async () => {
+      it('should allow new bots and bot updates that update bot stats and versions', async () => {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
           await t.resume();
@@ -355,12 +366,23 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
                   paperbotMatchCount,
                   'updated bot should reset stats and matches played should be less than before'
                 );
+                expect(
+                  (await t.getPlayerStat(paperBot.existingID)).playerStat.player
+                    .version
+                ).to.equal(
+                  1,
+                  'player (paper bot) version number should update'
+                );
 
                 // addplayer to add new bot
                 await t.addplayer(users.rock3);
                 playerStat = (await t.getPlayerStat(users.rock3.existingID))
                   .playerStat;
                 expect(playerStat).to.be.not.equal(null, 'new bot exists');
+                expect(
+                  (await t.getPlayerStat(users.rock3.existingID)).playerStat
+                    .player.version
+                ).to.equal(0, 'player version number should initialize with 0');
                 resolve();
               } catch (err) {
                 reject(err);

@@ -12,19 +12,8 @@ executors:
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: rootpassword
 
-jobs:
-  lint:
-    executor:
-      name: language-build
-    steps:
-      - checkout
-      - node/with-cache:
-          steps:
-            - run: npm install
-            - run: npm run lint
-  build-and-test:
-    executor:
-      name: language-build
+commands:
+  setup_services:
     steps:
       - checkout
       - setup_remote_docker:
@@ -46,6 +35,22 @@ jobs:
           command: |
             dockerize -timeout 1m \
               -wait tcp://localhost:27017 `# mongo`
+
+jobs:
+  lint:
+    executor:
+      name: language-build
+    steps:
+      - checkout
+      - node/with-cache:
+          steps:
+            - run: npm install
+            - run: npm run lint
+  build-and-test:
+    executor:
+      name: language-build
+    steps:
+      - setup_services
       - node/with-cache:
           steps:
             - run: npm install
@@ -57,7 +62,6 @@ jobs:
 
       - codecov/upload:
           file: coverage.lcov
-
 workflows:
   build-and-test:
     jobs:

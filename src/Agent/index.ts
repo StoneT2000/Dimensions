@@ -870,15 +870,17 @@ export class Agent extends EventEmitter {
    * Generates a list of agents for use
    * @param files List of files to use to make agents or a list of objects with a file key for the file path to the bot
    *              and a name key for the name of the agent
-   * @param loggingLevel - the logging level for all these agents
-   * @param secureMode - whether to generate the agent securely. @default `true`
+   * @param options - Options to first override with for all agents
+   * @param languageSpecificOptions - Options to second overrided with for agents depending on language
+   * @param agentSpecificOptions - Options to lastly override with depending on agent's index
    */
   static generateAgents(
     files:
       | Array<string>
       | Array<{ file: string; name?: string; tournamentID?: Tournament.ID }>,
     options: DeepPartial<Agent.Options>,
-    languageSpecificOptions: Agent.LanguageSpecificOptions = {}
+    languageSpecificOptions: Agent.LanguageSpecificOptions = {},
+    agentSpecificOptions: Array<DeepPartial<Agent.Options>> = []
   ): Array<Agent> {
     if (files.length === 0) {
       throw new AgentFileError(
@@ -890,7 +892,13 @@ export class Agent extends EventEmitter {
 
     if (typeof files[0] === 'string') {
       files.forEach((file, index: number) => {
-        const configs = deepCopy(options);
+        let configs = deepCopy(options);
+        configs = deepMerge(
+          configs,
+          deepCopy(
+            agentSpecificOptions[index] ? agentSpecificOptions[index] : {}
+          )
+        );
         configs.id = index;
         agents.push(
           new Agent(file, <Agent.Options>configs, languageSpecificOptions)
@@ -898,7 +906,13 @@ export class Agent extends EventEmitter {
       });
     } else if (files[0].name !== undefined) {
       files.forEach((info, index: number) => {
-        const configs = deepCopy(options);
+        let configs = deepCopy(options);
+        configs = deepMerge(
+          configs,
+          deepCopy(
+            agentSpecificOptions[index] ? agentSpecificOptions[index] : {}
+          )
+        );
         configs.id = index;
         configs.name = info.name;
         agents.push(
@@ -907,7 +921,13 @@ export class Agent extends EventEmitter {
       });
     } else {
       files.forEach((info, index: number) => {
-        const configs = deepCopy(options);
+        let configs = deepCopy(options);
+        configs = deepMerge(
+          configs,
+          deepCopy(
+            agentSpecificOptions[index] ? agentSpecificOptions[index] : {}
+          )
+        );
         configs.id = index;
         configs.tournamentID = info.tournamentID;
         agents.push(
@@ -1032,6 +1052,14 @@ export namespace Agent {
      * @default `docker.io/stonezt2000/dimensions_langs`
      */
     image: string;
+
+    /**
+     * Whether or not to try and use a cached bot file. This is only relevant if a storage service is used as it helps
+     * reduce the number of times a bot file is downloaded.
+     *
+     * @default `false`
+     */
+    useCachedBotFile: boolean;
   }
 
   export type LanguageSpecificOptions = {
@@ -1070,5 +1098,6 @@ export namespace Agent {
     runCommands: {},
     compileCommands: {},
     image: 'docker.io/stonezt2000/dimensions_langs',
+    useCachedBotFile: false,
   };
 }

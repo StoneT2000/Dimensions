@@ -1,3 +1,5 @@
+import EventEmitter from 'events';
+import { Agent } from '../Agent';
 import { Match } from '../Match';
 import { Design } from '../Design';
 import {
@@ -16,7 +18,8 @@ import { genID } from '../utils';
 import { nanoid } from '..';
 import { removeDirectorySync } from '../utils/System';
 import { Database } from '../Plugin/Database';
-import EventEmitter from 'events';
+
+import VarLock from '../utils/VarLock';
 
 import TournamentStatusDefault = require('./TournamentStatus');
 import TournamentTypeDefault = require('./TournamentTypes');
@@ -43,7 +46,9 @@ export class Player {
   public username: string = undefined;
 
   /**
-   * Path to player's directory, not the file to be executed/used
+   * Path to player's directory, not the file to be executed/used. Value is necessary if storage system is not used or
+   * there is no bot key because the player is anonymous (locally stored). Used so tournament can clean up old bot
+   * directory when a new bot is uploaded
    */
   public botDirPath: string = undefined;
 
@@ -60,9 +65,14 @@ export class Player {
   public disabled = false;
 
   /**
-   * Path to the zip file for the bot. Used when no storage service is used
+   * Path to the zip file for the bot. Used when no storage service is used. Used to allow api to send zipped bot file
    */
   public zipFile: string = undefined;
+
+  /**
+   * The version of the bot associated with this player. Incremented whenever addPlayer is called
+   */
+  public version = 0;
 
   constructor(
     public tournamentID: Tournament.ID,
@@ -137,6 +147,19 @@ export abstract class Tournament extends EventEmitter {
    */
   public initialAddPlayerPromises: Array<Promise<any>> = [];
 
+  /**
+   * Map from player ids to a promise that resolves once it is unlocked from the function that initiated a promise
+   */
+  private lockedPlayers: Map<nanoid, VarLock> = new Map();
+
+  /**
+   * Map from player ids to the last version used in a match
+   *
+   * TODO: This is not a good solution, it is effectively an in-memory cache used to invalidate past bot files. It has
+   * low space overhead but it won't scale nicely.
+   */
+  private lastVersionUsed: Map<nanoid, number> = new Map();
+
   constructor(
     protected design: Design,
     id: NanoID,
@@ -173,16 +196,22 @@ export abstract class Tournament extends EventEmitter {
   }
 
   /**
-   * Add a player to the tournament. Can specify an ID to use. If that ID exists already, this will update the file for
-   * that player instead. First time a player is added (doesn't exist in competitors map yet), if there is existing
-   * stats they won't be reset. Subsequent adds will change the stats.
+   * Add or update a player to the tournament
+   *
+   * If no existing ID is specified, this is treated as adding a completely new player.
+   *
+   * If existing ID is specified and that ID exists already, this will update the file for that player instead and
+   * effectively update the player. First time a player is added, if there is existing stats in a DB they won't be
+   * reset. Subsequent adds will change the stats.
    *
    * If the player is to exist beyond the tournament, an existingID must always be provided and generated somewhere else
    *
    * Resolves with the new player or updated player
    *
    * @param file - The file to the bot or an object with the file and a name for the player specified
-   * @param existingID - The optional id of the player
+   * @param existingID - The optional id of the player. Can also be provided in the first arg in a object
+   * @param calledFromInitialization - Whether or not the player was called from initialization. If true, player
+   * version does not increment
    *
    */
   public async addplayer(
@@ -196,7 +225,8 @@ export abstract class Tournament extends EventEmitter {
           botkey?: string;
           existingID?: NanoID;
         },
-    existingID?: NanoID
+    existingID?: NanoID,
+    calledFromInitialization = false
   ): Promise<Player> {
     let id: NanoID;
 
@@ -209,6 +239,14 @@ export abstract class Tournament extends EventEmitter {
     if (existingID) {
       const { playerStat } = await this.getPlayerStat(existingID);
       if (playerStat) {
+        // we need a lock since we are updating
+        let varlock = this.lockedPlayers.get(existingID);
+        if (varlock) {
+          await varlock.lockvar();
+        } else {
+          varlock = new VarLock();
+          this.lockedPlayers.set(existingID, varlock);
+        }
         // bot has stats in tournament already
         const player = playerStat.player;
         // undisable the player
@@ -218,9 +256,7 @@ export abstract class Tournament extends EventEmitter {
         const oldfile = player.file;
         // remove the oldfile
         if (player.botDirPath) {
-          // player.lock();
           removeDirectorySync(player.botDirPath);
-          // player.unlock();
         }
         if (typeof file === 'string') {
           player.file = file;
@@ -230,9 +266,21 @@ export abstract class Tournament extends EventEmitter {
           player.botDirPath = file.botdir;
           player.zipFile = file.zipFile;
           player.botkey = file.botkey;
+          if (!calledFromInitialization) {
+            // update version and last update time stamp
+            player.version++;
+          }
         }
         // update bot instead and call a tournament's updateBot function
-        await this.updatePlayer(player, oldname, oldfile);
+        try {
+          await this.updatePlayer(player, oldname, oldfile);
+          varlock.unlock();
+          this.lockedPlayers.delete(existingID);
+        } catch (err) {
+          varlock.unlockWithError(err);
+          this.lockedPlayers.delete(existingID);
+          throw err;
+        }
         id = existingID;
         return player;
       } else {
@@ -243,8 +291,7 @@ export abstract class Tournament extends EventEmitter {
       id = this.generateNextTournamentIDString();
     }
 
-    // add new competitor and call internal add so tournaments can perform any internal operations for the
-    // addition of a new player
+    // at this stage, we are now adding a new competitor and call internal add so tournaments can perform any internal /// operations for the addition of a new player
     if (typeof file === 'string') {
       const name = `player-${id}`;
       const newPlayer = new Player(
@@ -433,10 +480,45 @@ export abstract class Tournament extends EventEmitter {
    */
   protected async runMatch(
     players: Array<Player>
-  ): Promise<{ results: any; match: Match; err?: any }> {
+  ): Promise<{
+    results: any;
+    match: Match;
+    err?: any;
+  }> {
     if (!players.length) throw new FatalError('No players provided for match');
 
+    // get all player locks for use later
+    const locks: Array<Promise<void>> = [];
+    players.forEach((player) => {
+      if (this.lockedPlayers.has(player.tournamentID.id)) {
+        locks.push(this.lockedPlayers.get(player.tournamentID.id).lock);
+      }
+    });
+    // use default match configs given to this tournament
     const matchConfigs = deepCopy(this.getConfigs().defaultMatchConfigs);
+
+    // enable caching for bots that have not been updated
+    const agentSpecificOptions: Array<DeepPartial<Agent.Options>> = [];
+    for (const player of players) {
+      // TODO: move all promises to an array and do Promise.all
+      const lv = await this.getLastVersionUsedOfPlayer(player.tournamentID.id);
+      if (lv !== undefined && lv === player.version) {
+        this.log.system(
+          `player ${player.tournamentID.id} attempting to use cached bot`
+        );
+        agentSpecificOptions.push({
+          useCachedBotFile: true,
+        });
+      } else {
+        this.log.system(
+          `player ${player.tournamentID.id} not using cached bot file`
+        );
+        agentSpecificOptions.push({
+          useCachedBotFile: false,
+        });
+      }
+    }
+    matchConfigs.agentSpecificOptions = agentSpecificOptions;
 
     const filesAndNamesAndIDs: Array<{
       file: string;
@@ -460,9 +542,42 @@ export abstract class Tournament extends EventEmitter {
     // store match into the tournament locally
     this.matches.set(match.id, match);
 
-    // Initialize match with initialization configuration
     try {
+      /**
+       * using "mutex" locks to force any update to players to happen completely before or after match initialization,
+       * helping eliminate race conditions
+       */
+
+      // wait for all locks to release
+      await Promise.all(locks);
+      // now lock all players. We lock them so that we can correctly determine whether to use caching or not before an
+      // update occurs
+      for (let i = 0; i < players.length; i++) {
+        const varlock = this.lockedPlayers.get(players[i].tournamentID.id);
+        if (varlock) {
+          await varlock.lockvar();
+        } else {
+          this.lockedPlayers.set(players[i].tournamentID.id, new VarLock());
+        }
+      }
       await match.initialize();
+      // release all locks
+      for (let i = 0; i < players.length; i++) {
+        const varlock = this.lockedPlayers.get(players[i].tournamentID.id);
+        if (varlock) {
+          varlock.unlock();
+          // delete the varlock
+          this.lockedPlayers.delete(players[i].tournamentID.id);
+        }
+      }
+      // note: method to test locks, match.initialize(); do a await sleep(5000); and try updating bot during initialization. If response takes a few seconds to respond, then locks worked as update happenedd after initialization.
+
+      players.forEach((player) => {
+        this.updateLastVersionUsedOfPlayer(
+          player.tournamentID.id,
+          player.version
+        );
+      });
 
       // Get results
       const results = await match.run();
@@ -478,13 +593,13 @@ export abstract class Tournament extends EventEmitter {
       this.matches.delete(match.id);
 
       // Resolve the results
-      return { results: results, match: match };
+      return { results, match };
     } catch (err) {
       this.emit(Tournament.Events.MATCH_RAN);
       return {
         results: false,
-        err: err,
-        match: match,
+        err,
+        match,
       };
     }
   }
@@ -507,6 +622,18 @@ export abstract class Tournament extends EventEmitter {
     }
 
     return await Promise.all(retrievePlayerPromises);
+  }
+
+  public async getLastVersionUsedOfPlayer(playerID: nanoid): Promise<number> {
+    return Promise.resolve(this.lastVersionUsed.get(playerID));
+  }
+
+  public async updateLastVersionUsedOfPlayer(
+    playerID: nanoid,
+    version: number
+  ): Promise<void> {
+    this.lastVersionUsed.set(playerID, version);
+    return;
   }
 
   /**
