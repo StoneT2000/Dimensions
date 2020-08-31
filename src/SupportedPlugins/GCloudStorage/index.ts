@@ -4,7 +4,7 @@ import { DeepPartial } from '../../utils/DeepPartial';
 import { Dimension, StorageType } from '../../Dimension';
 import { Plugin } from '../../Plugin';
 import path from 'path';
-import fs from 'fs';
+import fs, { copyFileSync } from 'fs';
 import { Database } from '../../Plugin/Database';
 import { Tournament } from '../../Tournament';
 import LRUFileCache from '../../utils/LRUFileCache';
@@ -103,7 +103,8 @@ export class GCloudStorage extends DStorage {
         const cachedPath = this.lruFileCache.get(key);
         // if there is a cached path, use it
         if (cachedPath) {
-          resolve(cachedPath);
+          copyFileSync(cachedPath, destination);
+          resolve(destination);
           return;
         }
       }
@@ -117,7 +118,7 @@ export class GCloudStorage extends DStorage {
         this.log.system(
           `writing from bucket ${key} -> ${destination}; cached to ${cachedPath}`
         );
-        resolve(cachedPath);
+        resolve(destination);
       });
     });
   }

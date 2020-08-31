@@ -10,6 +10,7 @@ import { Logger } from '../../Logger';
 import { deepMerge } from '../../utils/DeepMerge';
 import { deepCopy } from '../../utils/DeepCopy';
 import { DeepPartial } from '../../utils/DeepPartial';
+import { copyFileSync } from 'fs';
 
 export class FileSystemStorage extends Storage {
   public name = 'FS-Storage';
@@ -83,13 +84,21 @@ export class FileSystemStorage extends Storage {
       // if there is a cached path, use it
       if (cachedPath) {
         this._useCacheCount++;
-        return cachedPath;
+        // TODO: It would be nice if we could just resolve with the cachedPath and let user use that, but
+        // unfortunately that invokes a race condition where downloading two files causes one file's cache to be
+        // invalidated and thus unretrievable after we give the user the old cachedPath. This race condition shouldn't
+        // happen often, if ever unless there are very little bots and max size is low.
+        // a better optimization would be to
+        copyFileSync(cachedPath, destination);
+        return destination;
       }
     }
     await this.writeFileFromBucket(key, destination);
     // store in cache
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const cachedPath = this.lruFileCache.add(key, destination);
-    return cachedPath;
+    this.log.system(`${key} cached to ${cachedPath}`);
+    return destination;
   }
 
   /**
