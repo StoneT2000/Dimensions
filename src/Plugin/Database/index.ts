@@ -46,18 +46,6 @@ export abstract class Database extends Plugin {
   abstract getMatch(id: NanoID): Promise<any>;
 
   /**
-   * Returns a list of player stats based on their rankings from database. Used for Ladder Tournaments
-   * @param tournament - The tournament to retrieve rankings for
-   * @param offset - offset ranking to start retreiving ranks from
-   * @param limit - number of players to retrieve. If -1, retrieve all players past offset rank
-   */
-  abstract getRanks(
-    tournament: Tournament.Ladder,
-    offset: number,
-    limit: number
-  ): Promise<Array<Ladder.PlayerStat>>;
-
-  /**
    * Logs in a user, resolves with a JWT (JSON Web Token), rejects otherwise
    * @param username - unique username to login with
    * @param password - the password for the user with that username

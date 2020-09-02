@@ -83,7 +83,11 @@ describe('Testing Ladder Tournament Core', () => {
         );
       });
       it("shouldn't run players that are disabled", async () => {
-        const tourney = createLadderTourney(d, [...botList, disabled]);
+        const tourney = createLadderTourney(d, [...botList, disabled], {
+          rankSystemConfigs: {
+            initialMu: 25,
+          },
+        });
         await Promise.all(tourney.initialAddPlayerPromises);
         await tourney.disablePlayer(disabled.existingID);
         await tourney.run();
@@ -92,7 +96,10 @@ describe('Testing Ladder Tournament Core', () => {
         const ranks = await tourney.getRankings();
         expect(
           tourney.state.playerStats.get(disabled.existingID).rankState.rating.mu
-        ).to.equal(tourney.configs.rankSystemConfigs.initialMu);
+        ).to.equal(
+          tourney.configs.rankSystemConfigs.initialMu,
+          'disabled player score should not change'
+        );
         expect(ranks[0].rankState.rating.mu).to.be.greaterThan(
           ranks[2].rankState.rating.mu
         );

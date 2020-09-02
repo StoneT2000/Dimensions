@@ -68,7 +68,7 @@ export class Elimination extends Tournament {
     }
     this.configs = deepMerge(this.configs, tournamentConfigs, true);
     switch (tournamentConfigs.rankSystem) {
-      case RankSystem.WINS: {
+      case Tournament.RankSystemTypes.WINS: {
         // set default rank system configs
         const winsConfigs: RankSystem.WINS.Configs = {
           winValue: 3,
@@ -309,7 +309,7 @@ export class Elimination extends Tournament {
     this.state.playerStats = new Map();
     this.state.results = [];
     switch (this.configs.rankSystem) {
-      case RankSystem.WINS: {
+      case Tournament.RankSystemTypes.WINS: {
         // set up the seeding array and fill it up with null to fill up all empty spots
         let seeding = this.configs.tournamentConfigs.seeding;
         if (seeding == null) seeding = [];

@@ -59,29 +59,35 @@ describe('Testing Dimension Class', () => {
     let tourney = d.createTournament(['abc', 'def'], {
       type: Tournament.Type.LADDER,
       agentsPerMatch: [2],
-      rankSystem: Tournament.RankSystem.ELO,
+      rankSystem: Tournament.RankSystemTypes.ELO,
       resultHandler: noop,
     });
     expect(tourney.configs.type).to.be.eql(Tournament.Type.LADDER);
-    expect(tourney.configs.rankSystem).to.be.eql(Tournament.RankSystem.ELO);
+    expect(tourney.configs.rankSystem).to.be.eql(
+      Tournament.RankSystemTypes.ELO
+    );
 
     tourney = d.createTournament([], {
       type: Tournament.Type.ROUND_ROBIN,
       agentsPerMatch: [2],
-      rankSystem: Tournament.RankSystem.WINS,
+      rankSystem: Tournament.RankSystemTypes.WINS,
       resultHandler: noop,
     });
     expect(tourney.configs.type).to.be.eql(Tournament.Type.ROUND_ROBIN);
-    expect(tourney.configs.rankSystem).to.be.eql(Tournament.RankSystem.WINS);
+    expect(tourney.configs.rankSystem).to.be.eql(
+      Tournament.RankSystemTypes.WINS
+    );
 
     tourney = d.createTournament([], {
       type: Tournament.Type.ELIMINATION,
       agentsPerMatch: [2],
-      rankSystem: Tournament.RankSystem.WINS,
+      rankSystem: Tournament.RankSystemTypes.WINS,
       resultHandler: noop,
     });
     expect(tourney.configs.type).to.be.eql(Tournament.Type.ELIMINATION);
-    expect(tourney.configs.rankSystem).to.be.eql(Tournament.RankSystem.WINS);
+    expect(tourney.configs.rankSystem).to.be.eql(
+      Tournament.RankSystemTypes.WINS
+    );
   });
 
   it('should be able to create matches and with matching configs', async () => {

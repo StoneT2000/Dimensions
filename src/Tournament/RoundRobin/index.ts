@@ -58,7 +58,7 @@ export class RoundRobin extends Tournament {
     }
 
     // handle config defaults
-    if (tournamentConfigs.rankSystem !== Tournament.RankSystem.WINS) {
+    if (tournamentConfigs.rankSystem !== Tournament.RankSystemTypes.WINS) {
       throw new NotSupportedError(
         'We currently do not support Round Robin tournaments with ranking system other than wins system'
       );
@@ -373,7 +373,7 @@ export class RoundRobin extends Tournament {
       console.log('Total Matches: ' + this.state.statistics.totalMatches);
       const ranks = this.getRankings();
       switch (this.configs.rankSystem) {
-        case Tournament.RankSystem.WINS:
+        case Tournament.RankSystemTypes.WINS:
           console.log(
             sprintf(
               `%-20s | %-8s | %-15s | %-6s | %-6s | %-8s | %-8s`.underline,

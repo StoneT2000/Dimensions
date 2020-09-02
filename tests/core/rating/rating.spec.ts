@@ -2,14 +2,14 @@ import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import sinonChai from 'sinon-chai';
 import 'mocha';
-import { ELOSystem } from '../../../src/Tournament/ELO';
+import { ELOWrapper } from '../../../src/Tournament/ELO';
 const expect = chai.expect;
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
 
 describe('Test ELO System', () => {
   it('should initialize ELO ratings correctly', () => {
-    const elo = new ELOSystem(32, 1000);
+    const elo = new ELOWrapper(32, 1000);
     const p1 = elo.createRating();
     const p2 = elo.createRating();
     expect(p1.score).to.equal(1000);
@@ -18,7 +18,7 @@ describe('Test ELO System', () => {
   });
   describe('should evaluate ratings correctly', () => {
     it('should calculate 1v1 scores correctly', () => {
-      const elo = new ELOSystem(32, 1000);
+      const elo = new ELOWrapper(32, 1000);
       const p1 = elo.createRating();
       const p2 = elo.createRating();
       elo.rate([p1, p2], [1, 2]);
@@ -26,7 +26,7 @@ describe('Test ELO System', () => {
       expect(p2.score).to.equal(984);
     });
     it('should calculate n agent scores correctly', () => {
-      const elo = new ELOSystem(32, 1000);
+      const elo = new ELOWrapper(32, 1000);
       const ratings = [];
       const ranks = [1, 2, 3, 3, 4];
       for (let i = 0; i < 5; i++) {
