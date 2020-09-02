@@ -57,7 +57,7 @@ export class ELOSystem extends RankSystem<ELO.Configs, ELO.RankState> {
 
   getRankStatesHeaderString(): string {
     return sprintf(
-      `%-30s | %-8s | %-15s | %-8s`.underline,
+      `%-30s | %-15s | %-15s | %-8s`.underline,
       'Name',
       'ID',
       'ELO Score',
@@ -71,7 +71,7 @@ export class ELOSystem extends RankSystem<ELO.Configs, ELO.RankState> {
     matchesPlayed: number
   ): string {
     return sprintf(
-      `%-30s`.blue + ` | %-8s | ` + `%-15s`.green + ` | %-8s`,
+      `%-30s`.blue + ` | %-15s | ` + `%-15s`.green + ` | %-8s`,
       player.tournamentID.name,
       player.tournamentID.id,
       rankState.rating.score,
