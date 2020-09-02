@@ -1,4 +1,5 @@
 # Dimensions
+
 [![npm version](https://badge.fury.io/js/dimensions-ai.svg)](https://badge.fury.io/js/dimensions-ai)
 
 This is an **open sourced** **generic** **Artificial Intelligence competition framework**, intended to provide you the fully scalable infrastructure needed to run your own AI competition with no hassle.
@@ -7,9 +8,9 @@ All you need to do?
 
 Code a **competition design** and code a **bot**
 
-Dimensions handles the rest, including match and tournament running, security, scalability and a local API and website through which you can monitor and control the entire system. 
+Dimensions handles the rest, including match and tournament running, security, scalability and a local API and website through which you can monitor and control the entire system.
 
-The framework was built with the goals of being **generalizable** and **accessible**. That's why Dimensions utilizes an I/O based model to run competitions and pit AI agents against each other (or themselves!), allowing it to be generic and language agnostic so anyone from any background can compete in your competition design. 
+The framework was built with the goals of being **generalizable** and **accessible**. That's why Dimensions utilizes an I/O based model to run competitions and pit AI agents against each other (or themselves!), allowing it to be generic and language agnostic so anyone from any background can compete in your competition design.
 
 It generalizes to many scenarios, and is able to recreate a range of systems from the [Halite 3 AI competition](https://halite.io/), [Battlecode 2020](https://battlecode.org), to a generalized [Open AI Gym](https://gym.openai.com/) that is open to machine learning in all languages in addition to Python through simple stdio.
 
@@ -25,7 +26,7 @@ Of which the [AI bots](https://github.com/StoneT2000/Dimensions/blob/master/test
 const kit = require('./kit');
 const agent = new kit.Agent();
 agent.initialize().then(async () => {
-  while(true) {
+  while (true) {
     console.log('R'); // tell the match you want to play Rock in the game
     agent.endTurn(); // end turn
     await agent.update(); // wait for updates
@@ -35,7 +36,7 @@ agent.initialize().then(async () => {
 
 As another proof of concept of how seamless and generalizable this framework is, see [the recreation of Halite 3](https://github.com/StoneT2000/dimensions-halite3) using this framework.
 
-Follow these links to jump straight to [Documentation](https://stonet2000.github.io/Dimensions/index.html),  [Contributing](#contributing), [Development](#development) or [Plans](#plans) curated by the owner and the community.
+Follow these links to jump straight to [Documentation](https://stonet2000.github.io/Dimensions/index.html), [Contributing](#contributing), [Development](#development) or [Plans](#plans) curated by the owner and the community.
 
 Also checkout the blog post introducing the motivation for Dimensions and thoughts about it here: https://stonet2000.github.io/blog/posts/Dimensions/index.html
 
@@ -80,7 +81,7 @@ If you already have a design, feel free to skip to the section on running a [mat
 
 ### Designing The Competition
 
-It is suggested to design the competition in Javascript / Typescript using the Dimensions framework. See https://github.com/StoneT2000/Dimensions/wiki/Creating-a-Design for a tutorial on creating a design. 
+It is suggested to design the competition in Javascript / Typescript using the Dimensions framework. See https://github.com/StoneT2000/Dimensions/wiki/Creating-a-Design for a tutorial on creating a design.
 
 You can also create a custom design outside of the framework, see https://github.com/StoneT2000/Dimensions/wiki/Custom-Competition-Design for a tutorial on that.
 
@@ -105,18 +106,20 @@ We can now run our first match by passing in an array of paths to the bot codes,
 
 ```js
 let results = await myDimension.runMatch(
-  ['./examples/rock-paper-scissors/bots/paper.js', 
-   './examples/rock-paper-scissors/bots/rock.js'],
+  [
+    './examples/rock-paper-scissors/bots/paper.js',
+    './examples/rock-paper-scissors/bots/rock.js',
+  ],
   {
-    bestOf: 5 // a configuration accessible in match through match.configs.bestOf
+    bestOf: 5, // a configuration accessible in match through match.configs.bestOf
   }
-)
+);
 ```
 
 You can now log the results, of which are the same results returned by your `design's` `getResult` function.
 
 ```js
-console.log(results)
+console.log(results);
 ```
 
 Notice that your console will also print something about a station. It'll give you a link to the `Station`, a local server that gives you access to an API to access and control your Dimension, Matches, Tournaments and more. Check out https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API for details on the API.
@@ -125,17 +128,17 @@ If you want to view the API from a website, see this repo: https://github.com/St
 
 ### Run a Tournament
 
-This framework also provides tournament running features, which currently include [Round Robin](https://stonet2000.github.io/Dimensions/classes/_tournament_roundrobin_index_.roundrobin.html), [Elimination](https://stonet2000.github.io/Dimensions/classes/_tournament_elimination_index_.elimination.html), and [Ladder](https://stonet2000.github.io/Dimensions/classes/_tournament_ladder_index_.ladder.html) type tournaments. Additionally, there are various ranking systems used, such as Win/Tie/Loss and Trueskill. This section takes your through a really brief rundown of how to run a tournament. See [this wiki page](https://github.com/StoneT2000/Dimensions/wiki/Running-Tournaments) for more in depth details on setting up the various kinds of tournaments
+This framework also provides tournament running features, which currently include [Elimination](https://stonet2000.github.io/Dimensions/classes/_tournament_elimination_index_.elimination.html), and a flexible [Ladder](https://stonet2000.github.io/Dimensions/classes/_tournament_ladder_index_.ladder.html) type tournaments. Additionally, there are various ranking systems used, such as Win/Tie/Loss and Trueskill. This section takes your through a really brief rundown of how to run a tournament. See [this wiki page](https://github.com/StoneT2000/Dimensions/wiki/Running-Tournaments) for more in depth details on setting up the various kinds of tournaments
 
-Here is how you run a tournament. First, you will need a `resultHandler` function. This function must be given to the tournament to indicate how the results of a `match` should be interpreted. Recall that these results are returned by the `getResult` function in your design class. It is suggested to provide these result handlers in your `Design`. 
+Here is how you run a tournament. First, you will need a `resultHandler` function. This function must be given to the tournament to indicate how the results of a `match` should be interpreted. Recall that these results are returned by the `getResult` function in your design class. It is suggested to provide these result handlers in your `Design`.
 
-Next, you need to pass in some required configurations, namely `type, rankSystem, agentsPerMatch, resultHandler`. The following code snippet shows an example. 
+Next, you need to pass in some required configurations, namely `type, rankSystem, agentsPerMatch, resultHandler`. The following code snippet shows an example.
 
 ```js
 let RPSDesign = new RockPaperScissorsDesign('RPS!');
 let myDimension = Dimension.create(RPSDesign);
 let Tournament = Dimension.Tournament;
-let simpleBot = "./bots/rock.js";
+let simpleBot = './bots/rock.js';
 let botSources = [simpleBot, simpleBot, simpleBot, simpleBot, simpleBot];
 
 let RPSTournament = myDimension.createTournament(botSources, {
@@ -145,21 +148,26 @@ let RPSTournament = myDimension.createTournament(botSources, {
   agentsPerMatch: [2], // specify how many bots can play at a time
   defaultMatchConfigs: {
     bestOf: 329,
-    loggingLevel: Dimension.Logger.Level.NONE // turn off match logging
+    loggingLevel: Dimension.Logger.Level.NONE, // turn off match logging
   },
   resultHandler: (results) => {
     let ranks = [];
     if (results.winner === 'Tie') {
-      ranks = [{rank: 1, agentID: 0}, {rank: 1, agentID: 1}]
-    }
-    else {
+      ranks = [
+        { rank: 1, agentID: 0 },
+        { rank: 1, agentID: 1 },
+      ];
+    } else {
       let loserID = (results.winnerID + 1) % 2;
-      ranks = [{rank: 1, agentID: results.winnerID}, {rank: 2, agentID: loserID}]
+      ranks = [
+        { rank: 1, agentID: results.winnerID },
+        { rank: 2, agentID: loserID },
+      ];
     }
     return {
-      ranks: ranks
-    }
-  }
+      ranks: ranks,
+    };
+  },
 });
 
 RPSTournament.run();
@@ -187,7 +195,7 @@ For example, here's two lines of code that integrate MongoDB as a database:
 
 ```js
 let mongo = new Dimension.MongoDB('mongodb://localhost:27017/dimensions');
-await myDimension.use(mongo)
+await myDimension.use(mongo);
 ```
 
 ## Contributing
@@ -230,7 +238,7 @@ npm run build
 
 to build the entire library.
 
-Run 
+Run
 
 ```
 npm run docs
@@ -239,12 +247,13 @@ npm run docs
 to generate documentation
 
 ## Plans
+
 - Make it easier to create a `Design` (design a competition)
   - Make README easier to READ, and reduce the initial "getting-used-to-framework" curve.
 - Make it easier for users to dive deeper into the `MatchEngine`, `Matches`, `Dimensions` to give them greater flexibility over the backend infrastructure
   - At the moment, there are plans for a parallel command stream option, where all agents send commands whenever they want and the engine just sends them to the update function
   - Allow users to tinker the MatchEngine to their needs somehow. (Extend it as a class and pass it to Dimensions)
-- Security Designs to help ensure that users won't create `Designs` susceptible to cheating and match breaking behavior from bots participating in a `Match` 
+- Security Designs to help ensure that users won't create `Designs` susceptible to cheating and match breaking behavior from bots participating in a `Match`
   - Give some guidelines
   - Add some options and default values for certain configurations, e.g.
     - Max command limit per `timeStep` (for a game of rock paper scissors, this would be 1, it wouldn't make sense to flood the `MatchEngine` with several commands, which could break the `Match`)
@@ -252,4 +261,3 @@ to generate documentation
 - Generalize a match visualizer
 - Add more example `Designs` and starter kits for other popular ai games
   - Recreate Kaggle Simulation's xConnect
-

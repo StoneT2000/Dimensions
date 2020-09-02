@@ -68,17 +68,6 @@ describe('Testing Dimension Class', () => {
     );
 
     tourney = d.createTournament([], {
-      type: Tournament.Type.ROUND_ROBIN,
-      agentsPerMatch: [2],
-      rankSystem: Tournament.RankSystemTypes.WINS,
-      resultHandler: noop,
-    });
-    expect(tourney.configs.type).to.be.eql(Tournament.Type.ROUND_ROBIN);
-    expect(tourney.configs.rankSystem).to.be.eql(
-      Tournament.RankSystemTypes.WINS
-    );
-
-    tourney = d.createTournament([], {
       type: Tournament.Type.ELIMINATION,
       agentsPerMatch: [2],
       rankSystem: Tournament.RankSystemTypes.WINS,

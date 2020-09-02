@@ -3,24 +3,6 @@ import { RockPaperScissorsDesign } from '../../rps';
 import { Tournament } from '../../../src';
 import { DeepPartial } from '../../../src/utils/DeepPartial';
 
-export const createRoundRobinTourney = (
-  d: Dimension.DimensionType,
-  botList: Array<any>,
-  tournamentConfigs: DeepPartial<Tournament.TournamentConfigsBase> = {}
-): Tournament.RoundRobin => {
-  const tourney = <Dimension.Tournament.RoundRobin>d.createTournament(botList, {
-    type: Dimension.Tournament.Type.ROUND_ROBIN,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    rankSystem: Tournament.RankSystemTypes.WINS,
-    resultHandler: RockPaperScissorsDesign.winsResultHandler,
-    agentsPerMatch: [2],
-    consoleDisplay: false,
-    ...tournamentConfigs,
-  });
-  return tourney;
-};
-
 export const createLadderTourney = (
   d: Dimension.DimensionType,
   botList: Array<any>,
@@ -33,7 +15,7 @@ export const createLadderTourney = (
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     rankSystem: Dimension.Tournament.RankSystemTypes.TRUESKILL,
-    resultHandler: RockPaperScissorsDesign.trueskillResultHandler,
+    resultHandler: RockPaperScissorsDesign.resultHandler,
     agentsPerMatch: [2],
     consoleDisplay: false,
     ...tournamentConfigs,
@@ -53,7 +35,7 @@ export const createLadderELOTourney = (
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     rankSystem: Dimension.Tournament.RankSystemTypes.ELO,
-    resultHandler: RockPaperScissorsDesign.eloResultHandler,
+    resultHandler: RockPaperScissorsDesign.resultHandler,
     agentsPerMatch: [2],
     consoleDisplay: false,
     ...tournamentConfigs,
@@ -73,7 +55,7 @@ export const createElimTourney = (
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       rankSystem: Dimension.Tournament.RankSystemTypes.WINS,
-      resultHandler: RockPaperScissorsDesign.winsResultHandler,
+      resultHandler: RockPaperScissorsDesign.resultHandler,
       agentsPerMatch: [2],
       ...tournamentConfigs,
     }

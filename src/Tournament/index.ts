@@ -94,7 +94,7 @@ export class Player {
 
 /**
  * The tournament class and module extended by all concrete Tournament Classes. Tournament Types available now are
- * {@link RoundRobin}, {@link Ladder}, {@link Elimination}. A tournament is composed of players, which can either be
+ * {@link Ladder}, and {@link Elimination}. A tournament is composed of players, which can either be
  * all locally stored, or a split between locally stored anonymous players and database stored user owned players.
  * Ladder is the only tournament where it can be made distributed, other tournament types may only be run as a single
  * instance
@@ -741,10 +741,6 @@ import LadderDefault = require('./Ladder');
 /** @ignore */
 import LadderTournament = LadderDefault.Ladder;
 
-import RoundRobinDefault = require('./RoundRobin');
-/** @ignore */
-import RoundRobinTournament = RoundRobinDefault.RoundRobin;
-
 import EliminationDefault = require('./Elimination');
 /** @ignore */
 import EliminationTournament = EliminationDefault.Elimination;
@@ -757,7 +753,6 @@ export namespace Tournament {
   // Re-export tournament classes/namespaces
   /* eslint-disable */
   export import Ladder = LadderTournament;
-  export import RoundRobin = RoundRobinTournament;
   export import Elimination = EliminationTournament;
   export import Scheduler = SchedulerClass;
 
@@ -815,7 +810,7 @@ export namespace Tournament {
 
     /**
      * Tournament configurations. Dependent on the type of tournament chosen
-     * Example: For {@link RoundRobin}, go to {@link RoundRobin.Configs}
+     * Example: For {@link Ladder}, go to {@link Ladder.Configs}
      */
     tournamentConfigs?: any;
 

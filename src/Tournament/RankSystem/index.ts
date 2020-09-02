@@ -1,10 +1,8 @@
-import { ELORating } from '../ELO';
-import { Rating } from 'ts-trueskill';
 import { Agent } from '../../Agent';
 import { Player } from '..';
 
 /**
- * Abstract Rank system class, that takes in generic types for configurations and arank state
+ * Abstract Rank system class, that takes in generic types for configurations and a rank state
  */
 export abstract class RankSystem<Configs, RankState> {
   abstract configs: Configs;
@@ -61,6 +59,7 @@ export abstract class RankSystem<Configs, RankState> {
 
 import * as TS from './TrueSkillSystem';
 import * as EL from './ELOSystem';
+import * as WS from './WinsSystem';
 
 /**
  * Rank System enums and namespaces for the kind of ranking systems you can choose for a {@link Tournament}
@@ -72,10 +71,9 @@ export namespace RankSystem {
   export import TrueSkill = TS.TrueSkill;
   export import ELOSystem = EL.ELOSystem;
   export import ELO = EL.ELO;
+  export import Wins = WS.Wins;
+  export import WinsSystem = WS.WinsSystem;
   /* eslint-enable */
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  export interface ConfigsBase {}
 
   /** The results interface that must be returned by a result handler for a {@link Tournament} */
   export interface Results {
@@ -84,34 +82,5 @@ export namespace RankSystem {
      * are considered to have tied or achieved equal standing
      */
     ranks: Array<{ rank: number; agentID: Agent.ID }>;
-  }
-
-  /**
-   * Wins rank system. Ranks based on Wins, Ties, and Losses.
-   */
-  export namespace WINS {
-    /**
-     * The configuration interface for configuring the {@link WINS} ranking system
-     */
-    export interface Configs extends ConfigsBase {
-      /** Points given per win in a {@link Match} */
-      winValue: number;
-      /** Points given per tie in a {@link Match} */
-      tieValue: number;
-      /** Points given per loss in a {@link Match} */
-      lossValue: number;
-      /** True if first place is the one with the most points. */
-      descending: boolean;
-    }
-
-    /** The results interface that must be returned by a result handler for a {@link Tournament} */
-    export interface Results {
-      /** Array of agent IDs of {@link agent}s that won in the {@link Match}*/
-      winners: Array<Agent.ID>;
-      /** Array of agent IDs of {@link agent}s that tied in the {@link Match}*/
-      ties: Array<Agent.ID>;
-      /** Array of agent IDs of {@link agent}s that lost in the {@link Match}*/
-      losers: Array<Agent.ID>;
-    }
   }
 }

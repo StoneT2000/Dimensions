@@ -9,10 +9,9 @@ import {
   TournamentPlayerDoesNotExistError,
   AgentCompileError,
   AgentInstallError,
+  FatalError,
 } from '../../DimensionError';
 import { Agent } from '../../Agent';
-import { Rating, rate } from 'ts-trueskill';
-import { sprintf } from 'sprintf-js';
 import { Logger } from '../../Logger';
 import { Dimension, NanoID } from '../../Dimension';
 import { Database } from '../../Plugin/Database';
@@ -27,6 +26,7 @@ import LadderPlayerStat = Ladder.PlayerStat;
 import { nanoid } from '../..';
 import { deepCopy } from '../../utils/DeepCopy';
 import { Scheduler } from '../Scheduler';
+import { WinsSystem } from '../RankSystem/WinsSystem';
 
 const REFRESH_RATE = 10000;
 
@@ -79,7 +79,7 @@ export class Ladder extends Tournament {
   private runInterval = null;
 
   /**
-   * Configuration synchronization interval. Periodically makes a request to the DB if there is one and changes configs
+   * Configuration synchronization interval. Periodically makes a request to the DB if there is one and syncs configs
    */
   private configSyncInterval = null;
 
@@ -117,6 +117,9 @@ export class Ladder extends Tournament {
         case Tournament.RankSystemTypes.ELO:
           this.ranksystem = new ELOSystem(this.configs.rankSystemConfigs);
           break;
+        case Tournament.RankSystemTypes.WINS:
+          this.ranksystem = new WinsSystem(this.configs.rankSystemConfigs);
+          break;
         default:
           throw new NotSupportedError(
             'We currently do not support this rank system for ladder tournaments'
@@ -124,6 +127,9 @@ export class Ladder extends Tournament {
       }
     } else {
       this.ranksystem = this.configs.rankSystem;
+    }
+    if (this.ranksystem === null) {
+      throw new FatalError('Did not supply a rank system');
     }
 
     files.forEach((file) => {
@@ -239,6 +245,7 @@ export class Ladder extends Tournament {
       this.syncConfigs();
     }, this.configs.tournamentConfigs.configSyncRefreshRate);
   }
+
   /**
    * Retrieves the local configurations
    */

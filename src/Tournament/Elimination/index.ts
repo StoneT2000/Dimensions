@@ -8,7 +8,6 @@ import {
   TournamentError,
   NotSupportedError,
 } from '../../DimensionError';
-import { Agent } from '../../Agent';
 import { Dimension, NanoID } from '../../Dimension';
 
 import EliminationState = Elimination.State;
@@ -67,24 +66,30 @@ export class Elimination extends Tournament {
       this.configs.consoleDisplay = tournamentConfigs.consoleDisplay;
     }
     this.configs = deepMerge(this.configs, tournamentConfigs, true);
-    switch (tournamentConfigs.rankSystem) {
-      case Tournament.RankSystemTypes.WINS: {
-        // set default rank system configs
-        const winsConfigs: RankSystem.WINS.Configs = {
-          winValue: 3,
-          lossValue: 0,
-          tieValue: 0,
-          descending: true,
-        };
-        if (this.configs.rankSystemConfigs === null) {
-          this.configs.rankSystemConfigs = winsConfigs;
+    if (typeof this.configs.rankSystem === 'string') {
+      switch (tournamentConfigs.rankSystem) {
+        case Tournament.RankSystemTypes.WINS: {
+          // set default rank system configs
+          const winsConfigs: RankSystem.Wins.Configs = {
+            winValue: 3,
+            lossValue: 0,
+            tieValue: 0,
+            descending: true,
+          };
+          if (this.configs.rankSystemConfigs === null) {
+            this.configs.rankSystemConfigs = winsConfigs;
+          }
+          break;
         }
-        break;
+        default:
+          throw new NotSupportedError(
+            'We currently do not support this rank system for elimination tournaments'
+          );
       }
-      default:
-        throw new NotSupportedError(
-          'We currently do not support this rank system for ladder tournaments'
-        );
+    } else {
+      throw new NotSupportedError(
+        "We do not support custom rank systems for elimination tournaments. Please pass in 'wins' or Tournament.RankSystemTypes.WINS instead"
+      );
     }
     // add all players
     files.forEach((file) => {
@@ -230,7 +235,7 @@ export class Elimination extends Tournament {
       })
     );
     const matchRes = await this.runMatch(matchInfo);
-    const res: RankSystem.WINS.Results = this.configs.resultHandler(
+    const res: RankSystem.Results = this.configs.resultHandler(
       matchRes.results
     );
 
@@ -248,7 +253,7 @@ export class Elimination extends Tournament {
     }
     this.state.statistics.totalMatches++;
 
-    const rankSystemConfigs: RankSystem.WINS.Configs = this.configs
+    const rankSystemConfigs: RankSystem.Wins.Configs = this.configs
       .rankSystemConfigs;
     // maps tournament ID to scores
     const parsedRes = {};
@@ -257,25 +262,24 @@ export class Elimination extends Tournament {
     parsedRes[p0ID] = 0;
     parsedRes[p1ID] = 0;
 
-    // update scores based on winners, ties, and losers
-    res.winners.forEach((winnerID: Agent.ID) => {
-      const tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(
-        winnerID
+    res.ranks.sort((a, b) => a.rank - b.rank);
+    if (res.ranks[0].rank === res.ranks[1].rank) {
+      res.ranks.forEach((info) => {
+        const tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(
+          info.agentID
+        );
+        parsedRes[tournamentID.id] += rankSystemConfigs.tieValue;
+      });
+    } else {
+      const winningTournamentID = matchRes.match.mapAgentIDtoTournamentID.get(
+        res.ranks[0].agentID
       );
-      parsedRes[tournamentID.id] += rankSystemConfigs.winValue;
-    });
-    res.ties.forEach((winnerID: Agent.ID) => {
-      const tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(
-        winnerID
+      const losingTournamentID = matchRes.match.mapAgentIDtoTournamentID.get(
+        res.ranks[1].agentID
       );
-      parsedRes[tournamentID.id] += rankSystemConfigs.tieValue;
-    });
-    res.losers.forEach((winnerID: Agent.ID) => {
-      const tournamentID = matchRes.match.mapAgentIDtoTournamentID.get(
-        winnerID
-      );
-      parsedRes[tournamentID.id] += rankSystemConfigs.lossValue;
-    });
+      parsedRes[winningTournamentID.id] += rankSystemConfigs.winValue;
+      parsedRes[losingTournamentID.id] += rankSystemConfigs.lossValue;
+    }
 
     // using scores, determine winner
     let winner = this.state.playerStats.get(p0ID);

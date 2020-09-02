@@ -372,15 +372,6 @@ export class Dimension {
     );
 
     switch (configs.type) {
-      case Tournament.Type.ROUND_ROBIN:
-        newTourney = new Tournament.RoundRobin(
-          this.design,
-          files,
-          configs,
-          id,
-          this
-        );
-        break;
       case Tournament.Type.LADDER:
         newTourney = new Tournament.Ladder(
           this.design,
@@ -404,7 +395,7 @@ export class Dimension {
     this.tournaments.set(newTourney.id, newTourney);
     return newTourney;
   }
-  // TODO give option to directly create a Ladder/RoundRobin ... tourney with createLadderTournament etc.
+  // TODO give option to directly create a Ladder/Elimination ... tourney with createLadderTournament etc.
 
   /**
    * Get the station
