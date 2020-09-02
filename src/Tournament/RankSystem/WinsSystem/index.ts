@@ -115,7 +115,7 @@ export class WinsSystem extends RankSystem<Wins.Configs, Wins.RankState> {
 
   getRankStatesHeaderString(): string {
     return sprintf(
-      `%-30s | %-8s | %-4s | %-4s | %-4s | %-15s | %-8s`.underline,
+      `%-30s | %-14s | %-5s | %-5s | %-5s | %8s | %-8s`.underline,
       'Name',
       'ID',
       'W',
@@ -132,7 +132,10 @@ export class WinsSystem extends RankSystem<Wins.Configs, Wins.RankState> {
     matchesPlayed: number
   ): string {
     return sprintf(
-      `%-30s`.blue + ` | %-8s | ` + `%-15s`.green + ` | %-8s`,
+      `%-30s`.blue +
+        ` | %-14s | %-5s | %-5s | %-5s | ` +
+        `%-8s`.green +
+        ` | %-8s`,
       player.tournamentID.name,
       player.tournamentID.id,
       rankState.wins,
