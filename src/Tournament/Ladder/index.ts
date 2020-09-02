@@ -777,14 +777,9 @@ export class Ladder extends Tournament {
         if (user.statistics) {
           playerStat = user.statistics[keyName];
           if (playerStat) {
-            playerStat.rankState = {
-              rating: new Rating(
-                playerStat.rankState.rating.mu,
-                playerStat.rankState.rating.sigma
-              ),
-            };
-            // make sure its referenced to right player object still
-            playerStat.player = player;
+            // if player stats exist already, we can return as we dont need to initialize anything and store to DB
+            // we don't store anything locally because this is a user and we have DB
+            return;
           }
         }
       }
