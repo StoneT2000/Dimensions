@@ -265,7 +265,7 @@ export class Ladder extends Tournament {
       await this.syncConfigs();
       await this.dimension.databasePlugin.storeTournamentConfigs(
         this.id,
-        this.configs,
+        this.getConfigsStrippedOfFunctionFields(this.configs),
         status
       );
       this.status = status;
