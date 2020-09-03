@@ -294,7 +294,7 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
       after(async () => {
         await t.destroy();
       });
-      it.only('should run with users and store user data + match data', async () => {
+      it('should run with users and store user data + match data', async () => {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
           await t.run();
