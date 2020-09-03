@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Configs | dimensions-ai</title>
+	<title>RankSystemTypes | dimensions-ai</title>
 	<meta name="description" content="Documentation for dimensions-ai">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,99 +56,82 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_tournament_ranksystem_index_.html">&quot;Tournament/RankSystem/index&quot;</a>
+					<a href="../modules/_tournament_elimination_index_.html">&quot;Tournament/Elimination/index&quot;</a>
 				</li>
 				<li>
-					<a href="../enums/_tournament_ranksystem_index_.ranksystem.html">RankSystem</a>
+					<a href="../classes/_tournament_elimination_index_.elimination.html">Elimination</a>
 				</li>
 				<li>
-					<a href="../modules/_tournament_ranksystem_index_.ranksystem.trueskill.html">TRUESKILL</a>
-				</li>
-				<li>
-					<a href="_tournament_ranksystem_index_.ranksystem.trueskill.configs.html">Configs</a>
+					<a href="_tournament_elimination_index_.elimination.ranksystemtypes.html">RankSystemTypes</a>
 				</li>
 			</ul>
-			<h1>Interface Configs</h1>
+			<h1>Enumeration RankSystemTypes</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>The Configuration interface used for configuring the <a href="../modules/_tournament_ranksystem_index_.ranksystem.trueskill.html">TRUESKILL</a> ranking system</p>
-					</div>
-				</div>
-			</section>
-			<section class="tsd-panel tsd-hierarchy">
-				<h3>Hierarchy</h3>
-				<ul class="tsd-hierarchy">
-					<li>
-						<a href="_tournament_ranksystem_index_.ranksystem.configsbase.html" class="tsd-signature-type">ConfigsBase</a>
-						<ul class="tsd-hierarchy">
-							<li>
-								<span class="target">Configs</span>
-							</li>
-						</ul>
-					</li>
-				</ul>
-			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
+							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_ranksystem_index_.ranksystem.trueskill.configs.html#initialmu" class="tsd-kind-icon">initial<wbr>Mu</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_ranksystem_index_.ranksystem.trueskill.configs.html#initialsigma" class="tsd-kind-icon">initial<wbr>Sigma</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_tournament_elimination_index_.elimination.ranksystemtypes.html#elo" class="tsd-kind-icon">ELO</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_tournament_elimination_index_.elimination.ranksystemtypes.html#trueskill" class="tsd-kind-icon">TRUESKILL</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_tournament_elimination_index_.elimination.ranksystemtypes.html#wins" class="tsd-kind-icon">WINS</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="initialmu" class="tsd-anchor"></a>
-					<h3>initial<wbr>Mu</h3>
-					<div class="tsd-signature tsd-kind-icon">initial<wbr>Mu<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+				<h2>Enumeration members</h2>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="elo" class="tsd-anchor"></a>
+					<h3>ELO</h3>
+					<div class="tsd-signature tsd-kind-icon">ELO<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;elo&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/index.ts#L92">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/index.ts#L92</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L908">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L908</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The initial Mu value players start with</p>
+							<p>Ranking by the ELO ranking system</p>
 						</div>
-						<dl class="tsd-comment-tags">
-							<dt>default</dt>
-							<dd><p><code>25</code></p>
-							</dd>
-						</dl>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="initialsigma" class="tsd-anchor"></a>
-					<h3>initial<wbr>Sigma</h3>
-					<div class="tsd-signature tsd-kind-icon">initial<wbr>Sigma<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="trueskill" class="tsd-anchor"></a>
+					<h3>TRUESKILL</h3>
+					<div class="tsd-signature tsd-kind-icon">TRUESKILL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;trueskill&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/index.ts#L97">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/index.ts#L97</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L910">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L910</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The initial sigma value players start with</p>
+							<p>Ranking by Microsoft&#39;s Trueskill</p>
 						</div>
-						<dl class="tsd-comment-tags">
-							<dt>default</dt>
-							<dd><p><code>25/3</code></p>
-							</dd>
-						</dl>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="wins" class="tsd-anchor"></a>
+					<h3>WINS</h3>
+					<div class="tsd-signature tsd-kind-icon">WINS<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;wins&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L906">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L906</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Ranking by wins, ties and losses</p>
+						</div>
 					</div>
 				</section>
 			</section>
@@ -159,30 +142,41 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
+					<li class="current tsd-kind-module">
+						<a href="../modules/_tournament_elimination_index_.html">&quot;<wbr>Tournament/<wbr>Elimination/index&quot;</a>
+					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-namespace">
-						<a href="_tournament_ranksystem_index_.ranksystem.trueskill.configs.html" class="tsd-kind-icon">Configs</a>
+					<li class="current tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_tournament_elimination_index_.elimination.html" class="tsd-kind-icon">Elimination</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_tournament_ranksystem_index_.ranksystem.trueskill.configs.html#initialmu" class="tsd-kind-icon">initial<wbr>Mu</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_tournament_ranksystem_index_.ranksystem.trueskill.configs.html#initialsigma" class="tsd-kind-icon">initial<wbr>Sigma</a>
+							<li class="current tsd-kind-enum tsd-parent-kind-class tsd-is-static">
+								<a href="_tournament_elimination_index_.elimination.ranksystemtypes.html" class="tsd-kind-icon">Rank<wbr>System<wbr>Types</a>
+								<ul>
+									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+										<a href="_tournament_elimination_index_.elimination.ranksystemtypes.html#elo" class="tsd-kind-icon">ELO</a>
+									</li>
+									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+										<a href="_tournament_elimination_index_.elimination.ranksystemtypes.html#trueskill" class="tsd-kind-icon">TRUESKILL</a>
+									</li>
+									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+										<a href="_tournament_elimination_index_.elimination.ranksystemtypes.html#wins" class="tsd-kind-icon">WINS</a>
+									</li>
+								</ul>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
-						<a href="_tournament_ranksystem_index_.ranksystem.trueskill.rankstate.html" class="tsd-kind-icon">Rank<wbr>State</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_tournament_elimination_index_.html#eliminationconfigs" class="tsd-kind-icon">Elimination<wbr>Configs</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
-						<a href="_tournament_ranksystem_index_.ranksystem.trueskill.results.html" class="tsd-kind-icon">Results</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_tournament_elimination_index_.html#eliminationstate" class="tsd-kind-icon">Elimination<wbr>State</a>
 					</li>
 				</ul>
 			</nav>
@@ -194,6 +188,7 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
 				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
@@ -202,14 +197,14 @@
 				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 			</ul>
 		</div>
 	</div>

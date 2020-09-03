@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Events | dimensions-ai</title>
+	<title>RankSystemTypes | dimensions-ai</title>
 	<meta name="description" content="Documentation for dimensions-ai">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,16 +56,16 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_tournament_roundrobin_index_.html">&quot;Tournament/RoundRobin/index&quot;</a>
+					<a href="../modules/_tournament_ladder_index_.html">&quot;Tournament/Ladder/index&quot;</a>
 				</li>
 				<li>
-					<a href="../classes/_tournament_roundrobin_index_.roundrobin.html">RoundRobin</a>
+					<a href="../classes/_tournament_ladder_index_.ladder.html">Ladder</a>
 				</li>
 				<li>
-					<a href="_tournament_roundrobin_index_.roundrobin.events.html">Events</a>
+					<a href="_tournament_ladder_index_.ladder.ranksystemtypes.html">RankSystemTypes</a>
 				</li>
 			</ul>
-			<h1>Enumeration Events</h1>
+			<h1>Enumeration RankSystemTypes</h1>
 		</div>
 	</div>
 </header>
@@ -79,9 +79,9 @@
 						<section class="tsd-index-section ">
 							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_tournament_roundrobin_index_.roundrobin.events.html#initial_players_initialized" class="tsd-kind-icon">INITIAL_<wbr>PLAYERS_<wbr>INITIALIZED</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_tournament_roundrobin_index_.roundrobin.events.html#match_handled" class="tsd-kind-icon">MATCH_<wbr>HANDLED</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_tournament_roundrobin_index_.roundrobin.events.html#match_ran" class="tsd-kind-icon">MATCH_<wbr>RAN</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_tournament_ladder_index_.ladder.ranksystemtypes.html#elo" class="tsd-kind-icon">ELO</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_tournament_ladder_index_.ladder.ranksystemtypes.html#trueskill" class="tsd-kind-icon">TRUESKILL</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_tournament_ladder_index_.ladder.ranksystemtypes.html#wins" class="tsd-kind-icon">WINS</a></li>
 							</ul>
 						</section>
 					</div>
@@ -90,48 +90,47 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Enumeration members</h2>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="initial_players_initialized" class="tsd-anchor"></a>
-					<h3>INITIAL_<wbr>PLAYERS_<wbr>INITIALIZED</h3>
-					<div class="tsd-signature tsd-kind-icon">INITIAL_<wbr>PLAYERS_<wbr>INITIALIZED<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;initial_players_initialized&quot;</span></div>
+					<a name="elo" class="tsd-anchor"></a>
+					<h3>ELO</h3>
+					<div class="tsd-signature tsd-kind-icon">ELO<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;elo&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L911">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L911</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L908">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L908</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Event is emitted when initialAddPlayerPromises resolves. This involves all players initialized to tournament
-							upon initialization of tournament instance</p>
+							<p>Ranking by the ELO ranking system</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="match_handled" class="tsd-anchor"></a>
-					<h3>MATCH_<wbr>HANDLED</h3>
-					<div class="tsd-signature tsd-kind-icon">MATCH_<wbr>HANDLED<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;match_handled&quot;</span></div>
+					<a name="trueskill" class="tsd-anchor"></a>
+					<h3>TRUESKILL</h3>
+					<div class="tsd-signature tsd-kind-icon">TRUESKILL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;trueskill&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L921">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L921</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L910">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L910</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Event is emitted whenever a match runs AND the tournament is completely done handling it.</p>
+							<p>Ranking by Microsoft&#39;s Trueskill</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="match_ran" class="tsd-anchor"></a>
-					<h3>MATCH_<wbr>RAN</h3>
-					<div class="tsd-signature tsd-kind-icon">MATCH_<wbr>RAN<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;match_ran&quot;</span></div>
+					<a name="wins" class="tsd-anchor"></a>
+					<h3>WINS</h3>
+					<div class="tsd-signature tsd-kind-icon">WINS<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;wins&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L916">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L916</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L906">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L906</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Event is emitted whenever a match runs</p>
+							<p>Ranking by wins, ties and losses</p>
 						</div>
 					</div>
 				</section>
@@ -144,7 +143,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="../modules/_tournament_roundrobin_index_.html">&quot;<wbr>Tournament/<wbr>Round<wbr>Robin/index&quot;</a>
+						<a href="../modules/_tournament_ladder_index_.html">&quot;<wbr>Tournament/<wbr>Ladder/index&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -153,19 +152,19 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_tournament_roundrobin_index_.roundrobin.html" class="tsd-kind-icon">Round<wbr>Robin</a>
+						<a href="../classes/_tournament_ladder_index_.ladder.html" class="tsd-kind-icon">Ladder</a>
 						<ul>
 							<li class="current tsd-kind-enum tsd-parent-kind-class tsd-is-static">
-								<a href="_tournament_roundrobin_index_.roundrobin.events.html" class="tsd-kind-icon">Events</a>
+								<a href="_tournament_ladder_index_.ladder.ranksystemtypes.html" class="tsd-kind-icon">Rank<wbr>System<wbr>Types</a>
 								<ul>
 									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-										<a href="_tournament_roundrobin_index_.roundrobin.events.html#initial_players_initialized" class="tsd-kind-icon">INITIAL_<wbr>PLAYERS_<wbr>INITIALIZED</a>
+										<a href="_tournament_ladder_index_.ladder.ranksystemtypes.html#elo" class="tsd-kind-icon">ELO</a>
 									</li>
 									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-										<a href="_tournament_roundrobin_index_.roundrobin.events.html#match_handled" class="tsd-kind-icon">MATCH_<wbr>HANDLED</a>
+										<a href="_tournament_ladder_index_.ladder.ranksystemtypes.html#trueskill" class="tsd-kind-icon">TRUESKILL</a>
 									</li>
 									<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-										<a href="_tournament_roundrobin_index_.roundrobin.events.html#match_ran" class="tsd-kind-icon">MATCH_<wbr>RAN</a>
+										<a href="_tournament_ladder_index_.ladder.ranksystemtypes.html#wins" class="tsd-kind-icon">WINS</a>
 									</li>
 								</ul>
 							</li>
@@ -174,7 +173,16 @@
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_tournament_roundrobin_index_.html#ranksystem" class="tsd-kind-icon">Rank<wbr>System</a>
+						<a href="../modules/_tournament_ladder_index_.html#ladderconfigs" class="tsd-kind-icon">Ladder<wbr>Configs</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_tournament_ladder_index_.html#ladderplayerstat" class="tsd-kind-icon">Ladder<wbr>Player<wbr>Stat</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_tournament_ladder_index_.html#ladderstate" class="tsd-kind-icon">Ladder<wbr>State</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_tournament_ladder_index_.html#refresh_rate" class="tsd-kind-icon">REFRESH_<wbr>RATE</a>
 					</li>
 				</ul>
 			</nav>
@@ -186,6 +194,7 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
 				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
@@ -194,13 +203,14 @@
 				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
 			</ul>
 		</div>
 	</div>

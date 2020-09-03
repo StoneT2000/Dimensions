@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Results | dimensions-ai</title>
+	<title>Configs | dimensions-ai</title>
 	<meta name="description" content="Documentation for dimensions-ai">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,19 +56,16 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_tournament_ranksystem_index_.html">&quot;Tournament/RankSystem/index&quot;</a>
+					<a href="../modules/_tournament_ranksystem_winssystem_index_.html">&quot;Tournament/RankSystem/WinsSystem/index&quot;</a>
 				</li>
 				<li>
-					<a href="../enums/_tournament_ranksystem_index_.ranksystem.html">RankSystem</a>
+					<a href="../modules/_tournament_ranksystem_winssystem_index_.wins.html">Wins</a>
 				</li>
 				<li>
-					<a href="../modules/_tournament_ranksystem_index_.ranksystem.wins.html">WINS</a>
-				</li>
-				<li>
-					<a href="_tournament_ranksystem_index_.ranksystem.wins.results.html">Results</a>
+					<a href="_tournament_ranksystem_winssystem_index_.wins.configs.html">Configs</a>
 				</li>
 			</ul>
-			<h1>Interface Results</h1>
+			<h1>Interface Configs</h1>
 		</div>
 	</div>
 </header>
@@ -78,7 +75,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>The results interface that must be returned by a result handler for a <a href="../modules/_index_.html#tournament">Tournament</a></p>
+						<p>The configuration interface for configuring the <a href="../enums/_tournament_ladder_index_.ladder.ranksystemtypes.html#wins">WINS</a> ranking system</p>
 					</div>
 				</div>
 			</section>
@@ -86,7 +83,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">Results</span>
+						<span class="target">Configs</span>
 					</li>
 				</ul>
 			</section>
@@ -97,9 +94,10 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_ranksystem_index_.ranksystem.wins.results.html#losers" class="tsd-kind-icon">losers</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_ranksystem_index_.ranksystem.wins.results.html#ties" class="tsd-kind-icon">ties</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_ranksystem_index_.ranksystem.wins.results.html#winners" class="tsd-kind-icon">winners</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_ranksystem_winssystem_index_.wins.configs.html#descending" class="tsd-kind-icon">descending</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_ranksystem_winssystem_index_.wins.configs.html#lossvalue" class="tsd-kind-icon">loss<wbr>Value</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_ranksystem_winssystem_index_.wins.configs.html#tievalue" class="tsd-kind-icon">tie<wbr>Value</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_ranksystem_winssystem_index_.wins.configs.html#winvalue" class="tsd-kind-icon">win<wbr>Value</a></li>
 							</ul>
 						</section>
 					</div>
@@ -108,47 +106,62 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="losers" class="tsd-anchor"></a>
-					<h3>losers</h3>
-					<div class="tsd-signature tsd-kind-icon">losers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/_agent_index_.agent.html#id" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol">&gt;</span></div>
+					<a name="descending" class="tsd-anchor"></a>
+					<h3>descending</h3>
+					<div class="tsd-signature tsd-kind-icon">descending<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/index.ts#L46">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/index.ts#L46</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/WinsSystem/index.ts#L162">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/WinsSystem/index.ts#L162</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Array of agent IDs of {@link agent}s that lost in the <a href="../modules/_index_.html#match">Match</a></p>
+							<p>True if first place is the one with the most points.</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="ties" class="tsd-anchor"></a>
-					<h3>ties</h3>
-					<div class="tsd-signature tsd-kind-icon">ties<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/_agent_index_.agent.html#id" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol">&gt;</span></div>
+					<a name="lossvalue" class="tsd-anchor"></a>
+					<h3>loss<wbr>Value</h3>
+					<div class="tsd-signature tsd-kind-icon">loss<wbr>Value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/index.ts#L44">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/index.ts#L44</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/WinsSystem/index.ts#L160">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/WinsSystem/index.ts#L160</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Array of agent IDs of {@link agent}s that tied in the <a href="../modules/_index_.html#match">Match</a></p>
+							<p>Points given per loss in a <a href="../modules/_index_.html#match">Match</a></p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="winners" class="tsd-anchor"></a>
-					<h3>winners</h3>
-					<div class="tsd-signature tsd-kind-icon">winners<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/_agent_index_.agent.html#id" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol">&gt;</span></div>
+					<a name="tievalue" class="tsd-anchor"></a>
+					<h3>tie<wbr>Value</h3>
+					<div class="tsd-signature tsd-kind-icon">tie<wbr>Value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/index.ts#L42">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/index.ts#L42</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/WinsSystem/index.ts#L158">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/WinsSystem/index.ts#L158</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Array of agent IDs of {@link agent}s that won in the <a href="../modules/_index_.html#match">Match</a></p>
+							<p>Points given per tie in a <a href="../modules/_index_.html#match">Match</a></p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="winvalue" class="tsd-anchor"></a>
+					<h3>win<wbr>Value</h3>
+					<div class="tsd-signature tsd-kind-icon">win<wbr>Value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/WinsSystem/index.ts#L156">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/WinsSystem/index.ts#L156</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Points given per win in a <a href="../modules/_index_.html#match">Match</a></p>
 						</div>
 					</div>
 				</section>
@@ -160,31 +173,42 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
+					<li class="current tsd-kind-module">
+						<a href="../modules/_tournament_ranksystem_winssystem_index_.html">&quot;<wbr>Tournament/<wbr>Rank<wbr>System/<wbr>Wins<wbr>System/index&quot;</a>
+						<ul>
+							<li class="current tsd-kind-namespace tsd-parent-kind-module">
+								<a href="../modules/_tournament_ranksystem_winssystem_index_.wins.html">Wins</a>
+							</li>
+						</ul>
+					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
-						<a href="_tournament_ranksystem_index_.ranksystem.wins.configs.html" class="tsd-kind-icon">Configs</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-namespace">
-						<a href="_tournament_ranksystem_index_.ranksystem.wins.results.html" class="tsd-kind-icon">Results</a>
+						<a href="_tournament_ranksystem_winssystem_index_.wins.configs.html" class="tsd-kind-icon">Configs</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_tournament_ranksystem_index_.ranksystem.wins.results.html#losers" class="tsd-kind-icon">losers</a>
+								<a href="_tournament_ranksystem_winssystem_index_.wins.configs.html#descending" class="tsd-kind-icon">descending</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_tournament_ranksystem_index_.ranksystem.wins.results.html#ties" class="tsd-kind-icon">ties</a>
+								<a href="_tournament_ranksystem_winssystem_index_.wins.configs.html#lossvalue" class="tsd-kind-icon">loss<wbr>Value</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_tournament_ranksystem_index_.ranksystem.wins.results.html#winners" class="tsd-kind-icon">winners</a>
+								<a href="_tournament_ranksystem_winssystem_index_.wins.configs.html#tievalue" class="tsd-kind-icon">tie<wbr>Value</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_tournament_ranksystem_winssystem_index_.wins.configs.html#winvalue" class="tsd-kind-icon">win<wbr>Value</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
+						<a href="_tournament_ranksystem_winssystem_index_.wins.rankstate.html" class="tsd-kind-icon">Rank<wbr>State</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
@@ -195,6 +219,7 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
 				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
@@ -207,10 +232,11 @@
 				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 		</div>
 	</div>

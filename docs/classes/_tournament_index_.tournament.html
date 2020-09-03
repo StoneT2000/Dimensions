@@ -73,7 +73,7 @@
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
 						<p>The tournament class and module extended by all concrete Tournament Classes. Tournament Types available now are
-							<a href="_tournament_index_.tournament.html#roundrobin">RoundRobin</a>, <a href="_tournament_index_.tournament.html#ladder">Ladder</a>, <a href="_tournament_index_.tournament.html#elimination">Elimination</a>. A tournament is composed of players, which can either be
+							<a href="_tournament_index_.tournament.html#ladder">Ladder</a>, and <a href="_tournament_index_.tournament.html#elimination">Elimination</a>. A tournament is composed of players, which can either be
 							all locally stored, or a split between locally stored anonymous players and database stored user owned players.
 							Ladder is the only tournament where it can be made distributed, other tournament types may only be run as a single
 						instance</p>
@@ -87,16 +87,13 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="tsd-signature-type">internal</span>
+						<span class="tsd-signature-type">EventEmitter</span>
 						<ul class="tsd-hierarchy">
 							<li>
 								<span class="target">Tournament</span>
 								<ul class="tsd-hierarchy">
 									<li>
 										<a href="_tournament_ladder_index_.ladder.html" class="tsd-signature-type">Ladder</a>
-									</li>
-									<li>
-										<a href="_tournament_roundrobin_index_.roundrobin.html" class="tsd-signature-type">RoundRobin</a>
 									</li>
 									<li>
 										<a href="_tournament_elimination_index_.elimination.html" class="tsd-signature-type">Elimination</a>
@@ -115,12 +112,7 @@
 							<h3>Enumerations</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-enum tsd-parent-kind-class tsd-is-static"><a href="../enums/_tournament_index_.tournament.events.html" class="tsd-kind-icon">Events</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Classes</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-class tsd-parent-kind-class"><a href="_tournament_index_.tournament.eventemitter.html" class="tsd-kind-icon">Event<wbr>Emitter</a></li>
+								<li class="tsd-kind-enum tsd-parent-kind-class tsd-is-static"><a href="../enums/_tournament_index_.tournament.ranksystemtypes.html" class="tsd-kind-icon">Rank<wbr>System<wbr>Types</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -167,61 +159,57 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#type" class="tsd-kind-icon">type</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_tournament_index_.tournament.html#elimination" class="tsd-kind-icon">Elimination</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_tournament_index_.tournament.html#ladder" class="tsd-kind-icon">Ladder</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_tournament_index_.tournament.html#rank_system" class="tsd-kind-icon">RANK_<wbr>SYSTEM</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_tournament_index_.tournament.html#ranksystem" class="tsd-kind-icon">Rank<wbr>System</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_tournament_index_.tournament.html#roundrobin" class="tsd-kind-icon">Round<wbr>Robin</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_tournament_index_.tournament.html#scheduler" class="tsd-kind-icon">Scheduler</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_tournament_index_.tournament.html#status-1" class="tsd-kind-icon">Status</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_tournament_index_.tournament.html#tournament_type" class="tsd-kind-icon">TOURNAMENT_<wbr>TYPE</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_tournament_index_.tournament.html#tournamentstatus" class="tsd-kind-icon">Tournament<wbr>Status</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_tournament_index_.tournament.html#type-1" class="tsd-kind-icon">Type</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_tournament_index_.tournament.html#errormonitor" class="tsd-kind-icon">error<wbr>Monitor</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="_tournament_index_.tournament.html#defaultmaxlisteners" class="tsd-kind-icon">default<wbr>Max<wbr>Listeners</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_tournament_index_.tournament.html#addlistener" class="tsd-kind-icon">add<wbr>Listener</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_tournament_index_.tournament.html#addlistener" class="tsd-kind-icon">add<wbr>Listener</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#addplayer" class="tsd-kind-icon">addplayer</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#destroy" class="tsd-kind-icon">destroy</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#disableplayer" class="tsd-kind-icon">disable<wbr>Player</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_tournament_index_.tournament.html#emit" class="tsd-kind-icon">emit</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_tournament_index_.tournament.html#eventnames" class="tsd-kind-icon">event<wbr>Names</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_tournament_index_.tournament.html#emit" class="tsd-kind-icon">emit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_tournament_index_.tournament.html#eventnames" class="tsd-kind-icon">event<wbr>Names</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#generatenexttournamentidstring" class="tsd-kind-icon">generate<wbr>Next<wbr>TournamentIDString</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#getconfigs" class="tsd-kind-icon">get<wbr>Configs</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#getkeyname" class="tsd-kind-icon">get<wbr>Key<wbr>Name</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#getlastversionusedofplayer" class="tsd-kind-icon">get<wbr>Last<wbr>Version<wbr>Used<wbr>OfPlayer</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#getmatchinfofromqueuedmatch" class="tsd-kind-icon">get<wbr>Match<wbr>Info<wbr>From<wbr>Queued<wbr>Match</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_tournament_index_.tournament.html#getmaxlisteners" class="tsd-kind-icon">get<wbr>Max<wbr>Listeners</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_tournament_index_.tournament.html#getmaxlisteners" class="tsd-kind-icon">get<wbr>Max<wbr>Listeners</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#getplayerstat" class="tsd-kind-icon">get<wbr>Player<wbr>Stat</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#getrankings" class="tsd-kind-icon">get<wbr>Rankings</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#getsafename" class="tsd-kind-icon">get<wbr>Safe<wbr>Name</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#internaladdplayer" class="tsd-kind-icon">internal<wbr>Add<wbr>Player</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_tournament_index_.tournament.html#internalremoveplayer" class="tsd-kind-icon">internal<wbr>Remove<wbr>Player</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_tournament_index_.tournament.html#listenercount" class="tsd-kind-icon">listener<wbr>Count</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_tournament_index_.tournament.html#listeners" class="tsd-kind-icon">listeners</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_tournament_index_.tournament.html#off" class="tsd-kind-icon">off</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_tournament_index_.tournament.html#on" class="tsd-kind-icon">on</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_tournament_index_.tournament.html#once" class="tsd-kind-icon">once</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_tournament_index_.tournament.html#listenercount" class="tsd-kind-icon">listener<wbr>Count</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_tournament_index_.tournament.html#listeners" class="tsd-kind-icon">listeners</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_tournament_index_.tournament.html#off" class="tsd-kind-icon">off</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_tournament_index_.tournament.html#on" class="tsd-kind-icon">on</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_tournament_index_.tournament.html#once" class="tsd-kind-icon">once</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_tournament_index_.tournament.html#postinternaldestroy" class="tsd-kind-icon">post<wbr>Internal<wbr>Destroy</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_tournament_index_.tournament.html#preinternaldestroy" class="tsd-kind-icon">pre<wbr>Internal<wbr>Destroy</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_tournament_index_.tournament.html#prependlistener" class="tsd-kind-icon">prepend<wbr>Listener</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_tournament_index_.tournament.html#prependoncelistener" class="tsd-kind-icon">prepend<wbr>Once<wbr>Listener</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_tournament_index_.tournament.html#rawlisteners" class="tsd-kind-icon">raw<wbr>Listeners</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_tournament_index_.tournament.html#removealllisteners" class="tsd-kind-icon">remove<wbr>All<wbr>Listeners</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_tournament_index_.tournament.html#removelistener" class="tsd-kind-icon">remove<wbr>Listener</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_tournament_index_.tournament.html#prependlistener" class="tsd-kind-icon">prepend<wbr>Listener</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_tournament_index_.tournament.html#prependoncelistener" class="tsd-kind-icon">prepend<wbr>Once<wbr>Listener</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_tournament_index_.tournament.html#rawlisteners" class="tsd-kind-icon">raw<wbr>Listeners</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_tournament_index_.tournament.html#removealllisteners" class="tsd-kind-icon">remove<wbr>All<wbr>Listeners</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_tournament_index_.tournament.html#removelistener" class="tsd-kind-icon">remove<wbr>Listener</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#removematch" class="tsd-kind-icon">remove<wbr>Match</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#removeplayer" class="tsd-kind-icon">remove<wbr>Player</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#resume" class="tsd-kind-icon">resume</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#run" class="tsd-kind-icon">run</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><a href="_tournament_index_.tournament.html#runmatch" class="tsd-kind-icon">run<wbr>Match</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#setconfigs" class="tsd-kind-icon">set<wbr>Configs</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_tournament_index_.tournament.html#setmaxlisteners" class="tsd-kind-icon">set<wbr>Max<wbr>Listeners</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_tournament_index_.tournament.html#setmaxlisteners" class="tsd-kind-icon">set<wbr>Max<wbr>Listeners</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#stop" class="tsd-kind-icon">stop</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#updatelastversionusedofplayer" class="tsd-kind-icon">update<wbr>Last<wbr>Version<wbr>Used<wbr>OfPlayer</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_tournament_index_.tournament.html#updateplayer" class="tsd-kind-icon">update<wbr>Player</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_tournament_index_.tournament.html#gentournamentclassid" class="tsd-kind-icon">gen<wbr>Tournament<wbr>ClassID</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_tournament_index_.tournament.html#once-1" class="tsd-kind-icon">once</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="_tournament_index_.tournament.html#listenercount-1" class="tsd-kind-icon">listener<wbr>Count</a></li>
 							</ul>
 						</section>
 					</div>
@@ -235,7 +223,7 @@
 					<div class="tsd-signature tsd-kind-icon">Queued<wbr>Match<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_index_.html#nanoid" class="tsd-signature-type">nanoid</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L859">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L859</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L839">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L839</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -257,7 +245,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L161">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L161</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L164">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L164</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -288,12 +276,13 @@
 					<div class="tsd-signature tsd-kind-icon">anonymous<wbr>Competitors<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_dimension_index_.html#nanoid" class="tsd-signature-type">NanoID</a><span class="tsd-signature-symbol">, </span><a href="_tournament_index_.player.html" class="tsd-signature-type">Player</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L129">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L129</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L132">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L132</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>All competitors that are anonymous competitors and not registered in database</p>
+							<p>All competitors that are anonymous, local (no user), competitors and not registered in database. Used only when
+							there is a DB</p>
 						</div>
 					</div>
 				</section>
@@ -333,7 +322,7 @@
 					<div class="tsd-signature tsd-kind-icon">design<span class="tsd-signature-symbol">:</span> <a href="_design_index_.design.html" class="tsd-signature-type">Design</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L164">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L164</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L167">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L167</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -343,7 +332,7 @@
 					<div class="tsd-signature tsd-kind-icon">dimension<span class="tsd-signature-symbol">:</span> <a href="_dimension_index_.dimension.html" class="tsd-signature-type">Dimension</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L132">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L132</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L135">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L135</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -358,7 +347,7 @@
 					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <a href="../modules/_dimension_index_.html#nanoid" class="tsd-signature-type">NanoID</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L135">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L135</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L138">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L138</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -373,7 +362,7 @@
 					<div class="tsd-signature tsd-kind-icon">initial<wbr>Add<wbr>Player<wbr>Promises<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = []</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L148">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L148</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L151">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L151</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -388,7 +377,7 @@
 					<div class="tsd-signature tsd-kind-icon">last<wbr>Version<wbr>Used<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_index_.html#nanoid" class="tsd-signature-type">nanoid</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L161">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L161</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L164">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L164</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -405,7 +394,7 @@
 					<div class="tsd-signature tsd-kind-icon">locked<wbr>Players<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_index_.html#nanoid" class="tsd-signature-type">nanoid</a><span class="tsd-signature-symbol">, </span><a href="_utils_varlock_.varlock.html" class="tsd-signature-type">VarLock</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L153">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L153</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L156">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L156</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -465,7 +454,7 @@
 					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L140">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L140</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L143">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L143</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -510,7 +499,7 @@
 					<div class="tsd-signature tsd-kind-icon">type<span class="tsd-signature-symbol">:</span> <a href="_tournament_index_.tournament.html#type-1" class="tsd-signature-type">Type</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L143">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L143</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L146">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L146</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -525,7 +514,7 @@
 					<div class="tsd-signature tsd-kind-icon">Elimination<span class="tsd-signature-symbol">:</span> <a href="_tournament_elimination_index_.elimination.html" class="tsd-signature-type">Elimination</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L755">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L755</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L756">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L756</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -535,45 +524,17 @@
 					<div class="tsd-signature tsd-kind-icon">Ladder<span class="tsd-signature-symbol">:</span> <a href="_tournament_ladder_index_.ladder.html" class="tsd-signature-type">Ladder</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L753">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L753</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L755">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L755</a></li>
 						</ul>
 					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="rank_system" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> RANK_<wbr>SYSTEM</h3>
-					<div class="tsd-signature tsd-kind-icon">RANK_<wbr>SYSTEM<span class="tsd-signature-symbol">:</span> <a href="../enums/_tournament_ranksystem_index_.ranksystem.html" class="tsd-signature-type">RankSystem</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L768">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L768</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>deprecated</dt>
-							<dd><p>since v2.1.0</p>
-								<p>Use <a href="_tournament_index_.tournament.html#ranksystem">Tournament.RankSystem</a> instead</p>
-							</dd>
-						</dl>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
 					<a name="ranksystem" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> Rank<wbr>System</h3>
-					<div class="tsd-signature tsd-kind-icon">Rank<wbr>System<span class="tsd-signature-symbol">:</span> <a href="../enums/_tournament_ranksystem_index_.ranksystem.html" class="tsd-signature-type">RankSystem</a></div>
+					<div class="tsd-signature tsd-kind-icon">Rank<wbr>System<span class="tsd-signature-symbol">:</span> <a href="_tournament_ranksystem_index_.ranksystem.html" class="tsd-signature-type">RankSystem</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L761">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L761</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="roundrobin" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> Round<wbr>Robin</h3>
-					<div class="tsd-signature tsd-kind-icon">Round<wbr>Robin<span class="tsd-signature-symbol">:</span> <a href="_tournament_roundrobin_index_.roundrobin.html" class="tsd-signature-type">RoundRobin</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L754">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L754</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L762">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L762</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -583,7 +544,7 @@
 					<div class="tsd-signature tsd-kind-icon">Scheduler<span class="tsd-signature-symbol">:</span> <a href="_tournament_scheduler_index_.scheduler.html" class="tsd-signature-type">Scheduler</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L756">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L756</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L757">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L757</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -593,45 +554,9 @@
 					<div class="tsd-signature tsd-kind-icon">Status<span class="tsd-signature-symbol">:</span> <a href="../enums/_tournament_tournamentstatus_index_.tournamentstatus.html" class="tsd-signature-type">TournamentStatus</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L760">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L760</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L761">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L761</a></li>
 						</ul>
 					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="tournament_type" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> TOURNAMENT_<wbr>TYPE</h3>
-					<div class="tsd-signature tsd-kind-icon">TOURNAMENT_<wbr>TYPE<span class="tsd-signature-symbol">:</span> <a href="../enums/_tournament_tournamenttypes_index_.tournamenttype.html" class="tsd-signature-type">TournamentType</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L775">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L775</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>deprecated</dt>
-							<dd><p>since v2.1.0</p>
-								<p>Use <a href="_tournament_index_.tournament.html#type-1">Tournament.Type</a> instead.</p>
-							</dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="tournamentstatus" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> Tournament<wbr>Status</h3>
-					<div class="tsd-signature tsd-kind-icon">Tournament<wbr>Status<span class="tsd-signature-symbol">:</span> <a href="../enums/_tournament_tournamentstatus_index_.tournamentstatus.html" class="tsd-signature-type">TournamentStatus</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L782">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L782</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<dl class="tsd-comment-tags">
-							<dt>deprecated</dt>
-							<dd><p>since v2.1.0</p>
-								<p>Use <a href="_tournament_index_.tournament.html#status-1">Tournament.Status</a> instead.</p>
-							</dd>
-						</dl>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
 					<a name="type-1" class="tsd-anchor"></a>
@@ -639,42 +564,34 @@
 					<div class="tsd-signature tsd-kind-icon">Type<span class="tsd-signature-symbol">:</span> <a href="../enums/_tournament_tournamenttypes_index_.tournamenttype.html" class="tsd-signature-type">TournamentType</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L759">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L759</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L760">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L760</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="errormonitor" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> error<wbr>Monitor</h3>
-					<div class="tsd-signature tsd-kind-icon">error<wbr>Monitor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">keyof </span><span class="tsd-signature-type">symbol</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+					<a name="defaultmaxlisteners" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> default<wbr>Max<wbr>Listeners</h3>
+					<div class="tsd-signature tsd-kind-icon">default<wbr>Max<wbr>Listeners<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#defaultmaxlisteners">defaultMaxListeners</a></p>
 						<ul>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>This symbol shall be used to install a listener for only monitoring <code>&#39;error&#39;</code>
-								events. Listeners installed using this symbol are called before the regular
-							<code>&#39;error&#39;</code> listeners are called.</p>
-						</div>
-						<p>Installing a listener using this symbol does not change the behavior once an
-							<code>&#39;error&#39;</code> event is emitted, therefore the process will still crash if no
-						regular <code>&#39;error&#39;</code> listener is installed.</p>
-					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="addlistener" class="tsd-anchor"></a>
 					<h3>add<wbr>Listener</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">add<wbr>Listener<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#addlistener">addListener</a></p>
+								<p>Overrides EventEmitter.addListener</p>
 								<ul>
 								</ul>
 							</aside>
@@ -719,7 +636,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L217">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L217</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L220">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L220</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -769,7 +686,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L654">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L654</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L657">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L657</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -791,7 +708,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L423">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L423</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L426">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L426</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -812,16 +729,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="emit" class="tsd-anchor"></a>
 					<h3>emit</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">emit<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span>, <span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#emit">emit</a></p>
+								<p>Overrides EventEmitter.emit</p>
 								<ul>
 								</ul>
 							</aside>
@@ -838,16 +756,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="eventnames" class="tsd-anchor"></a>
 					<h3>event<wbr>Names</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">event<wbr>Names<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#eventnames">eventNames</a></p>
+								<p>Overrides EventEmitter.eventNames</p>
 								<ul>
 								</ul>
 							</aside>
@@ -865,7 +784,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L369">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L369</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L372">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L372</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -888,7 +807,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L474">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L474</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L477">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L477</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -910,7 +829,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L700">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L700</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L703">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L703</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -932,7 +851,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L627">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L627</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L630">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L630</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -955,7 +874,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L611">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L611</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L614">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L614</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -975,16 +894,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="getmaxlisteners" class="tsd-anchor"></a>
 					<h3>get<wbr>Max<wbr>Listeners</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">get<wbr>Max<wbr>Listeners<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#getmaxlisteners">getMaxListeners</a></p>
+								<p>Overrides EventEmitter.getMaxListeners</p>
 								<ul>
 								</ul>
 							</aside>
@@ -1002,7 +922,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L710">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L710</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L713">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L713</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1034,7 +954,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L405">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L405</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L408">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L408</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1072,7 +992,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L693">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L693</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L696">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L696</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1094,7 +1014,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L363">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L363</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L366">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L366</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1124,7 +1044,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L460">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L460</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L463">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L463</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1137,16 +1057,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="listenercount" class="tsd-anchor"></a>
 					<h3>listener<wbr>Count</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">listener<wbr>Count<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#listenercount">listenerCount</a></p>
+								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#listenercount-1">listenerCount</a></p>
+								<p>Overrides EventEmitter.listenerCount</p>
 								<ul>
 								</ul>
 							</aside>
@@ -1160,16 +1081,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="listeners" class="tsd-anchor"></a>
 					<h3>listeners</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">listeners<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#listeners">listeners</a></p>
+								<p>Overrides EventEmitter.listeners</p>
 								<ul>
 								</ul>
 							</aside>
@@ -1183,16 +1105,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="off" class="tsd-anchor"></a>
 					<h3>off</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">off<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#off">off</a></p>
+								<p>Overrides EventEmitter.off</p>
 								<ul>
 								</ul>
 							</aside>
@@ -1227,16 +1150,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="on" class="tsd-anchor"></a>
 					<h3>on</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#on">on</a></p>
+								<p>Overrides EventEmitter.on</p>
 								<ul>
 								</ul>
 							</aside>
@@ -1271,16 +1195,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="once" class="tsd-anchor"></a>
 					<h3>once</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">once<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#once">once</a></p>
+								<p>Overrides EventEmitter.once</p>
 								<ul>
 								</ul>
 							</aside>
@@ -1325,7 +1250,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L680">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L680</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L683">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L683</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1347,7 +1272,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L674">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L674</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L677">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L677</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1359,16 +1284,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="prependlistener" class="tsd-anchor"></a>
 					<h3>prepend<wbr>Listener</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">prepend<wbr>Listener<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#prependlistener">prependListener</a></p>
+								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
 								</ul>
 							</aside>
@@ -1403,16 +1329,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="prependoncelistener" class="tsd-anchor"></a>
 					<h3>prepend<wbr>Once<wbr>Listener</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">prepend<wbr>Once<wbr>Listener<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#prependoncelistener">prependOnceListener</a></p>
+								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
 								</ul>
 							</aside>
@@ -1447,16 +1374,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="rawlisteners" class="tsd-anchor"></a>
 					<h3>raw<wbr>Listeners</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">raw<wbr>Listeners<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#rawlisteners">rawListeners</a></p>
+								<p>Overrides EventEmitter.rawListeners</p>
 								<ul>
 								</ul>
 							</aside>
@@ -1470,16 +1398,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="removealllisteners" class="tsd-anchor"></a>
 					<h3>remove<wbr>All<wbr>Listeners</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">remove<wbr>All<wbr>Listeners<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#removealllisteners">removeAllListeners</a></p>
+								<p>Overrides EventEmitter.removeAllListeners</p>
 								<ul>
 								</ul>
 							</aside>
@@ -1493,16 +1422,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="removelistener" class="tsd-anchor"></a>
 					<h3>remove<wbr>Listener</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">remove<wbr>Listener<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#removelistener">removeListener</a></p>
+								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
 								</ul>
 							</aside>
@@ -1547,7 +1477,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L642">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L642</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L645">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L645</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1575,7 +1505,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L443">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L443</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L446">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L446</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1607,7 +1537,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L396">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L396</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L399">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L399</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1639,7 +1569,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L379">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L379</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L382">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L382</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1677,7 +1607,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L481">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L481</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L484">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L484</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1709,7 +1639,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L466">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L466</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L469">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L469</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1730,16 +1660,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="setmaxlisteners" class="tsd-anchor"></a>
 					<h3>set<wbr>Max<wbr>Listeners</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">set<wbr>Max<wbr>Listeners<span class="tsd-signature-symbol">(</span>n<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#setmaxlisteners">setMaxListeners</a></p>
+								<p>Overrides EventEmitter.setMaxListeners</p>
 								<ul>
 								</ul>
 							</aside>
@@ -1763,7 +1694,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L389">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L389</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L392">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L392</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1795,7 +1726,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L631">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L631</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L634">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L634</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1821,7 +1752,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L413">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L413</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L416">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L416</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1864,7 +1795,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L686">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L686</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L689">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/index.ts#L689</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1877,45 +1808,36 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="once-1" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> once</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">once<span class="tsd-signature-symbol">(</span>emitter<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">NodeEventTarget</span>, event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
-						<li class="tsd-signature tsd-kind-icon">once<span class="tsd-signature-symbol">(</span>emitter<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DOMEventTarget</span>, event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+					<a name="listenercount-1" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> listener<wbr>Count</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">listener<wbr>Count<span class="tsd-signature-symbol">(</span>emitter<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">EventEmitter</span>, event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#listenercount-1">listenerCount</a></p>
 								<ul>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>deprecated</dt>
+									<dd><p>since v4.0.0</p>
+									</dd>
+								</dl>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>emitter: <span class="tsd-signature-type">NodeEventTarget</span></h5>
+									<h5>emitter: <span class="tsd-signature-type">EventEmitter</span></h5>
 								</li>
 								<li>
 									<h5>event: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>emitter: <span class="tsd-signature-type">DOMEventTarget</span></h5>
-								</li>
-								<li>
-									<h5>event: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1945,8 +1867,8 @@
 							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
 								<a href="../enums/_tournament_index_.tournament.events.html" class="tsd-kind-icon">Events</a>
 							</li>
-							<li class=" tsd-kind-class tsd-parent-kind-class">
-								<a href="_tournament_index_.tournament.eventemitter.html" class="tsd-kind-icon">Event<wbr>Emitter</a>
+							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
+								<a href="../enums/_tournament_index_.tournament.ranksystemtypes.html" class="tsd-kind-icon">Rank<wbr>System<wbr>Types</a>
 							</li>
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="../interfaces/_tournament_index_.tournament.id.html" class="tsd-kind-icon">ID</a>
@@ -2027,13 +1949,7 @@
 								<a href="_tournament_index_.tournament.html#ladder" class="tsd-kind-icon">Ladder</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="_tournament_index_.tournament.html#rank_system" class="tsd-kind-icon">RANK_<wbr>SYSTEM</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
 								<a href="_tournament_index_.tournament.html#ranksystem" class="tsd-kind-icon">Rank<wbr>System</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="_tournament_index_.tournament.html#roundrobin" class="tsd-kind-icon">Round<wbr>Robin</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
 								<a href="_tournament_index_.tournament.html#scheduler" class="tsd-kind-icon">Scheduler</a>
@@ -2042,18 +1958,12 @@
 								<a href="_tournament_index_.tournament.html#status-1" class="tsd-kind-icon">Status</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="_tournament_index_.tournament.html#tournament_type" class="tsd-kind-icon">TOURNAMENT_<wbr>TYPE</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="_tournament_index_.tournament.html#tournamentstatus" class="tsd-kind-icon">Tournament<wbr>Status</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
 								<a href="_tournament_index_.tournament.html#type-1" class="tsd-kind-icon">Type</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="_tournament_index_.tournament.html#errormonitor" class="tsd-kind-icon">error<wbr>Monitor</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+								<a href="_tournament_index_.tournament.html#defaultmaxlisteners" class="tsd-kind-icon">default<wbr>Max<wbr>Listeners</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="_tournament_index_.tournament.html#addlistener" class="tsd-kind-icon">add<wbr>Listener</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -2065,10 +1975,10 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_tournament_index_.tournament.html#disableplayer" class="tsd-kind-icon">disable<wbr>Player</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="_tournament_index_.tournament.html#emit" class="tsd-kind-icon">emit</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="_tournament_index_.tournament.html#eventnames" class="tsd-kind-icon">event<wbr>Names</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -2086,7 +1996,7 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_tournament_index_.tournament.html#getmatchinfofromqueuedmatch" class="tsd-kind-icon">get<wbr>Match<wbr>Info<wbr>From<wbr>Queued<wbr>Match</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="_tournament_index_.tournament.html#getmaxlisteners" class="tsd-kind-icon">get<wbr>Max<wbr>Listeners</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -2104,19 +2014,19 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 								<a href="_tournament_index_.tournament.html#internalremoveplayer" class="tsd-kind-icon">internal<wbr>Remove<wbr>Player</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="_tournament_index_.tournament.html#listenercount" class="tsd-kind-icon">listener<wbr>Count</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="_tournament_index_.tournament.html#listeners" class="tsd-kind-icon">listeners</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="_tournament_index_.tournament.html#off" class="tsd-kind-icon">off</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="_tournament_index_.tournament.html#on" class="tsd-kind-icon">on</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="_tournament_index_.tournament.html#once" class="tsd-kind-icon">once</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
@@ -2125,19 +2035,19 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-protected">
 								<a href="_tournament_index_.tournament.html#preinternaldestroy" class="tsd-kind-icon">pre<wbr>Internal<wbr>Destroy</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="_tournament_index_.tournament.html#prependlistener" class="tsd-kind-icon">prepend<wbr>Listener</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="_tournament_index_.tournament.html#prependoncelistener" class="tsd-kind-icon">prepend<wbr>Once<wbr>Listener</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="_tournament_index_.tournament.html#rawlisteners" class="tsd-kind-icon">raw<wbr>Listeners</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="_tournament_index_.tournament.html#removealllisteners" class="tsd-kind-icon">remove<wbr>All<wbr>Listeners</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="_tournament_index_.tournament.html#removelistener" class="tsd-kind-icon">remove<wbr>Listener</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -2158,7 +2068,7 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_tournament_index_.tournament.html#setconfigs" class="tsd-kind-icon">set<wbr>Configs</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 								<a href="_tournament_index_.tournament.html#setmaxlisteners" class="tsd-kind-icon">set<wbr>Max<wbr>Listeners</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -2173,8 +2083,8 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
 								<a href="_tournament_index_.tournament.html#gentournamentclassid" class="tsd-kind-icon">gen<wbr>Tournament<wbr>ClassID</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="_tournament_index_.tournament.html#once-1" class="tsd-kind-icon">once</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+								<a href="_tournament_index_.tournament.html#listenercount-1" class="tsd-kind-icon">listener<wbr>Count</a>
 							</li>
 						</ul>
 					</li>
@@ -2188,9 +2098,6 @@
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
 						<a href="../modules/_tournament_index_.html#ranksystemdefault" class="tsd-kind-icon">Rank<wbr>System<wbr>Default</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_tournament_index_.html#roundrobindefault" class="tsd-kind-icon">Round<wbr>Robin<wbr>Default</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
 						<a href="../modules/_tournament_index_.html#schedulerdefault" class="tsd-kind-icon">Scheduler<wbr>Default</a>
@@ -2211,6 +2118,7 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
 				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
@@ -2220,6 +2128,7 @@
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>

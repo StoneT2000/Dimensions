@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;Tournament/RoundRobin/index&quot; | dimensions-ai</title>
+	<title>RankState | dimensions-ai</title>
 	<meta name="description" content="Documentation for dimensions-ai">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,46 +56,73 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="_tournament_roundrobin_index_.html">&quot;Tournament/RoundRobin/index&quot;</a>
+					<a href="../modules/_tournament_ranksystem_trueskillsystem_index_.html">&quot;Tournament/RankSystem/TrueSkillSystem/index&quot;</a>
+				</li>
+				<li>
+					<a href="../modules/_tournament_ranksystem_trueskillsystem_index_.trueskill.html">TrueSkill</a>
+				</li>
+				<li>
+					<a href="_tournament_ranksystem_trueskillsystem_index_.trueskill.rankstate.html">RankState</a>
 				</li>
 			</ul>
-			<h1>Module &quot;Tournament/RoundRobin/index&quot;</h1>
+			<h1>Interface RankState</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">RankState</span>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Classes</h3>
+							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_tournament_roundrobin_index_.roundrobin.html" class="tsd-kind-icon">Round<wbr>Robin</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section tsd-is-not-exported">
-							<h3>Variables</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported"><a href="_tournament_roundrobin_index_.html#ranksystem" class="tsd-kind-icon">Rank<wbr>System</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_ranksystem_trueskillsystem_index_.trueskill.rankstate.html#rating" class="tsd-kind-icon">rating</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
-				<h2>Variables</h2>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-					<a name="ranksystem" class="tsd-anchor"></a>
-					<h3>Rank<wbr>System</h3>
-					<div class="tsd-signature tsd-kind-icon">Rank<wbr>System<span class="tsd-signature-symbol">:</span> <a href="../enums/_tournament_ranksystem_index_.ranksystem.html" class="tsd-signature-type">RankSystem</a></div>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="rating" class="tsd-anchor"></a>
+					<h3>rating</h3>
+					<div class="tsd-signature tsd-kind-icon">rating<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>mu<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>score<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">; </span>sigma<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RoundRobin/index.ts#L8">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RoundRobin/index.ts#L8</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/TrueSkillSystem/index.ts#L137">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/TrueSkillSystem/index.ts#L137</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The trueskill rating</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>mu<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>score<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>sigma<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
+							</li>
+						</ul>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -106,18 +133,32 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="_tournament_roundrobin_index_.html">&quot;<wbr>Tournament/<wbr>Round<wbr>Robin/index&quot;</a>
+						<a href="../modules/_tournament_ranksystem_trueskillsystem_index_.html">&quot;<wbr>Tournament/<wbr>Rank<wbr>System/<wbr>True<wbr>Skill<wbr>System/index&quot;</a>
+						<ul>
+							<li class="current tsd-kind-namespace tsd-parent-kind-module">
+								<a href="../modules/_tournament_ranksystem_trueskillsystem_index_.trueskill.html">True<wbr>Skill</a>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_tournament_roundrobin_index_.roundrobin.html" class="tsd-kind-icon">Round<wbr>Robin</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
+						<a href="_tournament_ranksystem_trueskillsystem_index_.trueskill.configs.html" class="tsd-kind-icon">Configs</a>
 					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="_tournament_roundrobin_index_.html#ranksystem" class="tsd-kind-icon">Rank<wbr>System</a>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface tsd-parent-kind-namespace">
+						<a href="_tournament_ranksystem_trueskillsystem_index_.trueskill.rankstate.html" class="tsd-kind-icon">Rank<wbr>State</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_tournament_ranksystem_trueskillsystem_index_.trueskill.rankstate.html#rating" class="tsd-kind-icon">rating</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 				</ul>
 			</nav>
 		</div>
@@ -128,6 +169,7 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
 				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
@@ -136,13 +178,15 @@
 				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
-			</ul>
-			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 		</div>
 	</div>

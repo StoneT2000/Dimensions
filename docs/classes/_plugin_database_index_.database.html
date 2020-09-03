@@ -137,7 +137,6 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_plugin_database_index_.database.html#deleteuser" class="tsd-kind-icon">delete<wbr>User</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_plugin_database_index_.database.html#getmatch" class="tsd-kind-icon">get<wbr>Match</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_plugin_database_index_.database.html#getplayermatches" class="tsd-kind-icon">get<wbr>Player<wbr>Matches</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_plugin_database_index_.database.html#getranks" class="tsd-kind-icon">get<wbr>Ranks</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_plugin_database_index_.database.html#gettournamentconfigs" class="tsd-kind-icon">get<wbr>Tournament<wbr>Configs</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_plugin_database_index_.database.html#gettournamentconfigsmodificationdate" class="tsd-kind-icon">get<wbr>Tournament<wbr>Configs<wbr>Modification<wbr>Date</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_plugin_database_index_.database.html#getuser" class="tsd-kind-icon">get<wbr>User</a></li>
@@ -255,7 +254,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L91">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L91</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L79">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L79</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -316,7 +315,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L141">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L141</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L129">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L129</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -362,49 +361,6 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getranks" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagAbstract">Abstract</span> get<wbr>Ranks</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Ranks<span class="tsd-signature-symbol">(</span>tournament<span class="tsd-signature-symbol">: </span><a href="_tournament_ladder_index_.ladder.html" class="tsd-signature-type">Ladder</a>, offset<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, limit<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_tournament_ladder_index_.ladder.playerstat.html" class="tsd-signature-type">PlayerStat</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L54">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L54</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Returns a list of player stats based on their rankings from database. Used for Ladder Tournaments</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>tournament: <a href="_tournament_ladder_index_.ladder.html" class="tsd-signature-type">Ladder</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>The tournament to retrieve rankings for</p>
-									</div>
-								</li>
-								<li>
-									<h5>offset: <span class="tsd-signature-type">number</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>offset ranking to start retreiving ranks from</p>
-									</div>
-								</li>
-								<li>
-									<h5>limit: <span class="tsd-signature-type">number</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>number of players to retrieve. If -1, retrieve all players past offset rank</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_tournament_ladder_index_.ladder.playerstat.html" class="tsd-signature-type">PlayerStat</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="gettournamentconfigs" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagAbstract">Abstract</span> get<wbr>Tournament<wbr>Configs</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -414,7 +370,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L153">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L153</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L141">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L141</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -445,7 +401,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L164">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L164</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L152">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L152</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -476,7 +432,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L109">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L109</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L97">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L97</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -510,7 +466,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L122">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L122</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L110">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L110</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -581,7 +537,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L131">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L131</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L119">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L119</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -609,7 +565,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L65">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L65</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L53">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L53</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -678,7 +634,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L73">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L73</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L61">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L61</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -755,7 +711,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L174">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L174</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L162">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L162</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -798,7 +754,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L98">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L98</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L86">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L86</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -831,7 +787,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L85">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L85</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L73">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L73</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -948,9 +904,6 @@
 								<a href="_plugin_database_index_.database.html#getplayermatches" class="tsd-kind-icon">get<wbr>Player<wbr>Matches</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_plugin_database_index_.database.html#getranks" class="tsd-kind-icon">get<wbr>Ranks</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_plugin_database_index_.database.html#gettournamentconfigs" class="tsd-kind-icon">get<wbr>Tournament<wbr>Configs</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -1006,6 +959,7 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
 				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
@@ -1015,6 +969,7 @@
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 			</ul>

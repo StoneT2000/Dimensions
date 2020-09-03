@@ -56,16 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_tournament_ranksystem_index_.html">&quot;Tournament/RankSystem/index&quot;</a>
+					<a href="../modules/_tournament_ranksystem_winssystem_index_.html">&quot;Tournament/RankSystem/WinsSystem/index&quot;</a>
 				</li>
 				<li>
-					<a href="../enums/_tournament_ranksystem_index_.ranksystem.html">RankSystem</a>
+					<a href="../classes/_tournament_ranksystem_winssystem_index_.winssystem.html">WinsSystem</a>
 				</li>
 				<li>
-					<a href="../modules/_tournament_ranksystem_index_.ranksystem.elo.html">ELO</a>
-				</li>
-				<li>
-					<a href="_tournament_ranksystem_index_.ranksystem.elo.results.html">Results</a>
+					<a href="_tournament_ranksystem_winssystem_index_.winssystem.results.html">Results</a>
 				</li>
 			</ul>
 			<h1>Interface Results</h1>
@@ -97,7 +94,7 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_ranksystem_index_.ranksystem.elo.results.html#ranks" class="tsd-kind-icon">ranks</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_ranksystem_winssystem_index_.winssystem.results.html#ranks" class="tsd-kind-icon">ranks</a></li>
 							</ul>
 						</section>
 					</div>
@@ -111,14 +108,13 @@
 					<div class="tsd-signature tsd-kind-icon">ranks<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>agentID<span class="tsd-signature-symbol">: </span><a href="../classes/_agent_index_.agent.html#id" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol">; </span>rank<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/index.ts#L75">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/index.ts#L75</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/index.ts#L84">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/RankSystem/index.ts#L84</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Array of <a href="../classes/_agent_index_.agent.html#id">Agent.ID</a>s and their ranks in a <a href="../modules/_index_.html#match">Match</a>,
-								An agent scores a 1 against another agent if their rank is higher. 0.5 if the same, and 0 if lower
-							Same interface as <a href="_tournament_ranksystem_index_.ranksystem.trueskill.results.html">TRUESKILL.Results</a> and result handlers can be used interchangeably</p>
+							<p>Array of <a href="../classes/_agent_index_.agent.html#id">Agent.ID</a>s and their ranks in a <a href="../modules/_index_.html#match">Match</a>. ranks can be the same number of players
+							are considered to have tied or achieved equal standing</p>
 						</div>
 					</div>
 				</section>
@@ -130,23 +126,78 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
+					<li class="current tsd-kind-module">
+						<a href="../modules/_tournament_ranksystem_winssystem_index_.html">&quot;<wbr>Tournament/<wbr>Rank<wbr>System/<wbr>Wins<wbr>System/index&quot;</a>
+						<ul>
+							<li class=" tsd-kind-namespace tsd-parent-kind-module">
+								<a href="../modules/_tournament_ranksystem_winssystem_index_.wins.html">Wins</a>
+							</li>
+						</ul>
+					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
-						<a href="_tournament_ranksystem_index_.ranksystem.elo.configs.html" class="tsd-kind-icon">Configs</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-namespace">
-						<a href="_tournament_ranksystem_index_.ranksystem.elo.rankstate.html" class="tsd-kind-icon">Rank<wbr>State</a>
-					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-namespace">
-						<a href="_tournament_ranksystem_index_.ranksystem.elo.results.html" class="tsd-kind-icon">Results</a>
+					<li class="current tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_tournament_ranksystem_winssystem_index_.winssystem.html" class="tsd-kind-icon">Wins<wbr>System</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_tournament_ranksystem_index_.ranksystem.elo.results.html#ranks" class="tsd-kind-icon">ranks</a>
+							<li class="current tsd-kind-interface tsd-parent-kind-class">
+								<a href="_tournament_ranksystem_winssystem_index_.winssystem.results.html" class="tsd-kind-icon">Results</a>
+								<ul>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="_tournament_ranksystem_winssystem_index_.winssystem.results.html#ranks" class="tsd-kind-icon">ranks</a>
+									</li>
+								</ul>
+							</li>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+								<a href="../classes/_tournament_ranksystem_winssystem_index_.winssystem.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="../classes/_tournament_ranksystem_winssystem_index_.winssystem.html#elo" class="tsd-kind-icon">ELO</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="../classes/_tournament_ranksystem_winssystem_index_.winssystem.html#elosystem" class="tsd-kind-icon">ELOSystem</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="../classes/_tournament_ranksystem_winssystem_index_.winssystem.html#trueskill" class="tsd-kind-icon">True<wbr>Skill</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="../classes/_tournament_ranksystem_winssystem_index_.winssystem.html#trueskillsystem" class="tsd-kind-icon">True<wbr>Skill<wbr>System</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="../classes/_tournament_ranksystem_winssystem_index_.winssystem.html#wins" class="tsd-kind-icon">Wins</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="../classes/_tournament_ranksystem_winssystem_index_.winssystem.html#winssystem" class="tsd-kind-icon">Wins<wbr>System</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="../classes/_tournament_ranksystem_winssystem_index_.winssystem.html#getpoints" class="tsd-kind-icon">get<wbr>Points</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="../classes/_tournament_ranksystem_winssystem_index_.winssystem.html#getrankstatestring" class="tsd-kind-icon">get<wbr>Rank<wbr>State<wbr>String</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="../classes/_tournament_ranksystem_winssystem_index_.winssystem.html#getrankstatesheaderstring" class="tsd-kind-icon">get<wbr>Rank<wbr>States<wbr>Header<wbr>String</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="../classes/_tournament_ranksystem_winssystem_index_.winssystem.html#initializerankstate" class="tsd-kind-icon">initialize<wbr>Rank<wbr>State</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="../classes/_tournament_ranksystem_winssystem_index_.winssystem.html#onplayerupdate" class="tsd-kind-icon">on<wbr>Player<wbr>Update</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="../classes/_tournament_ranksystem_winssystem_index_.winssystem.html#rankcomparator" class="tsd-kind-icon">rank<wbr>Comparator</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="../classes/_tournament_ranksystem_winssystem_index_.winssystem.html#resetrank" class="tsd-kind-icon">reset<wbr>Rank</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="../classes/_tournament_ranksystem_winssystem_index_.winssystem.html#updateranks" class="tsd-kind-icon">update<wbr>Ranks</a>
+							</li>
+							<li class=" tsd-kind-object-literal tsd-parent-kind-class tsd-is-overwrite">
+								<a href="../classes/_tournament_ranksystem_winssystem_index_.winssystem.html#configs" class="tsd-kind-icon">configs</a>
 							</li>
 						</ul>
 					</li>
@@ -162,6 +213,7 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
 				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
@@ -174,10 +226,11 @@
 				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 		</div>
 	</div>
