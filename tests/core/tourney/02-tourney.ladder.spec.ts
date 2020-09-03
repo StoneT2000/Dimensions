@@ -8,6 +8,7 @@ import 'mocha';
 import { Logger, Tournament, DError } from '../../../src';
 import { createLadderTourney, createLadderELOTourney } from './utils';
 import { sleep } from '../utils/sleep';
+import { TrueSkillSystem } from '../../../src/Tournament/RankSystem/TrueSkillSystem';
 const expect = chai.expect;
 chai.should();
 chai.use(sinonChai);
@@ -67,6 +68,25 @@ describe('Testing Ladder Tournament Core', () => {
     it('should run and stop', async () => {
       const tourney = createLadderTourney(d, botList);
       await testRunStopTourney(tourney);
+    });
+    it('should run when given rank system object', async () => {
+      const ts = new TrueSkillSystem({
+        initialMu: 30,
+        initialSigma: 10,
+      });
+      const tourney = createLadderTourney(d, botList, {
+        rankSystem: ts,
+      });
+      tourney.run();
+      await sleep(2000);
+      const ranks = await tourney.getRankings();
+      expect(tourney.state.statistics.totalMatches).to.be.greaterThan(1);
+      expect(ranks[0].player.file).to.equal(paper.file);
+      expect(ranks[1].player.file).to.equal(rock.file);
+      expect(ranks[0].rankState.rating.score).to.not.equal(undefined);
+      expect(ranks[0].rankState.rating.mu).to.not.equal(undefined);
+      expect(ranks[1].rankState.rating.score).to.not.equal(undefined);
+      expect(ranks[1].rankState.rating.mu).to.not.equal(undefined);
     });
 
     describe('Test disable players', () => {

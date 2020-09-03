@@ -197,6 +197,7 @@ export class Ladder extends Tournament {
   ) {
     const obj = deepCopy(object);
     delete obj.resultHandler;
+    delete obj.rankSystem;
     delete obj.tournamentConfigs.matchMake;
     return obj;
   }
@@ -281,6 +282,11 @@ export class Ladder extends Tournament {
     if (configs.id) {
       throw new TournamentError(
         'You cannot change the tournament ID after constructing the tournament'
+      );
+    }
+    if (configs.rankSystem) {
+      throw new TournamentError(
+        'You cannot change the rank system after constructing the tournament'
       );
     }
 
