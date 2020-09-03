@@ -7,7 +7,7 @@ export class MyDesign extends Dimension.Design {
 
   // Initialization step of each match
   async initialize(match) {
-    
+
     // configure some state
     let state = {};
     // store the state into the match so it can be used again in `update` and `getResults`
@@ -22,12 +22,12 @@ export class MyDesign extends Dimension.Design {
 
     // also would be good to send any global information to all agents
     match.sendAll('initial information');
-    
+
   }
 
   // Update step of each match, called whenever the match moves forward by a single unit in time (1 timeStep)
   async update(match, commands) {
-    
+
     // match.log is the logging tool to print to console during a match
     // infobar logs a bar for seperation
     match.log.infobar();
@@ -82,28 +82,19 @@ export class MyDesign extends Dimension.Design {
     // return them
     return results;
   }
-  
-  // It's recommended to write result handlers for the different rank systems so that people using the design
-  // can run tournaments with it
 
-  // result handler for RankSystem.WINS 
-  winsResultHandler(results) {
-    let winners = []; let ties = []; let losers = [];
-    // push the numerical agent ids of the winners, tied players, and losers into the arrays and return them
-    return {
-      winners: winners,
-      ties: ties,
-      losers: losers
-    }
-  }
-
-  // result handler for RankSystem.TRUESKILL
-  trueskillResultHandler(results) {
+  // this handler is used to parse match results and get rankings for Dimensions to use in tournaments
+  resultHandler(results) {
     let rankings = [];
     for (let i = 0; i < results.ranks.length; i++) {
       let info = results.ranks[i];
-      rankings.push({rank: info.rank, agentID: info.agentID});
+      rankings.push({
+        rank: info.rank,
+        agentID: info.agentID
+      });
     }
-    return {ranks: rankings}
+    return {
+      ranks: rankings
+    }
   }
 }

@@ -3,22 +3,6 @@ import { RockPaperScissorsDesign } from '../../rps';
 import { Tournament } from '../../../src';
 import { DeepPartial } from '../../../src/utils/DeepPartial';
 
-export const createRoundRobinTourney = (
-  d: Dimension.DimensionType,
-  botList: Array<any>,
-  tournamentConfigs: DeepPartial<Tournament.TournamentConfigsBase> = {}
-): Tournament.RoundRobin => {
-  const tourney = <Dimension.Tournament.RoundRobin>d.createTournament(botList, {
-    type: Dimension.Tournament.Type.ROUND_ROBIN,
-    rankSystem: Dimension.Tournament.RankSystem.WINS,
-    resultHandler: RockPaperScissorsDesign.winsResultHandler,
-    agentsPerMatch: [2],
-    consoleDisplay: false,
-    ...tournamentConfigs,
-  });
-  return tourney;
-};
-
 export const createLadderTourney = (
   d: Dimension.DimensionType,
   botList: Array<any>,
@@ -28,8 +12,10 @@ export const createLadderTourney = (
 ): Tournament.Ladder => {
   const tourney = <Dimension.Tournament.Ladder>d.createTournament(botList, {
     type: Dimension.Tournament.Type.LADDER,
-    rankSystem: Dimension.Tournament.RankSystem.TRUESKILL,
-    resultHandler: RockPaperScissorsDesign.trueskillResultHandler,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    rankSystem: Dimension.Tournament.RankSystemTypes.TRUESKILL,
+    resultHandler: RockPaperScissorsDesign.resultHandler,
     agentsPerMatch: [2],
     consoleDisplay: false,
     ...tournamentConfigs,
@@ -46,8 +32,10 @@ export const createLadderELOTourney = (
 ): Tournament.Ladder => {
   const tourney = <Dimension.Tournament.Ladder>d.createTournament(botList, {
     type: Dimension.Tournament.Type.LADDER,
-    rankSystem: Dimension.Tournament.RankSystem.ELO,
-    resultHandler: RockPaperScissorsDesign.eloResultHandler,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    rankSystem: Dimension.Tournament.RankSystemTypes.ELO,
+    resultHandler: RockPaperScissorsDesign.resultHandler,
     agentsPerMatch: [2],
     consoleDisplay: false,
     ...tournamentConfigs,
@@ -64,8 +52,10 @@ export const createElimTourney = (
     botList,
     {
       type: Dimension.Tournament.Type.ELIMINATION,
-      rankSystem: Dimension.Tournament.RankSystem.WINS,
-      resultHandler: RockPaperScissorsDesign.winsResultHandler,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      rankSystem: Dimension.Tournament.RankSystemTypes.WINS,
+      resultHandler: RockPaperScissorsDesign.resultHandler,
       agentsPerMatch: [2],
       ...tournamentConfigs,
     }

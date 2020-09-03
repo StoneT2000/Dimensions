@@ -94,7 +94,7 @@ export class Player {
 
 /**
  * The tournament class and module extended by all concrete Tournament Classes. Tournament Types available now are
- * {@link RoundRobin}, {@link Ladder}, {@link Elimination}. A tournament is composed of players, which can either be
+ * {@link Ladder}, and {@link Elimination}. A tournament is composed of players, which can either be
  * all locally stored, or a split between locally stored anonymous players and database stored user owned players.
  * Ladder is the only tournament where it can be made distributed, other tournament types may only be run as a single
  * instance
@@ -125,7 +125,10 @@ export abstract class Tournament extends EventEmitter {
   /** Registered competitors in this tournament */
   public competitors: Map<NanoID, Player> = new Map();
 
-  /** All competitors that are anonymous competitors and not registered in database */
+  /**
+   * All competitors that are anonymous, local (no user), competitors and not registered in database. Used only when
+   * there is a DB
+   */
   public anonymousCompetitors: Map<NanoID, Player> = new Map();
 
   /** A reference to the dimension this tournament was spawned from */
@@ -737,12 +740,11 @@ export abstract class Tournament extends EventEmitter {
 import LadderDefault = require('./Ladder');
 /** @ignore */
 import LadderTournament = LadderDefault.Ladder;
-import RoundRobinDefault = require('./RoundRobin');
-/** @ignore */
-import RoundRobinTournament = RoundRobinDefault.RoundRobin;
+
 import EliminationDefault = require('./Elimination');
 /** @ignore */
 import EliminationTournament = EliminationDefault.Elimination;
+
 import SchedulerDefault = require('./Scheduler');
 /** @ignore */
 import SchedulerClass = SchedulerDefault.Scheduler;
@@ -751,7 +753,6 @@ export namespace Tournament {
   // Re-export tournament classes/namespaces
   /* eslint-disable */
   export import Ladder = LadderTournament;
-  export import RoundRobin = RoundRobinTournament;
   export import Elimination = EliminationTournament;
   export import Scheduler = SchedulerClass;
 
@@ -759,27 +760,6 @@ export namespace Tournament {
   export import Type = _TOURNAMENT_TYPE;
   export import Status = _TournamentStatus;
   export import RankSystem = _RankSystem;
-
-  /**
-   * @deprecated since v2.1.0
-   *
-   * Use {@link Tournament.RankSystem} instead
-   */
-  export import RANK_SYSTEM = _RankSystem;
-
-  /**
-   * @deprecated since v2.1.0
-   *
-   * Use {@link Tournament.Type} instead.
-   */
-  export import TOURNAMENT_TYPE = _TOURNAMENT_TYPE;
-
-  /**
-   * @deprecated since v2.1.0
-   *
-   * Use {@link Tournament.Status} instead.
-   */
-  export import TournamentStatus = _TournamentStatus;
 
   /* eslint-enable */
 
@@ -796,9 +776,9 @@ export namespace Tournament {
      */
     type: Type;
     /**
-     * The ranking system to use for this tournament
+     * The ranking system to use for this tournament. Either a string or a class that extends RankSystem
      */
-    rankSystem: RankSystem;
+    rankSystem: RankSystem<any, any> | Tournament.RankSystemTypes;
 
     /**
      * The result handler for returning the appropriate results to the tournament for processing.
@@ -830,7 +810,7 @@ export namespace Tournament {
 
     /**
      * Tournament configurations. Dependent on the type of tournament chosen
-     * Example: For {@link RoundRobin}, go to {@link RoundRobin.Configs}
+     * Example: For {@link Ladder}, go to {@link Ladder.Configs}
      */
     tournamentConfigs?: any;
 
@@ -919,5 +899,14 @@ export namespace Tournament {
      * Event is emitted whenever a match runs AND the tournament is completely done handling it.
      */
     MATCH_HANDLED = 'match_handled',
+  }
+
+  export enum RankSystemTypes {
+    /** Ranking by wins, ties and losses */
+    WINS = 'wins',
+    /** Ranking by the ELO ranking system */
+    ELO = 'elo',
+    /** Ranking by Microsoft's Trueskill */
+    TRUESKILL = 'trueskill',
   }
 }

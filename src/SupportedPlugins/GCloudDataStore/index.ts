@@ -74,49 +74,6 @@ export class GCloudDataStore extends Database {
     return (await this.datastore.runQuery(query))[0];
   }
 
-  // TODO: Use offset and limit in future
-  public async getRanks(
-    tournament: Tournament.Ladder,
-    /* eslint-disable */
-    offset: number,
-    limit: number
-    /* eslint-enable */
-  ): Promise<Array<Ladder.PlayerStat>> {
-    const keyname = tournament.getKeyName();
-    const query = this.datastore
-      .createQuery(GCloudDataStore.Kinds.USERS)
-      .filter(`statistics.${keyname}.matchesPlayed`, '>=', 0);
-    const usersInTournament: Array<Database.User> = (
-      await this.datastore.runQuery(query)
-    )[0];
-    const unrankedPlayersArray: Array<Ladder.PlayerStat> = usersInTournament.map(
-      (user) => {
-        return user.statistics[keyname];
-      }
-    );
-    if (tournament.configs.rankSystem === Tournament.RANK_SYSTEM.TRUESKILL) {
-      return unrankedPlayersArray.sort((p1, p2) => {
-        const r1: Tournament.RANK_SYSTEM.TRUESKILL.RankState = p1.rankState;
-        const r2: Tournament.RANK_SYSTEM.TRUESKILL.RankState = p2.rankState;
-        const s1 = r1.rating.mu - 3 * r1.rating.sigma;
-        const s2 = r2.rating.mu - 3 * r2.rating.sigma;
-        return s2 - s1;
-      });
-    } else if (tournament.configs.rankSystem === Tournament.RANK_SYSTEM.ELO) {
-      return unrankedPlayersArray.sort((p1, p2) => {
-        const r1: Tournament.RANK_SYSTEM.ELO.RankState = p1.rankState;
-        const r2: Tournament.RANK_SYSTEM.ELO.RankState = p2.rankState;
-        const s1 = r1.rating.score;
-        const s2 = r2.rating.score;
-        return s2 - s1;
-      });
-    } else {
-      throw new TournamentError(
-        'This rank system is not supported for retrieving ranks from MongoDB'
-      );
-    }
-  }
-
   public async registerUser(
     username: string,
     password: string,

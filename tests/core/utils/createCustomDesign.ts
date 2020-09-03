@@ -11,7 +11,7 @@ export const createCustomDesign = (): Design => {
       'D_NAMEs',
     ],
     resultHandler: () => {
-      const ranks: Tournament.RankSystem.TRUESKILL.Results = {
+      const ranks: Tournament.RankSystem.Results = {
         ranks: [
           { agentID: 0, rank: 1 },
           { agentID: 1, rank: 2 },

@@ -162,6 +162,9 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
             selfMatchMake: false,
           },
           loggingLevel: Logger.LEVEL.ERROR,
+          rankSystemConfigs: {
+            initialMu: 25,
+          },
         });
       });
       after(async () => {
@@ -218,7 +221,7 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
       it('should reset rankings', async () => {
         await t.resetRankings();
         const { playerStat } = await t.getPlayerStat(paperBot.existingID);
-        const rankState: RankSystem.TRUESKILL.RankState = (<
+        const rankState: RankSystem.TrueSkill.RankState = (<
           Tournament.Ladder.PlayerStat
         >playerStat).rankState;
         expect(rankState.rating.mu).to.equal(
@@ -282,6 +285,9 @@ describe('Testing Database with Tournament Singletons (no distribution)', () => 
           tournamentConfigs: {
             syncConfigs: false,
             selfMatchMake: false,
+          },
+          rankSystemConfigs: {
+            startingScore: 1000,
           },
         });
       });

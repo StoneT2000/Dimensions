@@ -259,50 +259,7 @@ export class RockPaperScissorsDesign extends Dimension.Design {
     // we have to now return the results 
     return results;
   }
-
-  static winsResultHandler(results) {
-    let winners = [];
-    let losers = [];
-    let ties = [];
-    if (results.winner === 'Tie') {
-      ties = [0, 1];
-    } else {
-      winners.push(parseInt(results.winnerID));
-      losers.push((parseInt(results.winnerID) + 1) % 2);
-    }
-    return {
-      winners: winners,
-      losers: losers,
-      ties: ties
-    };
-  }
-
-  static eloResultHandler(results) {
-    let ranks = [];
-    if (results.winner === 'Tie') {
-      ranks = [{
-        rank: 1,
-        agentID: 0
-      }, {
-        rank: 1,
-        agentID: 1
-      }]
-    } else {
-      let loserID = (results.winnerID + 1) % 2;
-      ranks = [{
-        rank: 1,
-        agentID: results.winnerID
-      }, {
-        rank: 2,
-        agentID: loserID
-      }]
-    }
-    return {
-      ranks: ranks
-    }
-  }
-
-  static trueskillResultHandler(results) {
+  static resultHandler(results) {
     let ranks = [];
     if (results.winner === 'Tie') {
       ranks = [{

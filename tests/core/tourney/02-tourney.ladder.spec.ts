@@ -8,6 +8,7 @@ import 'mocha';
 import { Logger, Tournament, DError } from '../../../src';
 import { createLadderTourney, createLadderELOTourney } from './utils';
 import { sleep } from '../utils/sleep';
+import { TrueSkillSystem } from '../../../src/Tournament/RankSystem/TrueSkillSystem';
 const expect = chai.expect;
 chai.should();
 chai.use(sinonChai);
@@ -68,6 +69,25 @@ describe('Testing Ladder Tournament Core', () => {
       const tourney = createLadderTourney(d, botList);
       await testRunStopTourney(tourney);
     });
+    it('should run when given rank system object', async () => {
+      const ts = new TrueSkillSystem({
+        initialMu: 30,
+        initialSigma: 10,
+      });
+      const tourney = createLadderTourney(d, botList, {
+        rankSystem: ts,
+      });
+      tourney.run();
+      await sleep(2000);
+      const ranks = await tourney.getRankings();
+      expect(tourney.state.statistics.totalMatches).to.be.greaterThan(1);
+      expect(ranks[0].player.file).to.equal(paper.file);
+      expect(ranks[1].player.file).to.equal(rock.file);
+      expect(ranks[0].rankState.rating.score).to.not.equal(undefined);
+      expect(ranks[0].rankState.rating.mu).to.not.equal(undefined);
+      expect(ranks[1].rankState.rating.score).to.not.equal(undefined);
+      expect(ranks[1].rankState.rating.mu).to.not.equal(undefined);
+    });
 
     describe('Test disable players', () => {
       it('should disable players and throw error if player does not exist', async () => {
@@ -83,7 +103,11 @@ describe('Testing Ladder Tournament Core', () => {
         );
       });
       it("shouldn't run players that are disabled", async () => {
-        const tourney = createLadderTourney(d, [...botList, disabled]);
+        const tourney = createLadderTourney(d, [...botList, disabled], {
+          rankSystemConfigs: {
+            initialMu: 25,
+          },
+        });
         await Promise.all(tourney.initialAddPlayerPromises);
         await tourney.disablePlayer(disabled.existingID);
         await tourney.run();
@@ -92,7 +116,10 @@ describe('Testing Ladder Tournament Core', () => {
         const ranks = await tourney.getRankings();
         expect(
           tourney.state.playerStats.get(disabled.existingID).rankState.rating.mu
-        ).to.equal(tourney.configs.rankSystemConfigs.initialMu);
+        ).to.equal(
+          tourney.configs.rankSystemConfigs.initialMu,
+          'disabled player score should not change'
+        );
         expect(ranks[0].rankState.rating.mu).to.be.greaterThan(
           ranks[2].rankState.rating.mu
         );

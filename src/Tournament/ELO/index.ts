@@ -1,8 +1,12 @@
 import { FatalError } from '../../DimensionError';
 
-export class ELOSystem {
+export class ELOWrapper {
   constructor(public kfactor: number, public startingScore: number) {}
 
+  /**
+   * Creates new ELORating
+   * @param startingScore - the score to initialize with. if omitted, uses systems default starting score
+   */
   createRating(startingScore: number = this.startingScore): ELORating {
     return new ELORating(startingScore);
   }

@@ -4,7 +4,7 @@ const Match = Dimension.Match;
 /**
  * This rock paper scissors game lets 2 agents play a best of n rock paper scissors 
  */
-class RockPaperScissorsDesign extends Dimension.Design{
+class RockPaperScissorsDesign extends Dimension.Design {
   async initialize(match) {
     // This is the initialization step of the design, where you decide what to tell all the agents before they start
     // competing
@@ -40,7 +40,7 @@ class RockPaperScissorsDesign extends Dimension.Design{
   async update(match, commands) {
     // This is the update step of the design, where all the run-time game logic goes
     // You are given the match itself and all the commands retrieved from the last round / time step from all agents, 
-    
+
     let winningAgent;
 
     // check which agents are still alive, if one timed out, the other wins. If both time out, it's a tie
@@ -51,15 +51,13 @@ class RockPaperScissorsDesign extends Dimension.Design{
       }
       match.state.terminatedResult = 'Tie'
       return Match.Status.FINISHED;
-    }
-    else if (match.agents[0].isTerminated()) {
+    } else if (match.agents[0].isTerminated()) {
       match.state.terminated = {
         0: 'terminated'
       }
       match.state.terminatedResult = match.agents[1].name
       return Match.Status.FINISHED;
-    }
-    else if (match.agents[1].isTerminated()) {
+    } else if (match.agents[1].isTerminated()) {
       match.state.terminated = {
         1: 'terminated'
       }
@@ -76,11 +74,10 @@ class RockPaperScissorsDesign extends Dimension.Design{
 
     // there isn't a gurantee in the command order, so we need to loop over the commands and assign them correctly
     for (let i = 0; i < commands.length; i++) {
-      if (commands[i].agentID === 0)  {
+      if (commands[i].agentID === 0) {
         agent0Command = commands[i].command;
         continue;
-      }
-      else if (commands[i].agentID === 1) {
+      } else if (commands[i].agentID === 1) {
         agent1Command = commands[i].command;
         continue;
       }
@@ -123,28 +120,22 @@ class RockPaperScissorsDesign extends Dimension.Design{
     if (agent0Command === agent1Command) {
       // it's a tie if they are the same, so we set winningAgent = -1 as no one won!
       winningAgent = -1
-    }
-    else if (agent0Command === 'R') {
+    } else if (agent0Command === 'R') {
       if (agent1Command === 'P') {
         winningAgent = 1; // paper beats rock
-      }
-      else {
+      } else {
         winningAgent = 0;
       }
-    }
-    else if (agent0Command === 'P') {
+    } else if (agent0Command === 'P') {
       if (agent1Command === 'S') {
         winningAgent = 1; // scissors beats paper
-      }
-      else {
+      } else {
         winningAgent = 0;
       }
-    }
-    else if (agent0Command === 'S') {
+    } else if (agent0Command === 'S') {
       if (agent1Command === 'R') {
         winningAgent = 1; // rock beats scissors
-      }
-      else {
+      } else {
         winningAgent = 0;
       }
     }
@@ -154,18 +145,16 @@ class RockPaperScissorsDesign extends Dimension.Design{
     // log the winner at the detail level
     if (winningAgent != -1) {
       match.log.detail(`Round: ${match.state.rounds} - Agent ${winningAgent} won`);
-    }
-    else {
+    } else {
       match.log.detail(`Tie`);
     }
     // we increment the round if it wasn't a tie
     if (winningAgent != -1) {
       match.state.rounds++;
-    }
-    else {
+    } else {
       match.state.ties++;
     }
-    
+
     // if way too many ties occured, stop the match
     if (match.state.ties >= match.configs.bestOf * 2 + 1) {
       return Match.Status.FINISHED;
@@ -206,8 +195,7 @@ class RockPaperScissorsDesign extends Dimension.Design{
       if (res !== -1) {
         // if it wasn't a tie result, update the score
         results.scores[res] += 1;
-      }
-      else {
+      } else {
         // otherwise add to ties count
         results.ties += 1;
       }
@@ -218,17 +206,15 @@ class RockPaperScissorsDesign extends Dimension.Design{
     if (match.state.terminated) {
       results.terminated = match.state.terminated;
       results.winner = match.state.terminatedResult;
-      if (results.winner != 'Tie')  {
+      if (results.winner != 'Tie') {
         if (match.state.terminated[0]) {
           results.winnerID = 1;
           results.loser = match.agents[0].name;
-        }
-        else {
+        } else {
           results.winnerID = 0;
           results.loser = match.agents[1].name;
         }
-      }
-      else {
+      } else {
         results.loser = 'Tie';
       }
       return results;
@@ -239,13 +225,11 @@ class RockPaperScissorsDesign extends Dimension.Design{
       results.winner = match.agents[0].name;
       results.winnerID = 0;
       results.loser = match.agents[1].name;
-    }
-    else if (results.scores[0] < results.scores[1]) {
+    } else if (results.scores[0] < results.scores[1]) {
       results.winner = match.agents[1].name;
       results.winnerID = 1;
       results.loser = match.agents[0].name;
-    }
-    else {
+    } else {
       results.winner = 'Tie';
       results.loser = 'Tie';
     }
@@ -257,47 +241,31 @@ class RockPaperScissorsDesign extends Dimension.Design{
       results.winner = match.agents[winningAgent].name;
       results.loser = match.agents[match.state.failedAgent].name;
     }
-    
+
     // we have to now return the results 
     return results;
   }
-  static winsResultHandler(results) {
-    let winners = [];
-    let losers =[];
-    let ties = [];
-    if (results.winner === 'Tie') {
-      ties = [0, 1];
-    }
-    else {
-      winners.push(parseInt(results.winnerID));
-      losers.push((parseInt(results.winnerID)+ 1) % 2);
-    }
-    return {winners: winners, losers: losers, ties: ties};
-  }
 
-  static eloResultHandler(results) {
+
+  static resultHandler(results) {
     let ranks = [];
     if (results.winner === 'Tie') {
-      ranks = [{rank: 1, agentID: 0}, {rank: 1, agentID: 1}]
-    }
-    else {
+      ranks = [{
+        rank: 1,
+        agentID: 0
+      }, {
+        rank: 1,
+        agentID: 1
+      }]
+    } else {
       let loserID = (results.winnerID + 1) % 2;
-      ranks = [{rank: 1, agentID: results.winnerID}, {rank: 2, agentID: loserID}]
-    }
-    return {
-      ranks: ranks
-    }
-  }
-  
-  /** Note, ELO Result handler is the same as the Trueskill one, they shouldw return the same type */
-  static trueskillResultHandler(results) {
-    let ranks = [];
-    if (results.winner === 'Tie') {
-      ranks = [{rank: 1, agentID: 0}, {rank: 1, agentID: 1}]
-    }
-    else {
-      let loserID = (results.winnerID + 1) % 2;
-      ranks = [{rank: 1, agentID: results.winnerID}, {rank: 2, agentID: loserID}]
+      ranks = [{
+        rank: 1,
+        agentID: results.winnerID
+      }, {
+        rank: 2,
+        agentID: loserID
+      }]
     }
     return {
       ranks: ranks
@@ -305,27 +273,46 @@ class RockPaperScissorsDesign extends Dimension.Design{
   }
 }
 
+/**
+ * Below is sample code for running a single match and a full on ELO ranked tournament
+ */
 let RPSDesign = new RockPaperScissorsDesign('RPS!');
 let myDimension = Dimension.create(RPSDesign, {
   name: 'Rock Paper Scissors',
   loggingLevel: Dimension.Logger.LEVEL.INFO
 });
 myDimension.runMatch(
-  ['./bots/js/smarter.js', './bots/python/rock.py'],
-  {
+  ['./bots/js/smarter.js', './bots/python/rock.py'], {
     bestOf: 5
   }
 ).then((results) => {
   console.log(results);
 });
 
-let tourney = myDimension.createTournament(['./bots/js/smarter.js', './bots/python/rock.py', './bots/js/paper.js', './bots/js/rock.js'], {
+let tourney = myDimension.createTournament([{
+    file: './bots/js/smarter.js',
+    name: 'smarter'
+  }, {
+    file: './bots/python/rock.py',
+    name: 'rockpython'
+  },
+  {
+    file: './bots/js/paper.js',
+    name: 'paperjs'
+  },
+  {
+    file: './bots/js/rock.js',
+    name: 'rockjs'
+  }
+], {
   name: 'RPS Best of 101 Tournament',
-  type: Dimension.Tournament.Type.LADDER, // run a round robin tournament
-  rankSystem: Dimension.Tournament.RankSystem.TRUESKILL, // use a win/loss/ties based ranking
+  type: Dimension.Tournament.Type.LADDER, // run a ladder tournament
+  rankSystem: Dimension.Tournament.RankSystemTypes.ELO, // use a ELO based ranking
   agentsPerMatch: [2], // specify design can only have 2 players at a time
-  resultHandler: RockPaperScissorsDesign.trueskillResultHandler, // give a result handler
+  resultHandler: RockPaperScissorsDesign.resultHandler, // give a result handler
   defaultMatchConfigs: {
     bestOf: 101 // play best of 101 because why not
   }
 });
+
+tourney.run();

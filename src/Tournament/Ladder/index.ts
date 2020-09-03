@@ -9,24 +9,24 @@ import {
   TournamentPlayerDoesNotExistError,
   AgentCompileError,
   AgentInstallError,
+  FatalError,
 } from '../../DimensionError';
 import { Agent } from '../../Agent';
-import { Rating, rate } from 'ts-trueskill';
-import { sprintf } from 'sprintf-js';
 import { Logger } from '../../Logger';
-import { ELOSystem, ELORating } from '../ELO';
 import { Dimension, NanoID } from '../../Dimension';
 import { Database } from '../../Plugin/Database';
 import { TournamentStatus } from '../TournamentStatus';
 import { RankSystem } from '../RankSystem';
 import { TournamentType } from '../TournamentTypes';
-
+import { TrueSkillSystem } from '../RankSystem/TrueSkillSystem';
+import { ELOSystem } from '../RankSystem/ELOSystem';
 import LadderState = Ladder.State;
 import LadderConfigs = Ladder.Configs;
 import LadderPlayerStat = Ladder.PlayerStat;
 import { nanoid } from '../..';
 import { deepCopy } from '../../utils/DeepCopy';
 import { Scheduler } from '../Scheduler';
+import { WinsSystem } from '../RankSystem/WinsSystem';
 
 const REFRESH_RATE = 10000;
 
@@ -69,9 +69,9 @@ export class Ladder extends Tournament {
   private matchQueueLocked = false;
 
   /**
-   * ELO System used in this tournament
+   * The ranksystem object being used to update, initialize, etc. ranks
    */
-  private elo: ELOSystem;
+  private ranksystem: RankSystem<any, any>;
 
   /**
    * tournament runner interval, periodically calls tourneyRunner to start up new matches
@@ -79,7 +79,7 @@ export class Ladder extends Tournament {
   private runInterval = null;
 
   /**
-   * Configuration synchronization interval. Periodically makes a request to the DB if there is one and changes configs
+   * Configuration synchronization interval. Periodically makes a request to the DB if there is one and syncs configs
    */
   private configSyncInterval = null;
 
@@ -90,7 +90,7 @@ export class Ladder extends Tournament {
 
   // queue of the results to process
   resultProcessingQueue: Array<{
-    result: any;
+    result: RankSystem.Results;
     mapAgentIDtoTournamentID: Map<Agent.ID, Tournament.ID>;
   }> = [];
 
@@ -106,35 +106,30 @@ export class Ladder extends Tournament {
     super(design, id, tournamentConfigs, dimension);
     this.configs = deepMerge(this.configs, tournamentConfigs, true);
 
-    switch (this.configs.rankSystem) {
-      case RankSystem.TRUESKILL:
-        if (this.configs.rankSystemConfigs === null) {
-          // set default rank system configs
-          const trueskillConfigs: RankSystem.TRUESKILL.Configs = {
-            initialMu: 25,
-            initialSigma: 25 / 3,
-          };
-          this.configs.rankSystemConfigs = trueskillConfigs;
-        }
-        break;
-      case RankSystem.ELO:
-        if (this.configs.rankSystemConfigs === null) {
-          // set default rank system configs
-          const eloConfigs: RankSystem.ELO.Configs = {
-            startingScore: 1000,
-            kFactor: 32,
-          };
-          this.configs.rankSystemConfigs = eloConfigs;
-        }
-        this.elo = new ELOSystem(
-          this.configs.rankSystemConfigs.kFactor,
-          this.configs.rankSystemConfigs.startingScore
-        );
-        break;
-      default:
-        throw new NotSupportedError(
-          'We currently do not support this rank system for ladder tournaments'
-        );
+    if (typeof this.configs.rankSystem === 'string') {
+      if (this.configs.rankSystemConfigs === null) {
+        this.configs.rankSystemConfigs = {};
+      }
+      switch (this.configs.rankSystem) {
+        case Tournament.RankSystemTypes.TRUESKILL:
+          this.ranksystem = new TrueSkillSystem(this.configs.rankSystemConfigs);
+          break;
+        case Tournament.RankSystemTypes.ELO:
+          this.ranksystem = new ELOSystem(this.configs.rankSystemConfigs);
+          break;
+        case Tournament.RankSystemTypes.WINS:
+          this.ranksystem = new WinsSystem(this.configs.rankSystemConfigs);
+          break;
+        default:
+          throw new NotSupportedError(
+            'We currently do not support this rank system for ladder tournaments'
+          );
+      }
+    } else {
+      this.ranksystem = this.configs.rankSystem;
+    }
+    if (this.ranksystem === null) {
+      throw new FatalError('Did not supply a rank system');
     }
 
     files.forEach((file) => {
@@ -165,6 +160,7 @@ export class Ladder extends Tournament {
           .then((data) => {
             if (!data) {
               this.configLastModificationDate = new Date();
+              // store tournament configs if no configs found
               this.dimension.databasePlugin
                 .storeTournamentConfigs(
                   this.id,
@@ -201,6 +197,7 @@ export class Ladder extends Tournament {
   ) {
     const obj = deepCopy(object);
     delete obj.resultHandler;
+    delete obj.rankSystem;
     delete obj.tournamentConfigs.matchMake;
     return obj;
   }
@@ -249,6 +246,7 @@ export class Ladder extends Tournament {
       this.syncConfigs();
     }, this.configs.tournamentConfigs.configSyncRefreshRate);
   }
+
   /**
    * Retrieves the local configurations
    */
@@ -267,7 +265,7 @@ export class Ladder extends Tournament {
       await this.syncConfigs();
       await this.dimension.databasePlugin.storeTournamentConfigs(
         this.id,
-        this.configs,
+        this.getConfigsStrippedOfFunctionFields(this.configs),
         status
       );
       this.status = status;
@@ -284,6 +282,11 @@ export class Ladder extends Tournament {
     if (configs.id) {
       throw new TournamentError(
         'You cannot change the tournament ID after constructing the tournament'
+      );
+    }
+    if (configs.rankSystem) {
+      throw new TournamentError(
+        'You cannot change the rank system after constructing the tournament'
       );
     }
 
@@ -307,124 +310,64 @@ export class Ladder extends Tournament {
           });
       });
     } else {
+      // if sync off or no database, edit configs in memory
       this.configs = deepMerge(this.configs, configs, true);
     }
-    // update DB
   }
+
+  /**
+   * Gets all rankings with the given offset from rank 1 and limit. Note this it's not recommended to use this
+   * function if there are many users. It is suggested to create your own (aggregation) query to get rankings directly
+   * from the DB.
+   * @param offset
+   * @param limit
+   */
   public async getRankings(
     offset = 0,
     limit = -1
   ): Promise<Array<LadderPlayerStat>> {
-    let rankings = [];
-    switch (this.configs.rankSystem) {
-      case RankSystem.TRUESKILL:
-        if (this.dimension.hasDatabase()) {
-          rankings = await this.dimension.databasePlugin.getRanks(
-            this,
-            offset,
-            limit
-          );
-          rankings = rankings.map((rank) => {
-            rank.rankState.score =
-              rank.rankState.rating.mu - 3 * rank.rankState.rating.sigma;
-            return rank;
+    let rankings: Array<LadderPlayerStat> = [];
+    if (this.dimension.hasDatabase()) {
+      const users = await this.dimension.databasePlugin.getUsersInTournament(
+        this.getKeyName(),
+        0,
+        -1
+      );
+      rankings = users.map((user) => {
+        const stat = user.statistics[this.getKeyName()];
+        const rankState = stat.rankState;
+        return {
+          player: stat.player,
+          matchesPlayed: stat.matchesPlayed,
+          rankState,
+        };
+      });
+      if (this.anonymousCompetitors.size > 0) {
+        this.anonymousCompetitors.forEach((player) => {
+          const stat = this.state.playerStats.get(player.tournamentID.id);
+          const rankState = stat.rankState;
+          rankings.push({
+            player: stat.player,
+            matchesPlayed: stat.matchesPlayed,
+            rankState,
           });
-          if (this.anonymousCompetitors.size > 0) {
-            // add in anonymous competitors in
-            this.anonymousCompetitors.forEach((player) => {
-              const stat = this.state.playerStats.get(player.tournamentID.id);
-              const rankState = <RankSystem.TRUESKILL.RankState>stat.rankState;
-
-              rankings.push({
-                player: stat.player,
-                name: stat.player.tournamentID.name,
-                id: stat.player.tournamentID.id,
-                matchesPlayed: stat.matchesPlayed,
-                rankState: {
-                  rating: {
-                    ...rankState.rating,
-                    mu: rankState.rating.mu,
-                    sigma: rankState.rating.sigma,
-                  },
-                  score: rankState.rating.mu - 3 * rankState.rating.sigma,
-                },
-              });
-            });
-            // re sort
-            rankings.sort((a, b) => {
-              return b.rankState.score - a.rankState.score;
-            });
-          }
-          break;
-        } else {
-          this.state.playerStats.forEach((stat) => {
-            const rankState = <RankSystem.TRUESKILL.RankState>stat.rankState;
-
-            rankings.push({
-              player: stat.player,
-              name: stat.player.tournamentID.name,
-              id: stat.player.tournamentID.id,
-              matchesPlayed: stat.matchesPlayed,
-              rankState: {
-                rating: {
-                  ...rankState.rating,
-                  mu: rankState.rating.mu,
-                  sigma: rankState.rating.sigma,
-                },
-                score: rankState.rating.mu - 3 * rankState.rating.sigma,
-              },
-            });
-          });
-        }
-        rankings.sort((a, b) => {
-          return b.rankState.score - a.rankState.score;
         });
-        break;
-      case RankSystem.ELO:
-        if (this.dimension.hasDatabase()) {
-          rankings = await this.dimension.databasePlugin.getRanks(
-            this,
-            offset,
-            limit
-          );
-          if (this.anonymousCompetitors.size > 0) {
-            // add in anonymous competitors in
-            this.anonymousCompetitors.forEach((player) => {
-              const stat = this.state.playerStats.get(player.tournamentID.id);
-              const rankState = <RankSystem.TRUESKILL.RankState>stat.rankState;
-
-              rankings.push({
-                player: stat.player,
-                name: stat.player.tournamentID.name,
-                id: stat.player.tournamentID.id,
-                matchesPlayed: stat.matchesPlayed,
-                rankState: rankState,
-              });
-            });
-            // re sort
-            rankings.sort((a, b) => {
-              return b.rankState.rating.score - a.rankState.rating.score;
-            });
-          }
-          break;
-        } else {
-          this.state.playerStats.forEach((stat) => {
-            const rankState = <RankSystem.ELO.RankState>stat.rankState;
-            rankings.push({
-              player: stat.player,
-              name: stat.player.tournamentID.name,
-              id: stat.player.tournamentID.id,
-              matchesPlayed: stat.matchesPlayed,
-              rankState: rankState,
-            });
-          });
-        }
-        rankings.sort((a, b) => {
-          return b.rankState.rating.score - a.rankState.rating.score;
+      }
+    } else {
+      this.state.playerStats.forEach((stat) => {
+        rankings.push({
+          player: stat.player,
+          matchesPlayed: stat.matchesPlayed,
+          rankState: stat.rankState,
         });
-        break;
+      });
     }
-    return rankings;
+
+    rankings.sort((a, b) => {
+      return this.ranksystem.rankComparator(a.rankState, b.rankState);
+    });
+    const end = limit === -1 ? rankings.length : offset + limit;
+    return rankings.slice(offset, end);
   }
 
   /**
@@ -459,33 +402,10 @@ export class Ladder extends Tournament {
 
     playerStatsList.forEach((stats, i) => {
       const resetPlayer = async () => {
-        switch (this.configs.rankSystem) {
-          case RankSystem.TRUESKILL: {
-            stats.matchesPlayed = 0;
-            const trueskillConfigs: RankSystem.TRUESKILL.Configs = this.configs
-              .rankSystemConfigs;
-
-            (<RankSystem.TRUESKILL.RankState>stats.rankState) = {
-              rating: new Rating(
-                trueskillConfigs.initialMu,
-                trueskillConfigs.initialSigma
-              ),
-            };
-            if (this.dimension.hasDatabase()) {
-              await this.updateDatabaseTrueskillPlayerStats(stats, userList[i]);
-            }
-            break;
-          }
-          case RankSystem.ELO: {
-            stats.matchesPlayed = 0;
-            stats.rankState = {
-              rating: this.elo.createRating(),
-            };
-            if (this.dimension.hasDatabase()) {
-              await this.updateDatabaseELOPlayerStats(stats, userList[i]);
-            }
-            break;
-          }
+        stats.matchesPlayed = 0;
+        stats.rankState = this.ranksystem.resetRank(stats.rankState);
+        if (this.dimension.hasDatabase()) {
+          await this.updateDatabasePlayerStats(stats, userList[i]);
         }
       };
       updatePromises.push(resetPlayer());
@@ -652,30 +572,12 @@ export class Ladder extends Tournament {
   }
 
   /**
-   * Performs a Fisher Yates Shuffle
-   * @param arr - the array to shuffle
-   */
-  private shuffle<T>(arr: T[]) {
-    for (let i = arr.length - 1; i >= 1; i--) {
-      const j = Math.floor(Math.random() * i);
-      const tmp = arr[i];
-      arr[i] = arr[j];
-      arr[j] = tmp;
-    }
-    return arr;
-  }
-
-  /**
-   * Updates database with trueskill player stats
-   * Requires special handling because of the way the trueskill module works
+   * Updates database with new player stats
    *
    * If failure occurs, we ignore it and just log it as we will likely in the future perform an update operation
    * on the database again anyway
-   *
-   * @param playerStat
-   * @param user
    */
-  private async updateDatabaseTrueskillPlayerStats(
+  private async updateDatabasePlayerStats(
     playerStat: LadderPlayerStat,
     user?: Database.User
   ) {
@@ -693,16 +595,6 @@ export class Ladder extends Tournament {
 
       // perform update
       update.statistics[keyName] = playerStat;
-      const rankStateRating = update.statistics[keyName].rankState.rating;
-
-      // make sure to store mu and sigma
-      update.statistics[keyName].rankState = {
-        rating: {
-          ...rankStateRating,
-          mu: rankStateRating.mu,
-          sigma: rankStateRating.sigma,
-        },
-      };
       try {
         await this.dimension.databasePlugin.updateUser(
           player.tournamentID.id,
@@ -714,58 +606,9 @@ export class Ladder extends Tournament {
     }
   }
 
-  /**
-   * Updates database with ELO player stats
-   *
-   * If failure occurs, we ignore it and just log it as we will likely in the future perform an update operation
-   * on the database again anyway
-   *
-   * @param playerStat
-   * @param user
-   */
-  private async updateDatabaseELOPlayerStats(
-    playerStat: LadderPlayerStat,
-    user?: Database.User
-  ) {
-    const player = playerStat.player;
-    if (!player.anonymous) {
-      const keyName = this.getKeyName();
-      const update = {
-        statistics: {},
-      };
-
-      // if there exists stats already, keep them
-      if (user && user.statistics) {
-        update.statistics = user.statistics;
-      }
-
-      // perform update
-      update.statistics[keyName] = playerStat;
-
-      try {
-        await this.dimension.databasePlugin.updateUser(
-          player.tournamentID.id,
-          update
-        );
-      } catch (err) {
-        this.log.error(`Failed to update user with player stats`, err);
-      }
-    }
-  }
-
-  /**
-   * Initialize trueskill player stats. Pulls data from database if it exists and uses past stats to fill in
-   * @param player
-   *
-   * This is probably a nightmare to test
-   */
-  private async initializeTrueskillPlayerStats(player: Player) {
-    const trueskillConfigs: RankSystem.TRUESKILL.Configs = this.configs
-      .rankSystemConfigs;
-
+  private async initializePlayerStats(player: Player) {
     let playerStat: any = null;
 
-    // get any existing rating data
     let user: Database.User;
     const keyName = this.getKeyName();
     if (!player.anonymous && this.dimension.hasDatabase()) {
@@ -777,14 +620,9 @@ export class Ladder extends Tournament {
         if (user.statistics) {
           playerStat = user.statistics[keyName];
           if (playerStat) {
-            playerStat.rankState = {
-              rating: new Rating(
-                playerStat.rankState.rating.mu,
-                playerStat.rankState.rating.sigma
-              ),
-            };
-            // make sure its referenced to right player object still
-            playerStat.player = player;
+            // if player stats exist already, we can return as we dont need to initialize anything and store to DB
+            // we don't store anything locally because this is a user and we have DB
+            return;
           }
         }
       }
@@ -795,58 +633,9 @@ export class Ladder extends Tournament {
       playerStat = {
         player: player,
         matchesPlayed: 0,
-        rankState: {
-          rating: new Rating(
-            trueskillConfigs.initialMu,
-            trueskillConfigs.initialSigma
-          ),
-        },
+        rankState: this.ranksystem.initializeRankState(),
       };
-      await this.updateDatabaseTrueskillPlayerStats(playerStat, user);
-    }
-
-    // only store locally if not in DB
-    if (!user) {
-      this.state.playerStats.set(player.tournamentID.id, playerStat);
-    }
-  }
-
-  private async initializeELOPlayerStats(player: Player) {
-    let playerStat: any = null;
-
-    // get any existing rating data
-    let user: Database.User;
-    if (!player.anonymous && this.dimension.hasDatabase()) {
-      user = await this.dimension.databasePlugin.getUser(
-        player.tournamentID.id
-      );
-      if (user) {
-        if (user.statistics) {
-          playerStat = user.statistics[`${this.getKeyName()}`];
-        }
-      }
-    }
-
-    // Initialize to default values
-    if (!playerStat) {
-      playerStat = {
-        player: player,
-        matchesPlayed: 0,
-        rankState: {
-          rating: this.elo.createRating(),
-        },
-      };
-      // store defaults into database
-      if (!player.anonymous && this.dimension.hasDatabase()) {
-        const update = {
-          statistics: user ? user.statistics : {},
-        };
-        update.statistics[this.getKeyName()] = playerStat;
-        await this.dimension.databasePlugin.updateUser(
-          player.tournamentID.id,
-          update
-        );
-      }
+      await this.updateDatabasePlayerStats(playerStat, user);
     }
 
     // only store locally if not in DB
@@ -867,18 +656,9 @@ export class Ladder extends Tournament {
     this.state.playerStats = new Map();
     this.state.results = [];
     const promises: Array<Promise<void>> = [];
-    switch (this.configs.rankSystem) {
-      case RankSystem.TRUESKILL:
-        this.competitors.forEach((player) => {
-          promises.push(this.initializeTrueskillPlayerStats(player));
-        });
-        break;
-      case RankSystem.ELO:
-        this.competitors.forEach((player) => {
-          promises.push(this.initializeELOPlayerStats(player));
-        });
-        break;
-    }
+    this.competitors.forEach((player) => {
+      promises.push(this.initializePlayerStats(player));
+    });
     await Promise.all(promises);
     if (this.configs.consoleDisplay) {
       await this.printTournamentStatus();
@@ -889,9 +669,11 @@ export class Ladder extends Tournament {
    * Schedules matches to play. By default uses {@link Scheduler.RankRangeRandom}
    *
    * If a {@link Ladder.Configs.matchMake | matchMake} function is provided, that will be used instead of the default.
+   *
+   * For users who want to host larger scale competitions with 1000+ competitors, its recommended to turn self match
+   * make off and setup a separate match scheduling server that tournament servers can pull queued matches from
    */
   private async schedule() {
-    // TODO: Consider slide window instead for dealing with rankings?
     const rankings = await this.getRankings(0, -1);
     if (this.configs.tournamentConfigs.matchMake) {
       const newMatches = this.configs.tournamentConfigs.matchMake(rankings);
@@ -909,14 +691,7 @@ export class Ladder extends Tournament {
 
   // called adding a new player
   async internalAddPlayer(player: Player): Promise<void> {
-    switch (this.configs.rankSystem) {
-      case RankSystem.TRUESKILL:
-        await this.initializeTrueskillPlayerStats(player);
-        break;
-      case RankSystem.ELO:
-        await this.initializeELOPlayerStats(player);
-        break;
-    }
+    await this.initializePlayerStats(player);
   }
 
   // should be called only for DB users
@@ -927,39 +702,12 @@ export class Ladder extends Tournament {
     const playerStats = <Ladder.PlayerStat>playerStat;
     playerStats.player = player;
     playerStats.matchesPlayed = 0;
-    switch (this.configs.rankSystem) {
-      case RankSystem.ELO: {
-        const rankSystemConfigs = <RankSystem.ELO.Configs>(
-          this.configs.rankSystemConfigs
-        );
-        const currState = <RankSystem.ELO.RankState>playerStats.rankState;
-
-        // TODO: Give user option to define how to reset score
-        currState.rating.score = rankSystemConfigs.startingScore;
-        if (this.dimension.hasDatabase()) {
-          if (!player.anonymous) {
-            await this.updateDatabaseELOPlayerStats(playerStats, user);
-          }
-        }
-        break;
-      }
-      case RankSystem.TRUESKILL: {
-        const rankSystemConfigs = <RankSystem.TRUESKILL.Configs>(
-          this.configs.rankSystemConfigs
-        );
-        const currState = <RankSystem.TRUESKILL.RankState>playerStats.rankState;
-
-        // TODO: Give user option to define how to reset score
-        currState.rating = new Rating(
-          currState.rating.mu,
-          rankSystemConfigs.initialSigma
-        );
-        if (this.dimension.hasDatabase()) {
-          if (!player.anonymous) {
-            await this.updateDatabaseTrueskillPlayerStats(playerStats, user);
-          }
-        }
-        break;
+    playerStats.rankState = this.ranksystem.onPlayerUpdate(
+      playerStats.rankState
+    );
+    if (this.dimension.hasDatabase()) {
+      if (!player.anonymous) {
+        await this.updateDatabasePlayerStats(playerStats, user);
       }
     }
   }
@@ -1017,64 +765,16 @@ export class Ladder extends Tournament {
           this.matchQueue.length
       );
 
-      switch (this.configs.rankSystem) {
-        case RankSystem.TRUESKILL:
-          console.log(
-            sprintf(
-              `%-30s | %-14s | %-15s | %-18s | %-8s`.underline,
-              'Name',
-              'ID',
-              'Score=(μ - 3σ)',
-              'Mu: μ, Sigma: σ',
-              'Matches'
-            )
-          );
-          ranks.forEach((info) => {
-            console.log(
-              sprintf(
-                `%-30s`.blue +
-                  ` | %-14s | ` +
-                  `%-15s`.green +
-                  ` | ` +
-                  `μ=%-6s, σ=%-6s`.yellow +
-                  ` | %-8s`,
-                info.player.tournamentID.name +
-                  (info.player.disabled ? ' X' : ''),
-                info.player.tournamentID.id,
-                (
-                  info.rankState.rating.mu -
-                  info.rankState.rating.sigma * 3
-                ).toFixed(7),
-                info.rankState.rating.mu.toFixed(3),
-                info.rankState.rating.sigma.toFixed(3),
-                info.matchesPlayed
-              )
-            );
-          });
-          break;
-        case RankSystem.ELO:
-          console.log(
-            sprintf(
-              `%-30s | %-8s | %-15s | %-8s`.underline,
-              'Name',
-              'ID',
-              'ELO Score',
-              'Matches'
-            )
-          );
-          ranks.forEach((info) => {
-            console.log(
-              sprintf(
-                `%-30s`.blue + ` | %-8s | ` + `%-15s`.green + ` | %-8s`,
-                info.player.tournamentID.name,
-                info.player.tournamentID.id,
-                info.rankState.rating.score,
-                info.matchesPlayed
-              )
-            );
-          });
-          break;
-      }
+      console.log(this.ranksystem.getRankStatesHeaderString());
+      ranks.forEach((info) => {
+        console.log(
+          this.ranksystem.getRankStateString(
+            info.player,
+            info.rankState,
+            info.matchesPlayed
+          )
+        );
+      });
       console.log();
       console.log('Current Matches: ' + this.matches.size);
       this.matches.forEach((match) => {
@@ -1089,6 +789,8 @@ export class Ladder extends Tournament {
 
   /**
    * Checks whether match can still be run
+   *
+   * If there are no stats, player was removed and match can't be run. If player is disabled, then it won't run
    */
   private async checkMatchIntegrity(matchInfo: Array<Player>) {
     const checkIntegrity = async (id: nanoid) => {
@@ -1169,25 +871,13 @@ export class Ladder extends Tournament {
     this.state.statistics.totalMatches++;
 
     const resInfo = this.configs.resultHandler(matchRes.results);
-    switch (this.configs.rankSystem) {
-      case RankSystem.TRUESKILL:
-        // push to result processing queue
-        this.resultProcessingQueue.push({
-          result: resInfo,
-          mapAgentIDtoTournamentID: matchRes.match.mapAgentIDtoTournamentID,
-        });
-        // make a call to handle match with trueskill to process the next result in the processing queue
-        this.handleMatchWithTrueSkill();
-        break;
-      case RankSystem.ELO:
-        // push to result processing queue
-        this.resultProcessingQueue.push({
-          result: resInfo,
-          mapAgentIDtoTournamentID: matchRes.match.mapAgentIDtoTournamentID,
-        });
-        this.handleMatchWithELO();
-        break;
-    }
+    // push to result processing queue
+    this.resultProcessingQueue.push({
+      result: resInfo,
+      mapAgentIDtoTournamentID: matchRes.match.mapAgentIDtoTournamentID,
+    });
+    // make a call to handle match with trueskill to process the next result in the processing queue
+    this.handleMatchResults();
 
     // store past results
     if (this.configs.tournamentConfigs.storePastResults) {
@@ -1204,7 +894,7 @@ export class Ladder extends Tournament {
   }
 
   /**
-   * Update player stats for whoever stats owns this. Determined by checking the player field of
+   * Update player stats for whoever stats owns this player stat. Determined by checking the player field of
    * {@link Ladder.PlayerStat}
    */
   private async updatePlayerStat(currentStats: Ladder.PlayerStat) {
@@ -1220,15 +910,9 @@ export class Ladder extends Tournament {
           currentStats.player.tournamentID.id
         );
         // if user is still in tourney, update it
+        // TODO: make user.statistics[this.getKeyName()] a function
         if (user && user.statistics[this.getKeyName()]) {
-          switch (this.configs.rankSystem) {
-            case RankSystem.TRUESKILL:
-              await this.updateDatabaseTrueskillPlayerStats(currentStats, user);
-              break;
-            case RankSystem.ELO:
-              await this.updateDatabaseELOPlayerStats(currentStats, user);
-              break;
-          }
+          await this.updateDatabasePlayerStats(currentStats, user);
         }
       } catch (err) {
         // don't stop tourney if this happens
@@ -1237,38 +921,29 @@ export class Ladder extends Tournament {
     }
   }
 
-  /**
-   * Handles match results.
-   *
-   * If match result is {ranks: []}, nothing will happen, can be used to mark a match as having errored
-   */
-  private async handleMatchWithTrueSkill() {
-    // TODO, a lot of code repeated with ELO as well. Abstract to "ranksystem class" and have abstract functions for
-    // handling match results, updating rank states etc. Ideally in Ladder there should only be calls to various logic // linking these updates with local state or db
+  private async handleMatchResults() {
     const toProcess = this.resultProcessingQueue.shift();
     const mapAgentIDtoTournamentID = toProcess.mapAgentIDtoTournamentID;
-    const result = <RankSystem.TRUESKILL.Results>toProcess.result;
+    const result = toProcess.result;
 
     // stop if no ranks provided, meaning match not successful and we throw result away
     if (result.ranks.length === 0) {
       this.emit(Tournament.Events.MATCH_HANDLED);
       return;
     }
-
-    const playerRatings: Array<Array<Rating>> = [];
-    const tourneyIDs: Array<{ id: Tournament.ID; stats: any }> = [];
-    const ranks: Array<number> = [];
     result.ranks.sort((a, b) => a.rank - b.rank);
+    const rankStatePromises: Array<Promise<void>> = [];
 
-    const fetchingRatings: Array<Promise<void>> = [];
-    result.ranks.forEach((rank) => {
-      const fetchRating = async () => {
-        const tournamentID = mapAgentIDtoTournamentID.get(rank.agentID);
-
-        /**
-         * Future TODO: Acquire and release locks on an DB entry.
-         * realistically only matters if DB is slow or many matches run with a player
-         */
+    // the following 3 arrays are parallel
+    const ranks: Array<number> = [];
+    const currentRankStates: Array<any> = [];
+    const tourneyIDs: Array<{
+      id: Tournament.ID;
+      stats: LadderPlayerStat;
+    }> = [];
+    result.ranks.forEach((rankInfo) => {
+      const fetchRankState = async () => {
+        const tournamentID = mapAgentIDtoTournamentID.get(rankInfo.agentID);
         const { playerStat } = await this.getPlayerStat(tournamentID.id);
         if (!playerStat) {
           throw new TournamentPlayerDoesNotExistError(
@@ -1277,105 +952,32 @@ export class Ladder extends Tournament {
         }
         const currentplayerStats = <Ladder.PlayerStat>playerStat;
         currentplayerStats.matchesPlayed++;
-
-        const currRankState = <RankSystem.TRUESKILL.RankState>(
-          currentplayerStats.rankState
-        );
-        playerRatings.push([currRankState.rating]);
-        ranks.push(rank.rank);
+        ranks.push(rankInfo.rank);
         tourneyIDs.push({ id: tournamentID, stats: currentplayerStats });
+        currentRankStates.push(currentplayerStats.rankState);
       };
-      fetchingRatings.push(fetchRating());
+      rankStatePromises.push(fetchRankState());
     });
+
     try {
-      await Promise.all(fetchingRatings);
+      await Promise.all(rankStatePromises);
     } catch (err) {
       this.log.error('Probably due to player being removed: ', err);
       this.emit(Tournament.Events.MATCH_HANDLED);
       return;
     }
 
-    const newRatings = rate(playerRatings, ranks);
+    const newRankStates = this.ranksystem.updateRanks(currentRankStates, ranks);
     const updatePlayerStatsPromises: Array<Promise<void>> = [];
     tourneyIDs.forEach((info, i) => {
       const updateStat = async () => {
         const currentStats: Ladder.PlayerStat = info.stats;
-        (<RankSystem.TRUESKILL.RankState>currentStats.rankState).rating =
-          newRatings[i][0];
-
+        currentStats.rankState = newRankStates[i];
         await this.updatePlayerStat(currentStats);
       };
       updatePlayerStatsPromises.push(updateStat());
     });
 
-    await Promise.all(updatePlayerStatsPromises);
-
-    if (this.configs.consoleDisplay) {
-      await this.printTournamentStatus();
-    }
-
-    this.emit(Tournament.Events.MATCH_HANDLED);
-  }
-
-  private async handleMatchWithELO() {
-    const toProcess = this.resultProcessingQueue.shift();
-    const mapAgentIDtoTournamentID = toProcess.mapAgentIDtoTournamentID;
-    const result = <RankSystem.ELO.Results>toProcess.result;
-
-    // stop if no ranks provided, meaning match not successful and we throw result away
-    if (result.ranks.length === 0) {
-      this.emit(Tournament.Events.MATCH_HANDLED);
-      return;
-    }
-
-    const ratingsToChange: Array<ELORating> = [];
-    const ranks = [];
-    const tourneyIDs: Array<{ id: Tournament.ID; stats: any }> = [];
-    const fetchingRatings: Array<Promise<void>> = [];
-    result.ranks.forEach((rankInfo) => {
-      const fetchRating = async () => {
-        const tournamentID = mapAgentIDtoTournamentID.get(rankInfo.agentID);
-
-        const { playerStat } = await this.getPlayerStat(tournamentID.id);
-        if (!playerStat) {
-          this.emit(Tournament.Events.MATCH_HANDLED);
-          throw new TournamentPlayerDoesNotExistError(
-            `Player ${tournamentID.id} doesn't exist anymore, likely was removed`
-          );
-        }
-        const currentplayerStats = <Ladder.PlayerStat>playerStat;
-        currentplayerStats.matchesPlayed++;
-
-        const currRankState = <RankSystem.ELO.RankState>(
-          currentplayerStats.rankState
-        );
-        ratingsToChange.push(currRankState.rating);
-        ranks.push(rankInfo.rank);
-        tourneyIDs.push({ id: tournamentID, stats: currentplayerStats });
-      };
-      fetchingRatings.push(fetchRating());
-    });
-
-    try {
-      await Promise.all(fetchingRatings);
-    } catch (err) {
-      this.emit(Tournament.Events.MATCH_HANDLED);
-      this.log.error('Probably due to player being removed: ', err);
-      return;
-    }
-
-    // re adjust rankings
-    this.elo.rate(ratingsToChange, ranks);
-
-    const updatePlayerStatsPromises: Array<Promise<void>> = [];
-    // update database if needed and store play stats
-    tourneyIDs.forEach((info) => {
-      const updateStat = async () => {
-        const currentStats = info.stats;
-        updatePlayerStatsPromises.push(this.updatePlayerStat(currentStats));
-      };
-      updatePlayerStatsPromises.push(updateStat());
-    });
     await Promise.all(updatePlayerStatsPromises);
 
     if (this.configs.consoleDisplay) {
@@ -1478,8 +1080,8 @@ export namespace Ladder {
     matchesPlayed: number;
     /**
      * the ranking statistics for the player. the type of this variable is dependent on the ranking system you use for
-     * the tournament. If the ranking system is {@link RankSystem.TRUESKILL | Trueskill}, then see
-     * {@link RankSystem.TRUESKILL.RankState} for the rank state typings.
+     * the tournament. If the ranking system is {@link RankSystem.TrueSkill | TrueSkill}, then see
+     * {@link RankSystem.TrueSkill.RankState} for the rank state typings.
      */
     rankState: any;
   }
