@@ -33,8 +33,19 @@ export const getAgent = (
  */
 export const pickAgent = (
   agent: Agent
-): Pick<Agent, 'id' | 'name' | 'tournamentID' | 'logkey' | 'version'> => {
-  const picked = pick(agent, 'id', 'name', 'tournamentID', 'logkey', 'version');
+): Pick<
+  Agent,
+  'id' | 'name' | 'tournamentID' | 'logkey' | 'version' | 'status'
+> => {
+  const picked = pick(
+    agent,
+    'id',
+    'name',
+    'tournamentID',
+    'logkey',
+    'version',
+    'status'
+  );
   return picked;
 };
 
