@@ -173,10 +173,11 @@ export class Match {
    */
   constructor(
     public design: Design,
-    public agentFiles:
-      | Array<string>
-      | Array<{ file: string; name: string; botkey?: string }> // used in createMatch
-      | Array<{ file: string; tournamentID: Tournament.ID; botkey?: string }>, // used by tournaments
+    /**
+     * agent meta data regarding files, ids, etc.
+     */
+    public agentFiles: /** array of file paths to agents */
+    Agent.GenerationMetaData,
     configs: DeepPartial<Match.Configs> = {},
     private dimension: Dimension
   ) {

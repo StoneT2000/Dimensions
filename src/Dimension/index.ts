@@ -14,6 +14,8 @@ import { Plugin } from '../Plugin';
 import { Database } from '../Plugin/Database';
 import { Storage } from '../Plugin/Storage';
 import { existsSync, mkdirSync } from 'fs';
+import { Agent } from '../Agent';
+import { AgentClassTypeGuards } from '../utils/TypeGuards';
 
 /**
  * Some standard database type strings
@@ -268,8 +270,8 @@ export class Dimension {
    */
   public async createMatch(
     files:
-      | Array<string>
-      | Array<{ file: string; name: string; botkey?: string }>,
+      | Agent.GenerationMetaData_FilesOnly
+      | Agent.GenerationMetaData_CreateMatch,
     configs?: DeepPartial<Match.Configs>
   ): Promise<Match> {
     if (!files.length) {
@@ -282,15 +284,10 @@ export class Dimension {
 
     // create new match
     let match: Match;
-    if (typeof files[0] === 'string') {
-      match = new Match(this.design, <Array<string>>files, matchConfigs, this);
+    if (AgentClassTypeGuards.isGenerationMetaData_FilesOnly(files)) {
+      match = new Match(this.design, files, matchConfigs, this);
     } else {
-      match = new Match(
-        this.design,
-        <Array<{ file: string; name: string; botkey?: string }>>files,
-        matchConfigs,
-        this
-      );
+      match = new Match(this.design, files, matchConfigs, this);
     }
     this.statistics.matchesCreated++;
 
@@ -317,8 +314,8 @@ export class Dimension {
    */
   public async runMatch(
     files:
-      | Array<string>
-      | Array<{ file: string; name: string; botkey?: string }>,
+      | Agent.GenerationMetaData_FilesOnly
+      | Agent.GenerationMetaData_CreateMatch,
     configs?: DeepPartial<Match.Configs>
   ): Promise<any> {
     const match = await this.createMatch(files, configs);
