@@ -523,18 +523,17 @@ export abstract class Tournament extends EventEmitter {
     }
     matchConfigs.agentSpecificOptions = agentSpecificOptions;
 
-    const filesAndNamesAndIDs: Array<{
-      file: string;
-      tournamentID: Tournament.ID;
-      botkey?: string;
-    }> = players.map((player) => {
-      // if player has a botkey, use that, otherwise use whats in player.file
-      return {
-        file: player.file,
-        tournamentID: player.tournamentID,
-        botkey: player.botkey,
-      };
-    });
+    const filesAndNamesAndIDs: Agent.GenerationMetaData_Tournament = players.map(
+      (player) => {
+        // if player has a botkey, use that, otherwise use whats in player.file
+        return {
+          file: player.file,
+          tournamentID: player.tournamentID,
+          botkey: player.botkey,
+          version: player.version,
+        };
+      }
+    );
     const match = new Match(
       this.design,
       filesAndNamesAndIDs,

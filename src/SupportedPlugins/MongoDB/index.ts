@@ -13,8 +13,6 @@ import { generateToken, verify } from '../../Plugin/Database/utils';
 import { Tournament } from '../../Tournament';
 import { pick } from '../../utils';
 import { nanoid } from '../..';
-import { Ladder } from '../../Tournament/Ladder';
-import { TournamentError } from '../../DimensionError';
 import TournamentConfigSchema from './models/tournamentConfig';
 import { TournamentStatus } from '../../Tournament/TournamentStatus';
 // eslint-disable-next-line @typescript-eslint/no-var-requires

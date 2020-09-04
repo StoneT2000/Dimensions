@@ -112,9 +112,9 @@ export class GCloudStorage extends DStorage {
       const ws = file
         .createReadStream()
         .pipe(fs.createWriteStream(destination));
-      ws.on('close', () => {
+      ws.on('close', async () => {
         // store in cache
-        const cachedPath = this.lruFileCache.add(key, destination);
+        const cachedPath = await this.lruFileCache.add(key, destination);
         this.log.system(
           `writing from bucket ${key} -> ${destination}; cached to ${cachedPath}`
         );

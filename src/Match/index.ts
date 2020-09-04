@@ -173,10 +173,11 @@ export class Match {
    */
   constructor(
     public design: Design,
-    public agentFiles:
-      | Array<string>
-      | Array<{ file: string; name: string; botkey?: string }> // used in createMatch
-      | Array<{ file: string; tournamentID: Tournament.ID; botkey?: string }>, // used by tournaments
+    /**
+     * agent meta data regarding files, ids, etc.
+     */
+    public agentFiles: /** array of file paths to agents */
+    Agent.GenerationMetaData,
     configs: DeepPartial<Match.Configs> = {},
     private dimension: Dimension
   ) {
@@ -307,8 +308,7 @@ export class Match {
       this.matchStatus = Match.Status.READY;
       return true;
     } catch (err) {
-      // first handle log files in case they might hold relevant install / compile time logs
-      this.handleLogFiles();
+      await this.handleLogFiles();
       // kill processes and clean up and then throw the error
       await this.killAndCleanUp();
       throw err;
@@ -418,8 +418,7 @@ export class Match {
             );
           }
         }
-        // TODO: possible race condition if we dont wait for log files to upload
-        this.handleLogFiles();
+        await this.handleLogFiles();
         this.finishDate = new Date();
         resolve(this.results);
       } catch (error) {

@@ -23,7 +23,7 @@ import { Writable, Readable, Stream, Duplex } from 'stream';
 import { EventEmitter } from 'events';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import Dockerode, { HostConfig } from 'dockerode';
-import { isChildProcess } from '../utils/TypeGuards';
+import { isChildProcess, AgentClassTypeGuards } from '../utils/TypeGuards';
 import pidusage from 'pidusage';
 import DefaultSeccompProfileJSON from '../Security/seccomp/default.json';
 import { noop } from '../utils';
@@ -151,6 +151,9 @@ export class Agent extends EventEmitter {
 
   /** whether agent is allowed to send commands. Used to help ignore extra output from agents */
   private allowedToSendCommands = true;
+
+  /** Agent version, used by tournament */
+  public version = 0;
 
   constructor(
     file: string,
@@ -876,9 +879,7 @@ export class Agent extends EventEmitter {
    * @param agentSpecificOptions - Options to lastly override with depending on agent's index
    */
   static generateAgents(
-    files:
-      | Array<string>
-      | Array<{ file: string; name?: string; tournamentID?: Tournament.ID }>,
+    files: Agent.GenerationMetaData,
     options: DeepPartial<Agent.Options>,
     languageSpecificOptions: Agent.LanguageSpecificOptions = {},
     agentSpecificOptions: Array<DeepPartial<Agent.Options>> = []
@@ -891,7 +892,7 @@ export class Agent extends EventEmitter {
     }
     const agents: Array<Agent> = [];
 
-    if (typeof files[0] === 'string') {
+    if (AgentClassTypeGuards.isGenerationMetaData_FilesOnly(files)) {
       files.forEach((file, index: number) => {
         let configs = deepCopy(options);
         configs = deepMerge(
@@ -905,7 +906,7 @@ export class Agent extends EventEmitter {
           new Agent(file, <Agent.Options>configs, languageSpecificOptions)
         );
       });
-    } else if (files[0].name !== undefined) {
+    } else if (AgentClassTypeGuards.isGenerationMetaData_CreateMatch(files)) {
       files.forEach((info, index: number) => {
         let configs = deepCopy(options);
         configs = deepMerge(
@@ -931,9 +932,13 @@ export class Agent extends EventEmitter {
         );
         configs.id = index;
         configs.tournamentID = info.tournamentID;
-        agents.push(
-          new Agent(info.file, <Agent.Options>configs, languageSpecificOptions)
+        const newAgent = new Agent(
+          info.file,
+          <Agent.Options>configs,
+          languageSpecificOptions
         );
+        newAgent.version = info.version;
+        agents.push(newAgent);
       });
     }
     return agents;
@@ -1101,4 +1106,40 @@ export namespace Agent {
     image: 'docker.io/stonezt2000/dimensions_langs',
     useCachedBotFile: false,
   };
+
+  export type GenerationMetaData =
+    | GenerationMetaData_CreateMatch
+    | GenerationMetaData_FilesOnly
+    | GenerationMetaData_Tournament;
+
+  /**
+   * Agent Generation meta data with paths to files only
+   */
+  export type GenerationMetaData_FilesOnly = Array<string>;
+
+  /**
+   * Agent generation meta data used by {@link Dimension.createMatch}
+   */
+  export type GenerationMetaData_CreateMatch = Array<{
+    /** file path */
+    file: string;
+    /** name of bot */
+    name: string;
+    /** botkey for bots in storage */
+    botkey?: string;
+  }>; // used in createMatch
+
+  /**
+   * Agent generation meta data used by tournaments
+   */
+  export type GenerationMetaData_Tournament = Array<{
+    /** file path */
+    file: string;
+    /** tournament ID containing playerId, username, and bot name */
+    tournamentID: Tournament.ID;
+    /** botkey for bots in storage */
+    botkey?: string;
+    /** track version # of the bot used */
+    version: number;
+  }>; // used by tournaments
 }
