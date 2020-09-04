@@ -563,20 +563,22 @@ export abstract class Tournament extends EventEmitter {
           this.lockedPlayers.set(players[i].tournamentID.id, new VarLock());
         }
       }
-      await match.initialize();
-      // release all locks
-      for (let i = 0; i < players.length; i++) {
-        const varlock = this.lockedPlayers.get(players[i].tournamentID.id);
-        if (varlock) {
-          varlock.unlock();
-          // delete the varlock
-          this.lockedPlayers.delete(players[i].tournamentID.id);
+      await match.initialize().finally(() => {
+        // release all locks once this is done
+        for (let i = 0; i < players.length; i++) {
+          const varlock = this.lockedPlayers.get(players[i].tournamentID.id);
+          if (varlock) {
+            varlock.unlock();
+            // delete the varlock
+            this.lockedPlayers.delete(players[i].tournamentID.id);
+          }
         }
-      }
+      });
+
       // note: method to test locks, match.initialize(); do a await sleep(5000); and try updating bot during initialization. If response takes a few seconds to respond, then locks worked as update happenedd after initialization.
 
-      players.forEach((player) => {
-        this.updateLastVersionUsedOfPlayer(
+      players.forEach(async (player) => {
+        await this.updateLastVersionUsedOfPlayer(
           player.tournamentID.id,
           player.version
         );
