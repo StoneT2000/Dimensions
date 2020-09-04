@@ -8,7 +8,7 @@ npm run clean
 npm run test-seed
 
 testpaths=( \
-tests/core/engine/01*.spec.ts \
+# tests/core/engine/01*.spec.ts \
 tests/core/engine/02*.spec.ts \
 tests/core/engine/03*.spec.ts \
 tests/core/engine/04*.spec.ts \
