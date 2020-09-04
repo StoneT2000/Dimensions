@@ -261,27 +261,18 @@ describe('Testing Storage with Tournament Singletons (no distribution)', () => {
               for (const match of matches) {
                 expect(
                   fs.existsSync(
-                    path.join(
-                      fsstore.bucketPath,
-                      `errorlogs/match_${match.id}/agent_0.log`
-                    )
+                    path.join(fsstore.bucketPath, `${match.agents[0].logkey}`)
                   )
                 ).to.equal(true, 'error log should exist');
                 expect(
                   fs.existsSync(
-                    path.join(
-                      fsstore.bucketPath,
-                      `errorlogs/match_${match.id}/agent_1.log`
-                    )
+                    path.join(fsstore.bucketPath, `${match.agents[1].logkey}`)
                   )
                 ).to.equal(true, 'error log should exist');
 
                 expect(
                   fs.existsSync(
-                    path.join(
-                      fsstore.bucketPath,
-                      `replaydir/${match.id}.replay`
-                    )
+                    path.join(fsstore.bucketPath, `${match.replayFileKey}`)
                   )
                 ).to.equal(true, 'replay file should exist');
               }
