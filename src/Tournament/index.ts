@@ -587,13 +587,6 @@ export abstract class Tournament extends EventEmitter {
       // Get results
       const results = await match.run();
 
-      // if database plugin is active and saveTournamentMatches is set to true, store match
-      if (this.dimension.hasDatabase()) {
-        if (this.dimension.databasePlugin.configs.saveTournamentMatches) {
-          this.dimension.databasePlugin.storeMatch(match, this.id);
-        }
-      }
-
       // remove the match from the active matches list
       this.matches.delete(match.id);
 
@@ -606,6 +599,14 @@ export abstract class Tournament extends EventEmitter {
         err,
         match,
       };
+    } finally {
+      // regardless of error or not ensure match is stored
+      // if database plugin is active and saveTournamentMatches is set to true, store match
+      if (this.dimension.hasDatabase()) {
+        if (this.dimension.databasePlugin.configs.saveTournamentMatches) {
+          this.dimension.databasePlugin.storeMatch(match, this.id);
+        }
+      }
     }
   }
 
