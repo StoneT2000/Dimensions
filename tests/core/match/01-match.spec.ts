@@ -38,6 +38,7 @@ describe('Testing Match Core', () => {
       const match = await d.createMatch(botList);
       const deeped = stripFunctions(deepCopy(d.configs.defaultMatchConfigs));
       expect(match.configs).to.containSubset(deeped);
+      expect(match.results).to.equal(null);
     });
   });
 

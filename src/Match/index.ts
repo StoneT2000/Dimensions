@@ -11,6 +11,9 @@ import {
   MatchError,
   NotSupportedError,
   MatchReplayFileError,
+  AgentError,
+  AgentCompileError,
+  AgentInstallError,
 } from '../DimensionError';
 import { Tournament } from '../Tournament';
 
@@ -96,8 +99,9 @@ export class Match {
 
   /**
    * The results field meant to store any results retrieved with {@link Design.getResults}
+   * @default `null`
    */
-  public results: any;
+  public results: any = null;
 
   /**
    * The current match status
@@ -311,6 +315,17 @@ export class Match {
       await this.handleLogFiles();
       // kill processes and clean up and then throw the error
       await this.killAndCleanUp();
+
+      if (err instanceof AgentError) {
+        if (
+          err instanceof AgentCompileError ||
+          err instanceof AgentInstallError
+        ) {
+          // mark agents with compile or install error as having crashed
+          // console.log(err, err.agentID);
+          this.agents[err.agentID].status = Agent.Status.CRASHED;
+        }
+      }
       throw err;
     }
   }
