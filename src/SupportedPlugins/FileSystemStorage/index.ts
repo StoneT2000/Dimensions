@@ -97,7 +97,7 @@ export class FileSystemStorage extends Storage {
     await this.writeFileFromBucket(key, destination);
     // store in cache
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const cachedPath = this.lruFileCache.add(key, destination);
+    const cachedPath = await this.lruFileCache.add(key, destination);
     this.log.system(`${key} cached to ${cachedPath}`);
     return destination;
   }
