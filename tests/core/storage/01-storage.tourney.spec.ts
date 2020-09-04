@@ -110,6 +110,7 @@ describe('Testing Storage with Tournament Singletons (no distribution)', () => {
             testReplays: false,
           },
         });
+        await tourney.initialize();
         const user1 = await d.databasePlugin.getUser(users.rock1.existingID);
         const key1 = await fsstore.uploadTournamentFile(
           './tests/kits/js/normal/rock.zip',

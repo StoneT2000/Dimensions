@@ -645,9 +645,9 @@ export class Ladder extends Tournament {
   }
 
   /**
-   * Initialize competition with local competitors given and store player stats locally
+   * Initialize competition with given players, which can be local or stored in DB
    *
-   * Does not read in any DB players
+   * Does not read in any DB players, only uses those that are given at construction of tourney
    */
   async initialize(): Promise<void> {
     // wait for all players to add in.

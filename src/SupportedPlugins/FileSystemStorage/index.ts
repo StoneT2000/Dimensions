@@ -80,7 +80,7 @@ export class FileSystemStorage extends Storage {
     useCached: boolean
   ): Promise<string> {
     if (useCached) {
-      // note this section of code working with the cache is async safe, it won't be interuptted because none of the functions used are async
+      // note this scope of code working with the cache is async safe, it won't be interuptted because none of the functions used are async
       const cachedPath = this.lruFileCache.get(key);
       // if there is a cached path, use it
       if (cachedPath) {
