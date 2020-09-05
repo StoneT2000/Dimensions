@@ -11,6 +11,7 @@ replays
 coverage
 tests/run.*.ts
 tests/run.*.js
+tests/run.*.sh
 .nyc_output
 *bot.zip
 
