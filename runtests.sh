@@ -7,28 +7,30 @@ npm run clean
 
 npm run test-seed
 
-testpaths=( \
-tests/core/engine/01*.spec.ts \
-tests/core/engine/02*.spec.ts \
-tests/core/engine/03*.spec.ts \
-tests/core/engine/04*.spec.ts \
-tests/core/utilstest/**/*.spec.ts \
-tests/core/agent/**/*.spec.ts \
-tests/core/database/**/*.spec.ts \
-tests/core/storage/**/*.spec.ts \
-tests/core/dimension/**/*.spec.ts \
-tests/core/logger/**/*.spec.ts \
-tests/core/match/**/*.spec.ts \
-tests/core/rating/**/*.spec.ts \
-tests/core/tourney/**/*.spec.ts \
-tests/api/**/*.spec.ts \
-)
+nyc --reporter=html --no-clean mocha --recursive tests/core/**/*.spec.ts tests/api/**/*.spec.ts
 
-errcount=0
+# testpaths=( \
+# tests/core/engine/01*.spec.ts \
+# tests/core/engine/02*.spec.ts \
+# tests/core/engine/03*.spec.ts \
+# tests/core/engine/04*.spec.ts \
+# tests/core/utilstest/**/*.spec.ts \
+# tests/core/agent/**/*.spec.ts \
+# tests/core/database/**/*.spec.ts \
+# tests/core/storage/**/*.spec.ts \
+# tests/core/dimension/**/*.spec.ts \
+# tests/core/logger/**/*.spec.ts \
+# tests/core/match/**/*.spec.ts \
+# tests/core/rating/**/*.spec.ts \
+# tests/core/tourney/**/*.spec.ts \
+# tests/api/**/*.spec.ts \
+# )
 
-for path in ${testpaths[@]}; do
-  nyc --reporter=html --no-clean mocha $path
-  errcount=$((errcount + $?))
-done
+# errcount=0
 
-exit ${errcount}
+# for path in ${testpaths[@]}; do
+#   nyc --reporter=html --no-clean mocha $path
+#   errcount=$((errcount + $?))
+# done
+
+# exit ${errcount}
