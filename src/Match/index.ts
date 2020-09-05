@@ -769,7 +769,6 @@ export class Match {
     // now actually stop and clean up
     await this.killAndCleanUp(); // Theoretically this line is not needed for custom matches, but in here in case
     await this.matchEngine.killAndCleanCustom(this);
-    console.log('destroyed', this.id);
   }
 
   /**

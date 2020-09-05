@@ -93,6 +93,7 @@ describe('Testing MatchEngine Core', () => {
         deepCopy(rpsDesign.getDesignOptions().engineOptions)
       );
       expect(match.matchEngine.getEngineOptions()).to.containSubset(deeped);
+      await match.destroy();
     });
     it('should be initialized with a match correctly when using overriden', async () => {
       // create match goes to as far as running initalize functions
@@ -103,6 +104,7 @@ describe('Testing MatchEngine Core', () => {
         deepCopy(rpsDesignChanged.getDesignOptions().engineOptions)
       );
       expect(match.matchEngine.getEngineOptions()).to.containSubset(deeped);
+      await match.destroy();
     });
   });
 
@@ -152,6 +154,9 @@ describe('Testing MatchEngine Core', () => {
         expect(agent.status).to.equal(Agent.Status.RUNNING);
       }
     });
+    after(async () => {
+      await match.destroy();
+    });
   });
 
   describe('Test running', () => {
@@ -168,6 +173,7 @@ describe('Testing MatchEngine Core', () => {
         ).to.equal(MatchEngine.COMMAND_FINISH_POLICIES.FINISH_SYMBOL);
         const results = await match.run();
         expect(results.scores).to.eql({ '0': 0, '1': 11 });
+        await match.destroy();
       });
 
       it('should erase extraneous output after finish symbol', async () => {
@@ -216,6 +222,7 @@ describe('Testing MatchEngine Core', () => {
 
         const results = await match.run();
         expect(results.scores).to.eql({ '0': 0, '1': 11 });
+        await match.destroy();
       });
       it('should handle commands when setting max lines to more than 1', async () => {
         let match = await d.createMatch(twoLineCountBotList, {
@@ -340,6 +347,7 @@ describe('Testing MatchEngine Core', () => {
         expect(agent.options.secureMode).to.equal(true);
       }
       expect(match.configs.secureMode).to.equal(true);
+      await match.destroy();
     });
 
     it('should run correctly', async () => {
@@ -349,6 +357,7 @@ describe('Testing MatchEngine Core', () => {
       });
       const results = await match.run();
       expect(results.scores).to.eql({ '0': 0, '1': 11 });
+      await match.destroy();
     });
   });
 
@@ -373,6 +382,7 @@ describe('Testing MatchEngine Core', () => {
         );
         expect(match.agents[0].status).to.equal(Agent.Status.CRASHED);
         expect(match.agents[1].status).to.equal(Agent.Status.KILLED);
+        await match.destroy();
       });
     }
   });
@@ -398,6 +408,7 @@ describe('Testing MatchEngine Core', () => {
         );
         expect(match.agents[0].status).to.equal(Agent.Status.CRASHED);
         expect(match.agents[1].status).to.equal(Agent.Status.KILLED);
+        await match.destroy();
       });
     }
   });
