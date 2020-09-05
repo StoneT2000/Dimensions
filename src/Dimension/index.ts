@@ -296,6 +296,7 @@ export class Dimension {
 
     // Initialize match and return it
     await match.initialize();
+    console.log('initialized match', match.id);
     return match;
   }
 
