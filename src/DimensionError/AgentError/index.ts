@@ -10,6 +10,8 @@ const AGENT_DIRECTORY_ERROR = 'AgentDirectoryError';
 
 const AGENT_MISSING_ID_ERROR = 'AgentMissingIDError';
 
+const AGENT_NOT_HANDLING_INPUT_ERROR = 'AgentNotHandlingInputError';
+
 /**
  * Any errors thrown by the {@link Agent} class
  */
@@ -24,6 +26,18 @@ export class AgentError extends Error {
     this.agentID = agentID;
     this.name = AGENT_ERROR;
     Object.setPrototypeOf(this, AgentError.prototype);
+  }
+}
+
+/**
+ * Error is thrown when an agents input stream's internal buffer reaches or execeeds the highWaterMark, indicating the
+ * agent is not handling input properly or fast enough for smooth match running.
+ */
+export class AgentNotHandlingInputError extends AgentError {
+  constructor(m: string, agentID: number) {
+    super(m, agentID);
+    this.name = AGENT_NOT_HANDLING_INPUT_ERROR;
+    Object.setPrototypeOf(this, AgentNotHandlingInputError.prototype);
   }
 }
 

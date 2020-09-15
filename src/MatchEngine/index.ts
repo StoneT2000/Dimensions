@@ -8,7 +8,12 @@ import { deepCopy } from '../utils/DeepCopy';
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
 
-import { FatalError, MatchError, NotSupportedError } from '../DimensionError';
+import {
+  AgentNotHandlingInputError,
+  FatalError,
+  MatchError,
+  NotSupportedError,
+} from '../DimensionError';
 
 import { Design } from '../Design';
 import { Logger } from '../Logger';
@@ -16,6 +21,7 @@ import { Agent } from '../Agent';
 import { Match } from '../Match';
 import Dockerode from 'dockerode';
 import { isChildProcess } from '../utils/TypeGuards';
+import { noop } from '../utils';
 
 /** @ignore */
 type EngineOptions = MatchEngine.EngineOptions;
@@ -175,6 +181,9 @@ export class MatchEngine {
       p.on('close', (code) => {
         agent.emit(Agent.AGENT_EVENTS.CLOSE, code);
       });
+
+      // we do not care if input stream is broken, engine will detect this error through timeouts and what not
+      agent.streams.in.on('error', noop);
     } else {
       // store streams
       agent.streams.in = p.in;
@@ -490,10 +499,21 @@ export class MatchEngine {
     return new Promise((resolve, reject) => {
       const agent = match.idToAgentsMap.get(agentID);
       if (!agent.inputDestroyed() && !agent.isTerminated()) {
-        agent.write(`${message}\n`, (error: Error) => {
-          if (error) reject(error);
-          resolve(true);
-        });
+        const bufferReachedHighWaterMark = agent.write(
+          `${message}\n`,
+          (error: Error) => {
+            if (error) reject(error);
+            resolve(true);
+          }
+        );
+        if (!bufferReachedHighWaterMark) {
+          reject(
+            new AgentNotHandlingInputError(
+              'Input stream buffer highWaterMark reached, agent is not processing input',
+              agentID
+            )
+          );
+        }
       } else {
         this.log.error(
           `Agent ${agentID} - ${agent.name} - has been killed off already, can't send messages now`

@@ -672,48 +672,47 @@ export class Match {
    * @returns a promise resolving true/false if it was succesfully sent
    */
   public sendAll(message: string): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      const sendPromises = [];
+    return new Promise((resolve) => {
+      const sendPromises: Array<Promise<boolean>> = [];
       this.agents.forEach((agent: Agent) => {
         sendPromises.push(this.send(message, agent));
       });
 
-      Promise.all(sendPromises)
-        .then(() => {
-          // if all promises resolve, we sent all messages
-          resolve(true);
-        })
-        .catch((error) => {
-          reject(error);
-        });
+      Promise.all(sendPromises).then((sendStatus) => {
+        // if all promises resolve, we sent all messages
+        resolve(sendStatus.every((v) => v === true));
+      });
     });
   }
 
   /**
    * Functional method for sending a message string to a particular {@link Agent}. Returns a promise that resolves true
-   * if succesfully sent
+   * if succesfully sent. Returns false if could not send message, meaning agent was also killed.
    * @param message - the string message to send
    * @param receiver - receiver of message can be specified by the {@link Agent} or it's {@link Agent.ID} (a number)
    */
   public async send(
     message: string,
     receiver: Agent | Agent.ID
-  ): Promise<void> {
+  ): Promise<boolean> {
     if (receiver instanceof Agent) {
       try {
         await this.matchEngine.send(this, message, receiver.id);
       } catch (err) {
         this.log.error(err);
-        this.kill(receiver, 'could not send message anymore');
+        await this.kill(receiver, 'could not send message anymore');
+        return false;
       }
     } else {
       try {
         await this.matchEngine.send(this, message, receiver);
       } catch (err) {
         this.log.error(err);
-        this.kill(receiver, 'could not send message anymore');
+        await this.kill(receiver, 'could not send message anymore');
+        return false;
       }
     }
+    return true;
   }
 
   /**

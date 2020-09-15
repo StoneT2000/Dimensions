@@ -703,9 +703,20 @@ export class Agent extends EventEmitter {
    * Write to stdin of the process associated with the agent
    * @param message - the message
    * @param callback - callback function
+   *
+   * returns true if written, false if highWaterMark reached
    */
-  write(message: string, callback: (error: Error) => void): void {
-    this.streams.in.write(message, callback);
+  write(message: string, callback: (error: Error) => void): boolean {
+    /**
+     * the following few lines are based on the suggestion at
+     * https://nodejs.org/api/stream.html#stream_writable_write_chunk_encoding_callback
+     */
+    if (!this.streams.in.write(message)) {
+      return false;
+    } else {
+      process.nextTick(callback);
+    }
+    return true;
   }
 
   /**
