@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>MatchWarn | dimensions-ai</title>
+	<title>AgentNotHandlingInputError | dimensions-ai</title>
 	<meta name="description" content="Documentation for dimensions-ai">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_dimensionerror_index_.html">&quot;DimensionError/index&quot;</a>
+					<a href="../modules/_dimensionerror_agenterror_index_.html">&quot;DimensionError/AgentError/index&quot;</a>
 				</li>
 				<li>
-					<a href="_dimensionerror_index_.matchwarn.html">MatchWarn</a>
+					<a href="_dimensionerror_agenterror_index_.agentnothandlinginputerror.html">AgentNotHandlingInputError</a>
 				</li>
 			</ul>
-			<h1>Class MatchWarn</h1>
+			<h1>Class AgentNotHandlingInputError</h1>
 		</div>
 	</div>
 </header>
@@ -71,16 +71,20 @@
 		<div class="col-8 col-content">
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Error is thrown when an agents input stream&#39;s internal buffer reaches or execeeds the highWaterMark, indicating the
+						agent is not handling input properly or fast enough for smooth match running.</p>
+					</div>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="_dimensionerror_agenterror_index_.agenterror.html#error" class="tsd-signature-type">Error</a>
+						<a href="_dimensionerror_agenterror_index_.agenterror.html" class="tsd-signature-type">AgentError</a>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">MatchWarn</span>
+								<span class="target">AgentNotHandlingInputError</span>
 							</li>
 						</ul>
 					</li>
@@ -93,16 +97,16 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_dimensionerror_index_.matchwarn.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="_dimensionerror_agenterror_index_.agentnothandlinginputerror.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section ">
+						<section class="tsd-index-section tsd-is-inherited">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_dimensionerror_index_.matchwarn.html#message" class="tsd-kind-icon">message</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_dimensionerror_index_.matchwarn.html#name" class="tsd-kind-icon">name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_dimensionerror_index_.matchwarn.html#stack" class="tsd-kind-icon">stack</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_dimensionerror_index_.matchwarn.html#error" class="tsd-kind-icon">Error</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_dimensionerror_agenterror_index_.agentnothandlinginputerror.html#agentid" class="tsd-kind-icon">agentID</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_dimensionerror_agenterror_index_.agentnothandlinginputerror.html#message" class="tsd-kind-icon">message</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_dimensionerror_agenterror_index_.agentnothandlinginputerror.html#name" class="tsd-kind-icon">name</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_dimensionerror_agenterror_index_.agentnothandlinginputerror.html#stack" class="tsd-kind-icon">stack</a></li>
 							</ul>
 						</section>
 					</div>
@@ -110,17 +114,18 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Match<wbr>Warn<span class="tsd-signature-symbol">(</span>m<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dimensionerror_index_.matchwarn.html" class="tsd-signature-type">MatchWarn</a></li>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Agent<wbr>Not<wbr>Handling<wbr>Input<wbr>Error<span class="tsd-signature-symbol">(</span>m<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, agentID<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dimensionerror_agenterror_index_.agentnothandlinginputerror.html" class="tsd-signature-type">AgentNotHandlingInputError</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Overrides <a href="_dimensionerror_agenterror_index_.agenterror.html">AgentError</a>.<a href="_dimensionerror_agenterror_index_.agenterror.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/DimensionError/index.ts#L34">https://github.com/StoneT2000/Dimensions/blob/master/src/DimensionError/index.ts#L34</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/DimensionError/AgentError/index.ts#L36">https://github.com/StoneT2000/Dimensions/blob/master/src/DimensionError/AgentError/index.ts#L36</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -128,14 +133,34 @@
 								<li>
 									<h5>m: <span class="tsd-signature-type">string</span></h5>
 								</li>
+								<li>
+									<h5>agentID: <span class="tsd-signature-type">number</span></h5>
+								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_dimensionerror_index_.matchwarn.html" class="tsd-signature-type">MatchWarn</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_dimensionerror_agenterror_index_.agentnothandlinginputerror.html" class="tsd-signature-type">AgentNotHandlingInputError</a></h4>
 						</li>
 					</ul>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
+			<section class="tsd-panel-group tsd-member-group tsd-is-inherited">
 				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="agentid" class="tsd-anchor"></a>
+					<h3>agentID</h3>
+					<div class="tsd-signature tsd-kind-icon">agentID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = -1</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="_dimensionerror_agenterror_index_.agenterror.html">AgentError</a>.<a href="_dimensionerror_agenterror_index_.agenterror.html#agentid">agentID</a></p>
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/DimensionError/AgentError/index.ts#L23">https://github.com/StoneT2000/Dimensions/blob/master/src/DimensionError/AgentError/index.ts#L23</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The id of the <a href="../modules/_index_.html#agent">Agent</a> that caused the error. If it is -1, then there is no one specific
+							agent that caused the agent error</p>
+						</div>
+					</div>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="message" class="tsd-anchor"></a>
 					<h3>message</h3>
@@ -156,22 +181,12 @@
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
 					<a name="stack" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> stack</h3>
 					<div class="tsd-signature tsd-kind-icon">stack<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_dimensionerror_agenterror_index_.agenterror.html">AgentError</a>.<a href="_dimensionerror_agenterror_index_.agenterror.html#stack">stack</a></p>
-						<p>Overrides <a href="_dimensionerror_agenterror_index_.agenterror.html">AgentError</a>.<a href="_dimensionerror_agenterror_index_.agenterror.html#stack">stack</a></p>
-						<ul>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="error" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> Error</h3>
-					<div class="tsd-signature tsd-kind-icon">Error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ErrorConstructor</span></div>
-					<aside class="tsd-sources">
 						<ul>
 						</ul>
 					</aside>
@@ -185,119 +200,86 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="../modules/_dimensionerror_index_.html">&quot;<wbr>Dimension<wbr>Error/index&quot;</a>
+						<a href="../modules/_dimensionerror_agenterror_index_.html">&quot;<wbr>Dimension<wbr>Error/<wbr>Agent<wbr>Error/index&quot;</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="../modules/_dimensionerror_index_.html#agentcompileerror" class="tsd-kind-icon">Agent<wbr>Compile<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="../modules/_dimensionerror_index_.html#agentcompiletimeouterror" class="tsd-kind-icon">Agent<wbr>Compile<wbr>Timeout<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="../modules/_dimensionerror_index_.html#agentdirectoryerror" class="tsd-kind-icon">Agent<wbr>Directory<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="../modules/_dimensionerror_index_.html#agenterror" class="tsd-kind-icon">Agent<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="../modules/_dimensionerror_index_.html#agentfileerror" class="tsd-kind-icon">Agent<wbr>File<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="../modules/_dimensionerror_index_.html#agentinstallerror" class="tsd-kind-icon">Agent<wbr>Install<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="../modules/_dimensionerror_index_.html#agentinstalltimeouterror" class="tsd-kind-icon">Agent<wbr>Install<wbr>Timeout<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="../modules/_dimensionerror_index_.html#agentmissingiderror" class="tsd-kind-icon">Agent<wbr>MissingIDError</a>
-					</li>
-					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="../modules/_dimensionerror_index_.html#agentnothandlinginputerror" class="tsd-kind-icon">Agent<wbr>Not<wbr>Handling<wbr>Input<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="../modules/_dimensionerror_index_.html#databaseerror" class="tsd-kind-icon">Database<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="../modules/_dimensionerror_index_.html#databasegetusererror" class="tsd-kind-icon">Database<wbr>Get<wbr>User<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="../modules/_dimensionerror_index_.html#matchdestroyederror" class="tsd-kind-icon">Match<wbr>Destroyed<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="../modules/_dimensionerror_index_.html#matcherror" class="tsd-kind-icon">Match<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="../modules/_dimensionerror_index_.html#matcherrorlogfileerror" class="tsd-kind-icon">Match<wbr>Error<wbr>Log<wbr>File<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="../modules/_dimensionerror_index_.html#matchreplayfileerror" class="tsd-kind-icon">Match<wbr>Replay<wbr>File<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="../modules/_dimensionerror_index_.html#tournamenterror" class="tsd-kind-icon">Tournament<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="../modules/_dimensionerror_index_.html#tournamentplayerdoesnotexisterror" class="tsd-kind-icon">Tournament<wbr>Player<wbr>Does<wbr>Not<wbr>Exist<wbr>Error</a>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="_dimensionerror_agenterror_index_.agentcompileerror.html" class="tsd-kind-icon">Agent<wbr>Compile<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="_dimensionerror_index_.dimensionerror.html" class="tsd-kind-icon">Dimension<wbr>Error</a>
+						<a href="_dimensionerror_agenterror_index_.agentcompiletimeouterror.html" class="tsd-kind-icon">Agent<wbr>Compile<wbr>Timeout<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="_dimensionerror_index_.fatalerror.html" class="tsd-kind-icon">Fatal<wbr>Error</a>
+						<a href="_dimensionerror_agenterror_index_.agentdirectoryerror.html" class="tsd-kind-icon">Agent<wbr>Directory<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="_dimensionerror_agenterror_index_.agenterror.html" class="tsd-kind-icon">Agent<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="_dimensionerror_agenterror_index_.agentfileerror.html" class="tsd-kind-icon">Agent<wbr>File<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="_dimensionerror_agenterror_index_.agentinstallerror.html" class="tsd-kind-icon">Agent<wbr>Install<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="_dimensionerror_agenterror_index_.agentinstalltimeouterror.html" class="tsd-kind-icon">Agent<wbr>Install<wbr>Timeout<wbr>Error</a>
+					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="_dimensionerror_agenterror_index_.agentmissingiderror.html" class="tsd-kind-icon">Agent<wbr>MissingIDError</a>
 					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-module">
-						<a href="_dimensionerror_index_.matchwarn.html" class="tsd-kind-icon">Match<wbr>Warn</a>
+						<a href="_dimensionerror_agenterror_index_.agentnothandlinginputerror.html" class="tsd-kind-icon">Agent<wbr>Not<wbr>Handling<wbr>Input<wbr>Error</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_dimensionerror_index_.matchwarn.html#constructor" class="tsd-kind-icon">constructor</a>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_dimensionerror_agenterror_index_.agentnothandlinginputerror.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="_dimensionerror_index_.matchwarn.html#message" class="tsd-kind-icon">message</a>
+								<a href="_dimensionerror_agenterror_index_.agentnothandlinginputerror.html#agentid" class="tsd-kind-icon">agentID</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
-								<a href="_dimensionerror_index_.matchwarn.html#name" class="tsd-kind-icon">name</a>
+								<a href="_dimensionerror_agenterror_index_.agentnothandlinginputerror.html#message" class="tsd-kind-icon">message</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-								<a href="_dimensionerror_index_.matchwarn.html#stack" class="tsd-kind-icon">stack</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="_dimensionerror_agenterror_index_.agentnothandlinginputerror.html#name" class="tsd-kind-icon">name</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="_dimensionerror_index_.matchwarn.html#error" class="tsd-kind-icon">Error</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="_dimensionerror_agenterror_index_.agentnothandlinginputerror.html#stack" class="tsd-kind-icon">stack</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="_dimensionerror_index_.missingfileserror.html" class="tsd-kind-icon">Missing<wbr>Files<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="_dimensionerror_index_.notsupportederror.html" class="tsd-kind-icon">Not<wbr>Supported<wbr>Error</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="_dimensionerror_index_.securityerror.html" class="tsd-kind-icon">Security<wbr>Error</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_dimensionerror_agenterror_index_.html#agent_compile_error" class="tsd-kind-icon">AGENT_<wbr>COMPILE_<wbr>ERROR</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_dimensionerror_index_.html#dimension_error" class="tsd-kind-icon">DIMENSION_<wbr>ERROR</a>
+						<a href="../modules/_dimensionerror_agenterror_index_.html#agent_compile_timeout_error" class="tsd-kind-icon">AGENT_<wbr>COMPILE_<wbr>TIMEOUT_<wbr>ERROR</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_dimensionerror_index_.html#fatal_error" class="tsd-kind-icon">FATAL_<wbr>ERROR</a>
+						<a href="../modules/_dimensionerror_agenterror_index_.html#agent_directory_error" class="tsd-kind-icon">AGENT_<wbr>DIRECTORY_<wbr>ERROR</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_dimensionerror_index_.html#match_warn" class="tsd-kind-icon">MATCH_<wbr>WARN</a>
+						<a href="../modules/_dimensionerror_agenterror_index_.html#agent_error" class="tsd-kind-icon">AGENT_<wbr>ERROR</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_dimensionerror_index_.html#missing_files_error" class="tsd-kind-icon">MISSING_<wbr>FILES_<wbr>ERROR</a>
+						<a href="../modules/_dimensionerror_agenterror_index_.html#agent_file_error" class="tsd-kind-icon">AGENT_<wbr>FILE_<wbr>ERROR</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_dimensionerror_index_.html#not_supported_error" class="tsd-kind-icon">NOT_<wbr>SUPPORTED_<wbr>ERROR</a>
+						<a href="../modules/_dimensionerror_agenterror_index_.html#agent_install_error" class="tsd-kind-icon">AGENT_<wbr>INSTALL_<wbr>ERROR</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_dimensionerror_index_.html#security_error" class="tsd-kind-icon">SECURITY_<wbr>ERROR</a>
+						<a href="../modules/_dimensionerror_agenterror_index_.html#agent_install_timeout_error" class="tsd-kind-icon">AGENT_<wbr>INSTALL_<wbr>TIMEOUT_<wbr>ERROR</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_dimensionerror_agenterror_index_.html#agent_missing_id_error" class="tsd-kind-icon">AGENT_<wbr>MISSING_<wbr>ID_<wbr>ERROR</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_dimensionerror_agenterror_index_.html#agent_not_handling_input_error" class="tsd-kind-icon">AGENT_<wbr>NOT_<wbr>HANDLING_<wbr>INPUT_<wbr>ERROR</a>
 					</li>
 				</ul>
 			</nav>
@@ -330,9 +312,6 @@
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
 			</ul>
 		</div>
 	</div>
