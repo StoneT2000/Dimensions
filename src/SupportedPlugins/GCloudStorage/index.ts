@@ -51,7 +51,6 @@ export class GCloudStorage extends DStorage {
       dimension.name.toLowerCase().replace(/ /g, '_') +
       '_' +
       dimension.id.toLowerCase();
-    console.log(this.configs);
     this.storage = new Storage({
       keyFilename: this.configs.keyFilename,
       projectId: this.configs.projectId,
