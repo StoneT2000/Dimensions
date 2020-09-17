@@ -4,15 +4,11 @@ import { deepMerge } from '../../utils/DeepMerge';
 import { Dimension } from '../../Dimension';
 import { Database } from '../Database';
 import { Tournament } from '../../Tournament';
+import { deepCopy } from '../../utils/DeepCopy';
 
 export abstract class Storage extends Plugin {
   /** Default configs */
   public configs: Storage.Configs = {};
-  constructor(configs: DeepPartial<Storage.Configs> = {}) {
-    super();
-    deepMerge(this.configs, configs);
-  }
-
   /**
    * Performs any intialization tasks
    * Resolves when done

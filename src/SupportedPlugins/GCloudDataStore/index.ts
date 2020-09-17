@@ -104,13 +104,13 @@ export class GCloudDataStore extends Database {
       },
     };
     await this.datastore.insert({
-      key: playerIDkey,
-      data: {},
-    });
-    await this.datastore.insert({
       key: userKey,
       data: user,
       excludeFromIndexes: ['passwordHash'],
+    });
+    await this.datastore.insert({
+      key: playerIDkey,
+      data: {},
     });
   }
 

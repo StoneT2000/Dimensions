@@ -10,6 +10,8 @@ import { Tournament } from '../../Tournament';
 import LRUFileCache from '../../utils/LRUFileCache';
 import { LOCAL_DIR } from '../../utils/System';
 import { Logger } from '../../Logger';
+import { deepCopy } from '../../utils/DeepCopy';
+import { deepMerge } from '../../utils/DeepMerge';
 
 export class GCloudStorage extends DStorage {
   public name = 'GCloudStorage';
@@ -30,8 +32,8 @@ export class GCloudStorage extends DStorage {
   private lruFileCache: LRUFileCache;
 
   constructor(configs: DeepPartial<GCloudStorage.Configs>) {
-    super(configs);
-
+    super();
+    this.configs = deepMerge(this.configs, deepCopy(configs));
     // default cache size of 1 GB
     this.lruFileCache = new LRUFileCache(
       this.configs.fileCacheMaxSize,
@@ -49,6 +51,7 @@ export class GCloudStorage extends DStorage {
       dimension.name.toLowerCase().replace(/ /g, '_') +
       '_' +
       dimension.id.toLowerCase();
+    console.log(this.configs);
     this.storage = new Storage({
       keyFilename: this.configs.keyFilename,
       projectId: this.configs.projectId,
