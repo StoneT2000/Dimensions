@@ -327,7 +327,7 @@ export class Agent extends EventEmitter {
         if (this.options.secureMode) {
           try {
             const exec = await this.container.exec({
-              Cmd: ['/bin/bash', '-c', 'chmod u+x install.sh'],
+              Cmd: ['/bin/sh', '-c', 'chmod u+x install.sh'],
               WorkingDir: containerBotFolder,
             });
             await exec.start({});
@@ -348,7 +348,7 @@ export class Agent extends EventEmitter {
             return;
           }
         } else {
-          const p = spawn('bash', ['install.sh'], {
+          const p = spawn('sh', ['install.sh'], {
             cwd: this.cwd,
           });
           p.on('error', (err) => {
@@ -559,7 +559,7 @@ export class Agent extends EventEmitter {
     workingDir = '/'
   ): Promise<Agent.ContainerExecData> {
     const exec = await this.container.exec({
-      Cmd: ['/bin/bash', '-c', command],
+      Cmd: ['/bin/sh', '-c', command],
       AttachStdin: true,
       AttachStdout: true,
       AttachStderr: true,
