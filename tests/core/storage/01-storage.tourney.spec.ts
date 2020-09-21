@@ -1,4 +1,4 @@
-import * as Dimension from '../../../src';
+import { create } from '../../../src';
 import { RockPaperScissorsDesign } from '../../rps';
 import chai from 'chai';
 import path from 'path';
@@ -44,7 +44,7 @@ const botList = [users.rock1, paperBot];
 
 describe('Testing Storage with Tournament Singletons (no distribution)', () => {
   const rpsDesign = new RockPaperScissorsDesign('RPS');
-  const d = Dimension.create(rpsDesign, {
+  const d = create(rpsDesign, {
     name: 'testname',
     activateStation: false,
     observe: false,

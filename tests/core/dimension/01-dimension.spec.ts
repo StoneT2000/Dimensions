@@ -1,4 +1,4 @@
-import * as Dimension from '../../../src';
+import { create, DimensionType } from '../../../src';
 import { RockPaperScissorsDesign } from '../../rps';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -14,19 +14,19 @@ chai.use(chaiAsPromised);
 chai.use(chaiSubset);
 
 describe('Testing Dimension Class', () => {
-  let ddefault: Dimension.DimensionType;
-  let d: Dimension.DimensionType;
+  let ddefault: DimensionType;
+  let d: DimensionType;
   const botList = [
     './tests/kits/js/normal/rock.js',
     './tests/kits/js/normal/paper.js',
   ];
   before(async () => {
     const rpsDesign = new RockPaperScissorsDesign('RPS');
-    ddefault = Dimension.create(rpsDesign, {
+    ddefault = create(rpsDesign, {
       activateStation: false,
       observe: false,
     });
-    d = Dimension.create(rpsDesign, {
+    d = create(rpsDesign, {
       activateStation: false,
       observe: false,
       id: '123456',

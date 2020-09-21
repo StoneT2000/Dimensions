@@ -1,4 +1,4 @@
-import * as Dimension from '../../../src';
+import { create, DimensionType } from '../../../src';
 import { RockPaperScissorsDesign } from '../../rps';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -15,11 +15,11 @@ chai.use(chaiAsPromised);
 chai.use(chaiSubset);
 
 describe('Testing MatchEngine Memory Limit Mechanism', () => {
-  let d: Dimension.DimensionType;
+  let d: DimensionType;
   const rpsDesign = new RockPaperScissorsDesign('RPS');
   const tf = [true, false];
   before(() => {
-    d = Dimension.create(rpsDesign, {
+    d = create(rpsDesign, {
       activateStation: false,
       observe: false,
       loggingLevel: Logger.LEVEL.NONE,

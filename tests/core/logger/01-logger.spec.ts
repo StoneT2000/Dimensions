@@ -1,4 +1,3 @@
-import * as Dimension from '../../../src';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import sinon, { SinonSandbox } from 'sinon';
@@ -11,7 +10,7 @@ chai.use(sinonChai);
 chai.use(chaiAsPromised);
 
 describe('Test Logger', () => {
-  let log = new Dimension.Logger();
+  let log = new Logger();
   let consoleSpy, sandbox: SinonSandbox;
 
   const init = (level: Logger.LEVEL) => {
@@ -35,13 +34,13 @@ describe('Test Logger', () => {
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     consoleSpy = sandbox.spy(console, 'log');
-    log = new Dimension.Logger();
+    log = new Logger();
   });
   afterEach(() => {
     sandbox.restore();
   });
   it('Default INFO level logging', () => {
-    expect(log.level).to.equal(Dimension.Logger.LEVEL.INFO);
+    expect(log.level).to.equal(Logger.LEVEL.INFO);
   });
   it('Level INFO', () => {
     init(Logger.LEVEL.INFO);

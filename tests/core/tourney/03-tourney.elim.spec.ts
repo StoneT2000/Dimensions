@@ -1,4 +1,4 @@
-import * as Dimension from '../../../src';
+import { create } from '../../../src';
 import { RockPaperScissorsDesign } from '../../rps';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -18,7 +18,7 @@ describe('Testing Elimination Tournament Core', () => {
   const rock = { file: './tests/kits/js/normal/rock.js', name: 'rock' };
   const botList = [rock, paper];
   const rpsDesign = new RockPaperScissorsDesign('RPS');
-  const d = Dimension.create(rpsDesign, {
+  const d = create(rpsDesign, {
     activateStation: false,
     observe: false,
     id: '12345678',

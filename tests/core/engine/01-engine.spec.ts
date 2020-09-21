@@ -1,4 +1,4 @@
-import * as Dimension from '../../../src';
+import { create, DimensionType } from '../../../src';
 import { RockPaperScissorsDesign } from '../../rps';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -21,8 +21,8 @@ chai.use(chaiAsPromised);
 chai.use(chaiSubset);
 
 describe('Testing MatchEngine Core', () => {
-  let ddefault: Dimension.DimensionType;
-  let d: Dimension.DimensionType;
+  let ddefault: DimensionType;
+  let d: DimensionType;
   const paper = './tests/kits/js/normal/paper.js';
   const rock = './tests/kits/js/normal/rock.js';
   const bots = {
@@ -64,7 +64,7 @@ describe('Testing MatchEngine Core', () => {
   });
   const tf = [true, false];
   before(() => {
-    ddefault = Dimension.create(rpsDesign, {
+    ddefault = create(rpsDesign, {
       activateStation: false,
       observe: false,
       id: '123456',
@@ -73,7 +73,7 @@ describe('Testing MatchEngine Core', () => {
         storeErrorLogs: false,
       },
     });
-    d = Dimension.create(rpsDesignChanged, {
+    d = create(rpsDesignChanged, {
       activateStation: false,
       observe: false,
       id: '12345678',
@@ -194,9 +194,9 @@ describe('Testing MatchEngine Core', () => {
     });
 
     describe('Test LINE_COUNT policy ', () => {
-      let d: Dimension.DimensionType;
+      let d: DimensionType;
       before(() => {
-        d = Dimension.create(rpsDesignLineCount, {
+        d = create(rpsDesignLineCount, {
           activateStation: false,
           observe: false,
           id: '1234linecount',
@@ -415,10 +415,10 @@ describe('Testing MatchEngine Core', () => {
 
   describe('Test custom designs', () => {
     let custom: Design;
-    let d: Dimension.DimensionType;
+    let d: DimensionType;
     before(() => {
       custom = createCustomDesign();
-      d = Dimension.create(custom, {
+      d = create(custom, {
         activateStation: false,
         observe: false,
         loggingLevel: Logger.LEVEL.NONE,

@@ -1,19 +1,16 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
+    "target": "es6",
+    "module": "es6",
+    "moduleResolution": "node",
     "outDir": "lib/",
     "sourceMap": true,
     "declaration": true,
     "allowJs": true,
     "esModuleInterop": true,
     "isolatedModules": true,
-    "resolveJsonModule": true,
+    "resolveJsonModule": true
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "src/Support/**/*"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["src/Support/**/*"]
 }

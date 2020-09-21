@@ -7,6 +7,7 @@ npm run clean
 
 npm run test-seed
 
+TS_NODE_COMPILER_OPTIONS='{"module":"commonjs"}' \
 nyc --reporter=html --no-clean mocha --recursive tests/core/**/*.spec.ts tests/api/**/*.spec.ts
 
 # testpaths=( \

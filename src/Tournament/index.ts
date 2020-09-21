@@ -11,7 +11,7 @@ import {
 import { DeepPartial } from '../utils/DeepPartial';
 import { Logger } from '../Logger';
 
-import RankSystemDefault = require('./RankSystem');
+import { RankSystem as _RankSystem } from './RankSystem';
 import { deepCopy } from '../utils/DeepCopy';
 import { Dimension, NanoID } from '../Dimension';
 import { genID } from '../utils';
@@ -20,16 +20,17 @@ import { removeDirectorySync } from '../utils/System';
 import { Database } from '../Plugin/Database';
 
 import VarLock from '../utils/VarLock';
+import { TournamentStatus as _TournamentStatus } from './TournamentStatus';
+import { TournamentType as _TOURNAMENT_TYPE } from './TournamentTypes';
+// import TournamentStatusDefault = require('./TournamentStatus');
+// import TournamentTypeDefault = require('./TournamentTypes');
 
-import TournamentStatusDefault = require('./TournamentStatus');
-import TournamentTypeDefault = require('./TournamentTypes');
-
 /** @ignore */
-import _RankSystem = RankSystemDefault.RankSystem;
+// import _RankSystem = RankSystemDefault.RankSystem;
 /** @ignore */
-import _TOURNAMENT_TYPE = TournamentTypeDefault.TournamentType;
+// import _TOURNAMENT_TYPE = TournamentTypeDefault.TournamentType;
 /** @ignore */
-import _TournamentStatus = TournamentStatusDefault.TournamentStatus;
+// import _TournamentStatus = TournamentStatusDefault.TournamentStatus;
 
 /**
  * Player class that persists data for the same ephemereal agent across multiple matches. Used for {@link Tournament | Tournaments}
@@ -739,17 +740,17 @@ export abstract class Tournament extends EventEmitter {
 }
 
 // some imports moved to here to avoid circular issues with using values
-import LadderDefault = require('./Ladder');
+import { Ladder as LadderTournament } from './Ladder';
 /** @ignore */
-import LadderTournament = LadderDefault.Ladder;
+// import LadderTournament = LadderDefault.Ladder;
 
-import EliminationDefault = require('./Elimination');
+import { Elimination as EliminationTournament } from './Elimination';
 /** @ignore */
-import EliminationTournament = EliminationDefault.Elimination;
+// import EliminationTournament = EliminationDefault.Elimination;
 
-import SchedulerDefault = require('./Scheduler');
+import { Scheduler as SchedulerClass } from './Scheduler';
 /** @ignore */
-import SchedulerClass = SchedulerDefault.Scheduler;
+// import SchedulerClass = SchedulerDefault.Scheduler;
 
 export namespace Tournament {
   // Re-export tournament classes/namespaces

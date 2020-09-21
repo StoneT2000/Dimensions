@@ -24,12 +24,13 @@ export abstract class Plugin {
   abstract async manipulate(dimension: Dimension): Promise<void>;
 }
 
-import DatabaseDefault = require('./Database');
+import { Database as _Database } from './Database';
 /** @ignore */
-import _Database = DatabaseDefault.Database;
-import StorageDefault = require('./Storage');
+// import _Database = DatabaseDefault.Database;
+import { Storage as _Storage } from './storage';
+// import StorageDefault = require('./Storage');
 /** @ignore */
-import _Storage = StorageDefault.Storage;
+// import _Storage = StorageDefault.Storage;
 
 export namespace Plugin {
   /**

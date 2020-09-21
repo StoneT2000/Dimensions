@@ -1,4 +1,4 @@
-import * as Dimension from '../../../src';
+import { create, DimensionType, MatchWarn } from '../../../src';
 import { RockPaperScissorsDesign } from '../../rps';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -22,7 +22,7 @@ describe('Testing Match Core', () => {
   const rock = './tests/kits/js/normal/rock.js';
   const botList = [rock, paper];
   const rpsDesign = new RockPaperScissorsDesign('RPS');
-  const d = Dimension.create(rpsDesign, {
+  const d = create(rpsDesign, {
     activateStation: false,
     observe: false,
     id: '12345678',
@@ -101,7 +101,7 @@ describe('Testing Match Core', () => {
         bestOf: 1001,
       });
       expect(match.matchStatus).to.equal(Match.Status.READY);
-      await expect(match.resume()).to.be.rejectedWith(Dimension.MatchWarn);
+      await expect(match.resume()).to.be.rejectedWith(MatchWarn);
       match.run().catch(noop);
 
       const timer = () => {
@@ -109,14 +109,10 @@ describe('Testing Match Core', () => {
           setTimeout(async () => {
             try {
               expect(match.matchStatus).to.equal(Match.Status.RUNNING);
-              await expect(match.resume()).to.be.rejectedWith(
-                Dimension.MatchWarn
-              );
+              await expect(match.resume()).to.be.rejectedWith(MatchWarn);
               await match.stop();
 
-              await expect(match.stop()).to.be.rejectedWith(
-                Dimension.MatchWarn
-              );
+              await expect(match.stop()).to.be.rejectedWith(MatchWarn);
               expect(match.matchStatus).to.equal(Match.Status.STOPPED);
               await match.resume();
 
@@ -164,10 +160,10 @@ describe('Testing Match Core', () => {
 
   describe('Test custom designs', () => {
     let custom: Design;
-    let d: Dimension.DimensionType;
+    let d: DimensionType;
     before(() => {
       custom = createCustomDesign();
-      d = Dimension.create(custom, {
+      d = create(custom, {
         activateStation: false,
         observe: false,
         loggingLevel: Logger.LEVEL.NONE,

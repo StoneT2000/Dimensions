@@ -25,7 +25,7 @@ import { NanoID, Dimension } from '../Dimension';
 import { genID } from '../utils';
 import { deepCopy } from '../utils/DeepCopy';
 import path from 'path';
-import extract = require('extract-zip');
+import extract from 'extract-zip';
 import { removeDirectory, removeFile } from '../utils/System';
 import { BOT_DIR } from '../Station';
 import { mkdirSync, existsSync, statSync } from 'fs';

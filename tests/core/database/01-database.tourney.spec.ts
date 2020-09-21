@@ -1,4 +1,4 @@
-import * as Dimension from '../../../src';
+import { create } from '../../../src';
 import { RockPaperScissorsDesign } from '../../rps';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -52,7 +52,7 @@ const userBotList = [disabled, users.rock2, paperBot]; // new bots to add
 
 describe('Testing Database with Tournament Singletons (no distribution)', () => {
   const rpsDesign = new RockPaperScissorsDesign('RPS');
-  const d = Dimension.create(rpsDesign, {
+  const d = create(rpsDesign, {
     activateStation: false,
     observe: false,
     id: '12345678',

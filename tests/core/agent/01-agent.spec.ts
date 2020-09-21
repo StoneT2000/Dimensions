@@ -1,4 +1,4 @@
-import * as Dimension from '../../../src';
+import { Agent } from '../../../src/';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
@@ -20,26 +20,26 @@ describe('Testing Agent', () => {
   describe('Testing Agent Errors', () => {
     it('should throw directory errors', () => {
       expect(() => {
-        new Dimension.Agent('./fake_folder/afile.js', { id: 0 });
+        new Agent('./fake_folder/afile.js', { id: 0 });
       }).to.throw(AgentDirectoryError);
     });
     it('should throw file errors', () => {
       expect(() => {
-        new Dimension.Agent('./tests/afake_file.js', { id: 0 });
+        new Agent('./tests/afake_file.js', { id: 0 });
       }).to.throw(AgentFileError);
     });
   });
 
   describe('Testing Agent Initialization', () => {
     it('should work in non-securemode', () => {
-      const a = new Dimension.Agent('./tests/kits/js/normal/rock.js', {
+      const a = new Agent('./tests/kits/js/normal/rock.js', {
         id: 0,
         secureMode: false,
       });
       validateAgent(a, { id: 0, secureMode: false });
     });
     it('should work in securemode', () => {
-      const a = new Dimension.Agent('./tests/kits/js/normal/rock.js', {
+      const a = new Agent('./tests/kits/js/normal/rock.js', {
         id: 0,
         secureMode: true,
       });
@@ -48,8 +48,8 @@ describe('Testing Agent', () => {
   });
 });
 
-const validateAgent = (a: Dimension.Agent, providedConfigs: any) => {
-  const vals = Dimension.Agent.OptionDefaults;
+const validateAgent = (a: Agent, providedConfigs: any) => {
+  const vals = Agent.OptionDefaults;
   for (const key in providedConfigs) {
     vals[key] = providedConfigs[key];
   }
