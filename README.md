@@ -44,11 +44,11 @@ Also checkout the blog post introducing the motivation for Dimensions and though
 
 - Easy to build an AI competition that is language agnostic, allowing any kind of bot in any language to compete in your competition
 - Run many kinds of AI competitions and run different kinds of formats like round robin or using Trueskill in a ladder tournament (like a leaderboard).
-- Wrap your own AI competition built without the dimensions framework to make use of its competition running features such as Trueskill ranking like the [Halite 4 wrapper](https://github.com/StoneT2000/Halite-4-Tournament-Runner).
+- Wrap your own AI competition built without the dimensions framework to make use of its competition running features such as Trueskill ranking like the [Halite 4 wrapper](https://github.com/StoneT2000/Halite-4-Tournament-Runner) used by competitors in the Halite 4 challenge on Kaggle.
 - Comes with an API served locally that gives access to data on ongoing matches and tournaments and allows for direct control of matches and tournaments through the API. See this page for details on this API: https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API
-  - Check out https://github.com/StoneT2000/Dimensions-web if you want a website and UI to use the API data from.
 - Supports plugins like the [MongoDB](https://github.com/StoneT2000/Dimensions/wiki/Plugin#supported-plugins) plugin that takes three lines of code to automatically integrate and scale up your tournament and integrate an automatic user authentication and login system. See [this](https://github.com/StoneT2000/Dimensions/wiki/Scaling) for complete info on how to scale up.
 - Ensures malicious bots cannot cause harm to your servers through `secureMode`. See [this wiki page](https://github.com/StoneT2000/Dimensions/wiki/Security) for details.
+- Built with Typescript means any design easily integrates into a frontend replay viewer to reconstruct matches for viewing using minimal data storage.
 
 ## Requirements
 
