@@ -29,6 +29,10 @@ export enum DatabaseType {
    * Represents mongodb database used
    */
   MONGO = 'mongo',
+  /**
+   * Firestore DB is used
+   */
+  FIRESTORE = 'firestore',
 }
 export enum StorageType {
   /**
