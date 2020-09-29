@@ -9,7 +9,7 @@ import { pickMatch } from '../../Station/routes/api/dimensions/match';
 import bcrypt from 'bcryptjs';
 
 import { generateToken, verify } from '../../Plugin/Database/utils';
-import { Tournament } from '../../Tournament';
+import { Player, Tournament } from '../../Tournament';
 import { nanoid } from '../..';
 import { TournamentStatus } from '../../Tournament/TournamentStatus';
 import { deepMerge } from '../../utils/DeepMerge';
@@ -26,10 +26,8 @@ type TournamentConfigsCollectionData = {
 
 type MatchCollectionData = Pick<
   Match,
-  | 'configs'
   | 'creationDate'
   | 'id'
-  | 'log'
   | 'mapAgentIDtoTournamentID'
   | 'matchStatus'
   | 'name'
@@ -67,16 +65,13 @@ export class FireStore extends Database {
    */
   public async connect(): Promise<FirebaseFirestore.Firestore> {
     this.db = admin.firestore();
+    this.db.settings({ ignoreUndefinedProperties: true });
     return this.db;
   }
 
   public async initialize(): Promise<void> {
     await this.connect();
-    // create admin user
-    const existingUser = await this.getUser('admin');
-    if (!existingUser) {
-      await this.registerUser('admin', process.env.ADMIN_PASSWORD);
-    }
+
     this.userCollection = <
       FirebaseFirestore.CollectionReference<Database.User>
     >this.db.collection(FireStore.Collections.USERS);
@@ -86,12 +81,27 @@ export class FireStore extends Database {
     this.tournamentConfigsCollection = <
       FirebaseFirestore.CollectionReference<TournamentConfigsCollectionData>
     >this.db.collection(FireStore.Collections.TOURNAMENT_CONFIGS);
+    // create admin user
+    const existingUser = await this.getUser('admin');
+    if (!existingUser) {
+      await this.registerUser('admin', process.env.ADMIN_PASSWORD);
+    }
     return;
   }
 
   public async storeMatch(match: Match, governID: nanoid): Promise<any> {
     const data = { ...pickMatch(match), governID: governID };
+    // remove extra data
+    delete data.configs;
     // store all relevant data
+    const plainAgentIDtoTournamentID = {};
+    data.mapAgentIDtoTournamentID.forEach((val, key) => {
+      plainAgentIDtoTournamentID[key] = val;
+    });
+    data.mapAgentIDtoTournamentID = plainAgentIDtoTournamentID as Map<
+      number,
+      Tournament.ID
+    >;
     return this.matchesCollection.doc().set(data);
   }
   public async getMatch(id: NanoID): Promise<any> {
@@ -139,6 +149,7 @@ export class FireStore extends Database {
       username: username,
       passwordHash: hash,
       statistics: {},
+      playerID: Player.generatePlayerID(),
       meta: {
         ...userData,
       },
@@ -263,7 +274,10 @@ export class FireStore extends Database {
     const snapshot = await this.tournamentConfigsCollection
       .doc(tournamentID)
       .get();
-    return snapshot.data().modificationDate;
+    if (snapshot.exists) {
+      return new Date(snapshot.data().modificationDate);
+    }
+    return null;
   }
   public async getTournamentConfigs(
     tournamentID: nanoid

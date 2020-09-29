@@ -69,7 +69,6 @@ export const pickMatch = (match: Match) => {
       'configs',
       'creationDate',
       'id',
-      'log',
       'mapAgentIDtoTournamentID',
       'matchStatus',
       'name',

@@ -11,6 +11,7 @@ export * from './Logger';
 export * from './SupportedPlugins/MongoDB';
 export * from './SupportedPlugins/GCloudStorage';
 export * from './SupportedPlugins/GCloudDataStore';
+export * from './SupportedPlugins/FireStore';
 export * from './Design';
 export * from './Agent';
 export * from './Tournament';
