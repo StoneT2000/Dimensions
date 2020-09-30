@@ -3,8 +3,6 @@ import { DeepPartial } from '../../utils/DeepPartial';
 import { Dimension, NanoID } from '../../Dimension';
 import { Match } from '../../Match';
 import { Tournament, Player } from '../../Tournament';
-import { Ladder } from '../../Tournament/Ladder';
-import { TournamentError } from '../../DimensionError';
 import { verify, generateToken } from '../../Plugin/Database/utils';
 import { Plugin } from '../../Plugin';
 import bcrypt from 'bcryptjs';

@@ -94,5 +94,8 @@
     "url": "https://github.com/StoneT2000/Dimensions.git"
   },
   "mocha": ".mocharc.json",
-  "sideEffects": false
+  "sideEffects": false,
+  "optionalDependencies": {
+    "firebase-admin": "^9.2.0"
+  }
 }

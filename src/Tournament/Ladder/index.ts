@@ -594,7 +594,12 @@ export class Ladder extends Tournament {
       }
 
       // perform update
-      update.statistics[keyName] = playerStat;
+      const plainPlayer = {};
+      Object.entries(player).forEach(([key, value]) => {
+        plainPlayer[key] = value;
+      });
+      update.statistics[keyName] = { ...playerStat, player: plainPlayer };
+
       try {
         await this.dimension.databasePlugin.updateUser(
           player.tournamentID.id,
