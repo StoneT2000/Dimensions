@@ -96,13 +96,11 @@ agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
 				<ul>
 					<li>Easy to build an AI competition that is language agnostic, allowing any kind of bot in any language to compete in your competition</li>
 					<li>Run many kinds of AI competitions and run different kinds of formats like round robin or using Trueskill in a ladder tournament (like a leaderboard).</li>
-					<li>Wrap your own AI competition built without the dimensions framework to make use of its competition running features such as Trueskill ranking like the <a href="https://github.com/StoneT2000/Halite-4-Tournament-Runner">Halite 4 wrapper</a>.</li>
-					<li>Comes with an API served locally that gives access to data on ongoing matches and tournaments and allows for direct control of matches and tournaments through the API. See this page for details on this API: <a href="https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API">https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API</a><ul>
-							<li>Check out <a href="https://github.com/StoneT2000/Dimensions-web">https://github.com/StoneT2000/Dimensions-web</a> if you want a website and UI to use the API data from.</li>
-						</ul>
-					</li>
+					<li>Wrap your own AI competition built without the dimensions framework to make use of its competition running features such as Trueskill ranking like the <a href="https://github.com/StoneT2000/Halite-4-Tournament-Runner">Halite 4 wrapper</a> used by competitors in the Halite 4 challenge on Kaggle.</li>
+					<li>Comes with an API served locally that gives access to data on ongoing matches and tournaments and allows for direct control of matches and tournaments through the API. See this page for details on this API: <a href="https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API">https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API</a></li>
 					<li>Supports plugins like the <a href="https://github.com/StoneT2000/Dimensions/wiki/Plugin#supported-plugins">MongoDB</a> plugin that takes three lines of code to automatically integrate and scale up your tournament and integrate an automatic user authentication and login system. See <a href="https://github.com/StoneT2000/Dimensions/wiki/Scaling">this</a> for complete info on how to scale up.</li>
 					<li>Ensures malicious bots cannot cause harm to your servers through <code>secureMode</code>. See <a href="https://github.com/StoneT2000/Dimensions/wiki/Security">this wiki page</a> for details.</li>
+					<li>Built with Typescript means any design easily integrates into a frontend replay viewer to reconstruct matches for viewing using minimal data storage.</li>
 				</ul>
 				<a href="#requirements" id="requirements" style="color: inherit; text-decoration: none;">
 					<h2>Requirements</h2>
@@ -313,13 +311,13 @@ RPSTournament.run();</code></pre>
 						<a href="modules/_plugin_database_utils_.html">&quot;<wbr>Plugin/<wbr>Database/utils&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_plugin_storage_index_.html">&quot;<wbr>Plugin/<wbr>Storage/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
 						<a href="modules/_plugin_index_.html">&quot;<wbr>Plugin/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_supportedplugins_filesystemstorage_index_.html">&quot;<wbr>Supported<wbr>Plugins/<wbr>File<wbr>System<wbr>Storage/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_supportedplugins_firestore_index_.html">&quot;<wbr>Supported<wbr>Plugins/<wbr>Fire<wbr>Store/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_supportedplugins_gclouddatastore_index_.html">&quot;<wbr>Supported<wbr>Plugins/GCloud<wbr>Data<wbr>Store/index&quot;</a>
@@ -404,6 +402,9 @@ RPSTournament.run();</code></pre>
 					</li>
 					<li class="label tsd-is-external">
 						<span>Externals</span>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="modules/_plugin_storage_index_.html">&quot;<wbr>Plugin/storage/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module tsd-is-external">
 						<a href="modules/_security_seccomp_default_.html">&quot;<wbr>Security/seccomp/default&quot;</a>
