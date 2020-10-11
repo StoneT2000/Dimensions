@@ -1,5 +1,5 @@
 import admin from 'firebase-admin';
-
+import FirebaseFirestore from '@google-cloud/firestore';
 import { Plugin } from '../../Plugin';
 import { Database } from '../../Plugin/Database';
 import { Dimension, DatabaseType, NanoID } from '../../Dimension';
