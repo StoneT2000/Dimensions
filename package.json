@@ -1,6 +1,6 @@
 {
   "name": "dimensions-ai",
-  "version": "4.6.2",
+  "version": "4.6.3",
   "description": "A generalized AI Competition framework that allows you to create any competition you want in any language you want with no hassle.",
   "main": "./lib/main/index.js",
   "types": "./lib/main/index.d.ts",
@@ -48,7 +48,8 @@
     "seedrandom": "^3.0.5",
     "sprintf-js": "^1.1.2",
     "tree-kill": "^1.2.2",
-    "ts-trueskill": "^2.5.5"
+    "ts-trueskill": "^2.5.5",
+    "firebase-admin": "^9.2.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
@@ -94,8 +95,5 @@
     "url": "https://github.com/StoneT2000/Dimensions.git"
   },
   "mocha": ".mocharc.json",
-  "sideEffects": false,
-  "optionalDependencies": {
-    "firebase-admin": "^9.2.0"
-  }
+  "sideEffects": false
 }
