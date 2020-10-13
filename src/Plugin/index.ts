@@ -27,7 +27,7 @@ export abstract class Plugin {
 import { Database as _Database } from './Database';
 /** @ignore */
 // import _Database = DatabaseDefault.Database;
-import { Storage as _Storage } from './storage';
+import { Storage as _Storage } from './Storage';
 // import StorageDefault = require('./Storage');
 /** @ignore */
 // import _Storage = StorageDefault.Storage;
