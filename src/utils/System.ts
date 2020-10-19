@@ -6,7 +6,7 @@ import { spawnSync, spawn } from 'child_process';
 import fs, { mkdirSync } from 'fs';
 import path from 'path';
 
-export const LOCAL_DIR = path.join(__dirname, '../../../../local');
+export const LOCAL_DIR = path.join(__dirname, '../../../../../local');
 
 /**
  * Removes a file synchronously

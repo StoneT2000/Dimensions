@@ -92,6 +92,7 @@ export class Scheduler {
         } else if (right > players.length) {
           // pad left
           left -= Math.max(0, right - players.length);
+          left = Math.max(left, 0);
         }
         const chosen = chooseKRandomElements(
           [...players.slice(left, i), ...players.slice(i + 1, right)],
