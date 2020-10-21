@@ -288,7 +288,6 @@ export class Elimination extends Tournament {
       winner = this.state.playerStats.get(p1ID);
       loser = this.state.playerStats.get(p0ID);
     } else if (parsedRes[p0ID] === parsedRes[p1ID]) {
-      // TODO: randomly decide who gets to win because score was tied
       if (Math.random() > 0.5) {
         winner = this.state.playerStats.get(p1ID);
         loser = this.state.playerStats.get(p0ID);

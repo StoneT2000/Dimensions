@@ -157,7 +157,7 @@ export abstract class Tournament extends EventEmitter {
   private lockedPlayers: Map<nanoid, VarLock> = new Map();
 
   /**
-   * Map from player ids to the last version used in a match
+   * Map from player ids to the last version used in a match in this tournament instance
    *
    * TODO: This is not a good solution, it is effectively an in-memory cache used to invalidate past bot files. It has
    * low space overhead but it won't scale nicely.

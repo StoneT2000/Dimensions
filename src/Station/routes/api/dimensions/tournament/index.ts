@@ -368,8 +368,6 @@ router.post(
  * file must be a zip
  * id is a tournament ID string specified only if you want to upload a new bot to replace an existing one
  *
- * TODO: This route can be kind of slow because it reuploads a users bot and also checks its integrity and then deletes
- * it again
  */
 router.post(
   '/:tournamentID/upload/',

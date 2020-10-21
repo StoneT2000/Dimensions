@@ -915,7 +915,6 @@ export class Ladder extends Tournament {
           currentStats.player.tournamentID.id
         );
         // if user is still in tourney, update it
-        // TODO: make user.statistics[this.getKeyName()] a function
         if (user && user.statistics[this.getKeyName()]) {
           await this.updateDatabasePlayerStats(currentStats, user);
         }

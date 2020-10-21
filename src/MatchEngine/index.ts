@@ -455,9 +455,6 @@ export class MatchEngine {
       Promise.all(allAgentMovePromises).then(() => {
         this.log.system(`All move promises resolved`);
         match.agents.forEach((agent: Agent) => {
-          // TODO: Add option to store sets of commands delimited by '\n' for an Agent as different sets of commands
-          // for that Agent. Default right now is store every command delimited by the delimiter
-
           // for each set of commands delimited by '\n' in stdout of process, split it by delimiter and push to
           // commands
           agent.currentMoveCommands.forEach((commandString) => {
