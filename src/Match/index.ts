@@ -461,7 +461,10 @@ export class Match {
           agent.getAgentErrorLogFilename()
         );
         if (existsSync(filepath)) {
-          if (this.dimension.hasStorage()) {
+          // check if replay file is empty
+          if (agent._logsize === 0) {
+            fileLogsToRemove.push(filepath);
+          } else if (this.dimension.hasStorage()) {
             const uploadKeyPromise = this.dimension.storagePlugin
               .upload(filepath, filepath)
               .then((key) => {

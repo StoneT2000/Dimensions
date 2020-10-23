@@ -295,6 +295,7 @@ export class Agent extends EventEmitter {
         const installTimer = setTimeout(() => {
           const msg = 'Agent went over install time during the install stage\n';
           if (this.errorLogWriteStream) {
+            this._logsize += msg.length;
             this.errorLogWriteStream.write(msg);
           }
           reject(new AgentInstallTimeoutError(msg, this.id));
@@ -318,6 +319,7 @@ export class Agent extends EventEmitter {
               } MB`;
             }
             if (this.errorLogWriteStream) {
+              this._logsize += msg.length;
               this.errorLogWriteStream.write(msg + '\n');
             }
             reject(new AgentInstallError(msg, this.id));
@@ -406,6 +408,7 @@ export class Agent extends EventEmitter {
       const compileTimer = setTimeout(() => {
         const msg = 'Agent went over compile time during the compile stage\n';
         if (this.errorLogWriteStream) {
+          this._logsize += msg.length;
           this.errorLogWriteStream.write(msg);
         }
         reject(new AgentCompileTimeoutError(msg, this.id));
@@ -480,6 +483,7 @@ export class Agent extends EventEmitter {
             } MB`;
           }
           if (this.errorLogWriteStream) {
+            this._logsize += msg.length;
             this.errorLogWriteStream.write(msg + '\n');
           }
           reject(new AgentCompileError(msg, this.id));
@@ -682,7 +686,9 @@ export class Agent extends EventEmitter {
    */
   timeout(): void {
     if (this.errorLogWriteStream) {
-      this.errorLogWriteStream.write('Agent timed out');
+      const msg = 'Agent timed out';
+      this._logsize += msg.length;
+      this.errorLogWriteStream.write(msg);
     }
     this.emit(Agent.AGENT_EVENTS.TIMEOUT);
   }
@@ -692,7 +698,9 @@ export class Agent extends EventEmitter {
    */
   overMemory(): void {
     if (this.errorLogWriteStream) {
-      this.errorLogWriteStream.write('Agent exceeded memory limit');
+      const msg = 'Agent exceeded memory limit';
+      this._logsize += msg.length;
+      this.errorLogWriteStream.write(msg);
     }
     this.emit(Agent.AGENT_EVENTS.EXCEED_MEMORY_LIMIT);
   }
@@ -1086,7 +1094,7 @@ export namespace Agent {
     /**
      * Limit of agent logs in bytes.
      *
-     * @default `1e6 - 1 megabyte`
+     * @default `1e5 - 100 kb`
      */
     logLimit: number;
   }
@@ -1128,7 +1136,7 @@ export namespace Agent {
     compileCommands: {},
     image: 'docker.io/stonezt2000/dimensions_langs',
     useCachedBotFile: false,
-    logLimit: 1e6,
+    logLimit: 1e5,
   };
 
   export type GenerationMetaData =
