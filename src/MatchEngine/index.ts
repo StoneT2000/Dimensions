@@ -280,7 +280,7 @@ export class MatchEngine {
         } else {
           if (agent._trimmed === false) {
             agent._trimmed = true;
-            this.log.warn(`${agent.id} logs were trimmed`);
+            this.log.warn(`agent ${agent.id}'s logs were trimmed`);
             errorLogWriteStream.write(`\nend of logs as logs were trimmed\n`);
           }
         }

@@ -486,8 +486,12 @@ export class Match {
       this.idToAgentsMap.get(val.agentID).logkey = val.key;
     });
 
-    if (fileLogsToRemove.length > 0) {
+    if (fileLogsToRemove.length === this.agents.length) {
       removeDirectory(this.getMatchErrorLogDirectory());
+    } else {
+      fileLogsToRemove.forEach((logPath) => {
+        removeFile(logPath);
+      });
     }
   }
 
