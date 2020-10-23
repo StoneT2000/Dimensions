@@ -94,9 +94,9 @@ describe('Testing Storage with Matches Singletons', () => {
     expect(fs.existsSync(agent0logs)).to.equal(true);
     expect(fs.existsSync(agent1logs)).to.equal(true);
     const stat0 = fs.statSync(agent1logs);
-    expect(stat0.size).to.be.lessThan(1e5 + 8192);
+    expect(stat0.size).to.be.lessThan(1e5 + 5e4);
     const stat1 = fs.statSync(agent1logs);
-    expect(stat1.size).to.be.lessThan(1e5 + 8192);
+    expect(stat1.size).to.be.lessThan(1e5 + 5e4);
   });
   it('should not store empty error logs with no agent created output', async () => {
     const match = await d.createMatch([users.rock1, users.rock1], {
