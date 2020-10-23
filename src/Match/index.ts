@@ -461,7 +461,10 @@ export class Match {
           agent.getAgentErrorLogFilename()
         );
         if (existsSync(filepath)) {
-          if (this.dimension.hasStorage()) {
+          // check if replay file is empty
+          if (agent._logsize === 0) {
+            fileLogsToRemove.push(filepath);
+          } else if (this.dimension.hasStorage()) {
             const uploadKeyPromise = this.dimension.storagePlugin
               .upload(filepath, filepath)
               .then((key) => {
@@ -483,8 +486,12 @@ export class Match {
       this.idToAgentsMap.get(val.agentID).logkey = val.key;
     });
 
-    if (fileLogsToRemove.length > 0) {
+    if (fileLogsToRemove.length === this.agents.length) {
       removeDirectory(this.getMatchErrorLogDirectory());
+    } else {
+      fileLogsToRemove.forEach((logPath) => {
+        removeFile(logPath);
+      });
     }
   }
 
