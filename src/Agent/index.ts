@@ -155,6 +155,11 @@ export class Agent extends EventEmitter {
   /** Agent version, used by tournament */
   public version = 0;
 
+  /** Size of agent's logs so far */
+  public _logsize = 0;
+
+  public _trimmed = false;
+
   constructor(
     file: string,
     options: Partial<Agent.Options>,
@@ -1077,6 +1082,13 @@ export namespace Agent {
      * @default `false`
      */
     useCachedBotFile: boolean;
+
+    /**
+     * Limit of agent logs in bytes.
+     *
+     * @default `1e6 - 1 megabyte`
+     */
+    logLimit: number;
   }
 
   export type LanguageSpecificOptions = {
@@ -1116,6 +1128,7 @@ export namespace Agent {
     compileCommands: {},
     image: 'docker.io/stonezt2000/dimensions_langs',
     useCachedBotFile: false,
+    logLimit: 1e6,
   };
 
   export type GenerationMetaData =

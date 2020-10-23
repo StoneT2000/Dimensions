@@ -33,6 +33,10 @@ const users = {
     name: 'rock3',
     existingID: 'rock3',
   },
+  lotsOfLogs: {
+    file: './tests/kits/js/normal/lotsoflogs.js',
+    name: 'lotsoflogs',
+  },
 };
 
 const paperBot = {

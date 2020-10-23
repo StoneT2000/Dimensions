@@ -272,7 +272,19 @@ export class MatchEngine {
     // pipe stderr of agent process to error log file if enabled
     if (match.configs.storeErrorLogs) {
       errorLogWriteStream.write('=== Agent Error Log ===\n');
-      agent.streams.err.pipe(errorLogWriteStream);
+      agent.streams.err.on('data', (data: Buffer) => {
+        // store logs below limit only
+        if (agent._logsize < agent.options.logLimit) {
+          agent._logsize += data.length;
+          errorLogWriteStream.write(`${data}`);
+        } else {
+          if (agent._trimmed === false) {
+            agent._trimmed = true;
+            this.log.warn(`${agent.id} logs were trimmed`);
+            errorLogWriteStream.write(`\nend of logs as logs were trimmed\n`);
+          }
+        }
+      });
     }
 
     // when process closes, print message
