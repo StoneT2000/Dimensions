@@ -19,7 +19,7 @@ chai.use(chaiSubset);
 const users = {
   // in seed, rock1 has stats in tourneys already
   rock1: {
-    file: './tests/kits/js/normal/rock.js',
+    file: './tests/kits/js/normal/rock.withstderr.js',
     name: 'rock1',
     existingID: 'rock1',
   },
@@ -40,7 +40,7 @@ const users = {
 };
 
 const paperBot = {
-  file: './tests/kits/js/normal/paper.js',
+  file: './tests/kits/js/normal/paperwithstderr.js',
   name: 'paperbot',
   existingID: 'paperbot',
 };
