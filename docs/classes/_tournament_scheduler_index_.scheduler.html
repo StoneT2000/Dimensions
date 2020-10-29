@@ -94,6 +94,7 @@
 								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/_tournament_scheduler_index_.scheduler.configsbase.html" class="tsd-kind-icon">Configs<wbr>Base</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/_tournament_scheduler_index_.scheduler.randomconfigs.html" class="tsd-kind-icon">Random<wbr>Configs</a></li>
 								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/_tournament_scheduler_index_.scheduler.rankrangerandomconfigs.html" class="tsd-kind-icon">Rank<wbr>Range<wbr>Random<wbr>Configs</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/_tournament_scheduler_index_.scheduler.trueskillvarianceweighted.html" class="tsd-kind-icon">Trueskill<wbr>Variance<wbr>Weighted</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -101,6 +102,8 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_tournament_scheduler_index_.scheduler.html#random" class="tsd-kind-icon">Random</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_tournament_scheduler_index_.scheduler.html#rankrangerandom" class="tsd-kind-icon">Rank<wbr>Range<wbr>Random</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_tournament_scheduler_index_.scheduler.html#trueskillvarianceweighted-1" class="tsd-kind-icon">Trueskill<wbr>Variance<wbr>Weighted</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_tournament_scheduler_index_.scheduler.html#_generaterankrangerandom" class="tsd-kind-icon">_<wbr>Generate<wbr>Rank<wbr>Range<wbr>Random</a></li>
 							</ul>
 						</section>
 					</div>
@@ -118,7 +121,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L14">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L14</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L15">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L15</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -166,7 +169,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L65">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L65</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L66">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L66</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -183,7 +186,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> configs: <a href="../interfaces/_tournament_scheduler_index_.scheduler.rankrangerandomconfigs.html" class="tsd-signature-type">RankRangeRandomConfigs</a><span class="tsd-signature-symbol"> = {agentsPerMatch: [2],range: 4,}</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> configs: <a href="../interfaces/_tournament_scheduler_index_.scheduler.rankrangerandomconfigs.html" class="tsd-signature-type">RankRangeRandomConfigs</a><span class="tsd-signature-symbol"> = {agentsPerMatch: [2],range: 4,seed: 0,}</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">(</span>players<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_tournament_ladder_index_.ladder.playerstat.html" class="tsd-signature-type">PlayerStat</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Tournament.QueuedMatch</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -205,6 +208,97 @@
 									</ul>
 								</li>
 							</ul>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="trueskillvarianceweighted-1" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> Trueskill<wbr>Variance<wbr>Weighted</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">Trueskill<wbr>Variance<wbr>Weighted<span class="tsd-signature-symbol">(</span>configs<span class="tsd-signature-symbol">?: </span><a href="_tournament_scheduler_index_.scheduler.html#trueskillvarianceweighted-1" class="tsd-signature-type">TrueskillVarianceWeighted</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>players<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_tournament_ladder_index_.ladder.playerstat.html" class="tsd-signature-type">PlayerStat</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Tournament.QueuedMatch</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L135">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L135</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Generates matchCount matches using variance of player rankings as weighting to decide which players get matches</p>
+								</div>
+								<p>Uses RankRanged random to generate matches</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> configs: <a href="_tournament_scheduler_index_.scheduler.html#trueskillvarianceweighted-1" class="tsd-signature-type">TrueskillVarianceWeighted</a><span class="tsd-signature-symbol"> = {agentsPerMatch: [2],matchCount: 10,seed: 0,range: 5,}</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">(</span>players<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_tournament_ladder_index_.ladder.playerstat.html" class="tsd-signature-type">PlayerStat</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Tournament.QueuedMatch</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<ul class="tsd-parameters">
+								<li class="tsd-parameter-signature">
+									<ul class="tsd-signatures tsd-kind-type-literal">
+										<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>players<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_tournament_ladder_index_.ladder.playerstat.html" class="tsd-signature-type">PlayerStat</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Tournament.QueuedMatch</span><span class="tsd-signature-symbol">&gt;</span></li>
+									</ul>
+									<ul class="tsd-descriptions">
+										<li class="tsd-description">
+											<h4 class="tsd-parameters-title">Parameters</h4>
+											<ul class="tsd-parameters">
+												<li>
+													<h5>players: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_tournament_ladder_index_.ladder.playerstat.html" class="tsd-signature-type">PlayerStat</a><span class="tsd-signature-symbol">&gt;</span></h5>
+												</li>
+											</ul>
+											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Tournament.QueuedMatch</span><span class="tsd-signature-symbol">&gt;</span></h4>
+										</li>
+									</ul>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="_generaterankrangerandom" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> _<wbr>Generate<wbr>Rank<wbr>Range<wbr>Random</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">_<wbr>Generate<wbr>Rank<wbr>Range<wbr>Random<span class="tsd-signature-symbol">(</span>configs<span class="tsd-signature-symbol">: </span><a href="../interfaces/_tournament_scheduler_index_.scheduler.rankrangerandomconfigs.html" class="tsd-signature-type">RankRangeRandomConfigs</a>, rng<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">number</span>, players<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_tournament_ladder_index_.ladder.playerstat.html" class="tsd-signature-type">PlayerStat</a><span class="tsd-signature-symbol">&gt;</span>, i<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Tournament.QueuedMatch</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L102">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L102</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>configs: <a href="../interfaces/_tournament_scheduler_index_.scheduler.rankrangerandomconfigs.html" class="tsd-signature-type">RankRangeRandomConfigs</a></h5>
+								</li>
+								<li>
+									<h5>rng: <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">number</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-signature">
+											<ul class="tsd-signatures tsd-kind-type-literal">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<h5>players: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_tournament_ladder_index_.ladder.playerstat.html" class="tsd-signature-type">PlayerStat</a><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>i: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Tournament.QueuedMatch</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -237,11 +331,20 @@
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="../interfaces/_tournament_scheduler_index_.scheduler.rankrangerandomconfigs.html" class="tsd-kind-icon">Rank<wbr>Range<wbr>Random<wbr>Configs</a>
 							</li>
+							<li class=" tsd-kind-interface tsd-parent-kind-class">
+								<a href="../interfaces/_tournament_scheduler_index_.scheduler.trueskillvarianceweighted.html" class="tsd-kind-icon">Trueskill<wbr>Variance<wbr>Weighted</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
 								<a href="_tournament_scheduler_index_.scheduler.html#random" class="tsd-kind-icon">Random</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
 								<a href="_tournament_scheduler_index_.scheduler.html#rankrangerandom" class="tsd-kind-icon">Rank<wbr>Range<wbr>Random</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_tournament_scheduler_index_.scheduler.html#trueskillvarianceweighted-1" class="tsd-kind-icon">Trueskill<wbr>Variance<wbr>Weighted</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_tournament_scheduler_index_.scheduler.html#_generaterankrangerandom" class="tsd-kind-icon">_<wbr>Generate<wbr>Rank<wbr>Range<wbr>Random</a>
 							</li>
 						</ul>
 					</li>

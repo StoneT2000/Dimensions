@@ -1,6 +1,6 @@
 {
   "name": "dimensions-ai",
-  "version": "4.6.11",
+  "version": "4.6.12",
   "description": "A generalized AI Competition framework that allows you to create any competition you want in any language you want with no hassle.",
   "main": "./lib/main/index.js",
   "types": "./lib/main/index.d.ts",

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>RankRangeRandomConfigs | dimensions-ai</title>
+	<title>TrueskillVarianceWeighted | dimensions-ai</title>
 	<meta name="description" content="Documentation for dimensions-ai">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -62,10 +62,10 @@
 					<a href="../classes/_tournament_scheduler_index_.scheduler.html">Scheduler</a>
 				</li>
 				<li>
-					<a href="_tournament_scheduler_index_.scheduler.rankrangerandomconfigs.html">RankRangeRandomConfigs</a>
+					<a href="_tournament_scheduler_index_.scheduler.trueskillvarianceweighted.html">TrueskillVarianceWeighted</a>
 				</li>
 			</ul>
-			<h1>Interface RankRangeRandomConfigs</h1>
+			<h1>Interface TrueskillVarianceWeighted</h1>
 		</div>
 	</div>
 </header>
@@ -79,7 +79,7 @@
 						<a href="_tournament_scheduler_index_.scheduler.configsbase.html" class="tsd-signature-type">ConfigsBase</a>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">RankRangeRandomConfigs</span>
+								<span class="target">TrueskillVarianceWeighted</span>
 							</li>
 						</ul>
 					</li>
@@ -92,11 +92,12 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_tournament_scheduler_index_.scheduler.rankrangerandomconfigs.html#agentspermatch" class="tsd-kind-icon">agents<wbr>Per<wbr>Match</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_tournament_scheduler_index_.scheduler.rankrangerandomconfigs.html#allowdisabled" class="tsd-kind-icon">allow<wbr>Disabled</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_scheduler_index_.scheduler.rankrangerandomconfigs.html#range" class="tsd-kind-icon">range</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_tournament_scheduler_index_.scheduler.rankrangerandomconfigs.html#scheduleevenly" class="tsd-kind-icon">schedule<wbr>Evenly</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_scheduler_index_.scheduler.rankrangerandomconfigs.html#seed" class="tsd-kind-icon">seed</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_tournament_scheduler_index_.scheduler.trueskillvarianceweighted.html#agentspermatch" class="tsd-kind-icon">agents<wbr>Per<wbr>Match</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_tournament_scheduler_index_.scheduler.trueskillvarianceweighted.html#allowdisabled" class="tsd-kind-icon">allow<wbr>Disabled</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_scheduler_index_.scheduler.trueskillvarianceweighted.html#matchcount" class="tsd-kind-icon">match<wbr>Count</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_scheduler_index_.scheduler.trueskillvarianceweighted.html#range" class="tsd-kind-icon">range</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_tournament_scheduler_index_.scheduler.trueskillvarianceweighted.html#scheduleevenly" class="tsd-kind-icon">schedule<wbr>Evenly</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_tournament_scheduler_index_.scheduler.trueskillvarianceweighted.html#seed" class="tsd-kind-icon">seed</a></li>
 							</ul>
 						</section>
 					</div>
@@ -149,19 +150,24 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="matchcount" class="tsd-anchor"></a>
+					<h3>match<wbr>Count</h3>
+					<div class="tsd-signature tsd-kind-icon">match<wbr>Count<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L234">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L234</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="range" class="tsd-anchor"></a>
 					<h3>range</h3>
 					<div class="tsd-signature tsd-kind-icon">range<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L228">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L228</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L235">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L235</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>the range of rankings a player can be competing with</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
 					<a name="scheduleevenly" class="tsd-anchor"></a>
@@ -192,14 +198,9 @@
 					<div class="tsd-signature tsd-kind-icon">seed<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L230">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L230</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L233">https://github.com/StoneT2000/Dimensions/blob/master/src/Tournament/Scheduler/index.ts#L233</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>an optional seed to seed the random number generator</p>
-						</div>
-					</div>
 				</section>
 			</section>
 		</div>
@@ -227,28 +228,31 @@
 							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="_tournament_scheduler_index_.scheduler.randomconfigs.html" class="tsd-kind-icon">Random<wbr>Configs</a>
 							</li>
-							<li class="current tsd-kind-interface tsd-parent-kind-class">
+							<li class=" tsd-kind-interface tsd-parent-kind-class">
 								<a href="_tournament_scheduler_index_.scheduler.rankrangerandomconfigs.html" class="tsd-kind-icon">Rank<wbr>Range<wbr>Random<wbr>Configs</a>
+							</li>
+							<li class="current tsd-kind-interface tsd-parent-kind-class">
+								<a href="_tournament_scheduler_index_.scheduler.trueskillvarianceweighted.html" class="tsd-kind-icon">Trueskill<wbr>Variance<wbr>Weighted</a>
 								<ul>
 									<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-										<a href="_tournament_scheduler_index_.scheduler.rankrangerandomconfigs.html#agentspermatch" class="tsd-kind-icon">agents<wbr>Per<wbr>Match</a>
+										<a href="_tournament_scheduler_index_.scheduler.trueskillvarianceweighted.html#agentspermatch" class="tsd-kind-icon">agents<wbr>Per<wbr>Match</a>
 									</li>
 									<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-										<a href="_tournament_scheduler_index_.scheduler.rankrangerandomconfigs.html#allowdisabled" class="tsd-kind-icon">allow<wbr>Disabled</a>
+										<a href="_tournament_scheduler_index_.scheduler.trueskillvarianceweighted.html#allowdisabled" class="tsd-kind-icon">allow<wbr>Disabled</a>
 									</li>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="_tournament_scheduler_index_.scheduler.rankrangerandomconfigs.html#range" class="tsd-kind-icon">range</a>
+										<a href="_tournament_scheduler_index_.scheduler.trueskillvarianceweighted.html#matchcount" class="tsd-kind-icon">match<wbr>Count</a>
+									</li>
+									<li class=" tsd-kind-property tsd-parent-kind-interface">
+										<a href="_tournament_scheduler_index_.scheduler.trueskillvarianceweighted.html#range" class="tsd-kind-icon">range</a>
 									</li>
 									<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
-										<a href="_tournament_scheduler_index_.scheduler.rankrangerandomconfigs.html#scheduleevenly" class="tsd-kind-icon">schedule<wbr>Evenly</a>
+										<a href="_tournament_scheduler_index_.scheduler.trueskillvarianceweighted.html#scheduleevenly" class="tsd-kind-icon">schedule<wbr>Evenly</a>
 									</li>
 									<li class=" tsd-kind-property tsd-parent-kind-interface">
-										<a href="_tournament_scheduler_index_.scheduler.rankrangerandomconfigs.html#seed" class="tsd-kind-icon">seed</a>
+										<a href="_tournament_scheduler_index_.scheduler.trueskillvarianceweighted.html#seed" class="tsd-kind-icon">seed</a>
 									</li>
 								</ul>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="_tournament_scheduler_index_.scheduler.trueskillvarianceweighted.html" class="tsd-kind-icon">Trueskill<wbr>Variance<wbr>Weighted</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
 								<a href="../classes/_tournament_scheduler_index_.scheduler.html#random" class="tsd-kind-icon">Random</a>
