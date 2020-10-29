@@ -35,7 +35,7 @@ export class MatchEngine {
   private design: Design;
 
   /** Engine options */
-  private engineOptions: EngineOptions;
+  private engineOptions: EngineOptions = deepCopy(DefaultMatchEngineOptions);
 
   /** Override options */
   private overrideOptions: Design.OverrideOptions;
@@ -69,7 +69,10 @@ export class MatchEngine {
    */
   constructor(design: Design, loggingLevel: Logger.LEVEL) {
     this.design = design;
-    this.engineOptions = deepCopy(this.design.getDesignOptions().engineOptions);
+    this.engineOptions = deepMerge(
+      this.engineOptions,
+      deepCopy(this.design.getDesignOptions().engineOptions)
+    );
     this.overrideOptions = deepCopy(this.design.getDesignOptions().override);
     this.log.identifier = `Engine`;
     this.setLogLevel(loggingLevel);
@@ -974,3 +977,53 @@ export namespace MatchEngine {
     D_NAMES = 'D_NAMES',
   }
 }
+
+export const DefaultMatchEngineOptions: MatchEngine.EngineOptions = {
+  commandStreamType: MatchEngine.COMMAND_STREAM_TYPE.SEQUENTIAL,
+  commandDelimiter: ',',
+  commandFinishSymbol: 'D_FINISH',
+  commandFinishPolicy: MatchEngine.COMMAND_FINISH_POLICIES.FINISH_SYMBOL,
+  commandLines: {
+    max: 1,
+    // min: 1
+    waitForNewline: true,
+  },
+  noStdErr: true,
+  timeout: {
+    max: 1000,
+    active: true,
+    timeoutCallback: (
+      agent: Agent,
+      match: Match,
+      engineOptions: EngineOptions
+    ): void => {
+      match.kill(agent.id, 'timed out');
+      match.log.error(
+        `agent ${agent.id} - '${agent.name}' timed out after ${engineOptions.timeout.max} ms`
+      );
+    },
+    /**
+     * (agent: Agent, match: Match) => {
+     *   agent.finish();
+     * }
+     */
+  },
+  memory: {
+    limit: 1000000000,
+    active: true,
+    usePs: true,
+    memoryCallback: (
+      agent: Agent,
+      match: Match,
+      engineOptions: EngineOptions
+    ): void => {
+      match.kill(agent.id, 'exceed memory limit');
+      match.log.error(
+        `agent ${agent.id} - '${agent.name}' reached the memory limit of ${
+          engineOptions.memory.limit / 1000000
+        } MB`
+      );
+    },
+    checkRate: 100,
+  },
+};
