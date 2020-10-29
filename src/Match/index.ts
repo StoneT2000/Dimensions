@@ -129,6 +129,7 @@ export class Match {
     storeErrorLogs: true,
     storeErrorDirectory: 'errorlogs',
     agentSpecificOptions: [],
+    storeMatchErrorLogs: false,
   };
 
   /** Match process used to store the process governing a match running on a custom design */
@@ -739,24 +740,24 @@ export class Match {
    */
   public async throw(agentID: Agent.ID, error: Error): Promise<void> {
     // Fatal errors are logged and should end the whole match
+    const agent = this.idToAgentsMap.get(agentID);
     if (error instanceof FatalError) {
       await this.destroy();
-      this.log.error(
-        `FatalError: ${this.idToAgentsMap.get(agentID).name} | ${error.message}`
-      );
+      const msg = `FatalError: ${agent.name} | ${error.message}`;
+      this.log.error(msg);
+      if (this.configs.storeMatchErrorLogs) agent.writeToErrorLog(msg);
     } else if (error instanceof MatchWarn) {
-      this.log.warn(
-        `ID: ${agentID}, ${this.idToAgentsMap.get(agentID).name} | ${
-          error.message
-        }`
-      );
+      const msg = `ID: ${agentID}, ${this.idToAgentsMap.get(agentID).name} | ${
+        error.message
+      }`;
+      this.log.warn(msg);
+      if (this.configs.storeMatchErrorLogs) agent.writeToErrorLog(msg);
     } else if (error instanceof MatchError) {
-      this.log.error(
-        `ID: ${agentID}, ${this.idToAgentsMap.get(agentID).name} | ${
-          error.message
-        }`
-      );
-      // TODO, if match is set to store an error log, this should be logged!
+      const msg = `ID: ${agentID}, ${this.idToAgentsMap.get(agentID).name} | ${
+        error.message
+      }`;
+      this.log.error(msg);
+      if (this.configs.storeMatchErrorLogs) agent.writeToErrorLog(msg);
     } else {
       this.log.error(
         'User tried throwing an error of type other than FatalError, MatchWarn, or MatchError'
@@ -854,6 +855,13 @@ export namespace Match {
      * @default true
      */
     storeErrorLogs: boolean;
+
+    /**
+     * Whether to store error and warnings outputted by match from calling match.throw
+     *
+     * @default false
+     */
+    storeMatchErrorLogs: boolean;
 
     /**
      * Directory to store error logs locally. When a {@link Storage} plugin is used, this indicates the path in the
