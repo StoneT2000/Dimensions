@@ -1,4 +1,4 @@
-import { create, DimensionType } from '../../../src';
+import { create, DefaultMatchEngineOptions, DimensionType } from '../../../src';
 import { RockPaperScissorsDesign } from '../../rps';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
@@ -89,9 +89,7 @@ describe('Testing MatchEngine Core', () => {
       const match = await ddefault.createMatch(botList, {
         bestOf: 9,
       });
-      const deeped = stripFunctions(
-        deepCopy(rpsDesign.getDesignOptions().engineOptions)
-      );
+      const deeped = stripFunctions(deepCopy(DefaultMatchEngineOptions));
       expect(match.matchEngine.getEngineOptions()).to.containSubset(deeped);
       await match.destroy();
     });

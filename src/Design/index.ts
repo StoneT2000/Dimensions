@@ -2,17 +2,12 @@ import { deepMerge } from '../utils/DeepMerge';
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepCopy } from '../utils/DeepCopy';
 
-import { Agent } from '../Agent';
 import { Match } from '../Match';
 import { MatchEngine } from '../MatchEngine';
 import { Logger } from '../Logger';
 
 /** @ignore */
 import EngineOptions = MatchEngine.EngineOptions;
-/** @ignore */
-import COMMAND_FINISH_POLICIES = MatchEngine.COMMAND_FINISH_POLICIES;
-/** @ignore */
-import COMMAND_STREAM_TYPE = MatchEngine.COMMAND_STREAM_TYPE;
 /** @ignore */
 import Command = MatchEngine.Command;
 
@@ -185,9 +180,12 @@ export interface DesignOptions {
   /**
    * The default engine options to use for all matches created using this design. Engine options impact how the engine
    * works at the I/O level and dictates how your engine prohibits and enables an {@link Agent} in a {@link Match} to
-   * communicate and send commands and receive commands
+   * communicate and send commands and receive commands.
+   *
+   * This overrides the default engine options from the {@link MatchEngine} class, and is overided by tournament
+   * level, and then match level configs.
    */
-  engineOptions: EngineOptions;
+  engineOptions?: EngineOptions;
 
   /**
    * Override configurations if a user wants to run matches with a non-dimensions based design and run their own design
@@ -201,55 +199,6 @@ export interface DesignOptions {
  * Default Design Options
  */
 export const DefaultDesignOptions: DesignOptions = {
-  engineOptions: {
-    commandStreamType: COMMAND_STREAM_TYPE.SEQUENTIAL,
-    commandDelimiter: ',',
-    commandFinishSymbol: 'D_FINISH',
-    commandFinishPolicy: COMMAND_FINISH_POLICIES.FINISH_SYMBOL,
-    commandLines: {
-      max: 1,
-      // min: 1
-      waitForNewline: true,
-    },
-    noStdErr: true,
-    timeout: {
-      max: 1000,
-      active: true,
-      timeoutCallback: (
-        agent: Agent,
-        match: Match,
-        engineOptions: EngineOptions
-      ): void => {
-        match.kill(agent.id, 'timed out');
-        match.log.error(
-          `agent ${agent.id} - '${agent.name}' timed out after ${engineOptions.timeout.max} ms`
-        );
-      },
-      /**
-       * (agent: Agent, match: Match) => {
-       *   agent.finish();
-       * }
-       */
-    },
-    memory: {
-      limit: 1000000000,
-      active: true,
-      usePs: true,
-      memoryCallback: (
-        agent: Agent,
-        match: Match,
-        engineOptions: EngineOptions
-      ): void => {
-        match.kill(agent.id, 'exceed memory limit');
-        match.log.error(
-          `agent ${agent.id} - '${agent.name}' reached the memory limit of ${
-            engineOptions.memory.limit / 1000000
-          } MB`
-        );
-      },
-      checkRate: 100,
-    },
-  },
   override: {
     active: false,
     command: 'echo NO COMMAND PROVIDED',
