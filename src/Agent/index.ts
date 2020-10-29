@@ -294,10 +294,7 @@ export class Agent extends EventEmitter {
         let stderr: Readable;
         const installTimer = setTimeout(() => {
           const msg = 'Agent went over install time during the install stage\n';
-          if (this.errorLogWriteStream) {
-            this._logsize += msg.length;
-            this.errorLogWriteStream.write(msg);
-          }
+          this.writeToErrorLog(msg);
           reject(new AgentInstallTimeoutError(msg, this.id));
         }, this.options.maxInstallTime);
 
@@ -318,10 +315,7 @@ export class Agent extends EventEmitter {
                 engineOptions.memory.limit / 1000000
               } MB`;
             }
-            if (this.errorLogWriteStream) {
-              this._logsize += msg.length;
-              this.errorLogWriteStream.write(msg + '\n');
-            }
+            this.writeToErrorLog(msg + '\n');
             reject(new AgentInstallError(msg, this.id));
           }
         };
@@ -407,10 +401,7 @@ export class Agent extends EventEmitter {
       let stderr: Readable;
       const compileTimer = setTimeout(() => {
         const msg = 'Agent went over compile time during the compile stage\n';
-        if (this.errorLogWriteStream) {
-          this._logsize += msg.length;
-          this.errorLogWriteStream.write(msg);
-        }
+        this.writeToErrorLog(msg);
         reject(new AgentCompileTimeoutError(msg, this.id));
       }, this.options.maxCompileTime);
       if (this.options.compileCommands[this.ext]) {
@@ -482,10 +473,7 @@ export class Agent extends EventEmitter {
               engineOptions.memory.limit / 1000000
             } MB`;
           }
-          if (this.errorLogWriteStream) {
-            this._logsize += msg.length;
-            this.errorLogWriteStream.write(msg + '\n');
-          }
+          this.writeToErrorLog(msg + '\n');
           reject(new AgentCompileError(msg, this.id));
         }
       };
@@ -685,11 +673,8 @@ export class Agent extends EventEmitter {
    * timeout the agent
    */
   timeout(): void {
-    if (this.errorLogWriteStream) {
-      const msg = 'Agent timed out';
-      this._logsize += msg.length;
-      this.errorLogWriteStream.write(msg);
-    }
+    const msg = 'Agent timed out';
+    this.writeToErrorLog(msg);
     this.emit(Agent.AGENT_EVENTS.TIMEOUT);
   }
 
@@ -697,11 +682,8 @@ export class Agent extends EventEmitter {
    * call out agent for exceeding memory limit
    */
   overMemory(): void {
-    if (this.errorLogWriteStream) {
-      const msg = 'Agent exceeded memory limit';
-      this._logsize += msg.length;
-      this.errorLogWriteStream.write(msg);
-    }
+    const msg = 'Agent exceeded memory limit';
+    this.writeToErrorLog(msg);
     this.emit(Agent.AGENT_EVENTS.EXCEED_MEMORY_LIMIT);
   }
 
@@ -730,6 +712,13 @@ export class Agent extends EventEmitter {
       process.nextTick(callback);
     }
     return true;
+  }
+
+  writeToErrorLog(message: string): void {
+    if (this.errorLogWriteStream) {
+      this._logsize += message.length;
+      this.errorLogWriteStream.write(message);
+    }
   }
 
   /**
