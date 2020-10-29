@@ -1,6 +1,7 @@
 import { Tournament } from '..';
 import seedrandom from 'seedrandom';
 import { chooseKRandomElements } from './utils';
+import { TrueSkill, TrueSkillSystem } from '../RankSystem/TrueSkillSystem';
 /**
  * The Scheduler class with functions to help schedule tournament matches
  */
@@ -66,6 +67,7 @@ export class Scheduler {
     configs: Scheduler.RankRangeRandomConfigs = {
       agentsPerMatch: [2],
       range: 4,
+      seed: 0,
     }
   ): (
     players: Array<Tournament.Ladder.PlayerStat>
@@ -78,36 +80,112 @@ export class Scheduler {
         players = origPlayers.filter((p) => !p.player.disabled);
       }
       const queue: Array<Tournament.QueuedMatch> = [];
-      const generateMatch = (i: number) => {
-        const agentCount =
-          configs.agentsPerMatch[
-            Math.floor(rng() * configs.agentsPerMatch.length)
-          ];
-        let left = i - configs.range;
-        let right = i + configs.range + 1;
-        if (left < 0) {
-          // pad right
-          right += 0 - left;
-          left = 0;
-        } else if (right > players.length) {
-          // pad left
-          left -= Math.max(0, right - players.length);
-          left = Math.max(left, 0);
-        }
-        const chosen = chooseKRandomElements(
-          [...players.slice(left, i), ...players.slice(i + 1, right)],
-          agentCount - 1
-        ).map((p) => p.player.tournamentID.id);
-        chosen.push(players[i].player.tournamentID.id);
-        queue.push(chosen);
-      };
+
       if (configs.scheduleEvenly !== false) {
         for (let i = 0; i < players.length; i++) {
-          generateMatch(i);
+          queue.push(this._GenerateRankRangeRandom(configs, rng, players, i));
         }
       } else {
-        generateMatch(Math.floor(Math.random() * players.length));
+        queue.push(
+          this._GenerateRankRangeRandom(
+            configs,
+            rng,
+            players,
+            Math.floor(Math.random() * players.length)
+          )
+        );
       }
+      return queue;
+    };
+  }
+
+  static _GenerateRankRangeRandom(
+    configs: Scheduler.RankRangeRandomConfigs,
+    rng: () => number,
+    players: Array<Tournament.Ladder.PlayerStat>,
+    i: number
+  ): Tournament.QueuedMatch {
+    const agentCount =
+      configs.agentsPerMatch[Math.floor(rng() * configs.agentsPerMatch.length)];
+    let left = i - configs.range;
+    let right = i + configs.range + 1;
+    if (left < 0) {
+      // pad right
+      right += 0 - left;
+      left = 0;
+    } else if (right > players.length) {
+      // pad left
+      left -= Math.max(0, right - players.length);
+      left = Math.max(left, 0);
+    }
+    const chosen = chooseKRandomElements(
+      [...players.slice(left, i), ...players.slice(i + 1, right)],
+      agentCount - 1
+    ).map((p) => p.player.tournamentID.id);
+    chosen.push(players[i].player.tournamentID.id);
+    return chosen;
+  }
+
+  /**
+   * Generates matchCount matches using variance of player rankings as weighting to decide which players get matches
+   *
+   * Uses RankRanged random to generate matches
+   *
+   */
+  static TrueskillVarianceWeighted(
+    configs: Scheduler.TrueskillVarianceWeighted = {
+      agentsPerMatch: [2],
+      matchCount: 10,
+      seed: 0,
+      range: 5,
+    }
+  ): (
+    players: Array<Tournament.Ladder.PlayerStat>
+  ) => Array<Tournament.QueuedMatch> {
+    const rng = seedrandom(configs.seed);
+    return (origPlayers: Array<Tournament.Ladder.PlayerStat>) => {
+      let players = origPlayers;
+      if (players.length === 0) {
+        return [];
+      }
+      if (configs.allowDisabled !== true) {
+        players = origPlayers.filter((p) => !p.player.disabled);
+      }
+      const weightedIntervals = [];
+      const queue: Array<Tournament.QueuedMatch> = [];
+      let sum = 0;
+      players.forEach((player, i) => {
+        const rs = player.rankState as TrueSkill.RankState;
+        if (i == 0) {
+          weightedIntervals.push(rs.rating.sigma);
+        } else {
+          weightedIntervals.push(
+            weightedIntervals[weightedIntervals.length - 1] + rs.rating.sigma
+          );
+        }
+        sum += rs.rating.sigma;
+      });
+      // binary search for upper bound indices to find players to find matches for
+      const matchMakePlayerIndices: Array<number> = [];
+      for (let i = 0; i < configs.matchCount; i++) {
+        const query = rng() * sum;
+        let low = 0;
+        let high = weightedIntervals.length - 1;
+        while (low < high) {
+          const mid = Math.floor((low + high) / 2);
+          if (weightedIntervals[mid] < query) {
+            low = mid + 1;
+          } else if (weightedIntervals[mid] >= query) {
+            high = mid;
+          }
+        }
+        matchMakePlayerIndices.push(high);
+      }
+
+      matchMakePlayerIndices.forEach((index) => {
+        queue.push(this._GenerateRankRangeRandom(configs, rng, players, index));
+      });
+
       return queue;
     };
   }
@@ -150,5 +228,10 @@ export namespace Scheduler {
     range: number;
     /** an optional seed to seed the random number generator */
     seed?: any;
+  }
+  export interface TrueskillVarianceWeighted extends ConfigsBase {
+    seed?: any;
+    matchCount: number;
+    range: number;
   }
 }
