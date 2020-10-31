@@ -86,35 +86,40 @@ export class MongoDB extends Database {
   }
 
   public async getPlayerMatches(
-    playerID: nanoid,
+    usernameOrID: nanoid,
     governID: nanoid,
     offset = 0,
     limit = 10,
     order = -1
   ): Promise<Array<Match>> {
-    return this.models.match.aggregate([
-      {
-        $match: {
-          governID: {
-            $eq: governID,
-          },
-          'agents.tournamentID.id': {
-            $eq: playerID,
+    const user = await this.getUser(usernameOrID);
+    if (user) {
+      return this.models.match.aggregate([
+        {
+          $match: {
+            governID: {
+              $eq: governID,
+            },
+            'agents.tournamentID.id': {
+              $eq: user.playerID,
+            },
           },
         },
-      },
-      {
-        $sort: {
-          creationDate: order,
+        {
+          $sort: {
+            creationDate: order,
+          },
         },
-      },
-      {
-        $skip: offset,
-      },
-      {
-        $limit: limit,
-      },
-    ]);
+        {
+          $skip: offset,
+        },
+        {
+          $limit: limit,
+        },
+      ]);
+    } else {
+      return [];
+    }
   }
 
   public async registerUser(

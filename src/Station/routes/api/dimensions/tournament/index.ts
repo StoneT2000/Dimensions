@@ -75,7 +75,7 @@ router.get('/:tournamentID/match', (req: Request, res: Response) => {
  *
  * Get the current match queue
  */
-router.get('/:tournamentID/matchQueue', (req, res) => {
+router.get('/:tournamentID/match-queue', (req, res) => {
   res.json({ error: null, matchQueue: req.data.tournament.matchQueue });
 });
 
@@ -172,8 +172,8 @@ router.get(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       let ranks = [];
-      const offset = req.query.offset ? req.query.offset : 0;
-      const limit = req.query.limit ? req.query.limit : -1;
+      const offset = parseInt(req.query.offset ? req.query.offset : 0);
+      const limit = parseInt(req.query.limit ? req.query.limit : -1);
       if (req.data.tournament.configs.type === TournamentType.LADDER) {
         ranks = await req.data.tournament.getRankings(offset, limit);
       } else {
