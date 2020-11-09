@@ -48,7 +48,7 @@ Also checkout the blog post introducing the motivation for Dimensions and though
 - Comes with an API served locally that gives access to data on ongoing matches and tournaments and allows for direct control of matches and tournaments through the API. See this page for details on this API: https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API
 - Supports plugins like the [MongoDB](https://github.com/StoneT2000/Dimensions/wiki/Plugin#supported-plugins) plugin that takes three lines of code to automatically integrate and scale up your tournament and integrate an automatic user authentication and login system. See [this](https://github.com/StoneT2000/Dimensions/wiki/Scaling) for complete info on how to scale up.
 - Ensures malicious bots cannot cause harm to your servers through `secureMode`. See [this wiki page](https://github.com/StoneT2000/Dimensions/wiki/Security) for details.
-- Built with Typescript means any design easily integrates into a frontend replay viewer to reconstruct matches for viewing using minimal data storage.
+- Built with Typescript, meaning flexibility in coding any design, and easily integrates into a frontend replay viewer to reconstruct matches for viewing using minimal replay data storage.
 
 ## Requirements
 
