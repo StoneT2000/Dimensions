@@ -324,8 +324,8 @@ export namespace MongoDB {
   }
 
   export interface Models {
-    user: mongoose.Model<mongoose.Document, object>;
-    match: mongoose.Model<mongoose.Document, object>;
-    tournamentConfigs: mongoose.Model<mongoose.Document, object>;
+    user: mongoose.Model<mongoose.Document>;
+    match: mongoose.Model<mongoose.Document>;
+    tournamentConfigs: mongoose.Model<mongoose.Document>;
   }
 }
