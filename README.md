@@ -208,10 +208,11 @@ Check out the issues for this repository to get an idea on something you can hel
 
 This is all written in [TypeScript](https://www.typescriptlang.org/)
 
-First install all necessary packages with
+First install all necessary packages and pull necessary docker images for testing with
 
 ```
 npm install
+./pulla_test_docker_images.sh
 ```
 
 Start development by running
@@ -222,13 +223,13 @@ npm run watch
 
 to watch for code changes in the `src` folder and reload the build folder. Note this does not build any frontend code.
 
-Tests are built with [Mocha](https://mochajs.org/) and [Chai](https://www.chaijs.com/). You will need mongodb setup serving through port `27017` to run database plugin tests. If that is setup, run tests with
+Tests are built with [Mocha](https://mochajs.org/) and [Chai](https://www.chaijs.com/). You will need mongodb setup serving through port `27017` to run database plugin tests.
+
+If that is setup, run tests with
 
 ```
-sudo npm run test
+npm run test
 ```
-
-Note that sudo is required because of tests being performed on `secureMode` which requires sudo in order to switch users and limit access to possibly malicious bots.
 
 Run
 
