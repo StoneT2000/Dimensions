@@ -1,7 +1,7 @@
 import { Tournament } from '..';
 import seedrandom from 'seedrandom';
 import { chooseKRandomElements } from './utils';
-import { TrueSkill, TrueSkillSystem } from '../RankSystem/TrueSkillSystem';
+import { TrueSkill } from '../RankSystem/TrueSkillSystem';
 /**
  * The Scheduler class with functions to help schedule tournament matches
  */

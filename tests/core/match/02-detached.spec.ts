@@ -1,4 +1,4 @@
-import { create, DimensionType, Match, MatchWarn } from '../../../src';
+import { create, Match } from '../../../src';
 import { RockPaperScissorsDesign } from '../../rps';
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
