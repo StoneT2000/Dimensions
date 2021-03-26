@@ -87,7 +87,7 @@ describe('Testing Match Detached Mode', () => {
       agent.messages = [];
     });
     for (let i = 0; i < 9; i++) {
-      let choices = ["R", "S"]
+      const choices = ["R", "S"]
       await match.step([{agentID: 0, command: choices[0]}, {agentID: 1, command: choices[1]}]);
       
 
