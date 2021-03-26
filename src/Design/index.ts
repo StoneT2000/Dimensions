@@ -74,7 +74,7 @@ export abstract class Design {
    * @param match - The {@link Match} to initialize state with
    * @returns Nothing needed, return result is not used by `match`
    */
-  abstract async initialize(match: Match): Promise<void>;
+  abstract initialize(match: Match): Promise<void>;
 
   /**
    * Abstract function required to update match state with commands from Agents and send commands to Agents
@@ -92,7 +92,7 @@ export abstract class Design {
    * @returns A promise that resolves with the current {@link Match.Status} at the end of this time step. Can also
    * directly just return the match status
    */
-  abstract async update(
+  abstract update(
     match: Match,
     commands: Array<Command>
   ): Promise<Match.Status>;
@@ -111,7 +111,7 @@ export abstract class Design {
    * @returns A promise that resolves with results (can be an object, number, anything). Can also directly just return
    *          the results
    */
-  abstract async getResults(match: Match): Promise<any>;
+  abstract getResults(match: Match): Promise<any>;
 
   /**
    * Creates a Design class wrapper around a custom design written without the use of Dimensions framework

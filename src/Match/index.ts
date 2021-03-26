@@ -130,6 +130,7 @@ export class Match {
     storeErrorDirectory: 'errorlogs',
     agentSpecificOptions: [],
     storeMatchErrorLogs: false,
+    detached: false,
   };
 
   /** Match process used to store the process governing a match running on a custom design */
@@ -296,13 +297,16 @@ export class Match {
         }
       });
 
-      // if overriding with custom design, log some other info and use a different engine initialization function
-      if (overrideOptions.active) {
-        this.log.detail('Match Arguments', overrideOptions.arguments);
-        await this.matchEngine.initializeCustom();
-      } else {
-        // Initialize the matchEngine and get it ready to run and process I/O for agents
-        await this.matchEngine.initialize(this.agents, this);
+      // use the matchengine to initialize agents if not in detached mode
+      if (!this.configs.detached) {
+        // if overriding with custom design, log some other info and use a different engine initialization function
+        if (overrideOptions.active) {
+          this.log.detail('Match Arguments', overrideOptions.arguments);
+          await this.matchEngine.initializeCustom();
+        } else {
+          // Initialize the matchEngine and get it ready to run and process I/O for agents
+          await this.matchEngine.initialize(this.agents, this);
+        }
       }
 
       // by now all agents should up and running, all compiled and ready
@@ -497,8 +501,23 @@ export class Match {
   }
 
   /**
+   * Step forward the match by one timestep by sending commands individually.
+   */
+  public async step(commands: Array<Command>): Promise<Match.Status> {
+    const engineOptions = this.matchEngine.getEngineOptions();
+    if (engineOptions.commandStreamType === COMMAND_STREAM_TYPE.SEQUENTIAL) {
+      const status = (await this.design.update(this, commands)) ?? Match.Status.RUNNING;
+      return status;
+    } else {
+      throw new NotSupportedError("Only sequential streaming is allowed");
+    }
+  }
+
+  /**
    * Next function. Moves match forward by one timestep. Resolves with the match status
    * This function should always used to advance forward a match unless a custom design is provided
+   * 
+   * Gathers commands from agents via the {@link MatchEngine}
    *
    * Should not be called by user
    */
@@ -870,6 +889,14 @@ export namespace Match {
      * @default `errorlogs`
      */
     storeErrorDirectory: string;
+
+    /**
+     * Whether to run in detached mode. When in detached mode (true), the match can initialize within dimensions using the {@link Design} but will now 
+     * instead update step by step 
+     * 
+     * @default `false`
+     */
+    detached: boolean;
 
     [key: string]: any;
   }

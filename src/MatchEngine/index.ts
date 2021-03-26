@@ -510,9 +510,10 @@ export class MatchEngine {
   ): Promise<boolean> {
     return new Promise((resolve, reject) => {
       const agent = match.idToAgentsMap.get(agentID);
-      if (!agent.inputDestroyed() && !agent.isTerminated()) {
+      if (agent.options.detached || (!agent.inputDestroyed() && !agent.isTerminated())) {
+        const written = agent.options.detached ? `${message}` : `${message}\n`;
         const bufferReachedHighWaterMark = agent.write(
-          `${message}\n`,
+          written,
           (error: Error) => {
             if (error) reject(error);
             resolve(true);

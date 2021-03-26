@@ -1,10 +1,7 @@
 import { Plugin } from '..';
-import { DeepPartial } from '../../utils/DeepPartial';
-import { deepMerge } from '../../utils/DeepMerge';
 import { Dimension } from '../../Dimension';
 import { Database } from '../Database';
 import { Tournament } from '../../Tournament';
-import { deepCopy } from '../../utils/DeepCopy';
 
 export abstract class Storage extends Plugin {
   /** Default configs */

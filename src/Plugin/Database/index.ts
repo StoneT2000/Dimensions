@@ -4,7 +4,6 @@ import { NanoID, Dimension } from '../../Dimension';
 import { Match } from '../../Match';
 import { Plugin } from '..';
 import { nanoid } from '../..';
-import { Ladder } from '../../Tournament/Ladder';
 import { Tournament } from '../../Tournament';
 import { TournamentStatus } from '../../Tournament/TournamentStatus';
 

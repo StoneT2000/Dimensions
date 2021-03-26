@@ -160,6 +160,9 @@ export class Agent extends EventEmitter {
 
   public _trimmed = false;
 
+  /** List of all messages written to this agent are directly pushed to here when in detached mode */
+  public messages: Array<string> = [];
+
   constructor(
     file: string,
     options: Partial<Agent.Options>,
@@ -170,6 +173,8 @@ export class Agent extends EventEmitter {
     this.options = deepMerge(this.options, deepCopy(options));
 
     this.log.level = this.options.loggingLevel;
+
+    if (!this.options.detached) {
 
     this.ext = path.extname(file);
     if (languageSpecificOptions[this.ext]) {
@@ -222,6 +227,7 @@ export class Agent extends EventEmitter {
         break;
       default:
     }
+  }
 
     if (this.options.id !== null) {
       this.id = options.id;
@@ -702,6 +708,14 @@ export class Agent extends EventEmitter {
    * returns true if written, false if highWaterMark reached
    */
   write(message: string, callback: (error: Error) => void): boolean {
+
+    // in detached mode, simply keep track of messages sent.
+    if (this.options.detached) {
+      this.messages.push(message);
+      process.nextTick(callback);
+      return true;
+    }
+
     /**
      * the following few lines are based on the suggestion at
      * https://nodejs.org/api/stream.html#stream_writable_write_chunk_encoding_callback
@@ -825,7 +839,7 @@ export class Agent extends EventEmitter {
   }
 
   /**
-   * Stop this agent from more outputs and mark it as done for now and awaiting for updates
+   * Stop this agent from more outputs and mark it as done for now and awaiting for updates. Effectively force agent to sync with match
    */
   async _finishMove(): Promise<void> {
     this._clearTimer();
@@ -835,6 +849,7 @@ export class Agent extends EventEmitter {
 
     // stop the process for now from sending more output and disallow commmands to ignore rest of output
     if (this.options.secureMode) {
+      // TODO: Implement
       // await this.container.pause();
     } else {
       this.process.kill('SIGSTOP');
@@ -1045,7 +1060,7 @@ export namespace Agent {
 
     /**
      * Map from extension type to set of commands used to compile this agent instead of the defaults. When there is no
-     * mapping default is used
+     * mapping default commands are used
      *
      * @default `null`
      */
@@ -1053,7 +1068,7 @@ export namespace Agent {
 
     /**
      * Map from extension type to set of commands used to run this agent instead of the defaults. When there is no
-     * mapping default is used
+     * mapping default commands are used
      *
      * @default `null`
      */
@@ -1086,8 +1101,20 @@ export namespace Agent {
      * @default `1e5 - 100 kb`
      */
     logLimit: number;
+
+    /**
+     * Whether agent is to be run in detached mode. In detached mode, the agent simply stores messages that is written to it and clears the message queue
+     * when a turn is finished
+     * 
+     * @default `false`
+     */
+    detached: boolean
   }
 
+  /**
+   * Language specic options mapping programming language to the agent options to use for that programing language. 
+   * Used to customize options such as docker image, compile time limits etc. on a per language basis
+   */
   export type LanguageSpecificOptions = {
     [x in string]?: DeepPartial<Agent.Options>;
   };
@@ -1126,6 +1153,7 @@ export namespace Agent {
     image: 'docker.io/stonezt2000/dimensions_langs',
     useCachedBotFile: false,
     logLimit: 1e5,
+    detached: false,
   };
 
   export type GenerationMetaData =
