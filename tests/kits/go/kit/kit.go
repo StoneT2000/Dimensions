@@ -1,5 +1,7 @@
 package kit
+
 import "fmt"
+
 type Agent struct {
 	id int
 }
@@ -22,5 +24,5 @@ func (agent Agent) Update() {
 }
 
 func (agent Agent) EndTurn() {
-	fmt.Printf("D_FINISH\n");
+	fmt.Printf("D_FINISH\n")
 }
