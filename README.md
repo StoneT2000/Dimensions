@@ -212,7 +212,7 @@ First install all necessary packages and pull necessary docker images for testin
 
 ```
 npm install
-./pulla_test_docker_images.sh
+./pull_all_test_docker_images.sh
 ```
 
 Start development by running
@@ -221,7 +221,7 @@ Start development by running
 npm run watch
 ```
 
-to watch for code changes in the `src` folder and reload the build folder. Note this does not build any frontend code.
+to watch for code changes in the `src` folder and reload the build folder.
 
 Tests are built with [Mocha](https://mochajs.org/) and [Chai](https://www.chaijs.com/). You will need mongodb setup serving through port `27017` to run database plugin tests.
 
