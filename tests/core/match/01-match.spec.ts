@@ -65,7 +65,7 @@ describe('Testing Match Core', () => {
   const testRunStopMatch = async (match: Match) => {
     expect(match.matchStatus).to.equal(Match.Status.READY);
     match.run().catch(noop);
-    return new Promise((res, rej) => {
+    return new Promise<void>((res, rej) => {
       setTimeout(async () => {
         try {
           expect(match.matchStatus).to.equal(Match.Status.RUNNING);
@@ -105,7 +105,7 @@ describe('Testing Match Core', () => {
       match.run().catch(noop);
 
       const timer = () => {
-        return new Promise((res, rej) => {
+        return new Promise<void>((res, rej) => {
           setTimeout(async () => {
             try {
               expect(match.matchStatus).to.equal(Match.Status.RUNNING);

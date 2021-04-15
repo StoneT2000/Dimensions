@@ -536,24 +536,8 @@ export class Match {
         this.log.info('Resumed match');
         this.shouldStop = false;
       }
-      // at the start of each time step, we send any updates based on what agents sent us on the previous timestep
-      // Updates sent by agents on previous timestep can be obtained with MatchEngine.getCommands
-      // This is also the COORDINATION step, where we essentially wait for all commands from all agents to be
-      // delivered out
-      const commands: Array<Command> = await this.matchEngine.getCommands(this);
-      this.log.system(`Retrieved ${commands.length} commands`);
-      // Updates the match state and sends appropriate signals to all Agents based on the stored `Design`
-      const status: Match.Status = await this.design.update(this, commands);
 
-      // default status is running if no status returned
-      if (!status) {
-        this.matchStatus = Match.Status.RUNNING;
-      } else {
-        this.matchStatus = status;
-      }
-
-      // after we run update have send all the messages that need to be sent,
-      // we now reset each Agent for the next move
+      // we reset each Agent for the next move
       this.agents.forEach((agent: Agent) => {
         // continue agents again
         agent.resume();
@@ -570,6 +554,24 @@ export class Match {
         // each of these steps can take ~2 ms
       });
 
+      // after agebts are reset, we are ready to receive commands from them
+      // Updates sent by agents on previous timestep can be obtained with MatchEngine.getCommands
+      // This is also the COORDINATION step, where we essentially wait for all commands from all agents to be
+      // delivered out or until one of them fails
+
+      const commands: Array<Command> = await this.matchEngine.getCommands(this);
+      this.log.system(`Retrieved ${commands.length} commands`);
+      // Updates the match state and sends appropriate signals to all Agents based on the stored `Design`
+      const status: Match.Status = await this.design.update(this, commands);
+
+      // default status is running if no status returned
+      if (!status) {
+        this.matchStatus = Match.Status.RUNNING;
+      } else {
+        this.matchStatus = status;
+      }
+
+      
       // update timestep now
       this.timeStep += 1;
 
