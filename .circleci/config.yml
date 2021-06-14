@@ -54,6 +54,8 @@ jobs:
       - node/with-cache:
           steps:
             - run: npm install
+            # peer deps
+            - run: npm install mongoose
             - run: npm run test
       - run: npm run codecov
       - store_artifacts:
