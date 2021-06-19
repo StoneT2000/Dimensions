@@ -99,6 +99,12 @@ export interface DimensionConfigs {
    * Station configs to use
    */
   stationConfigs: DeepPartial<Station.Configs>;
+
+  /**
+   * Whether to create a local temp bot folder. Default True. Required if you are letting Dimensions handle bot downloading, uploading etc.
+   * @default `true`
+   */
+  createBotDirectories: boolean;
 }
 /**
  * The Dimension framework for intiating a {@link Design} to then run instances of a {@link Match} or
@@ -171,6 +177,7 @@ export class Dimension {
     backingStorage: StorageType.NONE,
     id: 'oLBptg',
     stationConfigs: {},
+    createBotDirectories: true
   };
 
   /**
@@ -257,7 +264,7 @@ export class Dimension {
     this.log.detail('Dimension Configs', this.configs);
 
     // create bot directories
-    if (!existsSync(BOT_DIR)) {
+    if (!existsSync(BOT_DIR) && this.configs.createBotDirectories) {
       mkdirSync(BOT_DIR, { recursive: true });
     }
   }
