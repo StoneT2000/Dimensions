@@ -183,9 +183,8 @@ export class Agent extends EventEmitter {
         deepCopy(languageSpecificOptions[this.ext])
       );
     }
-    const pathparts = file.split('/');
-    this.cwd = pathparts.slice(0, -1).join('/');
-    this.src = pathparts.slice(-1).join('/');
+    this.cwd = path.dirname(file);
+    this.src = path.basename(file);
     this.srcNoExt = this.src.slice(0, -this.ext.length);
 
     // check if folder is valid
