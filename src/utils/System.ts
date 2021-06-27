@@ -3,8 +3,10 @@
  */
 
 import { spawnSync, spawn } from 'child_process';
+import { resolve } from 'dns';
 import fs, { mkdirSync } from 'fs';
 import path from 'path';
+import rimraf from 'rimraf';
 
 export const LOCAL_DIR = path.join(__dirname, '../../../../../local');
 
@@ -50,7 +52,9 @@ export const processIsRunning = (pid: number): boolean => {
  * @param dir
  */
 export const removeDirectorySync = (dir: string): void => {
-  spawnSync('find', [dir, '-exec', 'rm', '-rf', '{}', '+']);
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  rimraf(dir, ()=> {});
+  // spawnSync('find', [dir, '-exec', 'rm', '-rf', '{}', '+']);
 };
 
 /**
@@ -59,18 +63,27 @@ export const removeDirectorySync = (dir: string): void => {
  */
 export const removeDirectory = (dir: string): Promise<void> => {
   return new Promise((resolve, reject) => {
-    const p = spawn('find', [dir, '-exec', 'rm', '-rf', '{}', '+']);
-    p.on('error', (err) => {
-      reject(err);
-    });
-    p.on('close', (code) => {
-      if (code === 0) {
+    rimraf(dir, (err)=>{
+      if (err) {
+        reject(err)
+      }
+      else {
         resolve();
-      } else {
-        reject(`removeDirectory on ${dir} exited with code ${code}`);
       }
     });
   });
+  //   const p = spawn('find', [dir, '-exec', 'rm', '-rf', '{}', '+']);
+  //   p.on('error', (err) => {
+  //     reject(err);
+  //   });
+  //   p.on('close', (code) => {
+  //     if (code === 0) {
+  //       resolve();
+  //     } else {
+  //       reject(`removeDirectory on ${dir} exited with code ${code}`);
+  //     }
+  //   });
+  // });
 };
 
 /**
