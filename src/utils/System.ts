@@ -15,7 +15,10 @@ export const LOCAL_DIR = path.join(__dirname, '../../../../../local');
  * @param file - file to remove
  */
 export const removeFileSync = (file: string): void => {
-  spawnSync('rm', ['-f', file]);
+  rimraf(file, (err) => {
+    // 
+  });
+  // spawnSync('rm', ['-f', file]);
 };
 
 /**
@@ -24,17 +27,24 @@ export const removeFileSync = (file: string): void => {
  */
 export const removeFile = (file: string): Promise<void> => {
   return new Promise((resolve, reject) => {
-    const p = spawn('rm', ['-f', file]);
-    p.on('error', (err) => {
-      reject(err);
-    });
-    p.on('close', (code) => {
-      if (code === 0) {
+    rimraf(file, (err) => {
+      if (err) {
+        reject(err);
+      } else{
         resolve();
-      } else {
-        reject('exited with code ' + code);
       }
-    });
+    })
+    // const p = spawn('rm', ['-f', file]);
+    // p.on('error', (err) => {
+    //   reject(err);
+    // });
+    // p.on('close', (code) => {
+    //   if (code === 0) {
+    //     resolve();
+    //   } else {
+    //     reject('exited with code ' + code);
+    //   }
+    // });
   });
 };
 
