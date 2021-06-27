@@ -267,7 +267,7 @@ describe('Testing MatchEngine Core', () => {
         }
       );
       const sandbox = sinon.createSandbox();
-      const stderrSpy = sandbox.spy(match.matchEngine.getLogger(), 'error');
+      const stderrSpy = sandbox.spy(match.matchEngine.getLogger(), 'custom');
 
       const results = await match.run();
       expect(stderrSpy).to.be.calledWith('0: test');
