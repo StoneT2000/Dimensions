@@ -672,7 +672,7 @@ export class Agent extends EventEmitter {
         // await this.container.unpause();
       } else {
         if (os.platform() !== 'win32') {
-          this.process.kill('SIGSTOP');
+          this.process.kill('SIGCONT');
         }
       }
       this.status = Agent.Status.RUNNING;
