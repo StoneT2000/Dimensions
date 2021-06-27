@@ -1,5 +1,6 @@
 import { ChildProcess, spawn } from 'child_process';
 import path from 'path';
+import os from 'os';
 import fs, { WriteStream } from 'fs';
 import treekill from 'tree-kill';
 import { Logger } from '../Logger';
@@ -653,7 +654,9 @@ export class Agent extends EventEmitter {
       if (this.options.secureMode) {
         await this.container.pause();
       } else {
-        this.process.kill('SIGSTOP');
+        if (os.platform() !== 'win32') {
+          this.process.kill('SIGSTOP');
+        }
       }
       this.status = Agent.Status.STOPPED;
     }
@@ -668,7 +671,9 @@ export class Agent extends EventEmitter {
       if (this.options.secureMode) {
         // await this.container.unpause();
       } else {
-        this.process.kill('SIGCONT');
+        if (os.platform() !== 'win32') {
+          this.process.kill('SIGSTOP');
+        }
       }
       this.status = Agent.Status.RUNNING;
     }
@@ -851,7 +856,9 @@ export class Agent extends EventEmitter {
       // TODO: Implement
       // await this.container.pause();
     } else {
-      this.process.kill('SIGSTOP');
+      if (os.platform() !== 'win32') {
+        this.process.kill('SIGSTOP');
+      }
     }
     this._disallowCommands();
   }
