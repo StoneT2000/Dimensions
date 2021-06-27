@@ -269,7 +269,11 @@ export class MatchEngine {
     // log stderr from agents to this stderr if option active
     if (!this.engineOptions.noStdErr) {
       agent.streams.err.on('data', (data) => {
-        this.log.error(`${agent.id}: ${data.slice(0, data.length - 1)}`);
+        const strs = `${data}`.split(/\r?\n/);
+        for (const str of strs) {
+          if (str === "") continue;
+          this.log.custom(`[Agent ${agent.id} Log]`.cyan, Logger.LEVEL.WARN, str);
+        }
       });
     }
 
