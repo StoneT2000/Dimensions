@@ -230,7 +230,7 @@ export class MatchEngine {
       let data: Array<string>;
       while ((data = agent.streams.out.read())) {
         // split chunks into line by line and handle each line of commands
-        const strs = `${data}`.split('\n');
+        const strs = `${data}`.split(/\r?\n/);
 
         // first store data into a buffer and process later if no newline character is detected
 
@@ -611,7 +611,7 @@ export class MatchEngine {
         let data: string[];
         while ((data = match.matchProcess.stdout.read())) {
           // split chunks into line by line and handle each line of output
-          const strs = `${data}`.split('\n');
+          const strs = `${data}`.split(/\r?\n/);
           for (let i = 0; i < strs.length; i++) {
             const str = strs[i];
 
