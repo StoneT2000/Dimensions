@@ -29,6 +29,8 @@ import pidusage from 'pidusage';
 import DefaultSeccompProfileJSON from '../Security/seccomp/default.json';
 import { noop } from '../utils';
 import spawn from 'cross-spawn';
+import processExists from 'process-exists';
+
 const DefaultSeccompProfileString = JSON.stringify(DefaultSeccompProfileJSON);
 
 const containerBotFolder = '/code';
@@ -792,16 +794,19 @@ export class Agent extends EventEmitter {
         }
       } else {
         if (this.process) {
-          treekill(this.process.pid, 'SIGKILL', (err) => {
-            this._clearTimer();
-            clearInterval(this.memoryWatchInterval);
+          const exists = await processExists(this.process.pid);
+          if (exists) {
+            treekill(this.process.pid, 'SIGKILL', (err) => {
+              this._clearTimer();
+              clearInterval(this.memoryWatchInterval);
 
-            if (err) {
-              reject(err);
-            } else {
-              resolve();
-            }
-          });
+              if (err) {
+                reject(err);
+              } else {
+                resolve();
+              }
+            });
+          }
         } else {
           resolve();
         }
