@@ -1,4 +1,4 @@
-import { ChildProcess, spawn } from 'child_process';
+import { ChildProcess } from 'child_process';
 import path from 'path';
 import os from 'os';
 import fs, { WriteStream } from 'fs';
@@ -28,7 +28,7 @@ import { isChildProcess, AgentClassTypeGuards } from '../utils/TypeGuards';
 import pidusage from 'pidusage';
 import DefaultSeccompProfileJSON from '../Security/seccomp/default.json';
 import { noop } from '../utils';
-
+import spawn from 'cross-spawn';
 const DefaultSeccompProfileString = JSON.stringify(DefaultSeccompProfileJSON);
 
 const containerBotFolder = '/code';
