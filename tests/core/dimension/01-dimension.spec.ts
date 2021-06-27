@@ -46,6 +46,7 @@ describe('Testing Dimension Class', () => {
       backingDatabase: 'none',
       backingStorage: 'none',
       id: 'oLBptg',
+      createBotDirectories: true,
       defaultMatchConfigs: {
         loggingLevel: Logger.LEVEL.INFO,
         secureMode: false,
