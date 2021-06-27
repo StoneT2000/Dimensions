@@ -22,6 +22,7 @@ import { Match } from '../Match';
 import Dockerode from 'dockerode';
 import { isChildProcess } from '../utils/TypeGuards';
 import { noop } from '../utils';
+import { removeDirectorySync } from '../utils/System';
 
 /** @ignore */
 type EngineOptions = MatchEngine.EngineOptions;
@@ -650,7 +651,7 @@ export class MatchEngine {
           if (agent.options.secureMode) {
             const tmpdir = os.tmpdir();
             if (agent.cwd.slice(0, tmpdir.length) === tmpdir) {
-              exec(`sudo rm -rf ${agent.cwd}`);
+              removeDirectorySync(agent.cwd);
             } else {
               this.log.error(
                 "couldn't remove agent files while in secure mode"

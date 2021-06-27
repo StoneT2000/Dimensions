@@ -64,7 +64,6 @@ export const processIsRunning = (pid: number): boolean => {
 export const removeDirectorySync = (dir: string): void => {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   rimraf(dir, ()=> {});
-  // spawnSync('find', [dir, '-exec', 'rm', '-rf', '{}', '+']);
 };
 
 /**
