@@ -19,7 +19,7 @@ while True:
 
     # submit commands to the `MatchEngine` and the `Match`, using ',' as the delimiter
     print(','.join(commands))
-
+    
     # now we end our turn
     agent.end_turn()
 

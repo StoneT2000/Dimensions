@@ -107,6 +107,14 @@ export class Logger {
         ...message
       );
   }
+  custom(label: string, level: Logger.LEVEL, ...message: any[]): void {
+    if (this.level >= level) {
+      console.log(
+        `${label}`,
+        ...message
+      );
+    }
+  }
 }
 export namespace Logger {
   /**

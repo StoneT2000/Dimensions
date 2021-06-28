@@ -22,6 +22,7 @@ import { Match } from '../Match';
 import Dockerode from 'dockerode';
 import { isChildProcess } from '../utils/TypeGuards';
 import { noop } from '../utils';
+import { removeDirectorySync } from '../utils/System';
 
 /** @ignore */
 type EngineOptions = MatchEngine.EngineOptions;
@@ -229,7 +230,7 @@ export class MatchEngine {
       let data: Array<string>;
       while ((data = agent.streams.out.read())) {
         // split chunks into line by line and handle each line of commands
-        const strs = `${data}`.split('\n');
+        const strs = `${data}`.split(/\r?\n/);
 
         // first store data into a buffer and process later if no newline character is detected
 
@@ -268,7 +269,11 @@ export class MatchEngine {
     // log stderr from agents to this stderr if option active
     if (!this.engineOptions.noStdErr) {
       agent.streams.err.on('data', (data) => {
-        this.log.error(`${agent.id}: ${data.slice(0, data.length - 1)}`);
+        const strs = `${data}`.split(/\r?\n/);
+        for (const str of strs) {
+          if (str === "") continue;
+          this.log.custom(`[Agent ${agent.id} Log]`.cyan, Logger.LEVEL.WARN, str);
+        }
       });
     }
 
@@ -610,7 +615,7 @@ export class MatchEngine {
         let data: string[];
         while ((data = match.matchProcess.stdout.read())) {
           // split chunks into line by line and handle each line of output
-          const strs = `${data}`.split('\n');
+          const strs = `${data}`.split(/\r?\n/);
           for (let i = 0; i < strs.length; i++) {
             const str = strs[i];
 
@@ -650,7 +655,7 @@ export class MatchEngine {
           if (agent.options.secureMode) {
             const tmpdir = os.tmpdir();
             if (agent.cwd.slice(0, tmpdir.length) === tmpdir) {
-              exec(`sudo rm -rf ${agent.cwd}`);
+              removeDirectorySync(agent.cwd);
             } else {
               this.log.error(
                 "couldn't remove agent files while in secure mode"

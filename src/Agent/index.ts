@@ -1,5 +1,6 @@
-import { ChildProcess, spawn } from 'child_process';
+import { ChildProcess } from 'child_process';
 import path from 'path';
+import os from 'os';
 import fs, { WriteStream } from 'fs';
 import treekill from 'tree-kill';
 import { Logger } from '../Logger';
@@ -27,6 +28,8 @@ import { isChildProcess, AgentClassTypeGuards } from '../utils/TypeGuards';
 import pidusage from 'pidusage';
 import DefaultSeccompProfileJSON from '../Security/seccomp/default.json';
 import { noop } from '../utils';
+import spawn from 'cross-spawn';
+import processExists from 'process-exists';
 
 const DefaultSeccompProfileString = JSON.stringify(DefaultSeccompProfileJSON);
 
@@ -653,7 +656,9 @@ export class Agent extends EventEmitter {
       if (this.options.secureMode) {
         await this.container.pause();
       } else {
-        this.process.kill('SIGSTOP');
+        if (os.platform() !== 'win32') {
+          this.process.kill('SIGSTOP');
+        }
       }
       this.status = Agent.Status.STOPPED;
     }
@@ -668,7 +673,9 @@ export class Agent extends EventEmitter {
       if (this.options.secureMode) {
         // await this.container.unpause();
       } else {
-        this.process.kill('SIGCONT');
+        if (os.platform() !== 'win32') {
+          this.process.kill('SIGCONT');
+        }
       }
       this.status = Agent.Status.RUNNING;
     }
@@ -787,16 +794,23 @@ export class Agent extends EventEmitter {
         }
       } else {
         if (this.process) {
-          treekill(this.process.pid, 'SIGKILL', (err) => {
-            this._clearTimer();
-            clearInterval(this.memoryWatchInterval);
+          let exists = true;
+          if (os.platform() === "win32") {
+            // fix bug where on windows, would throw error when treekill fails
+            exists = await processExists(this.process.pid);
+          }
+          if (exists) {
+            treekill(this.process.pid, 'SIGKILL', (err) => {
+              this._clearTimer();
+              clearInterval(this.memoryWatchInterval);
 
-            if (err) {
-              reject(err);
-            } else {
-              resolve();
-            }
-          });
+              if (err) {
+                reject(err);
+              } else {
+                resolve();
+              }
+            });
+          }
         } else {
           resolve();
         }
@@ -851,7 +865,9 @@ export class Agent extends EventEmitter {
       // TODO: Implement
       // await this.container.pause();
     } else {
-      this.process.kill('SIGSTOP');
+      if (os.platform() !== 'win32') {
+        this.process.kill('SIGSTOP');
+      }
     }
     this._disallowCommands();
   }
