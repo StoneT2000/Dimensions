@@ -151,7 +151,7 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>MongoDB<span class="tsd-signature-symbol">(</span>connectionString<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, configs<span class="tsd-signature-symbol">?: </span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_supportedplugins_mongodb_index_.mongodb.configs.html" class="tsd-signature-type">Configs</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_supportedplugins_mongodb_index_.mongodb.html" class="tsd-signature-type">MongoDB</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>MongoDB<span class="tsd-signature-symbol">(</span>connectionString<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, configs<span class="tsd-signature-symbol">?: </span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_plugin_database_index_.database.configs.html" class="tsd-signature-type">Configs</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_supportedplugins_mongodb_index_.mongodb.html" class="tsd-signature-type">MongoDB</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -167,7 +167,7 @@
 									<h5>connectionString: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> configs: <a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_supportedplugins_mongodb_index_.mongodb.configs.html" class="tsd-signature-type">Configs</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = {}</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> configs: <a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_plugin_database_index_.database.configs.html" class="tsd-signature-type">Configs</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = {}</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_supportedplugins_mongodb_index_.mongodb.html" class="tsd-signature-type">MongoDB</a></h4>
@@ -395,7 +395,7 @@
 					<a name="getuser" class="tsd-anchor"></a>
 					<h3>get<wbr>User</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>User<span class="tsd-signature-symbol">(</span>usernameOrID<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, publicView<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_supportedplugins_mongodb_index_.mongodb.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>User<span class="tsd-signature-symbol">(</span>usernameOrID<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, publicView<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_plugin_database_index_.database.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -421,7 +421,7 @@
 									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> publicView: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = true</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_supportedplugins_mongodb_index_.mongodb.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_plugin_database_index_.database.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -429,7 +429,7 @@
 					<a name="getusersintournament" class="tsd-anchor"></a>
 					<h3>get<wbr>Users<wbr>InTournament</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Users<wbr>InTournament<span class="tsd-signature-symbol">(</span>tournamentKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, offset<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, limit<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_supportedplugins_mongodb_index_.mongodb.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Users<wbr>InTournament<span class="tsd-signature-symbol">(</span>tournamentKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, offset<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, limit<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_plugin_database_index_.database.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -451,7 +451,7 @@
 									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> limit: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = -1</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_supportedplugins_mongodb_index_.mongodb.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_plugin_database_index_.database.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -477,7 +477,7 @@
 					<a name="isadmin" class="tsd-anchor"></a>
 					<h3>is<wbr>Admin</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">is<wbr>Admin<span class="tsd-signature-symbol">(</span>user<span class="tsd-signature-symbol">: </span><a href="../interfaces/_supportedplugins_mongodb_index_.mongodb.publicuser.html" class="tsd-signature-type">PublicUser</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Admin<span class="tsd-signature-symbol">(</span>user<span class="tsd-signature-symbol">: </span><a href="../interfaces/_plugin_database_index_.database.publicuser.html" class="tsd-signature-type">PublicUser</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -490,7 +490,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>user: <a href="../interfaces/_supportedplugins_mongodb_index_.mongodb.publicuser.html" class="tsd-signature-type">PublicUser</a></h5>
+									<h5>user: <a href="../interfaces/_plugin_database_index_.database.publicuser.html" class="tsd-signature-type">PublicUser</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -639,7 +639,7 @@
 					<a name="updateuser" class="tsd-anchor"></a>
 					<h3>update<wbr>User</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">update<wbr>User<span class="tsd-signature-symbol">(</span>usernameOrID<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, update<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_supportedplugins_mongodb_index_.mongodb.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_supportedplugins_mongodb_index_.mongodb.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">update<wbr>User<span class="tsd-signature-symbol">(</span>usernameOrID<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, update<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_plugin_database_index_.database.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_plugin_database_index_.database.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
@@ -655,10 +655,10 @@
 									<h5>usernameOrID: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5>update: <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_supportedplugins_mongodb_index_.mongodb.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>update: <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_plugin_database_index_.database.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_supportedplugins_mongodb_index_.mongodb.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_plugin_database_index_.database.user.html" class="tsd-signature-type">User</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -694,7 +694,7 @@
 					<h3>configs</h3>
 					<div class="tsd-signature tsd-kind-icon">configs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="_supportedplugins_mongodb_index_.mongodb.html">MongoDB</a>.<a href="_supportedplugins_mongodb_index_.mongodb.html#configs-1">configs</a></p>
+						<p>Inherited from <a href="_plugin_database_index_.database.html">Database</a>.<a href="_plugin_database_index_.database.html#configs-1">configs</a></p>
 						<ul>
 							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L21">https://github.com/StoneT2000/Dimensions/blob/master/src/Plugin/Database/index.ts#L21</a></li>
 						</ul>
