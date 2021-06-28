@@ -864,7 +864,7 @@ export namespace MatchEngine {
      */
     memory: {
       /**
-       * Whether or not the engine will monitor the memory use
+       * Whether or not the engine will monitor the memory use. Currently is disabled on windows and this option does nothing.
        * @default true
        */
       active: boolean;
