@@ -794,7 +794,11 @@ export class Agent extends EventEmitter {
         }
       } else {
         if (this.process) {
-          const exists = await processExists(this.process.pid);
+          let exists = true;
+          if (os.platform() === "win32") {
+            // fix bug where on windows, would throw error when treekill fails
+            exists = await processExists(this.process.pid);
+          }
           if (exists) {
             treekill(this.process.pid, 'SIGKILL', (err) => {
               this._clearTimer();
