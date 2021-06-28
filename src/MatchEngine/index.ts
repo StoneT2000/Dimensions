@@ -451,7 +451,7 @@ export class MatchEngine {
         `Reason: ${reason}`
       );
     } catch (err) {
-      this.log.error('This should not happen when terminating agents.', err);
+      this.log.system('This should not happen when terminating agents.', err);
     }
     agent._currentMoveResolve();
   }
@@ -864,7 +864,7 @@ export namespace MatchEngine {
      */
     memory: {
       /**
-       * Whether or not the engine will monitor the memory use
+       * Whether or not the engine will monitor the memory use. Currently is disabled on windows and this option does nothing.
        * @default true
        */
       active: boolean;

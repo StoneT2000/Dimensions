@@ -221,9 +221,9 @@ RPSTournament.run();</code></pre>
 				</a>
 				<p>This is all written in <a href="https://www.typescriptlang.org/">TypeScript</a></p>
 				<p>First install all necessary packages and pull necessary docker images for testing with</p>
-				<pre><code>npm install
-./pull<span class="hljs-built_in">a_test</span>_docker_images.sh</code></pre><p>Start development by running</p>
-				<pre><code>npm <span class="hljs-keyword">run</span><span class="bash"> watch</span></code></pre><p>to watch for code changes in the <code>src</code> folder and reload the build folder. Note this does not build any frontend code.</p>
+				<pre><code>npm <span class="hljs-keyword">install</span>
+./pull_all_test_docker_images.sh</code></pre><p>Start development by running</p>
+				<pre><code>npm <span class="hljs-keyword">run</span><span class="bash"> watch</span></code></pre><p>to watch for code changes in the <code>src</code> folder and reload the build folder.</p>
 				<p>Tests are built with <a href="https://mochajs.org/">Mocha</a> and <a href="https://www.chaijs.com/">Chai</a>. You will need mongodb setup serving through port <code>27017</code> to run database plugin tests.</p>
 				<p>If that is setup, run tests with</p>
 				<pre><code>npm <span class="hljs-keyword">run</span><span class="bash"> <span class="hljs-built_in">test</span></span></code></pre><p>Run</p>
