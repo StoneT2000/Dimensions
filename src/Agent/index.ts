@@ -891,7 +891,7 @@ export class Agent extends EventEmitter {
   _setupMemoryWatcher(engineOptions: MatchEngine.EngineOptions): void {
     const checkAgentMemoryUsage = () => {
       // setting { maxage: 0 } because otherwise pidusage leaves interval "memory leaks" and process doesn't exit fast
-      if (processIsRunning(this.process.pid)) {
+      if (os.platform() !== "win32" && processIsRunning(this.process.pid)) {
         pidusage(this.process.pid, {
           maxage: 0,
           usePs: engineOptions.memory.usePs,
@@ -902,7 +902,7 @@ export class Agent extends EventEmitter {
             }
           })
           .catch((err) => {
-            this.log.warn(err);
+            this.log.system(err);
           });
       }
     };

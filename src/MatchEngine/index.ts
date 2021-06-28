@@ -451,7 +451,7 @@ export class MatchEngine {
         `Reason: ${reason}`
       );
     } catch (err) {
-      this.log.error('This should not happen when terminating agents.', err);
+      this.log.system('This should not happen when terminating agents.', err);
     }
     agent._currentMoveResolve();
   }
