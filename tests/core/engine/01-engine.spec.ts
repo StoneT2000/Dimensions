@@ -386,8 +386,8 @@ describe('Testing MatchEngine Core', () => {
     }
   });
 
-  describe.only('Test install step', () => {
-    for (const bool of [false]) {
+  describe('Test install step', () => {
+    for (const bool of tf) {
       it(`should throw error for bot going over install time limit and mark agent as crashed; secureMode: ${bool}`, async () => {
         const match = new Match(
           d.design,
