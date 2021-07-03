@@ -525,12 +525,13 @@ export class MatchEngine {
           }
         );
         if (!bufferReachedHighWaterMark) {
-          reject(
-            new AgentNotHandlingInputError(
-              'Input stream buffer highWaterMark reached, agent is not processing input',
-              agentID
-            )
-          );
+          // reject(
+          //   new AgentNotHandlingInputError(
+          //     'Input stream buffer highWaterMark reached, agent is not processing input',
+          //     agentID
+          //   )
+          // );
+          this.log.system(`Agent ${agentID} buffer reached high watermark`)
         }
       } else {
         this.log.error(
