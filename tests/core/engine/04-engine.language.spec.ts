@@ -21,6 +21,7 @@ describe('Testing MatchEngine Multi Language Support', () => {
     ts: './tests/kits/ts/bot.ts',
     java: './tests/kits/java/Bot.java',
     cpp: './tests/kits/cpp/bot.cpp',
+    executable: './tests/kits/cpp/bot.out',
     c: './tests/kits/c/bot.c',
     go: './tests/kits/go/bot.go',
     php: './tests/kits/php/bot.php',
@@ -83,10 +84,16 @@ describe('Testing MatchEngine Multi Language Support', () => {
           expect(results.scores).to.eql({ '0': 0, '1': 9 });
         });
       });
-
       describe('Test c++', () => {
         it('should run', async () => {
           const results = await d.runMatch([bots.cpp, bots.js], {
+            bestOf: 9,
+            secureMode: bool,
+          });
+          expect(results.scores).to.eql({ '0': 0, '1': 9 });
+        });
+        it('should run compiled executable as well', async () => {
+          const results = await d.runMatch([bots.executable, bots.js], {
             bestOf: 9,
             secureMode: bool,
           });

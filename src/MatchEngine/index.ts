@@ -9,7 +9,6 @@ import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
 
 import {
-  AgentNotHandlingInputError,
   FatalError,
   MatchError,
   NotSupportedError,
@@ -271,8 +270,12 @@ export class MatchEngine {
       agent.streams.err.on('data', (data) => {
         const strs = `${data}`.split(/\r?\n/);
         for (const str of strs) {
-          if (str === "") continue;
-          this.log.custom(`[Agent ${agent.id} Log]`.cyan, Logger.LEVEL.WARN, str);
+          if (str === '') continue;
+          this.log.custom(
+            `[Agent ${agent.id} Log]`.cyan,
+            Logger.LEVEL.WARN,
+            str
+          );
         }
       });
     }
@@ -515,7 +518,10 @@ export class MatchEngine {
   ): Promise<boolean> {
     return new Promise((resolve, reject) => {
       const agent = match.idToAgentsMap.get(agentID);
-      if (agent.options.detached || (!agent.inputDestroyed() && !agent.isTerminated())) {
+      if (
+        agent.options.detached ||
+        (!agent.inputDestroyed() && !agent.isTerminated())
+      ) {
         const written = agent.options.detached ? `${message}` : `${message}\n`;
         const bufferReachedHighWaterMark = agent.write(
           written,
@@ -531,7 +537,7 @@ export class MatchEngine {
           //     agentID
           //   )
           // );
-          this.log.system(`Agent ${agentID} buffer reached high watermark`)
+          this.log.system(`Agent ${agentID} buffer reached high watermark`);
         }
       } else {
         this.log.error(

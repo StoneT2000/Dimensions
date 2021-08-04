@@ -10,7 +10,6 @@ import {
   AgentMissingIDError,
   AgentInstallTimeoutError,
   AgentCompileTimeoutError,
-  NotSupportedError,
   AgentCompileError,
   AgentInstallError,
 } from '../DimensionError';
@@ -178,58 +177,57 @@ export class Agent extends EventEmitter {
     this.log.level = this.options.loggingLevel;
 
     if (!this.options.detached) {
+      this.ext = path.extname(file);
+      if (languageSpecificOptions[this.ext]) {
+        this.options = deepMerge(
+          this.options,
+          deepCopy(languageSpecificOptions[this.ext])
+        );
+      }
+      this.cwd = path.dirname(file);
+      this.src = path.basename(file);
+      this.srcNoExt = this.src.slice(0, -this.ext.length);
 
-    this.ext = path.extname(file);
-    if (languageSpecificOptions[this.ext]) {
-      this.options = deepMerge(
-        this.options,
-        deepCopy(languageSpecificOptions[this.ext])
-      );
+      // check if folder is valid
+      if (!fs.existsSync(this.cwd)) {
+        throw new AgentDirectoryError(
+          `${this.cwd} directory does not exist, check if directory provided through the file is correct`,
+          this.id
+        );
+      }
+
+      // check if file exists
+      if (!fs.existsSync(file)) {
+        throw new AgentFileError(
+          `${file} does not exist, check if file path provided is correct`,
+          this.id
+        );
+      }
+
+      this.file = file;
+
+      switch (this.ext) {
+        case '.py':
+          this.cmd = 'python';
+          break;
+        case '.js':
+        case '.ts':
+          this.cmd = 'node';
+          break;
+        case '.java':
+          this.cmd = 'java';
+          break;
+        case '.php':
+          this.cmd = 'php';
+          break;
+        case '.c':
+        case '.cpp':
+        case '.go':
+          this.cmd = '';
+          break;
+        default:
+      }
     }
-    this.cwd = path.dirname(file);
-    this.src = path.basename(file);
-    this.srcNoExt = this.src.slice(0, -this.ext.length);
-
-    // check if folder is valid
-    if (!fs.existsSync(this.cwd)) {
-      throw new AgentDirectoryError(
-        `${this.cwd} directory does not exist, check if directory provided through the file is correct`,
-        this.id
-      );
-    }
-
-    // check if file exists
-    if (!fs.existsSync(file)) {
-      throw new AgentFileError(
-        `${file} does not exist, check if file path provided is correct`,
-        this.id
-      );
-    }
-
-    this.file = file;
-
-    switch (this.ext) {
-      case '.py':
-        this.cmd = 'python';
-        break;
-      case '.js':
-      case '.ts':
-        this.cmd = 'node';
-        break;
-      case '.java':
-        this.cmd = 'java';
-        break;
-      case '.php':
-        this.cmd = 'php';
-        break;
-      case '.c':
-      case '.cpp':
-      case '.go':
-        this.cmd = '';
-        break;
-      default:
-    }
-  }
 
     if (this.options.id !== null) {
       this.id = options.id;
@@ -457,11 +455,13 @@ export class Agent extends EventEmitter {
             p = await this._spawnCompileProcess('javac', [this.src]);
             break;
           default:
-            reject(
-              new NotSupportedError(
-                `Language with extension ${this.ext} is not supported at the moment`
-              )
-            );
+            this.log.system(`${this.ext} not recognized, skipping compilation`);
+            // reject(
+            //   new NotSupportedError(
+            //     `Language with extension ${this.ext} is not supported at the moment`
+            //   )
+            // );
+            resolve();
             break;
         }
       }
@@ -613,9 +613,13 @@ export class Agent extends EventEmitter {
         case '.go':
           return this._spawnProcess('./' + this.srcNoExt + '.out', []);
         default:
-          throw new NotSupportedError(
-            `Language with extension ${this.ext} is not supported yet`
+          this.log.system(
+            `${this.ext} not recognized, directly executing file`
           );
+          return this._spawnProcess('./' + this.src, []);
+        // throw new NotSupportedError(
+        //   `Language with extension ${this.ext} is not supported yet`
+        // );
       }
     }
   }
@@ -714,7 +718,6 @@ export class Agent extends EventEmitter {
    * returns true if written, false if highWaterMark reached
    */
   write(message: string, callback: (error: Error) => void): boolean {
-
     // in detached mode, simply keep track of messages sent.
     if (this.options.detached) {
       this.messages.push(message);
@@ -795,7 +798,7 @@ export class Agent extends EventEmitter {
       } else {
         if (this.process) {
           let exists = true;
-          if (os.platform() === "win32") {
+          if (os.platform() === 'win32') {
             // fix bug where on windows, would throw error when treekill fails
             exists = await processExists(this.process.pid);
           }
@@ -891,7 +894,7 @@ export class Agent extends EventEmitter {
   _setupMemoryWatcher(engineOptions: MatchEngine.EngineOptions): void {
     const checkAgentMemoryUsage = () => {
       // setting { maxage: 0 } because otherwise pidusage leaves interval "memory leaks" and process doesn't exit fast
-      if (os.platform() !== "win32" && processIsRunning(this.process.pid)) {
+      if (os.platform() !== 'win32' && processIsRunning(this.process.pid)) {
         pidusage(this.process.pid, {
           maxage: 0,
           usePs: engineOptions.memory.usePs,
@@ -1120,14 +1123,14 @@ export namespace Agent {
     /**
      * Whether agent is to be run in detached mode. In detached mode, the agent simply stores messages that is written to it and clears the message queue
      * when a turn is finished
-     * 
+     *
      * @default `false`
      */
-    detached: boolean
+    detached: boolean;
   }
 
   /**
-   * Language specic options mapping programming language to the agent options to use for that programing language. 
+   * Language specic options mapping programming language to the agent options to use for that programing language.
    * Used to customize options such as docker image, compile time limits etc. on a per language basis
    */
   export type LanguageSpecificOptions = {

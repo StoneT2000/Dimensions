@@ -15,7 +15,6 @@ import bodyParser from 'body-parser';
 import { Server } from 'http';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Tournament } from '../Tournament';
-import { existsSync, mkdirSync } from 'fs';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Agent } from '../Agent';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

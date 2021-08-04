@@ -2,8 +2,7 @@
  * Various system related utilities
  */
 
-import { spawnSync, spawn } from 'child_process';
-import { resolve } from 'dns';
+import { spawn } from 'child_process';
 import fs, { mkdirSync } from 'fs';
 import path from 'path';
 import rimraf from 'rimraf';
@@ -16,7 +15,7 @@ export const LOCAL_DIR = path.join(__dirname, '../../../../../local');
  */
 export const removeFileSync = (file: string): void => {
   rimraf(file, (err) => {
-    // 
+    //
   });
   // spawnSync('rm', ['-f', file]);
 };
@@ -30,10 +29,10 @@ export const removeFile = (file: string): Promise<void> => {
     rimraf(file, (err) => {
       if (err) {
         reject(err);
-      } else{
+      } else {
         resolve();
       }
-    })
+    });
     // const p = spawn('rm', ['-f', file]);
     // p.on('error', (err) => {
     //   reject(err);
@@ -63,7 +62,7 @@ export const processIsRunning = (pid: number): boolean => {
  */
 export const removeDirectorySync = (dir: string): void => {
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  rimraf(dir, ()=> {});
+  rimraf(dir, () => {});
 };
 
 /**
@@ -72,11 +71,10 @@ export const removeDirectorySync = (dir: string): void => {
  */
 export const removeDirectory = (dir: string): Promise<void> => {
   return new Promise((resolve, reject) => {
-    rimraf(dir, (err)=>{
+    rimraf(dir, (err) => {
       if (err) {
-        reject(err)
-      }
-      else {
+        reject(err);
+      } else {
         resolve();
       }
     });
