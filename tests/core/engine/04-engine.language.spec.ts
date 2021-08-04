@@ -92,13 +92,15 @@ describe('Testing MatchEngine Multi Language Support', () => {
           });
           expect(results.scores).to.eql({ '0': 0, '1': 9 });
         });
-        it('should run compiled executable as well', async () => {
-          const results = await d.runMatch([bots.executable, bots.js], {
-            bestOf: 9,
-            secureMode: bool,
+        if (bool === false) {
+          it('should run compiled executable as well', async () => {
+            const results = await d.runMatch([bots.executable, bots.js], {
+              bestOf: 9,
+              secureMode: bool,
+            });
+            expect(results.scores).to.eql({ '0': 0, '1': 9 });
           });
-          expect(results.scores).to.eql({ '0': 0, '1': 9 });
-        });
+        }
       });
 
       describe('Test c', () => {
