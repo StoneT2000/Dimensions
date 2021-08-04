@@ -461,8 +461,9 @@ export class Agent extends EventEmitter {
             //     `Language with extension ${this.ext} is not supported at the moment`
             //   )
             // );
+            clearTimeout(compileTimer);
             resolve();
-            break;
+            return;
         }
       }
       const chunks = [];
