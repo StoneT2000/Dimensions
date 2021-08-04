@@ -271,7 +271,7 @@ describe('Testing MatchEngine Core', () => {
       const stderrSpy = sandbox.spy(match.matchEngine.getLogger(), 'custom');
 
       const results = await match.run();
-      expect(stderrSpy).to.be.called('string')
+      expect(stderrSpy).to.be.called('string');
       expect(results.scores).to.eql({ '0': 0, '1': 11 });
     });
     it('should call matchEngine kill twice only for 2 agent matches', async () => {

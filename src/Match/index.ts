@@ -506,17 +506,18 @@ export class Match {
   public async step(commands: Array<Command>): Promise<Match.Status> {
     const engineOptions = this.matchEngine.getEngineOptions();
     if (engineOptions.commandStreamType === COMMAND_STREAM_TYPE.SEQUENTIAL) {
-      const status = (await this.design.update(this, commands)) ?? Match.Status.RUNNING;
+      const status =
+        (await this.design.update(this, commands)) ?? Match.Status.RUNNING;
       return status;
     } else {
-      throw new NotSupportedError("Only sequential streaming is allowed");
+      throw new NotSupportedError('Only sequential streaming is allowed');
     }
   }
 
   /**
    * Next function. Moves match forward by one timestep. Resolves with the match status
    * This function should always used to advance forward a match unless a custom design is provided
-   * 
+   *
    * Gathers commands from agents via the {@link MatchEngine}
    *
    * Should not be called by user
@@ -571,7 +572,6 @@ export class Match {
         this.matchStatus = status;
       }
 
-      
       // update timestep now
       this.timeStep += 1;
 
@@ -893,9 +893,9 @@ export namespace Match {
     storeErrorDirectory: string;
 
     /**
-     * Whether to run in detached mode. When in detached mode (true), the match can initialize within dimensions using the {@link Design} but will now 
-     * instead update step by step 
-     * 
+     * Whether to run in detached mode. When in detached mode (true), the match can initialize within dimensions using the {@link Design} but will now
+     * instead update step by step
+     *
      * @default `false`
      */
     detached: boolean;

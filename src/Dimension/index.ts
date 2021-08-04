@@ -177,7 +177,7 @@ export class Dimension {
     backingStorage: StorageType.NONE,
     id: 'oLBptg',
     stationConfigs: {},
-    createBotDirectories: true
+    createBotDirectories: true,
   };
 
   /**
