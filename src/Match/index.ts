@@ -545,8 +545,8 @@ export class Match {
         // setup the agent and its promises and get it ready for the next move
         agent._setupMove();
 
-        // if timeout is set active
-        if (engineOptions.timeout.active) {
+        // if timeout is set active and agent not already terminated
+        if (engineOptions.timeout.active && !agent.isTerminated()) {
           agent._setTimeout(() => {
             // if agent times out, emit the timeout event
             agent.timeout();
