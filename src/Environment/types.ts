@@ -1,5 +1,5 @@
-export type AgentsActions = Array<{
-  actions: string;
+export type AgentActions = Array<{
+  action: string | number | number[];
 }>
 export type RenderModes = 'web' | 'ansi';
 export enum CallTypes {

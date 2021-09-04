@@ -29,14 +29,17 @@ export class Process extends EventEmitter {
 
   constructor(command: string, args: string[], options?: SpawnOptions) {
     super();
-    this._promises.stdout = this._createPromiseStructure();
-    this._promises.stderr = this._createPromiseStructure();
+    this._promises = {
+      stdout: this._createPromiseStructure(),
+      stderr: this._createPromiseStructure()
+    }
 
     this.p = spawn(command, args, options);
     this.p.on('close', (code) => {
       this.emit(Events.CLOSE, code);
     });
     this.p.stdout.on('readable', () => {
+      
       let data: Array<string>;
       while ((data = this.p.stdout.read())) {
         // split chunks into line by line and push into buffer
@@ -45,6 +48,20 @@ export class Process extends EventEmitter {
           this._buffer.stdout.push(strs[i]);
         }
         this._promises.stdout.res(data);
+        this._promises.stdout = this._createPromiseStructure();
+      }
+    });
+    this.p.stderr.on('readable', () => {
+      
+      let data: Array<string>;
+      while ((data = this.p.stderr.read())) {
+        // split chunks into line by line and push into buffer
+        // const strs = `${data}`.split(/\r?\n/);
+        process.stderr.write(`${data}`);
+        // for (let i = 0; i < strs.length - 1; i++) {
+        //   this._buffer.stdout.push(strs[i]);
+        // }
+        // this._promises.stdout.res(data);
       }
     });
   }
@@ -61,7 +78,8 @@ export class Process extends EventEmitter {
   }
   async send(message: string): Promise<void> {
     return new Promise((res, rej) => {
-      this.p.send(message, (err) => {
+      // console.log(this.p.stdin.write)
+      this.p.stdin.write(`${message}\n`, (err) => {
           if (err) rej(err);
           else res();
       });

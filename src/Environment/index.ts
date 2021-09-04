@@ -1,4 +1,4 @@
-import { AgentsActions, CallTypes, RenderModes } from "./types";
+import { AgentActions, CallTypes, RenderModes } from "./types";
 import path from 'path';
 import { Process } from "../Process";
 export class Environment {
@@ -6,35 +6,38 @@ export class Environment {
   public envProcess: Process;
 
   /**
-   * Create a new environment
+   * Create a new environment. Should call await setup() immediately
    * @param environment - path to environment file to be used
    * @param envConfigs - configurations that are sent to the environment
    */
-  constructor(environment: string, envConfigs = '{}') {
+  constructor(public environment: string, public envConfigs: string = null) {
     // TODO: initialize an environment process.
     if (path.extname(environment) === ".py") {
       this.envProcess = new Process("python", [environment]);
-      this.envProcess.send(JSON.stringify({
-        envConfigs,
-        type: CallTypes.INIT
-      }))
     }
+  }
+  async setup(): Promise<string> {
+    await this.envProcess.send(JSON.stringify({
+      envConfigs: this.envConfigs,
+      type: CallTypes.INIT
+    }))
+    return this.envProcess.readstdout();
   }
   /**
    * 
    * @param actions 
    */
-  async step(actions: AgentsActions): Promise<string> {
-    this.envProcess.send(JSON.stringify({
-      actions,
+  async step(agentActions: AgentActions): Promise<string> {
+    await this.envProcess.send(JSON.stringify({
+      agentActions,
       type: CallTypes.STEP
     }));
     return this.envProcess.readstdout();
   }
-  reset(state?: string): Promise<string> {
-    this.envProcess.send(JSON.stringify({
+  async reset(state: string = null): Promise<string> {
+    await this.envProcess.send(JSON.stringify({
       state,
-      type: CallTypes.STEP
+      type: CallTypes.RESET
     }));
     return this.envProcess.readstdout();
   }
@@ -51,8 +54,8 @@ export class Environment {
   /**
    * Perform any clean up operations
    */
-  close(): void {
-    this.envProcess.send(JSON.stringify({
+  async close(): Promise<void> {
+    await this.envProcess.send(JSON.stringify({
       type: CallTypes.CLOSE
     }));
   }
