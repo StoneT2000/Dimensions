@@ -5,6 +5,7 @@ import { Logger } from "../Logger";
 import { Events } from "./events";
 import { PromiseStructure } from "./types";
 import os from 'os';
+import treeKill from "tree-kill";
 
 /**
  * Generic class that wraps around a process that is spawned and receives input and prints out outputs
@@ -40,6 +41,7 @@ export class Process extends EventEmitter {
     }
 
     this.p = spawn(command, args, options);
+    this.log.identifier = `[pid ${this.p.pid}]`;
     this.p.on('close', (code) => {
       this.emit(Events.CLOSE, code);
     });
@@ -60,7 +62,7 @@ export class Process extends EventEmitter {
       
       let data: Array<string>;
       while ((data = this.p.stderr.read())) {
-        this.log.custom(`[pid ${this.p.pid}]`.blue, Logger.LEVEL.ERROR, `${data}`);
+        this.log.custom(this.log.identifier.blue, Logger.LEVEL.ERROR, `${data}`);
       }
     });
   }
@@ -113,7 +115,17 @@ export class Process extends EventEmitter {
    * Attempt to close the process
    */
   async close(): Promise<void> {
-    this.p.kill("SIGINT");
+    return new Promise((res, rej) => {
+      this.p.kill("SIGTERM");
+      treeKill(this.p.pid, (err) => {
+        if (err) {
+          rej(err);
+        } else {
+          res();
+        }
+      }); // TODO check how this works on windows
+    });
+    
   }
 
   /**

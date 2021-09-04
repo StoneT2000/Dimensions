@@ -1,6 +1,4 @@
-export type AgentActions = Array<{
-  action: string | number | number[];
-}>
+export type AgentActions = Array<Record<string, any>>
 /**
  * Render modes
  * 

@@ -1,10 +1,15 @@
 import { AgentActions, CallTypes, RenderModes } from "./types";
 import path from 'path';
 import { Process } from "../Process";
+
+/**
+ * A wrapper around a given environment executable or python gym to allow cross-language interaction
+ */
 export class Environment {
 
   public envProcess: Process;
   public id: string = null;
+  public steps = 0;
 
   private static globalID = 0;
   /**
@@ -12,7 +17,7 @@ export class Environment {
    * @param environment - path to environment file to be used
    * @param envConfigs - configurations that are sent to the environment
    */
-  constructor(public environment: string, public envConfigs: string = null) {
+  constructor(public environment: string, public envConfigs: Record<string, any> = {}) {
     // TODO: initialize an environment process.
     if (path.extname(environment) === ".py") {
       this.envProcess = new Process("python", [environment]);
@@ -25,20 +30,21 @@ export class Environment {
       envConfigs: this.envConfigs,
       type: CallTypes.INIT
     }))
-    return JSON.parse(await this.envProcess.readstdout());
   }
   /**
    * 
    * @param actions 
    */
   async step(agentActions: AgentActions): Promise<Record<string, any>> {
+    this.steps += 1;
     await this.envProcess.send(JSON.stringify({
       agentActions,
       type: CallTypes.STEP
     }));
     return JSON.parse(await this.envProcess.readstdout());
   }
-  async reset(state: string = null): Promise<Record<string, any>> {
+  async reset(state: Record<string, any> = null): Promise<Record<string, any>> {
+    this.steps = 0;
     await this.envProcess.send(JSON.stringify({
       state,
       type: CallTypes.RESET

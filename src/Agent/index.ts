@@ -12,7 +12,7 @@ export class Agent extends EventEmitter {
   public id: string = null;
   public configs: Configs = {
     agent: null,
-    name: 'default_agent',
+    name: null,
     time: {
       perStep: 2000,
       overage: 60000,
@@ -43,7 +43,21 @@ export class Agent extends EventEmitter {
    */
   async initialize(): Promise<void> {
     this.p = new Process(this.configs.agent);
+    this.p.log.identifier = `[${this.id}]`;
+    if (this.configs.name) {
+      this.p.log.identifier = `[${this.configs.name} (${this.id})]`
+    }
+    this.p.send(JSON.stringify({
+      name: this.configs.name,
+      id: this.id,
+      type: CallTypes.INIT
+    }))
   }
+
+  async ready(): Promise<boolean> {
+    return this.p !== undefined; // TODO change this
+  }
+
   /**
    * Clean up the agent process
    */
@@ -80,7 +94,7 @@ export class Agent extends EventEmitter {
    * @param stepReturnVal - return value from the environment step function
    * @returns 
    */
-  async action(stepReturnVal: Record<string, any>): Promise<any> {
+  async action(stepReturnVal: Record<string, any>): Promise<Record<string, any>> {
     // measure timer here!
     if (this.hasTimer()) {
       this._setTimeout(() => {
@@ -103,5 +117,12 @@ export class Agent extends EventEmitter {
       }
     }
     return action;
+  }
+
+  async resume(): Promise<void> {
+    return this.p.resume();
+  }
+  async pause(): Promise<void> {
+    return this.p.pause();
   }
 }

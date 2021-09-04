@@ -3,6 +3,11 @@ export interface Configs {
    * Should be an executable that can run, receive inputs and print actions
    */
   agent: string;
+  /**
+   * Display name of this agent. When null, display name is not used
+   * 
+   * @default `null`
+   */
   name: string;
   time: {
     /**
@@ -27,6 +32,7 @@ export enum Events {
 }
 
 export enum CallTypes {
+  INIT = 'init',
   ACTION = 'action',
   CLOSE = 'close'
 }

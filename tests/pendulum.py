@@ -8,7 +8,9 @@ from os import path
 class PendulumEnv(gym.Env):
     metadata = {"render.modes": ["human", "rgb_array"], "video.frames_per_second": 30}
 
-    def __init__(self, g=10.0):
+    def __init__(self, g=10.0, max_steps=300):
+        self.max_steps = max_steps
+        self.curr_step = 0
         self.max_speed = 8
         self.max_torque = 2.0
         self.dt = 0.05
@@ -30,6 +32,7 @@ class PendulumEnv(gym.Env):
         return [seed]
 
     def step(self, u):
+        self.curr_step += 1
         th, thdot = self.state  # th := theta
 
         g = self.g
@@ -49,7 +52,7 @@ class PendulumEnv(gym.Env):
         newthdot = np.clip(newthdot, -self.max_speed, self.max_speed)
 
         self.state = np.array([newth, newthdot])
-        return self._get_obs(), -costs, False, {}
+        return self._get_obs(), -costs, self.curr_step >= self.max_steps, {}
 
     def reset(self, state=None):
         high = np.array([np.pi, 1])
@@ -140,8 +143,8 @@ if __name__ == "__main__":
             args = data["envConfigs"]
             if args is None: args = {}
             env = PendulumEnv(**args)
-            output(dict())
         elif input_type == "step":
+            
             agentActions = data["agentActions"]
             if agentActions is None: agentActions = []
             # expect to be single agent only
@@ -155,6 +158,7 @@ if __name__ == "__main__":
             out = dict(obs=serialize_np(obs), reward=reward, done=done, info=info)
             output(out)
         elif input_type == "reset":
+            print(data, file=sys.stderr)
             state = data["state"]
             obs = env.reset(state)
             out = dict(obs=(serialize_np(obs)))
