@@ -79,7 +79,6 @@ export class Process extends EventEmitter {
   }
   async send(message: string): Promise<void> {
     return new Promise((res, rej) => {
-      // console.log(this.p.stdin.write)
       this.p.stdin.write(`${message}\n`, (err) => {
           if (err) rej(err);
           else res();

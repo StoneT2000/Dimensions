@@ -26,7 +26,9 @@ if __name__ == "__main__":
         if input_type == "init":
             agent_id = data["id"]
             agent_name = data["name"]
+            print(agent_id)
         elif input_type == "action":
+            # sleep(20)
             print(data, file=sys.stderr)
             if 'reward' not in data:
                 # then this is a new episode!

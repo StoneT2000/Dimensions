@@ -40,6 +40,9 @@ class PendulumEnv(gym.Env):
         l = self.l
         dt = self.dt
 
+        if u is None:
+            u = np.array([0])
+
         u = np.clip(u, -self.max_torque, self.max_torque)[0]
         self.last_u = u  # for rendering
         costs = angle_normalize(th) ** 2 + 0.1 * thdot ** 2 + 0.001 * (u ** 2)
@@ -149,9 +152,12 @@ if __name__ == "__main__":
             if agentActions is None: agentActions = []
             # expect to be single agent only
             if len(agentActions) != 1:
-                raise ValueError("Expected 1 action only")
-            action = float(agentActions[0]["action"])
-            action = np.array([action])
+                raise ValueError(f"Expected 1 action, got {len(agentActions)} actions")
+            if agentActions[0] is None:
+                action = np.array([0])
+            else:
+                action = float(agentActions[0]["action"])
+                action = np.array([action])
 
             obs, reward, done, info = env.step(action)
 

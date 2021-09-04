@@ -28,11 +28,23 @@ export interface Configs {
 }
 
 export enum Events {
-  TIMEOUT = 'timeout'
+  TIMEOUT = 'timeout',
+  OUTOFMEMORY = 'outofmemory',
+  INIT_ERROR = 'init_error'
 }
 
 export enum CallTypes {
   INIT = 'init',
   ACTION = 'action',
   CLOSE = 'close'
+}
+
+export enum Status {
+  /** When the agent process is running and ready to receive inputs and print outputs */
+  ACTIVE = 'active',
+  /** When the agent crashes abruptly or goes over time limits or memory limis*/
+  ERROR = 'error',
+  /** When an agent is finished and closed */
+  DONE = 'done'
+
 }
