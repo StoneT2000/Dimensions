@@ -4,7 +4,7 @@ const dim = new Dimensions.Dimension({
   name: 'Test',
   environment: path.join(__dirname, 'pendulum.py')
 });
-const env = dim.make();
+const env = dim.makeEnv();
 // collect agent actions
 const run = async () => {
   let res = await env.setup();
@@ -18,6 +18,7 @@ const run = async () => {
   }
   res = await env.reset();
   console.log(res);
+  await env.close();
 }
-// env.step();
 run()
+// console.log(dim,env)

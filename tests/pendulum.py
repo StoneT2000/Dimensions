@@ -146,7 +146,7 @@ if __name__ == "__main__":
 
             obs, reward, done, info = env.step(action)
 
-            out = dict(val=(serialize_np(obs), reward, done, info))
+            out = dict(obs=serialize_np(obs), reward=reward, done=done, info=info)
             output(out)
         elif input_type == "reset":
             state = data["state"]
@@ -154,5 +154,4 @@ if __name__ == "__main__":
             out = dict(val=(serialize_np(obs)))
             output(out)
         elif input_type == "close":
-            # exit()
-            pass
+            exit()

@@ -1,9 +1,9 @@
 import { ChildProcess, SpawnOptions } from "child_process";
 import spawn from 'cross-spawn';
 import { EventEmitter } from "events";
+import { Logger } from "../Logger";
 import { Events } from "./events";
 import { PromiseStructure } from "./types";
-import util from 'util';
 
 /**
  * Generic class that wraps around a process that is spawned and receives input and prints out outputs
@@ -20,14 +20,18 @@ export class Process extends EventEmitter {
     stderr: []
   };
 
+  public log: Logger = new Logger();
 
+  /**
+   * Promise structures allow the Process class to wait for outputs from the underlying process, or otherwise throw an error if something wrong happens
+   */
   _promises: {
     stdout: PromiseStructure;
     stderr: PromiseStructure;
   }
   _stdoutPromise: Promise<string>;
 
-  constructor(command: string, args: string[], options?: SpawnOptions) {
+  constructor(command: string, args: string[] = [], options?: SpawnOptions) {
     super();
     this._promises = {
       stdout: this._createPromiseStructure(),
@@ -55,13 +59,7 @@ export class Process extends EventEmitter {
       
       let data: Array<string>;
       while ((data = this.p.stderr.read())) {
-        // split chunks into line by line and push into buffer
-        // const strs = `${data}`.split(/\r?\n/);
-        process.stderr.write(`${data}`);
-        // for (let i = 0; i < strs.length - 1; i++) {
-        //   this._buffer.stdout.push(strs[i]);
-        // }
-        // this._promises.stdout.res(data);
+        this.log.custom(`[pid ${this.p.pid}]`.blue, Logger.LEVEL.ERROR, `${data}`);
       }
     });
   }
@@ -108,5 +106,12 @@ export class Process extends EventEmitter {
       await this._promises.stdout.promise;
     }
     return arr.shift();
+  }
+
+  /**
+   * Attempt to close the process
+   */
+  async close(): Promise<void> {
+    this.p.kill("SIGINT");
   }
 }

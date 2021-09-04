@@ -4,7 +4,9 @@ import { Process } from "../Process";
 export class Environment {
 
   public envProcess: Process;
+  public id: string = null;
 
+  private static globalID = 0;
   /**
    * Create a new environment. Should call await setup() immediately
    * @param environment - path to environment file to be used
@@ -15,6 +17,8 @@ export class Environment {
     if (path.extname(environment) === ".py") {
       this.envProcess = new Process("python", [environment]);
     }
+
+    this.id = `env_${Environment.globalID++}`;
   }
   async setup(): Promise<string> {
     await this.envProcess.send(JSON.stringify({
@@ -43,20 +47,39 @@ export class Environment {
   }
 
   /**
-   * 
+   * Seed the environment. Return a string representing the environment's random number generator states
+   * @param seed - the seed value to use
    */
-  render(
+  async seed(seed: number): Promise<string> {
+    await this.envProcess.send(JSON.stringify({
+      seed,
+      type: CallTypes.SEED
+    }));
+    return this.envProcess.readstdout();
+  }
+
+  /**
+   * Request render information from the environment
+   * 
+   * Web visualizers can call this function each time a step is taken to render as the environment progresses, although this will be slower.
+   * Otherwise recommended to take all the render states stored in the environment and render at once
+   */
+  async render(
     mode: RenderModes 
-  ): any {
-    mode;
-    return;
+  ): Promise<string> {
+    await this.envProcess.send(JSON.stringify({
+      mode,
+      type: CallTypes.RENDER
+    }));
+    return this.envProcess.readstdout();
   }
   /**
-   * Perform any clean up operations
+   * Perform any clean up operations and close the environment
    */
   async close(): Promise<void> {
     await this.envProcess.send(JSON.stringify({
       type: CallTypes.CLOSE
     }));
+    await this.envProcess.close();
   }
 }
