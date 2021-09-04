@@ -103,6 +103,16 @@ def angle_normalize(x):
 
 
 if __name__ == "__main__":
+    # import time
+    # env = PendulumEnv()
+    # obs = env.reset()
+    # stime = time.time_ns()
+    # N=100000
+    # for i in range(N):
+    #     obs, reward, done, info = env.step(np.array([0.1]))
+    # elapsed = (time.time_ns() - stime) * 1e-6
+    # print(f'{elapsed}ms, {elapsed / N} ms/step')
+    # exit()
     def read_input():
         """
         Reads input from stdin
@@ -126,7 +136,6 @@ if __name__ == "__main__":
         inputs = read_input()
         data = json.loads(inputs) # load into a dict with information
         input_type = data["type"]
-        print(input_type, file=sys.stderr)
         if input_type == "init":
             args = data["envConfigs"]
             if args is None: args = {}

@@ -25,3 +25,7 @@ export interface Configs {
 export enum Events {
   TIMEOUT = 'timeout'
 }
+
+export enum CallTypes {
+  ACTION = 'action'
+}

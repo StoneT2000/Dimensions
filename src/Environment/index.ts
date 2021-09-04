@@ -80,6 +80,6 @@ export class Environment {
     await this.envProcess.send(JSON.stringify({
       type: CallTypes.CLOSE
     }));
-    await this.envProcess.close();
+    // await this.envProcess.close(); // TODO add a timeout to the closing. If env does not close in some time limit, send interrupt signal
   }
 }

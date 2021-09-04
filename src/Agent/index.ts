@@ -3,10 +3,9 @@ import { EventEmitter } from "events";
 import { Process } from "../Process";
 import { deepMerge } from "../utils/DeepMerge";
 import { DeepPartial } from "../utils/DeepPartial";
-import { Configs, Events } from "./types";
+import { CallTypes, Configs, Events } from "./types";
 import fs from 'fs';
 import { noop } from "../utils";
-import { Dimension } from "../Dimension";
 
 export class Agent extends EventEmitter {
   public p: Process;
@@ -58,15 +57,18 @@ export class Agent extends EventEmitter {
    * clear out method returns the elpased time since the timer was set in nanoseconds (1e-9)
    */
    _setTimeout(fn: Function, delay: number, ...args: any[]): void {
-     process.hrtime
     const timer = setTimeout(() => {
       fn(...args);
     }, delay);
-    const startTime = process.hrtime()[1];
+    const startTime = performance.now();
     this._clearTimer = () => {
       clearTimeout(timer);
-      return process.hrtime()[1] - startTime;
+      return performance.now() - startTime;
     };
+  }
+
+  hasTimer(): boolean {
+    return this.configs.time.perStep !== null;
   }
 
   /**
@@ -77,18 +79,25 @@ export class Agent extends EventEmitter {
    */
   async action(stepReturnVal: string): Promise<string> {
     // measure timer here!
-    this._setTimeout(() => {
-      this.emit(Events.TIMEOUT);
-    }, this.configs.time.perStep + this.remainingOverage);
-    await this.p.send(stepReturnVal);
-    const action = await this.p.readstdout();
-    const elpasedTime = this._clearTimer();
-    if (elpasedTime > this.configs.time.perStep) {
-      this.remainingOverage -= elpasedTime - this.configs.time.perStep;
+    if (this.hasTimer()) {
+      this._setTimeout(() => {
+        this.emit(Events.TIMEOUT);
+      }, this.configs.time.perStep + this.remainingOverage);
     }
-    if (this.remainingOverage < 0) {
-      // this usually shouldn't happen as this will be caught out by the timer above, but if so, emit the timeotu event
-      this.emit(Events.TIMEOUT);
+    await this.p.send(JSON.stringify({
+      stepReturnVal,
+      type: CallTypes.ACTION,
+    }));
+    const action = await this.p.readstdout();
+    const elpasedTime = this._clearTimer() * 1e-6;
+    if (this.hasTimer()) {
+      if (elpasedTime > this.configs.time.perStep) {
+        this.remainingOverage -= elpasedTime - this.configs.time.perStep;
+      }
+      if (this.remainingOverage < 0) {
+        // this usually shouldn't happen as this will be caught out by the timer above, but if so, emit the timeotu event
+        this.emit(Events.TIMEOUT);
+      }
     }
     return action;
   }

@@ -4,6 +4,7 @@ import { EventEmitter } from "events";
 import { Logger } from "../Logger";
 import { Events } from "./events";
 import { PromiseStructure } from "./types";
+import os from 'os';
 
 /**
  * Generic class that wraps around a process that is spawned and receives input and prints out outputs
@@ -113,5 +114,20 @@ export class Process extends EventEmitter {
    */
   async close(): Promise<void> {
     this.p.kill("SIGINT");
+  }
+
+  /**
+   * Pauses the process
+   */
+  async pause(): Promise<void> {
+    if (os.platform() === "win32") return; // TODO - can we pause a process on windows?
+    this.p.kill("SIGSTOP");
+  }
+  /**
+   * Resumes the process
+   */
+   async resume(): Promise<void> {
+    if (os.platform() === "win32") return; // TODO - can we resume a paused process on windows?
+    this.p.kill("SIGCONT");
   }
 }
