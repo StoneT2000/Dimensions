@@ -20,42 +20,42 @@ export class Environment {
 
     this.id = `env_${Environment.globalID++}`;
   }
-  async setup(): Promise<string> {
+  async setup(): Promise<any> {
     await this.envProcess.send(JSON.stringify({
       envConfigs: this.envConfigs,
       type: CallTypes.INIT
     }))
-    return this.envProcess.readstdout();
+    return JSON.parse(await this.envProcess.readstdout());
   }
   /**
    * 
    * @param actions 
    */
-  async step(agentActions: AgentActions): Promise<string> {
+  async step(agentActions: AgentActions): Promise<Record<string, any>> {
     await this.envProcess.send(JSON.stringify({
       agentActions,
       type: CallTypes.STEP
     }));
-    return this.envProcess.readstdout();
+    return JSON.parse(await this.envProcess.readstdout());
   }
-  async reset(state: string = null): Promise<string> {
+  async reset(state: string = null): Promise<Record<string, any>> {
     await this.envProcess.send(JSON.stringify({
       state,
       type: CallTypes.RESET
     }));
-    return this.envProcess.readstdout();
+    return JSON.parse(await this.envProcess.readstdout());
   }
 
   /**
    * Seed the environment. Return a string representing the environment's random number generator states
    * @param seed - the seed value to use
    */
-  async seed(seed: number): Promise<string> {
+  async seed(seed: number): Promise<Record<string, any>> {
     await this.envProcess.send(JSON.stringify({
       seed,
       type: CallTypes.SEED
     }));
-    return this.envProcess.readstdout();
+    return JSON.parse(await this.envProcess.readstdout());
   }
 
   /**
@@ -66,12 +66,12 @@ export class Environment {
    */
   async render(
     mode: RenderModes 
-  ): Promise<string> {
+  ): Promise<Record<string, any>> {
     await this.envProcess.send(JSON.stringify({
       mode,
       type: CallTypes.RENDER
     }));
-    return this.envProcess.readstdout();
+    return JSON.parse(await this.envProcess.readstdout());
   }
   /**
    * Perform any clean up operations and close the environment

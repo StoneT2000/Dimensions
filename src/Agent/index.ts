@@ -48,7 +48,10 @@ export class Agent extends EventEmitter {
    * Clean up the agent process
    */
   async close(): Promise<void> {
-    await this.p.close();
+    await this.p.send(JSON.stringify({
+      type: CallTypes.CLOSE
+    }))
+    await this.p.close(); // TODO, configurable, give agent a certain amount of cooldown before force stopping it
   }
 
   /**
@@ -77,7 +80,7 @@ export class Agent extends EventEmitter {
    * @param stepReturnVal - return value from the environment step function
    * @returns 
    */
-  async action(stepReturnVal: string): Promise<string> {
+  async action(stepReturnVal: Record<string, any>): Promise<any> {
     // measure timer here!
     if (this.hasTimer()) {
       this._setTimeout(() => {
@@ -85,10 +88,10 @@ export class Agent extends EventEmitter {
       }, this.configs.time.perStep + this.remainingOverage);
     }
     await this.p.send(JSON.stringify({
-      stepReturnVal,
+      ...stepReturnVal,
       type: CallTypes.ACTION,
     }));
-    const action = await this.p.readstdout();
+    const action = JSON.parse(await this.p.readstdout());
     const elpasedTime = this._clearTimer() * 1e-6;
     if (this.hasTimer()) {
       if (elpasedTime > this.configs.time.perStep) {

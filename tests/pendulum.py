@@ -140,10 +140,7 @@ if __name__ == "__main__":
             args = data["envConfigs"]
             if args is None: args = {}
             env = PendulumEnv(**args)
-            obs = env.reset()
-            obs = obs.tolist()
-            out = dict(val=obs)
-            output(out)
+            output(dict())
         elif input_type == "step":
             agentActions = data["agentActions"]
             if agentActions is None: agentActions = []
@@ -160,7 +157,7 @@ if __name__ == "__main__":
         elif input_type == "reset":
             state = data["state"]
             obs = env.reset(state)
-            out = dict(val=(serialize_np(obs)))
+            out = dict(obs=(serialize_np(obs)))
             output(out)
         elif input_type == "close":
             exit()

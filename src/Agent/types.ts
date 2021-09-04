@@ -27,5 +27,6 @@ export enum Events {
 }
 
 export enum CallTypes {
-  ACTION = 'action'
+  ACTION = 'action',
+  CLOSE = 'close'
 }
