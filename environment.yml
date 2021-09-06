@@ -21,3 +21,4 @@ dependencies:
   - tqdm
   - pip:
     - gym
+    - pettingzoo

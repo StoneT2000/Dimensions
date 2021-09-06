@@ -6,6 +6,7 @@ import { Configs as AgentConfigs } from "../Agent/types";
 import { Environment } from "../Environment";
 import { Agent } from "../Agent";
 import { Engine } from "../Engine";
+import { Process } from "../Process";
 /**
  * A Dimension is a factory object that can create new environment instances, new agent instances, and link them together
  * 
@@ -15,7 +16,6 @@ export class Dimension {
   public configs: Configs = {
     station: false,
     name: 'default_dimension',
-    environment: null,
   }
   
   public agents: Map<string, Agent> = new Map();
@@ -87,7 +87,7 @@ export class Dimension {
    */
   async runEpisode(env: Environment, agents: (Agent | string)[], seed: number = null, state: Record<string, any> = null): Promise<Record<string, any>> {
     const tempAgentIDs: Set<string> = new Set();
-    const runAgents = [];
+    const runAgents: Agent[] = [];
     agents.forEach((agent) => {
       if (agent instanceof Agent) {
         runAgents.push(agent);
@@ -97,6 +97,13 @@ export class Dimension {
         runAgents.push(newAgent);
       }
     });
+    if (runAgents.length > 1) {
+      // expect possible_agents to be a thing
+      // TOOD reconsider this api ? esepciallly w.r.t to adding and deleting agents
+      env.metaData.possible_agents.forEach((player_id: string, i) => {
+        env.agentIDToPlayerID.set(runAgents[i].id, player_id);
+      });
+    }
     await this.engine.initializeAgents(runAgents);
 
     // output of env at each step
@@ -108,33 +115,34 @@ export class Dimension {
     // create new initial state
     let data = await env.reset(state);
     outputs.push({
-      actions: [],
-      data
+      actions: null,
+      ...data
     });
 
     let done = false;
     const stime = performance.now();
+
     while (!done) {
-      const actions = await this.engine.collectActions(data, runAgents);
+      const actions = await this.engine.collectActions(env, data, runAgents);
+      
       data = await env.step(actions);
-      done = data['done'];
+      done = this.engine.envDone(env, data, runAgents);
+      await this.engine.handleAgents(env, data, runAgents);
       outputs.push({
         actions,
-        data,
+        ...data,
       });
     }
-    // provide agents the final state that they can choose to use however they like. agents get their overage and their per time limit
-    // left to do any finishing up actions.
-    await this.engine.collectActions(data, runAgents);
     tempAgentIDs.forEach((id) => {
       this.removeAgent(id);
     });
 
     const elapsed = performance.now() - stime;
-    console.log({
-      elapsed,
-      msPerStep: elapsed / env.steps
-    });
+    // console.log({
+    //   elapsed,
+    //   msPerStep: elapsed / env.steps
+    // });
+    // console.log(outputs)
 
     return {
       seed,
@@ -151,10 +159,9 @@ export class Dimension {
    * Cleanup the Dimension to gracefully quit and avoid leaks
    */
   async cleanup(): Promise<void> {
-    const closePromises: Promise<void>[] = [];
-    this.agents.forEach((agent) => {
-      closePromises.push(agent.close());
-    });
+    const closePromises: Promise<any>[] = [];
+    closePromises.push(Promise.all(Array.from(this.agents.values()).map((a) => a.close())));
+    closePromises.push(Process._closeAllProcesses());
     await Promise.all(closePromises);
   }
 }

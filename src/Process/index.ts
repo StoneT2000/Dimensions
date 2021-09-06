@@ -33,6 +33,9 @@ export class Process extends EventEmitter {
   }
   _stdoutPromise: Promise<string>;
 
+  /** keep track of all processes for cleanup purposes. Maps pid to process object */
+  private static allProcesses: Map<number, Process> = new Map();
+
   constructor(command: string, args: string[] = [], options?: SpawnOptions) {
     super();
     this._promises = {
@@ -41,6 +44,9 @@ export class Process extends EventEmitter {
     }
 
     this.p = spawn(command, args, options);
+    
+    Process.allProcesses.set(this.p.pid, this);
+
     this.log.identifier = `[pid ${this.p.pid}]`;
     this.p.on('close', (code) => {
       this.emit(Events.CLOSE, code);
@@ -121,6 +127,7 @@ export class Process extends EventEmitter {
           rej(err);
         } else {
           res();
+          Process.allProcesses.delete(this.p.pid);
         }
       }); // TODO check how this works on windows
     });
@@ -140,5 +147,9 @@ export class Process extends EventEmitter {
    async resume(): Promise<void> {
     if (os.platform() === "win32") return; // TODO - can we resume a paused process on windows?
     this.p.kill("SIGCONT");
+  }
+
+  static async _closeAllProcesses(): Promise<void> {
+    await Promise.all(Array.from(Process.allProcesses.values()).map((p) => p.close()));
   }
 }

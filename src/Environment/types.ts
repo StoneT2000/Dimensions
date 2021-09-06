@@ -1,4 +1,4 @@
-export type AgentActions = Array<Record<string, any>>
+export type AgentActions = Record<string, any> | any;
 /**
  * Render modes
  * 

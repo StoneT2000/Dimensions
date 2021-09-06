@@ -1,6 +1,7 @@
 import { AgentActions, CallTypes, RenderModes } from "./types";
 import path from 'path';
 import { Process } from "../Process";
+import { Agent } from "../Agent";
 
 /**
  * A wrapper around a given environment executable or python gym to allow cross-language interaction
@@ -10,6 +11,17 @@ export class Environment {
   public envProcess: Process;
   public id: string = null;
   public steps = 0;
+
+  public metaData: Record<string, any> = null;
+
+  /**
+   * Maps agent ID to player ID in the environment. Mostly used for MultiAgent scenarios
+   */
+  public agentIDToPlayerID: Map<string, string> = new Map();
+  /**
+   * Maps agent ID to Agent. Mostly used for MultiAgent scenarios. Unused if manually stepping through environment
+   */
+  public agents: Map<string, Agent> = new Map();
 
   private static globalID = 0;
   /**
@@ -25,20 +37,24 @@ export class Environment {
 
     this.id = `env_${Environment.globalID++}`;
   }
-  async setup(): Promise<any> {
+  async setup(): Promise<Record<string, any>> {
     await this.envProcess.send(JSON.stringify({
       envConfigs: this.envConfigs,
       type: CallTypes.INIT
-    }))
+    }));
+    // read back metadata
+    const metaData = JSON.parse(await this.envProcess.readstdout());
+    this.metaData = metaData;
+    return metaData;
   }
   /**
    * 
    * @param actions 
    */
-  async step(agentActions: AgentActions): Promise<Record<string, any>> {
+  async step(actions: AgentActions): Promise<Record<string, any>> {
     this.steps += 1;
     await this.envProcess.send(JSON.stringify({
-      agentActions,
+      actions,
       type: CallTypes.STEP
     }));
     return JSON.parse(await this.envProcess.readstdout());
@@ -73,12 +89,21 @@ export class Environment {
   async render(
     mode: RenderModes 
   ): Promise<Record<string, any>> {
+    // TODO finish
     await this.envProcess.send(JSON.stringify({
       mode,
       type: CallTypes.RENDER
     }));
     return JSON.parse(await this.envProcess.readstdout());
   }
+
+  async addAgent(agent: Agent): Promise<Record<string, any>> {
+    this.agents.set(agent.id, agent);
+    // this.agentIDToPlayerID.set(agent.id, );
+    // TODO send new agent info to game
+    return {};
+  }
+
   /**
    * Perform any clean up operations and close the environment
    */

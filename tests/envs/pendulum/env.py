@@ -6,7 +6,7 @@ from os import path
 
 
 class PendulumEnv(gym.Env):
-    metadata = {"render.modes": ["human", "rgb_array"], "video.frames_per_second": 30}
+    metadata = {"render.modes": ["human", "rgb_array"], "name": "Pendulum-v0"}
 
     def __init__(self, g=10.0, max_steps=300):
         self.max_steps = max_steps
@@ -32,6 +32,12 @@ class PendulumEnv(gym.Env):
         return [seed]
 
     def step(self, u):
+        assert 'actions' in u
+        u = u['actions']
+        assert isinstance(u, list) == False
+        # should be validating the action format here
+        u = np.array([float(u)])
+
         self.curr_step += 1
         th, thdot = self.state  # th := theta
 
@@ -109,16 +115,6 @@ def angle_normalize(x):
 
 
 if __name__ == "__main__":
-    # import time
-    # env = PendulumEnv()
-    # obs = env.reset()
-    # stime = time.time_ns()
-    # N=100000
-    # for i in range(N):
-    #     obs, reward, done, info = env.step(np.array([0.1]))
-    # elapsed = (time.time_ns() - stime) * 1e-6
-    # print(f'{elapsed}ms, {elapsed / N} ms/step')
-    # exit()
     def read_input():
         """
         Reads input from stdin
@@ -146,25 +142,12 @@ if __name__ == "__main__":
             args = data["envConfigs"]
             if args is None: args = {}
             env = PendulumEnv(**args)
+            output(dict(env.metadata))
         elif input_type == "step":
-            
-            agentActions = data["agentActions"]
-            if agentActions is None: agentActions = []
-            # expect to be single agent only
-            if len(agentActions) != 1:
-                raise ValueError(f"Expected 1 action, got {len(agentActions)} actions")
-            if agentActions[0] is None:
-                action = np.array([0])
-            else:
-                action = float(agentActions[0]["action"])
-                action = np.array([action])
-
-            obs, reward, done, info = env.step(action)
-
+            obs, reward, done, info = env.step(data)
             out = dict(obs=serialize_np(obs), reward=reward, done=done, info=info)
             output(out)
         elif input_type == "reset":
-            print(data, file=sys.stderr)
             state = data["state"]
             obs = env.reset(state)
             out = dict(obs=(serialize_np(obs)))

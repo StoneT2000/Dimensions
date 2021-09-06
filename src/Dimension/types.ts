@@ -11,15 +11,5 @@ export interface Configs{
    * @default `false`
    */
   station: boolean;
-
-  /**
-   * The path to the environment file or executable to use
-   * 
-   * If .py ...
-   * 
-   * Otherwise we expect the file to be an executable that accepts our input format for agent actions and outputs state, reward etc. as a JSON
-   * 
-   */
-  environment: string;
   
 }

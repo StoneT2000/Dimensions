@@ -44,6 +44,8 @@ export class Agent extends EventEmitter {
 
     this.remainingOverage = this.configs.time.overage;
 
+    // agent_<id> is on scope of whole process. 
+    // player_<player_index> is on scope of a single episode
     this.id = `agent_${Agent.globalID++}`;
 
 
