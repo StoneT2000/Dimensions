@@ -14,7 +14,7 @@ export const LOCAL_DIR = path.join(__dirname, '../../../../../local');
  * @param file - file to remove
  */
 export const removeFileSync = (file: string): void => {
-  rimraf(file, (err) => {
+  rimraf(file, () => {
     //
   });
   // spawnSync('rm', ['-f', file]);
