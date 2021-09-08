@@ -147,10 +147,17 @@ if __name__ == "__main__":
             obs, reward, done, info = env.step(data)
             out = dict(obs=serialize_np(obs), reward=reward, done=done, info=info)
             output(out)
+        elif input_type == "seed":
+            seed = data["seed"]
+            obs = env.seed(int(seed))
+            output(obs)
         elif input_type == "reset":
             state = data["state"]
             obs = env.reset(state)
             out = dict(obs=(serialize_np(obs)))
             output(out)
+        elif input_type == "register_agents":
+            assert len(data['ids']) == 1
+            output(dict(ids=["player_0"]))
         elif input_type == "close":
             exit()

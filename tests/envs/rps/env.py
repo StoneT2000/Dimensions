@@ -150,12 +150,12 @@ if __name__ == "__main__":
         inputs = read_input()
         data = json.loads(inputs) # load into a dict with information
         input_type = data["type"]
+
         if input_type == "init":
             args = data["envConfigs"]
             if args is None: args = {}
             env = parallel_env(**args)
-            # add possible_agents for MultiAgent envs
-            output(dict(**env.metadata, possible_agents=env.possible_agents))
+            output(env.metadata)
         elif input_type == "step":
             observations, rewards, dones, infos = env.step(data['actions'])
             # print(observations, file=sys.stderr)
@@ -177,5 +177,10 @@ if __name__ == "__main__":
                 obs = serialized['observations'][k]
                 out[k] = dict(obs=obs)
             output(out)
+        elif input_type == "register_agents":
+            # can only register at the start, expect all agent ids first. Input here should not require validation
+            ids = data['ids']
+            assert len(ids) == 2
+            output(dict(ids=["player_0", "player_1"]))
         elif input_type == "close":
             exit()

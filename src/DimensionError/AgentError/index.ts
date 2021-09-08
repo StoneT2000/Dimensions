@@ -1,4 +1,4 @@
-import { Agent } from "../../Agent";
+import { Agent } from '../../Agent';
 
 const AGENT_ERROR = 'AgentError';
 
@@ -15,9 +15,9 @@ export class AgentError extends Error {
   constructor(m: string, public agent: Agent) {
     super(m);
     if (agent.configs.name !== null) {
-      this.message = `[${agent.configs.name} (${agent.id})] ${this.message}`
+      this.message = `[${agent.configs.name} (${agent.id})] ${this.message}`;
     } else {
-      this.message = `[${agent.id}] ${this.message}`
+      this.message = `[${agent.id}] ${this.message}`;
     }
     this.name = AGENT_ERROR;
     Object.setPrototypeOf(this, AgentError.prototype);

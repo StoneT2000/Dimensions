@@ -1,12 +1,12 @@
-import * as DError from "../DimensionError";
-import { EventEmitter } from "events";
-import { Process } from "../Process";
-import { deepMerge } from "../utils/DeepMerge";
-import { DeepPartial } from "../utils/DeepPartial";
-import { CallTypes, Configs, Events, Status } from "./types";
+import * as DError from '../DimensionError';
+import { EventEmitter } from 'events';
+import { Process } from '../Process';
+import { deepMerge } from '../utils/DeepMerge';
+import { DeepPartial } from '../utils/DeepPartial';
+import { CallTypes, Configs, Events, Status } from './types';
 import fs from 'fs';
-import { noop } from "../utils";
-import { Logger } from "../Logger";
+import { noop } from '../utils';
+import { Logger } from '../Logger';
 
 export class Agent extends EventEmitter {
   public p: Process;
@@ -17,11 +17,11 @@ export class Agent extends EventEmitter {
     name: null,
     time: {
       perStep: 2000,
-      overage: 0//60000,
-    }
-  }
+      overage: 60000,
+    },
+  };
   public remainingOverage = 60000;
-  
+
   public log: Logger = new Logger();
 
   _clearTimer: Function = noop;
@@ -30,13 +30,13 @@ export class Agent extends EventEmitter {
 
   private static globalID = 0;
 
-  private currentTimeoutReason = "Unknown";
+  private currentTimeoutReason = 'Unknown';
 
   constructor(configs: DeepPartial<Configs> = {}) {
     super();
     this.configs = deepMerge(this.configs, configs);
     if (!this.configs.agent) {
-      throw new TypeError("No agent executable provided")
+      throw new TypeError('No agent executable provided');
     }
     if (!fs.existsSync(this.configs.agent)) {
       throw new DError.MissingFilesError(`no such file ${this.configs.agent}`);
@@ -44,11 +44,9 @@ export class Agent extends EventEmitter {
 
     this.remainingOverage = this.configs.time.overage;
 
-    // agent_<id> is on scope of whole process. 
+    // agent_<id> is on scope of whole process.
     // player_<player_index> is on scope of a single episode
     this.id = `agent_${Agent.globalID++}`;
-
-
   }
 
   /**
@@ -58,7 +56,7 @@ export class Agent extends EventEmitter {
     this.p = new Process(this.configs.agent);
     this.p.log.identifier = `[${this.id}]`;
     if (this.configs.name) {
-      this.p.log.identifier = `[${this.configs.name} (${this.id})]`
+      this.p.log.identifier = `[${this.configs.name} (${this.id})]`;
     }
     this.log.identifier = this.p.log.identifier;
 
@@ -89,16 +87,23 @@ export class Agent extends EventEmitter {
 
     // perform handshake to verify agent is alive
     await this._timed(async () => {
-      this.currentTimeoutReason = 'Could not send agent initialization information';
-      await this.p.send(JSON.stringify({
-        name: this.configs.name,
-        id: this.id,
-        type: CallTypes.INIT
-      }));
-      this.currentTimeoutReason = 'Did not receive agent id back from agent during initialization';
+      this.currentTimeoutReason =
+        'Could not send agent initialization information';
+      await this.p.send(
+        JSON.stringify({
+          name: this.configs.name,
+          id: this.id,
+          type: CallTypes.INIT,
+        })
+      );
+      this.currentTimeoutReason =
+        'Did not receive agent id back from agent during initialization';
       const readid = await this.p.readstdout();
       if (readid !== this.id) {
-        this.emit(Events.INIT_ERROR, `Agent responded with wrong id of ${readid} instead of ${this.id} during initialization`)
+        this.emit(
+          Events.INIT_ERROR,
+          `Agent responded with wrong id of ${readid} instead of ${this.id} during initialization`
+        );
       }
     });
 
@@ -119,9 +124,11 @@ export class Agent extends EventEmitter {
    */
   async close(): Promise<void> {
     if (this.active()) {
-      await this.p.send(JSON.stringify({
-        type: CallTypes.CLOSE
-      }))
+      await this.p.send(
+        JSON.stringify({
+          type: CallTypes.CLOSE,
+        })
+      );
     }
     await this.p.close(); // TODO, configurable, give agent a certain amount of cooldown before force stopping it
     this.status = Status.DONE;
@@ -129,10 +136,10 @@ export class Agent extends EventEmitter {
 
   /**
    * Setup the agent timer clear out method
-   * 
+   *
    * clear out method returns the elpased time since the timer was set in nanoseconds (1e-9)
    */
-   _setTimeout(fn: Function, delay: number, ...args: any[]): void {
+  _setTimeout(fn: Function, delay: number, ...args: any[]): void {
     const timer = setTimeout(() => {
       fn(...args);
     }, delay);
@@ -151,9 +158,9 @@ export class Agent extends EventEmitter {
     return true;
   }
 
-  /** 
+  /**
    * wrap a function in a time limit, emitting the timeout event should the function exceed the time limits
-   * 
+   *
    * rejects when an error is thrown by fn or _rejectTimer is called
    */
   async _timed<T>(fn: (...args: any[]) => Promise<T>): Promise<T> {
@@ -183,26 +190,29 @@ export class Agent extends EventEmitter {
 
   /**
    * Retrieve an action from the agent
-   * 
+   *
    * @param data - typically the data provided by env.step() functions
-   * @returns 
+   * @returns
    */
   async action(data: Record<string, any>): Promise<Record<string, any>> {
     try {
-      const action = await this._timed(
-        async () => {
-          this.currentTimeoutReason = 'Agent did not respond with an action in time';
-          await this.p.send(JSON.stringify({
+      const action = await this._timed(async () => {
+        this.currentTimeoutReason =
+          'Agent did not respond with an action in time';
+        await this.p.send(
+          JSON.stringify({
             ...data,
             type: CallTypes.ACTION,
-          }));
-          const action: Record<string, any> = JSON.parse(await this.p.readstdout());
-          return action;
-        }
-      );
+          })
+        );
+        const action: Record<string, any> = JSON.parse(
+          await this.p.readstdout()
+        );
+        return action;
+      });
       return action;
     } catch {
-      return null
+      return null;
     }
   }
 

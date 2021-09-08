@@ -1,23 +1,24 @@
-import * as DError from "../DimensionError";
-import { deepMerge } from "../utils/DeepMerge";
-import { DeepPartial } from "../utils/DeepPartial";
-import { Configs } from "./types";
-import { Configs as AgentConfigs } from "../Agent/types";
-import { Environment } from "../Environment";
-import { Agent } from "../Agent";
-import { Engine } from "../Engine";
-import { Process } from "../Process";
+import * as DError from '../DimensionError';
+import { deepMerge } from '../utils/DeepMerge';
+import { DeepPartial } from '../utils/DeepPartial';
+import { Configs } from './types';
+import { Configs as AgentConfigs } from '../Agent/types';
+import { Environment } from '../Environment';
+import { Agent } from '../Agent';
+import { Engine } from '../Engine';
+import { Process } from '../Process';
+import { Episode, EpisodeResult } from '../Episode';
 /**
  * A Dimension is a factory object that can create new environment instances, new agent instances, and link them together
- * 
+ *
  * You can have multiple agents interact with one or multiple environment instances, a single agent interact with a single or multiple instances etc.
  */
 export class Dimension {
   public configs: Configs = {
     station: false,
     name: 'default_dimension',
-  }
-  
+  };
+
   public agents: Map<string, Agent> = new Map();
 
   public id: string = null;
@@ -69,89 +70,69 @@ export class Dimension {
   /**
    * Creates a new environment, which runs the given environment on its own process
    */
-  async makeEnv(environment: string, envConfigs?: Record<string, any>): Promise<Environment> {
+  async makeEnv(
+    environment: string,
+    envConfigs?: Record<string, any>
+  ): Promise<Environment> {
     const env = new Environment(environment, envConfigs);
     await env.setup();
     return env;
   }
 
   /**
-   * Run an episode in the given environment and given agents
-   * 
+   * Run an episode in the given environment and given agents in parallel mode
+   *
    * @param env - The environment to use
    * @param agents - List of agents to use that can submit actions to the environment
-   * 
+   * @param seed - a seed to use for the environment RNG
+   * @param state - a state to start from
+   *
    * Agents can be specified by providing an initialized agent object if that agent process is to be reused elsewhere,
-   * or by paths to the agent executable, of which an agent process will be initialized and then 
+   * or by paths to the agent executable, of which an agent process will be initialized and then
    * closed at the end of the episode.
    */
-  async runEpisode(env: Environment, agents: (Agent | string)[], seed: number = null, state: Record<string, any> = null): Promise<Record<string, any>> {
+  async runEpisode(
+    env: Environment,
+    agents: (Agent | string)[],
+    seed: number = null,
+    state: Record<string, any> = null,
+    mode: 'parallel' | 'sequential' = 'parallel'
+  ): Promise<{
+    episode: Episode;
+    results: EpisodeResult;
+  }> {
     const tempAgentIDs: Set<string> = new Set();
     const runAgents: Agent[] = [];
     agents.forEach((agent) => {
       if (agent instanceof Agent) {
         runAgents.push(agent);
       } else {
-        const newAgent = this.addAgent({agent});
+        const newAgent = this.addAgent({ agent });
         tempAgentIDs.add(newAgent.id);
         runAgents.push(newAgent);
       }
     });
-    if (runAgents.length > 1) {
-      // expect possible_agents to be a thing
-      // TOOD reconsider this api ? esepciallly w.r.t to adding and deleting agents
-      env.metaData.possible_agents.forEach((player_id: string, i) => {
-        env.agentIDToPlayerID.set(runAgents[i].id, player_id);
-      });
+    // register initial agents
+    await env.registerAgents(runAgents.map((a) => a.id));
+
+    const episode = new Episode(runAgents, env);
+    let results: EpisodeResult;
+    if (mode === 'parallel') {
+      results = await episode.runParallel(seed, state);
+    } else if (mode === 'sequential') {
+      results = await episode.runSequential(seed, state);
+    } else {
+      throw new DError.NotSupportedError(
+        `${mode} is not supported or is invalid`
+      );
     }
-    await this.engine.initializeAgents(runAgents);
 
-    // output of env at each step
-    const outputs = [];
-
-    if (seed !== null) {
-      await env.seed(seed);
-    }
-    // create new initial state
-    let data = await env.reset(state);
-    outputs.push({
-      actions: null,
-      ...data
-    });
-
-    let done = false;
-    const stime = performance.now();
-
-    while (!done) {
-      const actions = await this.engine.collectActions(env, data, runAgents);
-      
-      data = await env.step(actions);
-      done = this.engine.envDone(env, data, runAgents);
-      await this.engine.handleAgents(env, data, runAgents);
-      outputs.push({
-        actions,
-        ...data,
-      });
-    }
     tempAgentIDs.forEach((id) => {
       this.removeAgent(id);
     });
-
-    const elapsed = performance.now() - stime;
-    // console.log({
-    //   elapsed,
-    //   msPerStep: elapsed / env.steps
-    // });
-    // console.log(outputs)
-
     return {
-      seed,
-      state,
-      outputs,
-      final: {
-        actions: [],
-        data,
-      }
+      episode,
+      results,
     };
   }
 
@@ -160,7 +141,9 @@ export class Dimension {
    */
   async cleanup(): Promise<void> {
     const closePromises: Promise<any>[] = [];
-    closePromises.push(Promise.all(Array.from(this.agents.values()).map((a) => a.close())));
+    closePromises.push(
+      Promise.all(Array.from(this.agents.values()).map((a) => a.close()))
+    );
     closePromises.push(Process._closeAllProcesses());
     await Promise.all(closePromises);
   }

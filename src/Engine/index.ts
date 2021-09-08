@@ -1,9 +1,9 @@
-import {Agent} from '../Agent';
+import { Agent } from '../Agent';
 import { Environment } from '../Environment';
 import { AgentActions } from '../Environment/types';
-import { deepCopy } from '../utils/DeepCopy';
+
 /**
- * Class for functional handling of agents and environments and any other processes
+ * Class for functional management of agents and environments and any other processes
  */
 export class Engine {
   // constructor() {
@@ -17,19 +17,25 @@ export class Engine {
     const actionPromises: Promise<void>[] = [];
     for (let i = 0; i < agents.length; i++) {
       const agent = agents[i];
-      actionPromises.push((async () => {
-        try {
-          await agent.initialize();
-          await agent.pause();
-        } catch {
-          // okay to fail to initialize
-        }
-      })());
+      actionPromises.push(
+        (async () => {
+          try {
+            await agent.initialize();
+            await agent.pause();
+          } catch {
+            // okay to fail to initialize
+          }
+        })()
+      );
     }
     await Promise.all(actionPromises);
   }
 
-  private formatActions = (env: Environment, actions: any, agents: Agent[]): Record<string, any> => {
+  private formatActions = (
+    env: Environment,
+    actions: any,
+    agents: Agent[]
+  ): Record<string, any> => {
     const singleAgent = agents.length === 1;
     if (singleAgent) {
       return actions[0].action;
@@ -42,18 +48,22 @@ export class Engine {
       }
       return formatted;
     }
-  }
+  };
 
   /**
    * Send shared and agent specific data to agents and collect their outputs (actions)
-   * 
+   *
    * Auto attempts to resume agent process and pause it after action is done.
-   * 
-   * @param data 
-   * @param agents 
+   *
+   * @param data
+   * @param agents
    * @returns list of agent actions
    */
-  async collectActions(env: Environment, data: Record<string, any>, agents: Agent[]): Promise<AgentActions> {
+  async collectActions(
+    env: Environment,
+    data: Record<string, any>,
+    agents: Agent[]
+  ): Promise<AgentActions> {
     const actionPromises: Promise<Record<string, any>>[] = [];
     const agentSpecificData = {};
     agents.forEach((agent, agentIndex) => {
@@ -65,14 +75,19 @@ export class Engine {
       const agent = agents[i];
       const agentSpecificObsKey = `player_${i}`;
       if (agent.active()) {
-        actionPromises.push((async () => {
-          // resume agent, send inputs and get actions, then pause agent again.
-          await agent.resume();
-          const agentInputs = {...data, ...agentSpecificData[agentSpecificObsKey]}
-          const res = await agent.action(agentInputs);
-          await agent.pause();
-          return res;
-        })());
+        actionPromises.push(
+          (async () => {
+            // resume agent, send inputs and get actions, then pause agent again.
+            await agent.resume();
+            const agentInputs = {
+              ...data,
+              ...agentSpecificData[agentSpecificObsKey],
+            };
+            const res = await agent.action(agentInputs);
+            await agent.pause();
+            return res;
+          })()
+        );
       } else {
         actionPromises.push(null);
       }
@@ -82,7 +97,11 @@ export class Engine {
     return actions;
   }
 
-  envDone(env: Environment, data: Record<string, any>, agents: Agent[]): boolean {
+  envDone(
+    env: Environment,
+    data: Record<string, any>,
+    agents: Agent[]
+  ): boolean {
     if (agents.length === 1) return data.done; // single agent case
     for (const k in data) {
       if (!data[k].done) {
@@ -93,7 +112,11 @@ export class Engine {
   }
 
   /** Handles agents. Closes any agents that are done and sends them the final state. Data should be return value of env.step */
-  async handleAgents(env: Environment, data: Record<string, any>, agents: Agent[]): Promise<void> {
+  async handleAgents(
+    env: Environment,
+    data: Record<string, any>,
+    agents: Agent[]
+  ): Promise<void> {
     const singleAgent = agents.length === 1;
     if (singleAgent) {
       if (data.done) {
@@ -101,15 +124,17 @@ export class Engine {
         await agents[0].close();
       }
     } else {
-      await Promise.all(agents.map((agent) => {
-        const playerID = env.agentIDToPlayerID.get(agent.id)
-        if (data[playerID].done) {
-          // TODO send agent final state
-          // agent is done, close it
-          return agent.close();
-        }
-        return Promise.resolve();
-      }));
+      await Promise.all(
+        agents.map((agent) => {
+          const playerID = env.agentIDToPlayerID.get(agent.id);
+          if (data[playerID].done) {
+            // TODO send agent final state
+            // agent is done, close it
+            return agent.close();
+          }
+          return Promise.resolve();
+        })
+      );
     }
   }
 }
