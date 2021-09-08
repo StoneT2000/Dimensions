@@ -158,7 +158,6 @@ if __name__ == "__main__":
             output(env.metadata)
         elif input_type == "step":
             observations, rewards, dones, infos = env.step(data['actions'])
-            # print(observations, file=sys.stderr)
             serialized = dict(observations=serialize_ma_obs(observations), rewards=serialize_ma_raw(rewards), dones=serialize_ma_raw(dones), infos=serialize_ma_raw(infos))
             out = dict()
             for k in observations.keys():
@@ -177,6 +176,10 @@ if __name__ == "__main__":
                 obs = serialized['observations'][k]
                 out[k] = dict(obs=obs)
             output(out)
+        elif input_type == "seed":
+            seed = data["seed"]
+            obs = env.seed(int(seed))
+            output(obs)
         elif input_type == "register_agents":
             # can only register at the start, expect all agent ids first. Input here should not require validation
             ids = data['ids']

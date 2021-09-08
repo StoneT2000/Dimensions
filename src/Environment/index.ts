@@ -30,6 +30,11 @@ export class Environment {
   ) {
     this.id = `env_${Environment.globalID++}`;
   }
+
+  /**
+   * Initialize the environment process and read back metadata from the environment.
+   * @returns 
+   */
   async setup(): Promise<Record<string, any>> {
     // start environment process.
     if (path.extname(this.environment) === '.py') {
@@ -50,9 +55,21 @@ export class Environment {
     this.metaData = metaData;
     return metaData;
   }
+
   /**
-   *
-   * @param actions
+   * Step through the environment with the given action(s). `actions` is directly sent to the env process
+   * @param actions - can be anything
+   * @returns the return value of the env process `step` function, usually 
+   * ```
+   * {
+   *    obs: array,
+   *    reward: number,
+   *    done: boolean,
+   *    info: object
+   * }
+   * ```
+   * 
+   * Or in the case of Multi Agent environments like Pettingzoo envs, it is the same as above but keyed by player ids
    */
   async step(actions: AgentActions): Promise<Record<string, any>> {
     this.steps += 1;
