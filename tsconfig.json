@@ -13,5 +13,4 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": ["src/**/*"],
-  "exclude": ["src/Support/**/*"]
 }

@@ -3,9 +3,6 @@
 # clean out test artifacts
 npm run clean
 
-# seed dbs
-
-npm run test-seed
 
 TS_NODE_COMPILER_OPTIONS='{"module":"commonjs"}' \
 nyc --reporter=html --no-clean mocha --recursive tests/core/**/*.spec.ts tests/api/**/*.spec.ts
