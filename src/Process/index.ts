@@ -156,6 +156,9 @@ export class Process extends EventEmitter {
     this.p.kill('SIGCONT');
   }
 
+  /**
+   * Close all processes and clean them up
+   */
   static async _closeAllProcesses(): Promise<void> {
     await Promise.all(
       Array.from(Process.allProcesses.values()).map((p) => p.close())

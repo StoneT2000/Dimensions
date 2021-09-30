@@ -111,10 +111,18 @@ export class Agent extends EventEmitter {
     this.status = Status.ACTIVE;
   }
 
+  /**
+   * 
+   * @returns true when this agent object is ready to send actions and receive observations
+   */
   async ready(): Promise<boolean> {
     return this.p !== undefined; // TODO change this
   }
 
+  /**
+   * 
+   * @returns true when this agent is active
+   */
   active(): boolean {
     return this.status === Status.ACTIVE;
   }
@@ -192,7 +200,8 @@ export class Agent extends EventEmitter {
    * Retrieve an action from the agent
    *
    * @param data - typically the data provided by env.step() functions
-   * @returns
+   * @returns Record<string, any> that details the retrieved action from the agent or null if there is an error (agent takes no action)
+   * Potential errors are agent timing out, or agent sending invalid JSON formatted action object
    */
   async action(data: Record<string, any>): Promise<Record<string, any>> {
     try {
