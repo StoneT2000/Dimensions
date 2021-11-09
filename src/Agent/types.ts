@@ -29,6 +29,12 @@ export interface Configs {
 
 export enum Events {
   TIMEOUT = 'timeout',
+  /**
+   * For other kinds of errors where there are error objects
+   * 
+   * First arg is any string, second arg is error object
+   */
+  ERROR = 'error', 
   OUTOFMEMORY = 'outofmemory',
   INIT_ERROR = 'init_error',
 }

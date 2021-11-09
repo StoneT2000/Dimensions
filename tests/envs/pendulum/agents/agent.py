@@ -24,7 +24,8 @@ if __name__ == "__main__":
         if input_type == "init":
             agent_id = data["id"]
             agent_name = data["name"]
-            print(agent_id)
+            # print(agent_id)
+            output(dict(id=agent_id))
         elif input_type == "action":
             if 'reward' not in data:
                 # then this is a new episode!

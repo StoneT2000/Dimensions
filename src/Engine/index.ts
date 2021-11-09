@@ -31,11 +31,21 @@ export class Engine {
     await Promise.all(actionPromises);
   }
 
+  /**
+   * Using the environment, map agent ID to player IDs and store the actions associated with it
+   * 
+   * This is then sent to the environment process so it receives actions ID'd by player ID.
+   * 
+   * @param env 
+   * @param actions - a list of Record<string, any> | null that is the output from each agent. Null means the agent could not produce an output
+   * @param agents 
+   * @returns 
+   */
   private formatActions = (
     env: Environment,
     actions: any,
     agents: Agent[]
-  ): Record<string, any> => {
+  ): AgentActions => {
     const singleAgent = agents.length === 1;
     if (singleAgent) {
       return actions[0].action;
@@ -83,12 +93,14 @@ export class Engine {
               ...data,
               ...agentSpecificData[agentSpecificObsKey],
             };
-            const res = await agent.action(agentInputs);
+            const act = await agent.action(agentInputs);
+            // the action here may be well formated or null
             await agent.pause();
-            return res;
+            return act;
           })()
         );
       } else {
+        // if agent is not active, push a null
         actionPromises.push(null);
       }
     }

@@ -1,4 +1,5 @@
-#!$(which python)
+#!/usr/bin/env python3
+
 import sys
 import json
 import numpy as np
@@ -24,7 +25,8 @@ if __name__ == "__main__":
         if input_type == "init":
             agent_id = data["id"]
             agent_name = data["name"]
-            print(agent_id)
+            output(dict(id=agent_id))
+            # {"type": "init", "name": "abc", "id": 3}
         elif input_type == "action":
             if 'reward' not in data:
                 # then this is a new episode!
@@ -34,4 +36,5 @@ if __name__ == "__main__":
                 action=1
             ))
         elif input_type == "close":
+            # do any kind of clean up you want to do
             exit()

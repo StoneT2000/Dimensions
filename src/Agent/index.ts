@@ -7,6 +7,7 @@ import { CallTypes, Configs, Events, Status } from './types';
 import fs from 'fs';
 import { noop } from '../utils';
 import { Logger } from '../Logger';
+import assert from 'assert';
 
 export class Agent extends EventEmitter {
   public p: Process;
@@ -84,6 +85,13 @@ export class Agent extends EventEmitter {
       this.status = Status.ERROR;
       this.close();
     });
+    this.on(Events.ERROR, (reason: string, err: Error) => {
+      this.log.error('Agent Errored Out:', reason);
+      this.log.error('Details:', err);
+      this._rejectTimer();
+      this.status = Status.ERROR;
+      this.close();
+    });
 
     // perform handshake to verify agent is alive
     await this._timed(async () => {
@@ -98,11 +106,11 @@ export class Agent extends EventEmitter {
       );
       this.currentTimeoutReason =
         'Did not receive agent id back from agent during initialization';
-      const readid = await this.p.readstdout();
-      if (readid !== this.id) {
+      const data = JSON.parse(await this.p.readstdout());
+      if (data.id !== this.id) {
         this.emit(
           Events.INIT_ERROR,
-          `Agent responded with wrong id of ${readid} instead of ${this.id} during initialization`
+          `Agent responded with wrong id of ${data.id} instead of ${this.id} during initialization`
         );
       }
     });
@@ -167,7 +175,8 @@ export class Agent extends EventEmitter {
   }
 
   /**
-   * wrap a function in a time limit, emitting the timeout event should the function exceed the time limits
+   * wrap a function in a time limit, emitting the timeout event should the function exceed the time limits. Will also capture any thrown
+   * errors and reject appropriately
    *
    * rejects when an error is thrown by fn or _rejectTimer is called
    */
@@ -180,19 +189,26 @@ export class Agent extends EventEmitter {
         }, this.configs.time.perStep + this.remainingOverage);
       }
       this._rejectTimer = rej;
-      const output = await fn();
-      const elpasedTime = this._clearTimer() * 1e-6;
-      if (this._hasTimer()) {
-        if (elpasedTime > this.configs.time.perStep) {
-          this.remainingOverage -= elpasedTime - this.configs.time.perStep;
+      try {
+        const output = await fn();
+        const elpasedTime = this._clearTimer() * 1e-6;
+        if (this._hasTimer()) {
+          if (elpasedTime > this.configs.time.perStep) {
+            this.remainingOverage -= elpasedTime - this.configs.time.perStep;
+          }
+          if (this.remainingOverage < 0) {
+            // this usually shouldn't happen as this will be caught out by the timer above, but if so, emit the timeout event
+            this.emit(Events.TIMEOUT);
+          }
         }
-        if (this.remainingOverage < 0) {
-          // this usually shouldn't happen as this will be caught out by the timer above, but if so, emit the timeout event
-          this.emit(Events.TIMEOUT);
-        }
+        this.currentTimeoutReason = 'Unknown';
+        res(output);
+      } catch (err) {
+        this.emit(Events.ERROR, `${this.currentTimeoutReason}`, err);
+        rej(err);
+      } finally {
+        this._clearTimer();
       }
-      this.currentTimeoutReason = 'Unknown';
-      res(output);
     });
   }
 
@@ -203,7 +219,7 @@ export class Agent extends EventEmitter {
    * @returns Record<string, any> that details the retrieved action from the agent or null if there is an error (agent takes no action)
    * Potential errors are agent timing out, or agent sending invalid JSON formatted action object
    */
-  async action(data: Record<string, any>): Promise<Record<string, any>> {
+  async action(data: Record<string, any>): Promise<Record<string, any> | null> {
     try {
       const action = await this._timed(async () => {
         this.currentTimeoutReason =
@@ -217,11 +233,12 @@ export class Agent extends EventEmitter {
         const action: Record<string, any> = JSON.parse(
           await this.p.readstdout()
         );
+        if (action.action === undefined) throw new Error(`Action is malformed, action is not a key in agent output`)
         return action;
       });
       return action;
     } catch {
-      return null;
+      return {action: null};
     }
   }
 

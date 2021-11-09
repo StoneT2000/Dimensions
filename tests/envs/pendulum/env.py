@@ -31,10 +31,14 @@ class PendulumEnv(gym.Env):
         self.np_random, seed = seeding.np_random(seed)
         return [seed]
 
-    def step(self, u):
+    def validate_action(self, u):
         assert 'actions' in u
         u = u['actions']
-        assert isinstance(u, list) == False
+        assert isinstance(u, list) == False, "Did not receive a proper action"
+    def step(self, u):
+        self.validate_action(u)
+        u = u['actions']
+        
         # should be validating the action format here
         u = np.array([float(u)])
 
@@ -144,7 +148,10 @@ if __name__ == "__main__":
             env = PendulumEnv(**args)
             output(dict(env.metadata))
         elif input_type == "step":
-            obs, reward, done, info = env.step(data)
+            try:
+                obs, reward, done, info = env.step(data)
+            except AssertionError as err:
+                exit()
             out = dict(obs=serialize_np(obs), reward=reward, done=done, info=info)
             output(out)
         elif input_type == "seed":

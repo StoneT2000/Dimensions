@@ -10,7 +10,12 @@ chai.should();
 chai.use(chaiAsPromised);
 chai.use(chaiSubset);
 
-describe('Testing Environments', () => {
+describe('Testing Environments without agents', () => {
+  /**
+   * Test the environments created by makeEnv
+   * 
+   * Does not run any agent procs, directly feeds in the inputs to the environments
+   */
   const dim = new Dimension();
   const rpsenv = path.join(__dirname, '../envs/rps/env.py');
   const pendulumenv = path.join(__dirname, '../envs/pendulum/env.py');

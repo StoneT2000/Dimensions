@@ -10,7 +10,7 @@ chai.should();
 chai.use(chaiAsPromised);
 chai.use(chaiSubset);
 
-describe('Testing Episodes', () => {
+describe('Testing Episodes with Agents', () => {
   const dim = new Dimension();
   const rpsenv = path.join(__dirname, '../envs/rps/env.py');
   const pendulumenv = path.join(__dirname, '../envs/pendulum/env.py');
@@ -50,7 +50,7 @@ describe('Testing Episodes', () => {
         1e-15
       );
     });
-  });
+  }).timeout('2s');
   // describe('Test functions on Single Agent Environment: Pendulum', () => {
 
   // });

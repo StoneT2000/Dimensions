@@ -1,4 +1,5 @@
-export type AgentActions = Record<string, any> | any;
+export type Action = any;
+export type AgentActions = Record<string, Action> | Action;
 /**
  * Render modes
  *
