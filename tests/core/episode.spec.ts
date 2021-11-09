@@ -79,8 +79,27 @@ describe('Testing Episodes with Agents', () => {
       }
     });
   });
-  describe.only('Handling errors from agents', () => {
+  describe('Handling errors from agents', () => {
+    it('should handle agent not starting when passed as agent object', async () => {
+      // should have two error logs. agent process exiting and agent timing out but the reason being it didn't initialize due to not 
+      // fulfilling id handshake
+      const env = await dim.makeEnv(pendulumenv, {
+        max_steps: 30,
+      });
+      env.envProcess.log.level = 0;
+      const agent = dim.addAgent({
+        agent: path.join(__dirname, '../envs/pendulum/agents/invalid_agent.py'),
+        time: {
+          perStep: 1000,
+          overage: 0
+        }
+      })
+      const { results } = await dim.runEpisode(env, [agent], 0);
+      expect(results.outputs.length).to.equal(2); // should have a start and end observation only.
+      expect(results.outputs[1].info['err']).to.equal("player_0 sent malformed action");
+    });
     it('should handle not receiving back agent id and hanging', async () => {
+      // this should print an error for agent
       const env = await dim.makeEnv(pendulumenv, {
         max_steps: 30,
       });
@@ -96,7 +115,8 @@ describe('Testing Episodes with Agents', () => {
       expect(results.outputs.length).to.equal(2); // should have a start and end observation only.
       expect(results.outputs[1].info['err']).to.equal("player_0 sent malformed action");
     });
-    it.only('should handle receiving malformed actions and not hang', async () => {
+    it('should handle receiving malformed actions and not hang', async () => {
+      // this should print an error within env
       let env = await dim.makeEnv(pendulumenv, {
         max_steps: 30,
       });
