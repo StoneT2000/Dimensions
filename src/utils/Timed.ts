@@ -70,7 +70,6 @@ export class Timed extends EventEmitter {
           }
         }
         this.currentTimeoutReason = 'Unknown';
-        console.log({elpasedTime})
         res(output);
       } catch (err) {
         this.emit(Events.ERROR, `${this.currentTimeoutReason}`, err);

@@ -171,8 +171,25 @@ describe('Testing Episodes with Agents', () => {
       });
       env.envProcess.log.level = 0;
       results = (await dim.runEpisode(env, [agent_action_hang2], 0)).results;
-      expect(results.outputs.length).to.equal(5); // should have a start and end observation only.
+      expect(results.outputs.length).to.equal(5);
       expect(results.final.data.info['err']).to.equal("player_0 sent malformed action");
+    });
+    it('should handle agents that do not exit themselves', async () => {
+      // this should print an error within env
+      const env = await dim.makeEnv(pendulumenv, {
+        max_steps: 30,
+      });
+      const timerconf = {
+        perStep: 1000,
+        overage: 0
+      };
+      const agent_close = dim.addAgent({
+        agent: path.join(__dirname, '../envs/pendulum/agents/malformed_close.py'),
+        time: timerconf
+      });
+      const { results } = await dim.runEpisode(env, [agent_close], 0);
+      expect(results.outputs.length).to.equal(31); // should run normally
+      expect(agent_close.p.p.stdin.writable).to.equal(false);
     });
   });
   after(() => {
