@@ -5,7 +5,7 @@ const run = async () => {
 
   const N = 10;
   let data = '';
-  const bytes = 1024*1024*32;// * 1024;
+  const bytes = 1024*1024*64;// * 1024;
   for (let i = 0; i < bytes; i++) {
     data += 'a'
   }

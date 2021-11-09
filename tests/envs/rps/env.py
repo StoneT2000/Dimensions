@@ -187,3 +187,7 @@ if __name__ == "__main__":
             output(dict(ids=["player_0", "player_1"]))
         elif input_type == "close":
             exit()
+        elif input_type == "render":
+            state = env.render()
+            output(dict(render=state))
+            
