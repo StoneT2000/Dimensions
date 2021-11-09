@@ -25,8 +25,6 @@ export class Agent extends EventEmitter {
 
   private static globalID = 0;
 
-  private currentTimeoutReason = 'Unknown';
-
   public timed: Timed;
 
   constructor(configs: DeepPartial<Configs> = {}) {
@@ -60,8 +58,8 @@ export class Agent extends EventEmitter {
 
     // setup timeout functionality
     if (this.timed._hasTimer()) {
-      this.timed.on(Events.TIMEOUT, () => {
-        this.log.error(`Timed out, reason: ${this.currentTimeoutReason}`); // TODO also print the time limits
+      this.timed.on(Events.TIMEOUT, (timeout: number) => {
+        this.log.error(`Timed out after ${timeout}ms, reason: ${this.timed.currentTimeoutReason}`); // TODO also print the time limits
         this.status = Status.ERROR;
         this.close();
       });
@@ -73,13 +71,7 @@ export class Agent extends EventEmitter {
         this.close();
       });
     }
-
-    this.on(Events.INIT_ERROR, (reason: string) => {
-      this.log.error('Initialization error', reason);
-      this.status = Status.ERROR;
-      this.close();
-    });
-    this.on(Events.ERROR, (reason: string, err: Error) => {
+    this.timed.on(Events.ERROR, (reason: string, err: Error) => {
       this.log.error('Agent Errored Out:', reason);
       this.log.error('Details:', err);
       this.status = Status.ERROR;
@@ -88,7 +80,7 @@ export class Agent extends EventEmitter {
 
     // perform handshake to verify agent is alive
     await this.timed.run(async () => {
-      this.currentTimeoutReason =
+      this.timed.currentTimeoutReason =
         'Could not send agent initialization information';
       await this.p.send(
         JSON.stringify({
@@ -97,7 +89,7 @@ export class Agent extends EventEmitter {
           type: CallTypes.INIT,
         })
       );
-      this.currentTimeoutReason =
+      this.timed.currentTimeoutReason =
         'Did not receive agent id back from agent during initialization';
       const data = JSON.parse(await this.p.readstdout());
       if (data.id !== this.id)
@@ -156,7 +148,7 @@ export class Agent extends EventEmitter {
   async action(data: Record<string, any>): Promise<Record<string, any> | null> {
     try {
       const action = await this.timed.run(async () => {
-        this.currentTimeoutReason =
+        this.timed.currentTimeoutReason =
           'Agent did not respond with an action in time';
         await this.p.send(
           JSON.stringify({
@@ -167,10 +159,11 @@ export class Agent extends EventEmitter {
         const action: Record<string, any> = JSON.parse(
           await this.p.readstdout()
         );
-        if (action.action === undefined)
+        if (action.action === undefined) {
           throw new Error(
-            `Action is malformed, action is not a key in agent output`
+            `Action is malformed, expected action to be a key in agent JSON output but was not found`
           );
+        }
         return action;
       });
       return action;

@@ -53,7 +53,7 @@ export class Timed extends EventEmitter {
     return new Promise(async (res, rej) => {
       if (this._hasTimer()) {
         this._setTimeout(() => {
-          this.emit(Events.TIMEOUT);
+          this.emit(Events.TIMEOUT, this.configs.time.perStep + this.remainingOverage);
         }, this.configs.time.perStep + this.remainingOverage);
       }
       this._rejectTimer = rej;
