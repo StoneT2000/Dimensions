@@ -33,7 +33,7 @@ if __name__ == "__main__":
                 pass
             obs = np.array(data['obs'])
             output(dict(
-                action=0
+                not_right_key=obs[0]
             ))
         elif input_type == "close":
             exit()

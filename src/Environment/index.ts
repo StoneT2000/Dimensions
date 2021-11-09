@@ -26,7 +26,8 @@ export class Environment {
    */
   constructor(
     public environment: string,
-    public envConfigs: Record<string, any> = {}
+    public envConfigs: Record<string, any> = {},
+    public name?: string
   ) {
     this.id = `env_${Environment.globalID++}`;
   }
@@ -42,6 +43,10 @@ export class Environment {
     } else {
       throw new DError.NotSupportedError('Envionment type not supported yet');
     }
+    this.envProcess.log.identifier = `[${this.id}]`;
+    if (this.name) {
+      this.envProcess.log.identifier = `[${this.name}]`;
+    }
 
     // send initialization information to create a environment
     await this.envProcess.send(
@@ -53,6 +58,10 @@ export class Environment {
     // read back metadata
     const metaData = JSON.parse(await this.envProcess.readstdout());
     this.metaData = metaData;
+    if (this.name == undefined && this.metaData.name !== undefined) this.name = this.metaData.name;
+    if (this.name) {
+      this.envProcess.log.identifier = `[${this.name}]`;
+    }
     return metaData;
   }
 
@@ -83,6 +92,7 @@ export class Environment {
   }
   async reset(state: Record<string, any> = null): Promise<Record<string, any>> {
     this.steps = 0;
+    // TODO: encode state into observations and let env optionally return that when stepping
     await this.envProcess.send(
       JSON.stringify({
         state,

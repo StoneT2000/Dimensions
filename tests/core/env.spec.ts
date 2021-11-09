@@ -99,6 +99,15 @@ describe('Testing Environments without agents', () => {
       expect(data.done).to.equal(false);
     });
   });
+  describe.skip('Test handling Environment raised errors', () => {
+    /**
+     * We expect user provided environments to **never** error. Should it raise some error and hang, we must eventually close it.
+     */
+    it('should handle when environment is not valid python / cannot load', async () => {
+      const env = await dim.makeEnv(path.join(__dirname, '../envs/error/env_load_error.py'), {}, 'ErrorEnv');
+      expect(env.metaData['name']).to.equal('ErrorEnv');
+    });
+  });
   after(() => {
     dim.cleanup();
   });

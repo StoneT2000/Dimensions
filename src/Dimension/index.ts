@@ -69,12 +69,15 @@ export class Dimension {
   }
   /**
    * Creates a new environment, which runs the given environment on its own process
+   * 
+   * Optionally provide a display name for logging purposes.
    */
   async makeEnv(
     environment: string,
-    envConfigs?: Record<string, any>
+    envConfigs?: Record<string, any>,
+    displayName?: string
   ): Promise<Environment> {
-    const env = new Environment(environment, envConfigs);
+    const env = new Environment(environment, envConfigs, displayName);
     await env.setup();
     return env;
   }

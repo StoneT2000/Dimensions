@@ -13,6 +13,7 @@ export class Logger {
    * @default Bold Green
    */
   public identifierColor = colors.bold.green;
+
   /**
    * Logger Constructor
    * @param level - The logging level to use

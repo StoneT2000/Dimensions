@@ -32,8 +32,6 @@ if __name__ == "__main__":
                 # then this is a new episode!
                 pass
             obs = np.array(data['obs'])
-            output(dict(
-                action=0
-            ))
+            output("notjson")
         elif input_type == "close":
             exit()

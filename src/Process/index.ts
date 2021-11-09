@@ -2,10 +2,11 @@ import { ChildProcess, SpawnOptions } from 'child_process';
 import spawn from 'cross-spawn';
 import { EventEmitter } from 'events';
 import { Logger } from '../Logger';
-import { Events } from './events';
-import { PromiseStructure } from './types';
+import { ProcessOptions, PromiseStructure } from './types';
 import os from 'os';
 import treeKill from 'tree-kill';
+import { DeepPartial } from '../utils/DeepPartial';
+import { deepMerge } from '../utils/DeepMerge';
 
 /**
  * Generic class that wraps around a process that is spawned and receives input and prints out outputs
@@ -33,11 +34,21 @@ export class Process extends EventEmitter {
   };
   _stdoutPromise: Promise<string>;
 
+
+
+  public processOptions: ProcessOptions = {
+    time: {
+      perStep: 2000,
+      overage: 60000,
+    },
+  };
+
   /** keep track of all processes for cleanup purposes. Maps pid to process object */
   private static allProcesses: Map<number, Process> = new Map();
 
-  constructor(command: string, args: string[] = [], options?: SpawnOptions) {
+  constructor(command: string, args: string[] = [], options?: SpawnOptions, processOptions?: DeepPartial<ProcessOptions>) {
     super();
+    this.processOptions = deepMerge(this.processOptions, processOptions);
     this._promises = {
       stdout: this._createPromiseStructure(),
       stderr: this._createPromiseStructure(),
@@ -49,7 +60,11 @@ export class Process extends EventEmitter {
 
     this.log.identifier = `[pid ${this.p.pid}]`;
     this.p.on('close', (code) => {
-      this.emit(Events.CLOSE, code);
+      // this.emit(Events.CLOSE, code);
+      if (code) {
+        // some failure occurred.
+        this.log.error(`Process exited with code ${code}`);
+      }
     });
     this.p.stdout.on('readable', () => {
       let data: Array<string>;
@@ -99,6 +114,7 @@ export class Process extends EventEmitter {
       });
     });
   }
+
   async readstdout(): Promise<string> {
     return this.readline(0);
   }

@@ -26,14 +26,14 @@ if __name__ == "__main__":
             agent_id = data["id"]
             agent_name = data["name"]
             # print(agent_id)
-            output(dict(id=agent_id))
+            # output(dict(id=agent_id))
         elif input_type == "action":
             if 'reward' not in data:
                 # then this is a new episode!
                 pass
             obs = np.array(data['obs'])
             output(dict(
-                action=0
+                action=obs[0]
             ))
         elif input_type == "close":
             exit()

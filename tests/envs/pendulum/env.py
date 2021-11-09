@@ -35,6 +35,7 @@ class PendulumEnv(gym.Env):
         assert 'actions' in u
         u = u['actions']
         assert isinstance(u, list) == False, "Did not receive a proper action"
+        assert u is not None
     def step(self, u):
         self.validate_action(u)
         u = u['actions']
@@ -74,6 +75,7 @@ class PendulumEnv(gym.Env):
         else:
             self.state = self.np_random.uniform(low=-high, high=high)
         self.last_u = None
+        self.curr_step = 0
         return self._get_obs()
 
     def _get_obs(self):
@@ -138,6 +140,7 @@ if __name__ == "__main__":
         return arr.tolist()
 
     env = None
+    obs, reward, done, info = None, None, None, None
     while (True):
         inputs = read_input()
         data = json.loads(inputs) # load into a dict with information
@@ -151,6 +154,12 @@ if __name__ == "__main__":
             try:
                 obs, reward, done, info = env.step(data)
             except AssertionError as err:
+                # if agent sends some malformed action, mark them as done and return the error in the info as well
+                done = True
+                info=dict(err="player_0 sent malformed action")
+                print(info["err"], file=sys.stderr)
+                out = dict(obs=serialize_np(obs), reward=reward, done=done, info=info)
+                output(out)
                 exit()
             out = dict(obs=serialize_np(obs), reward=reward, done=done, info=info)
             output(out)
@@ -159,6 +168,7 @@ if __name__ == "__main__":
             obs = env.seed(int(seed))
             output(obs)
         elif input_type == "reset":
+            obs, reward, done, info = None, None, None, None
             state = data["state"]
             obs = env.reset(state)
             out = dict(obs=(serialize_np(obs)))

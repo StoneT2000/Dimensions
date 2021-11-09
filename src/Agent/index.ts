@@ -5,9 +5,8 @@ import { deepMerge } from '../utils/DeepMerge';
 import { DeepPartial } from '../utils/DeepPartial';
 import { CallTypes, Configs, Events, Status } from './types';
 import fs from 'fs';
-import { noop } from '../utils';
 import { Logger } from '../Logger';
-import assert from 'assert';
+import { Timed } from '../utils/Timed';
 
 export class Agent extends EventEmitter {
   public p: Process;
@@ -21,17 +20,14 @@ export class Agent extends EventEmitter {
       overage: 60000,
     },
   };
-  public remainingOverage = 60000;
 
   public log: Logger = new Logger();
-
-  _clearTimer: Function = noop;
-  /** Function to call so that timed functions which are hanging and going over limits throw an error and exit */
-  _rejectTimer: Function = noop;
 
   private static globalID = 0;
 
   private currentTimeoutReason = 'Unknown';
+
+  public timed: Timed;
 
   constructor(configs: DeepPartial<Configs> = {}) {
     super();
@@ -43,11 +39,12 @@ export class Agent extends EventEmitter {
       throw new DError.MissingFilesError(`no such file ${this.configs.agent}`);
     }
 
-    this.remainingOverage = this.configs.time.overage;
-
     // agent_<id> is on scope of whole process.
     // player_<player_index> is on scope of a single episode
     this.id = `agent_${Agent.globalID++}`;
+
+    // initialize a timer
+    this.timed = new Timed({ time: this.configs.time });
   }
 
   /**
@@ -62,10 +59,9 @@ export class Agent extends EventEmitter {
     this.log.identifier = this.p.log.identifier;
 
     // setup timeout functionality
-    if (this._hasTimer()) {
-      this.on(Events.TIMEOUT, () => {
+    if (this.timed._hasTimer()) {
+      this.timed.on(Events.TIMEOUT, () => {
         this.log.error(`Timed out, reason: ${this.currentTimeoutReason}`); // TODO also print the time limits
-        this._rejectTimer();
         this.status = Status.ERROR;
         this.close();
       });
@@ -73,7 +69,6 @@ export class Agent extends EventEmitter {
     if (this._hasMemoryLimits()) {
       this.on(Events.OUTOFMEMORY, () => {
         this.log.error('Out of memory'); // TODO also print the memory limit
-        this._rejectTimer();
         this.status = Status.ERROR;
         this.close();
       });
@@ -81,20 +76,18 @@ export class Agent extends EventEmitter {
 
     this.on(Events.INIT_ERROR, (reason: string) => {
       this.log.error('Initialization error', reason);
-      this._rejectTimer();
       this.status = Status.ERROR;
       this.close();
     });
     this.on(Events.ERROR, (reason: string, err: Error) => {
       this.log.error('Agent Errored Out:', reason);
       this.log.error('Details:', err);
-      this._rejectTimer();
       this.status = Status.ERROR;
       this.close();
     });
 
     // perform handshake to verify agent is alive
-    await this._timed(async () => {
+    await this.timed.run(async () => {
       this.currentTimeoutReason =
         'Could not send agent initialization information';
       await this.p.send(
@@ -107,12 +100,10 @@ export class Agent extends EventEmitter {
       this.currentTimeoutReason =
         'Did not receive agent id back from agent during initialization';
       const data = JSON.parse(await this.p.readstdout());
-      if (data.id !== this.id) {
-        this.emit(
-          Events.INIT_ERROR,
+      if (data.id !== this.id)
+        throw new Error(
           `Agent responded with wrong id of ${data.id} instead of ${this.id} during initialization`
         );
-      }
     });
 
     // agent is now ready and active!
@@ -120,7 +111,7 @@ export class Agent extends EventEmitter {
   }
 
   /**
-   * 
+   *
    * @returns true when this agent object is ready to send actions and receive observations
    */
   async ready(): Promise<boolean> {
@@ -128,7 +119,7 @@ export class Agent extends EventEmitter {
   }
 
   /**
-   * 
+   *
    * @returns true when this agent is active
    */
   active(): boolean {
@@ -150,66 +141,9 @@ export class Agent extends EventEmitter {
     this.status = Status.DONE;
   }
 
-  /**
-   * Setup the agent timer clear out method
-   *
-   * clear out method returns the elpased time since the timer was set in nanoseconds (1e-9)
-   */
-  _setTimeout(fn: Function, delay: number, ...args: any[]): void {
-    const timer = setTimeout(() => {
-      fn(...args);
-    }, delay);
-    const startTime = performance.now();
-    this._clearTimer = () => {
-      clearTimeout(timer);
-      return performance.now() - startTime;
-    };
-  }
-
-  _hasTimer(): boolean {
-    return this.configs.time.perStep !== null;
-  }
   _hasMemoryLimits(): boolean {
     // TODO implement
     return true;
-  }
-
-  /**
-   * wrap a function in a time limit, emitting the timeout event should the function exceed the time limits. Will also capture any thrown
-   * errors and reject appropriately
-   *
-   * rejects when an error is thrown by fn or _rejectTimer is called
-   */
-  async _timed<T>(fn: (...args: any[]) => Promise<T>): Promise<T> {
-    // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (res, rej) => {
-      if (this._hasTimer()) {
-        this._setTimeout(() => {
-          this.emit(Events.TIMEOUT);
-        }, this.configs.time.perStep + this.remainingOverage);
-      }
-      this._rejectTimer = rej;
-      try {
-        const output = await fn();
-        const elpasedTime = this._clearTimer() * 1e-6;
-        if (this._hasTimer()) {
-          if (elpasedTime > this.configs.time.perStep) {
-            this.remainingOverage -= elpasedTime - this.configs.time.perStep;
-          }
-          if (this.remainingOverage < 0) {
-            // this usually shouldn't happen as this will be caught out by the timer above, but if so, emit the timeout event
-            this.emit(Events.TIMEOUT);
-          }
-        }
-        this.currentTimeoutReason = 'Unknown';
-        res(output);
-      } catch (err) {
-        this.emit(Events.ERROR, `${this.currentTimeoutReason}`, err);
-        rej(err);
-      } finally {
-        this._clearTimer();
-      }
-    });
   }
 
   /**
@@ -221,7 +155,7 @@ export class Agent extends EventEmitter {
    */
   async action(data: Record<string, any>): Promise<Record<string, any> | null> {
     try {
-      const action = await this._timed(async () => {
+      const action = await this.timed.run(async () => {
         this.currentTimeoutReason =
           'Agent did not respond with an action in time';
         await this.p.send(
@@ -233,12 +167,15 @@ export class Agent extends EventEmitter {
         const action: Record<string, any> = JSON.parse(
           await this.p.readstdout()
         );
-        if (action.action === undefined) throw new Error(`Action is malformed, action is not a key in agent output`)
+        if (action.action === undefined)
+          throw new Error(
+            `Action is malformed, action is not a key in agent output`
+          );
         return action;
       });
       return action;
     } catch {
-      return {action: null};
+      return { action: null };
     }
   }
 

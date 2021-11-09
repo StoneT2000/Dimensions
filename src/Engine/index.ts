@@ -33,13 +33,13 @@ export class Engine {
 
   /**
    * Using the environment, map agent ID to player IDs and store the actions associated with it
-   * 
+   *
    * This is then sent to the environment process so it receives actions ID'd by player ID.
-   * 
-   * @param env 
+   *
+   * @param env
    * @param actions - a list of Record<string, any> | null that is the output from each agent. Null means the agent could not produce an output
-   * @param agents 
-   * @returns 
+   * @param agents
+   * @returns
    */
   private formatActions = (
     env: Environment,
@@ -101,9 +101,14 @@ export class Engine {
         );
       } else {
         // if agent is not active, push a null
-        actionPromises.push(null);
+        actionPromises.push(
+          (async () => {
+            return { action: null };
+          })()
+        );
       }
     }
+
     const raw = await Promise.all(actionPromises);
     const actions = this.formatActions(env, raw, agents);
     return actions;
