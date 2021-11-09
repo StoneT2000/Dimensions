@@ -83,6 +83,7 @@ describe('Testing Environments without agents', () => {
         max_steps: 30,
       });
       expect(env.metaData['name']).to.equal('Pendulum-v0');
+      await env.close();
     });
     it('should reset to fixed state and step through environment', async () => {
       const env = await dim.makeEnv(pendulumenv, {
@@ -97,6 +98,7 @@ describe('Testing Environments without agents', () => {
       data = await env.step(0);
       expect(data.reward).to.equal(-1.1);
       expect(data.done).to.equal(false);
+      await env.close();
     });
   });
   describe.skip('Test handling Environment raised errors', () => {

@@ -49,7 +49,7 @@ describe('Testing Episodes with Agents', () => {
       const { results } = await dim.runEpisode(env, [pendulumAgents.py], 0);
       expect(results.final.data.done).to.equal(true);
       expect(results.final.data.reward).to.approximately(
-        -9.778062662761881,
+        -9.364599159415079,
         1e-15
       );
     });
@@ -79,7 +79,7 @@ describe('Testing Episodes with Agents', () => {
       }
     });
   });
-  describe.only('Handling errors from agents', () => {
+  describe('Handling errors from agents', () => {
     it('should handle agent not starting when passed as agent object', async () => {
       // should have two error logs. agent process exiting and agent timing out but the reason being it didn't initialize due to not 
       // fulfilling id handshake
