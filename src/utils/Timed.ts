@@ -59,7 +59,7 @@ export class Timed extends EventEmitter {
       this._rejectTimer = rej;
       try {
         const output = await fn();
-        const elpasedTime = this._clearTimer() * 1e-6;
+        const elpasedTime = this._clearTimer();
         if (this._hasTimer()) {
           if (elpasedTime > this.configs.time.perStep) {
             this.remainingOverage -= elpasedTime - this.configs.time.perStep;
@@ -70,6 +70,7 @@ export class Timed extends EventEmitter {
           }
         }
         this.currentTimeoutReason = 'Unknown';
+        console.log({elpasedTime})
         res(output);
       } catch (err) {
         this.emit(Events.ERROR, `${this.currentTimeoutReason}`, err);

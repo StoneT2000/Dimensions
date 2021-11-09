@@ -147,7 +147,7 @@ describe('Testing Episodes with Agents', () => {
       expect(results.outputs[1].info['err']).to.equal("player_0 sent malformed action");
 
 
-      timerconf.perStep = 1000;
+      timerconf.perStep = 10;
       timerconf.overage = 1000;
       const agent_action_hang = dim.addAgent({
         agent: path.join(__dirname, '../envs/pendulum/agents/malformed_action_hang.py'),
