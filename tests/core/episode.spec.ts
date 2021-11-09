@@ -15,10 +15,10 @@ describe('Testing Episodes with Agents', () => {
   const rpsenv = path.join(__dirname, '../envs/rps/env.py');
   const pendulumenv = path.join(__dirname, '../envs/pendulum/env.py');
   const pendulumAgents = {
-    py: path.join(pendulumenv, '../agents/python.sh'),
+    py: path.join(pendulumenv, '../agents/agent.py'),
   };
   const rpsAgents = {
-    py: path.join(rpsenv, '../agents/python.sh'),
+    py: path.join(rpsenv, '../agents/agent.py'),
   };
 
   describe('Run episodes on Multi Agent Environment: Rock Paper Scissors', () => {
