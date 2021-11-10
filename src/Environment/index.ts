@@ -2,6 +2,7 @@ import { AgentActions, CallTypes, RenderModes } from './types';
 import path from 'path';
 import { Process } from '../Process';
 import { DError } from '../DimensionError/wrapper';
+import { LocalProcess } from '../Process/local';
 
 /**
  * A wrapper around a given environment executable or python gym to allow cross-language interaction
@@ -39,10 +40,11 @@ export class Environment {
   async setup(): Promise<Record<string, any>> {
     // start environment process.
     if (path.extname(this.environment) === '.py') {
-      this.envProcess = new Process('python', [this.environment]);
+      this.envProcess = new LocalProcess('python', [this.environment]);
     } else {
       throw new DError.NotSupportedError('Envionment type not supported yet');
     }
+    await this.envProcess.init();
     this.envProcess.log.identifier = `[${this.id}]`;
     if (this.name) {
       this.envProcess.log.identifier = `[${this.name}]`;

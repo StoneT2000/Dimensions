@@ -4,6 +4,7 @@ import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
 import path from 'path';
 import 'mocha';
+import { LocalProcess } from '../../src/Process/local';
 
 const expect = chai.expect;
 chai.should();
@@ -189,7 +190,7 @@ describe('Testing Episodes with Agents', () => {
       });
       const { results } = await dim.runEpisode(env, [agent_close], 0);
       expect(results.outputs.length).to.equal(31); // should run normally
-      expect(agent_close.p.p.stdin.writable).to.equal(false);
+      expect((<LocalProcess>agent_close.p).p.stdin.writable).to.equal(false);
     });
   });
   after(() => {

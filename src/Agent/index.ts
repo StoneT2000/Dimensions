@@ -7,6 +7,7 @@ import { CallTypes, Configs, Events, Status } from './types';
 import fs from 'fs';
 import { Logger } from '../Logger';
 import { Timed } from '../utils/Timed';
+import { LocalProcess } from '../Process/local';
 
 export class Agent extends EventEmitter {
   public p: Process;
@@ -52,7 +53,9 @@ export class Agent extends EventEmitter {
    * Initialize the agent process
    */
   async initialize(): Promise<void> {
-    this.p = new Process(this.configs.agent);
+    // TODO: allow Docker
+    this.p = new LocalProcess(this.configs.agent);
+    await this.p.init();
     this.p.log.identifier = `[${this.id}]`;
     if (this.configs.name) {
       this.p.log.identifier = `[${this.configs.name} (${this.id})]`;

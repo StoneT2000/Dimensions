@@ -1,10 +1,7 @@
-import { ChildProcess, SpawnOptions } from 'child_process';
-import spawn from 'cross-spawn';
+import { SpawnOptions } from 'child_process';
 import { EventEmitter } from 'events';
 import { Logger } from '../Logger';
 import { ProcessOptions, PromiseStructure } from './types';
-import os from 'os';
-import treeKill from 'tree-kill';
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
 
@@ -12,8 +9,7 @@ import { deepMerge } from '../utils/DeepMerge';
  * Generic class that wraps around a process that is spawned and receives input and prints out outputs
  *
  */
-export class Process extends EventEmitter {
-  public p: ChildProcess;
+export abstract class Process extends EventEmitter {
   /** internal buffer to store stdout from an agent that has yet to be delimited / used */
   public _buffer: {
     stdout: Array<string>;
@@ -44,81 +40,18 @@ export class Process extends EventEmitter {
   };
 
   /** keep track of all processes for cleanup purposes. Maps pid to process object */
-  private static allProcesses: Map<number, Process> = new Map();
-
-  constructor(command: string, args: string[] = [], options?: SpawnOptions, processOptions?: DeepPartial<ProcessOptions>) {
+  static allProcesses: Map<number, Process> = new Map();
+  
+  constructor(public command: string, public args: string[] = [], options?: SpawnOptions, processOptions?: DeepPartial<ProcessOptions>) {
     super();
     this.processOptions = deepMerge(this.processOptions, processOptions);
     this._promises = {
       stdout: this._createPromiseStructure(),
       stderr: this._createPromiseStructure(),
     };
-    this.p = spawn(command, args, options);
-
-    Process.allProcesses.set(this.p.pid, this);
-
-    this.log.identifier = `[pid ${this.p.pid}]`;
-    this.p.on('exit', (code) => {
-      if (code) {
-        // some failure occurred.
-        this.log.error(`Process exited with code ${code}`);
-      }
-    });
-    // this.p.on('close', (code) => {
-    //   if (code) {
-    //     // some failure occurred.
-    //     this.log.error(`Process closed with code ${code}`);
-    //   }
-    // });
-    this.p.stdout.on('readable', () => {
-      let data: Array<string>;
-      while ((data = this.p.stdout.read())) {
-        // split chunks into line by line and push into buffer
-        const strs = `${data}`.split(/\r?\n/);
-        for (let i = 0; i < strs.length - 1; i++) {
-          this._buffer.stdout.push(strs[i]);
-        }
-        // resolve stdout promise to unblock anyone calling readstdout
-        this._promises.stdout.res(data);
-        this._promises.stdout = this._createPromiseStructure();
-      }
-    });
-    this.p.stderr.on('readable', () => {
-      let data: Array<string>;
-      while ((data = this.p.stderr.read())) {
-        this.log.custom(
-          this.log.identifier.blue,
-          Logger.LEVEL.ERROR,
-          `${data}`
-        );
-      }
-    });
   }
-  _createPromiseStructure(): {
-    promise: Promise<string>;
-    res: Function;
-    rej: Function;
-  } {
-    let res: Function;
-    let rej: Function;
-    const promise = new Promise((_res: (v: string) => void, _rej) => {
-      res = _res;
-      rej = _rej;
-    });
-    return {
-      promise,
-      res,
-      rej,
-    };
-  }
-  async send(message: string): Promise<void> {
-    return new Promise((res, rej) => {
-      this.p.stdin.write(`${message}\n`, (err) => {
-        if (err) rej(err);
-        else res();
-      });
-    });
-  }
+  abstract init(): Promise<void>;
+  abstract send(message: string): Promise<void>;
 
   async readstdout(): Promise<string> {
     return this.readline(0);
@@ -144,38 +77,37 @@ export class Process extends EventEmitter {
     }
     return arr.shift();
   }
+  _createPromiseStructure(): {
+    promise: Promise<string>;
+    res: Function;
+    rej: Function;
+  } {
+    let res: Function;
+    let rej: Function;
+    const promise = new Promise((_res: (v: string) => void, _rej) => {
+      res = _res;
+      rej = _rej;
+    });
+    return {
+      promise,
+      res,
+      rej,
+    };
+  }
 
   /**
    * Attempt to close the process
    */
-  async close(): Promise<void> {
-    return new Promise((res, rej) => {
-      this.p.kill('SIGKILL');
-      treeKill(this.p.pid, (err) => {
-        if (err) {
-          rej(err);
-        } else {
-          res();
-          Process.allProcesses.delete(this.p.pid);
-        }
-      }); // TODO check how this works on windows
-    });
-  }
+  abstract close(): Promise<void>;
 
   /**
    * Pauses the process
    */
-  async pause(): Promise<void> {
-    if (os.platform() === 'win32') return; // TODO - can we pause a process on windows?
-    this.p.kill('SIGSTOP');
-  }
+  abstract pause(): Promise<void>;
   /**
    * Resumes the process
    */
-  async resume(): Promise<void> {
-    if (os.platform() === 'win32') return; // TODO - can we resume a paused process on windows?
-    this.p.kill('SIGCONT');
-  }
+  abstract resume(): Promise<void>;
 
   /**
    * Close all processes and clean them up
