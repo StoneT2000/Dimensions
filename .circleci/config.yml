@@ -51,6 +51,7 @@ jobs:
       name: language-build
     steps:
       # - setup_services
+      - checkout
       - node/with-cache:
           steps:
             - run: npm install
