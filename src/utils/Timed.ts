@@ -1,4 +1,5 @@
 import { EventEmitter } from "events";
+import { performance } from "perf_hooks";
 import { noop } from ".";
 
 export interface TimedConfigs {
