@@ -32,4 +32,6 @@ RUN npm -v
 RUN python -m pip install --upgrade pip
 RUN pip install numpy scipy pandas matplotlib scikit-learn gym pettingzoo
 
-RUN npm i -g typescript
+RUN npm i -g typescript mocha
+
+RUN apt-get install -y build-essential
