@@ -6,7 +6,7 @@ export interface PromiseStructure {
 
 export interface ProcessOptions {
   time: {
-    perStep: 2000,
-    overage: 60000,
-  }
+    perStep: 2000;
+    overage: 60000;
+  };
 }

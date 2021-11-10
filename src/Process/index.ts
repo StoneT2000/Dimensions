@@ -30,8 +30,6 @@ export abstract class Process extends EventEmitter {
   };
   _stdoutPromise: Promise<string>;
 
-
-
   public processOptions: ProcessOptions = {
     time: {
       perStep: 2000,
@@ -41,8 +39,13 @@ export abstract class Process extends EventEmitter {
 
   /** keep track of all processes for cleanup purposes. Maps pid to process object */
   static allProcesses: Map<number, Process> = new Map();
-  
-  constructor(public command: string, public args: string[] = [], options?: SpawnOptions, processOptions?: DeepPartial<ProcessOptions>) {
+
+  constructor(
+    public command: string,
+    public args: string[] = [],
+    options?: SpawnOptions,
+    processOptions?: DeepPartial<ProcessOptions>
+  ) {
     super();
     this.processOptions = deepMerge(this.processOptions, processOptions);
     this._promises = {

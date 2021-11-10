@@ -35,7 +35,7 @@ export class Environment {
 
   /**
    * Initialize the environment process and read back metadata from the environment.
-   * @returns 
+   * @returns
    */
   async setup(): Promise<Record<string, any>> {
     // start environment process.
@@ -60,7 +60,8 @@ export class Environment {
     // read back metadata
     const metaData = JSON.parse(await this.envProcess.readstdout());
     this.metaData = metaData;
-    if (this.name == undefined && this.metaData.name !== undefined) this.name = this.metaData.name;
+    if (this.name == undefined && this.metaData.name !== undefined)
+      this.name = this.metaData.name;
     if (this.name) {
       this.envProcess.log.identifier = `[${this.name}]`;
     }
@@ -70,7 +71,7 @@ export class Environment {
   /**
    * Step through the environment with the given action(s). `actions` is directly sent to the env process
    * @param actions - can be anything
-   * @returns the return value of the env process `step` function, usually 
+   * @returns the return value of the env process `step` function, usually
    * ```
    * {
    *    obs: array,
@@ -79,7 +80,7 @@ export class Environment {
    *    info: object
    * }
    * ```
-   * 
+   *
    * Or in the case of Multi Agent environments like Pettingzoo envs, it is the same as above but keyed by player ids
    */
   async step(actions: AgentActions): Promise<Record<string, any>> {

@@ -1,16 +1,23 @@
-import { ChildProcess, SpawnOptions } from "child_process";
-import { Readable, Writable } from "stream";
-import treeKill from "tree-kill";
-import { Process } from ".";
+import { ChildProcess, SpawnOptions } from 'child_process';
+import treeKill from 'tree-kill';
+import { Process } from '.';
 import spawn from 'cross-spawn';
 import { Logger } from '../Logger';
-import { ProcessOptions } from "./types";
-import { DeepPartial } from "../utils/DeepPartial";
+import { ProcessOptions } from './types';
+import { DeepPartial } from '../utils/DeepPartial';
 import os from 'os';
 
+/**
+ * A LocalProcess to interact with easily.
+ */
 export class LocalProcess extends Process {
-  public p: ChildProcess
-  constructor(public command: string, public args: string[] = [], options?: SpawnOptions, processOptions?: DeepPartial<ProcessOptions>) {
+  public p: ChildProcess;
+  constructor(
+    public command: string,
+    public args: string[] = [],
+    options?: SpawnOptions,
+    processOptions?: DeepPartial<ProcessOptions>
+  ) {
     super(command, args, options, processOptions);
   }
   async init(): Promise<void> {
@@ -76,18 +83,18 @@ export class LocalProcess extends Process {
       }); // TODO check how this works on windows
     });
   }
-    /**
+  /**
    * Pauses the process
    */
-     async pause(): Promise<void> {
-      if (os.platform() === 'win32') return; // TODO - can we pause a process on windows?
-      this.p.kill('SIGSTOP');
-    }
-    /**
-     * Resumes the process
-     */
-    async resume(): Promise<void> {
-      if (os.platform() === 'win32') return; // TODO - can we resume a paused process on windows?
-      this.p.kill('SIGCONT');
-    }
+  async pause(): Promise<void> {
+    if (os.platform() === 'win32') return; // TODO - can we pause a process on windows?
+    this.p.kill('SIGSTOP');
+  }
+  /**
+   * Resumes the process
+   */
+  async resume(): Promise<void> {
+    if (os.platform() === 'win32') return; // TODO - can we resume a paused process on windows?
+    this.p.kill('SIGCONT');
+  }
 }

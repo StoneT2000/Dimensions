@@ -1,16 +1,16 @@
-import { EventEmitter } from "events";
-import { performance } from "perf_hooks";
-import { noop } from ".";
+import { EventEmitter } from 'events';
+import { performance } from 'perf_hooks';
+import { noop } from '.';
 
 export interface TimedConfigs {
   time: {
-    perStep: number,
-    overage: number,
-  }
+    perStep: number;
+    overage: number;
+  };
 }
 export enum Events {
   TIMEOUT = 'timeout',
-  ERROR = 'error'
+  ERROR = 'error',
 }
 /**
  * Class to time functions and reject and handle errors should the timer go off.
@@ -54,7 +54,10 @@ export class Timed extends EventEmitter {
     return new Promise(async (res, rej) => {
       if (this._hasTimer()) {
         this._setTimeout(() => {
-          this.emit(Events.TIMEOUT, this.configs.time.perStep + this.remainingOverage);
+          this.emit(
+            Events.TIMEOUT,
+            this.configs.time.perStep + this.remainingOverage
+          );
         }, this.configs.time.perStep + this.remainingOverage);
       }
       this._rejectTimer = rej;

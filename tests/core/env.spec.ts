@@ -13,7 +13,7 @@ chai.use(chaiSubset);
 describe('Testing Environments without agents', () => {
   /**
    * Test the environments created by makeEnv
-   * 
+   *
    * Does not run any agent procs, directly feeds in the inputs to the environments
    */
   const dim = new Dimension();
@@ -106,7 +106,11 @@ describe('Testing Environments without agents', () => {
      * We expect user provided environments to **never** error. Should it raise some error and hang, we must eventually close it.
      */
     it('should handle when environment is not valid python / cannot load', async () => {
-      const env = await dim.makeEnv(path.join(__dirname, '../envs/error/env_load_error.py'), {}, 'ErrorEnv');
+      const env = await dim.makeEnv(
+        path.join(__dirname, '../envs/error/env_load_error.py'),
+        {},
+        'ErrorEnv'
+      );
       expect(env.metaData['name']).to.equal('ErrorEnv');
     });
   });

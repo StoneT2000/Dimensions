@@ -65,7 +65,9 @@ export class Agent extends EventEmitter {
     // setup timeout functionality
     if (this.timed._hasTimer()) {
       this.timed.on(Events.TIMEOUT, (timeout: number) => {
-        this.log.error(`Timed out after ${timeout}ms, reason: ${this.timed.currentTimeoutReason}`); // TODO also print the time limits
+        this.log.error(
+          `Timed out after ${timeout}ms, reason: ${this.timed.currentTimeoutReason}`
+        ); // TODO also print the time limits
         this.status = Status.ERROR;
         this.close();
       });
@@ -131,11 +133,11 @@ export class Agent extends EventEmitter {
   async close(): Promise<void> {
     if (this.active()) {
       this.timed.run(async () => {
-      await this.p.send(
-        JSON.stringify({
-          type: CallTypes.CLOSE,
-        })
-      );
+        await this.p.send(
+          JSON.stringify({
+            type: CallTypes.CLOSE,
+          })
+        );
       });
     }
     await this.p.close(); // TODO, configurable, give agent a certain amount of cooldown before force stopping it

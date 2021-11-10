@@ -1,18 +1,18 @@
-import {Process} from '../../src/Process';
+import { Process } from '../../src/Process';
 
 const run = async () => {
   const p = new Process('node', [`${__dirname}/sub.js`]);
 
   const N = 10;
   let data = '';
-  const bytes = 1024*1024*64;// * 1024;
+  const bytes = 1024 * 1024 * 64; // * 1024;
   for (let i = 0; i < bytes; i++) {
-    data += 'a'
+    data += 'a';
   }
   function byteCount(s) {
     return encodeURI(s).split(/%..|./).length - 1;
   }
-  console.log(`Sending ${byteCount(data)} bytes ${N} times`)
+  console.log(`Sending ${byteCount(data)} bytes ${N} times`);
   const stime = performance.now();
   for (let i = 0; i < N; i++) {
     await p.send(data);
@@ -20,9 +20,9 @@ const run = async () => {
   }
   const etime = performance.now();
   const tt = etime - stime;
-  console.log(`Elapsed ${(tt)}ms`);
-  console.log(`Elapsed ${N/(tt)} rounds/ms`);
-  console.log(`${bytes/(tt)} bytes/ms`);
+  console.log(`Elapsed ${tt}ms`);
+  console.log(`Elapsed ${N / tt} rounds/ms`);
+  console.log(`${bytes / tt} bytes/ms`);
   p.close();
-}
+};
 run();

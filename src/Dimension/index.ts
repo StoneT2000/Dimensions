@@ -69,7 +69,7 @@ export class Dimension {
   }
   /**
    * Creates a new environment, which runs the given environment on its own process
-   * 
+   *
    * Optionally provide a display name for logging purposes.
    */
   async makeEnv(
