@@ -1,4 +1,4 @@
-import { DockerProcessOptions, ProcessOptions } from "../Process/types";
+import { DockerProcessOptions, ProcessOptions } from '../Process/types';
 
 export interface Configs {
   /**
@@ -29,12 +29,12 @@ export interface Configs {
   };
   /**
    * Where the agent is being run. Can be local, docker, or remote
-   * 
+   *
    * @default `local`
    */
   location: 'local' | 'docker' | 'remote';
 
-  processOptions?: ProcessOptions | DockerProcessOptions
+  processOptions?: ProcessOptions | DockerProcessOptions;
 }
 
 export enum Events {

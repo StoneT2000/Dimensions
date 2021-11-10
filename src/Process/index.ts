@@ -36,8 +36,8 @@ export abstract class Process extends EventEmitter {
     },
     memory: {
       // 1073741824 = 1024^3 = 1 GB
-      limit: 1073741824
-    }
+      limit: 1073741824,
+    },
   };
 
   /** keep track of all processes for cleanup purposes. Maps pid to process object */

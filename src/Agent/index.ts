@@ -22,7 +22,7 @@ export class Agent extends EventEmitter {
       perStep: 2000,
       overage: 60000,
     },
-    location: 'local'
+    location: 'local',
   };
 
   public log: Logger = new Logger();
@@ -58,9 +58,18 @@ export class Agent extends EventEmitter {
   async initialize(): Promise<void> {
     // TODO: allow Docker
     if (this.configs.location === 'local') {
-      this.p = new LocalProcess(this.configs.agent, [], this.configs.processOptions);
+      this.p = new LocalProcess(
+        this.configs.agent,
+        [],
+        this.configs.processOptions
+      );
     } else if (this.configs.location === 'docker') {
-      this.p = new DockerProcess(this.configs.agent, [], path.dirname(this.configs.agent), this.configs.processOptions);
+      this.p = new DockerProcess(
+        this.configs.agent,
+        [],
+        path.dirname(this.configs.agent),
+        this.configs.processOptions
+      );
     }
     await this.p.init();
     this.p.log.identifier = `[${this.id}]`;

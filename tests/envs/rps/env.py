@@ -57,7 +57,7 @@ class raw_env(AECEnv):
         self.rewards = {agent: 0 for agent in self.agents}
         self._cumulative_rewards = {agent: 0 for agent in self.agents}
         self.dones = {agent: False for agent in self.agents}
-        self.infos = {agent: {} for agent in self.agents}
+        self.infos = {agent: {'score': 0} for agent in self.agents}
 
         self.state = {agent: self._none for agent in self.agents}
         self.observations = {agent: self._none for agent in self.agents}
@@ -94,15 +94,16 @@ class raw_env(AECEnv):
                 # same action parity => lower action number wins
                 if (self.state[self.agents[0]] + self.state[self.agents[1]]) % 2 == 0:
                     if self.state[self.agents[0]] > self.state[self.agents[1]]:
-                        rewards = (-1, 1)
+                        # NOTE, slight changes here to use 0 for losing team and 1 for winning team
+                        rewards = (0, 1)
                     else:
-                        rewards = (1, -1)
+                        rewards = (1, 0)
                 # different action parity => higher action number wins
                 else:
                     if self.state[self.agents[0]] > self.state[self.agents[1]]:
-                        rewards = (1, -1)
+                        rewards = (1, 0)
                     else:
-                        rewards = (-1, 1)
+                        rewards = (0, 1)
             self.rewards[self.agents[0]], self.rewards[self.agents[1]] = rewards
 
             self.num_moves += 1
@@ -112,10 +113,13 @@ class raw_env(AECEnv):
             # observe the current state
             for i in self.agents:
                 self.observations[i] = self.state[self.agents[1 - self.agent_name_mapping[i]]]
+                old_score = self.infos[i]['score']
+                self.infos[i] = dict(score=old_score + self.rewards[i])
         else:
             self.state[self.agents[1 - self.agent_name_mapping[agent]]] = self._none
 
             self._clear_rewards()
+        
 
         self._cumulative_rewards[self.agent_selection] = 0
         self.agent_selection = self._agent_selector.next()

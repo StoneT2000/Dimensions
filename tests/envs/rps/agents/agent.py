@@ -33,7 +33,7 @@ if __name__ == "__main__":
                 pass
             obs = np.array(data['obs'])
             output(dict(
-                action=1
+                action=0
             ))
         elif input_type == "close":
             # do any kind of clean up you want to do

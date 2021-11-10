@@ -10,8 +10,8 @@ export interface ProcessOptions {
     overage: number;
   };
   memory: {
-    limit: number 
-  }
+    limit: number;
+  };
 }
 
 export interface DockerProcessOptions extends ProcessOptions {
