@@ -51,7 +51,7 @@ describe('Testing Environments without agents', () => {
       });
       expect(data['player_0'].obs).to.equal(0);
       expect(data['player_1'].obs).to.equal(2);
-      expect(data['player_0'].reward).to.equal(-1);
+      expect(data['player_0'].reward).to.equal(0);
       expect(data['player_1'].reward).to.equal(1);
       expect(data['player_0'].done).to.equal(false);
       expect(data['player_1'].done).to.equal(false);

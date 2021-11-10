@@ -25,7 +25,7 @@ class Agent:
     def __init__(self, meta=dict()) -> None:
         self.meta = meta
 
-    def act(obs):
+    def act(self, obs):
         """
         Produce an action given this observation
         """
