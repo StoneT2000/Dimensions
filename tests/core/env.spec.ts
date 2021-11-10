@@ -110,7 +110,7 @@ describe('Testing Environments without agents', () => {
       expect(env.metaData['name']).to.equal('ErrorEnv');
     });
   });
-  after(() => {
-    dim.cleanup();
+  after(async () => {
+    await dim.cleanup();
   });
 });

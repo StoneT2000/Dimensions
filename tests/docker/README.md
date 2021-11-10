@@ -13,5 +13,5 @@ docker push stonet2000/dimensions
 ```
 
 ```
-docker run --rm -it stonet2000/dimensions bash
+docker run -v $(pwd)/:/root --rm -it stonet2000/dimensions bash
 ```

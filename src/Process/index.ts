@@ -53,19 +53,23 @@ export class Process extends EventEmitter {
       stdout: this._createPromiseStructure(),
       stderr: this._createPromiseStructure(),
     };
-
     this.p = spawn(command, args, options);
 
     Process.allProcesses.set(this.p.pid, this);
 
     this.log.identifier = `[pid ${this.p.pid}]`;
-    this.p.on('close', (code) => {
-      // this.emit(Events.CLOSE, code);
+    this.p.on('exit', (code) => {
       if (code) {
         // some failure occurred.
         this.log.error(`Process exited with code ${code}`);
       }
     });
+    // this.p.on('close', (code) => {
+    //   if (code) {
+    //     // some failure occurred.
+    //     this.log.error(`Process closed with code ${code}`);
+    //   }
+    // });
     this.p.stdout.on('readable', () => {
       let data: Array<string>;
       while ((data = this.p.stdout.read())) {
@@ -74,6 +78,7 @@ export class Process extends EventEmitter {
         for (let i = 0; i < strs.length - 1; i++) {
           this._buffer.stdout.push(strs[i]);
         }
+        // resolve stdout promise to unblock anyone calling readstdout
         this._promises.stdout.res(data);
         this._promises.stdout = this._createPromiseStructure();
       }

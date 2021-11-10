@@ -17,7 +17,7 @@ describe('Testing Agents', () => {
    * Does not run any agent procs, directly feeds in the inputs to the environments
    */
   const dim = new Dimension();
-  const rpsenv = path.join(__dirname, '../envs/rps/env.py');
+  // const rpsenv = path.join(__dirname, '../envs/rps/env.py');
   const pendulumenv = path.join(__dirname, '../envs/pendulum/env.py');
 
   describe('Test language agnoticism', () => {
@@ -25,7 +25,7 @@ describe('Testing Agents', () => {
       const env = await dim.makeEnv(pendulumenv, {
         max_steps: 30,
       });
-      // env.envProcess.log.level = 0;
+      env.envProcess.log.level = 0;
       const agent = dim.addAgent({
         agent: path.join(__dirname, '../envs/pendulum/agents/agent.js'),
         time: {
