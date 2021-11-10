@@ -36,6 +36,9 @@ export class Agent extends EventEmitter {
     if (!fs.existsSync(this.configs.agent)) {
       throw new DError.MissingFilesError(`no such file ${this.configs.agent}`);
     }
+    // ensure we have proper settings
+    // TODO: check windows
+    fs.chmodSync(this.configs.agent, '755');
 
     // agent_<id> is on scope of whole process.
     // player_<player_index> is on scope of a single episode
@@ -91,7 +94,8 @@ export class Agent extends EventEmitter {
       );
       this.timed.currentTimeoutReason =
         'Did not receive agent id back from agent during initialization';
-      const data = JSON.parse(await this.p.readstdout());
+      const d = await this.p.readstdout();
+      const data = JSON.parse(d);
       if (data.id !== this.id)
         throw new Error(
           `Agent responded with wrong id of ${data.id} instead of ${this.id} during initialization`
@@ -123,11 +127,13 @@ export class Agent extends EventEmitter {
    */
   async close(): Promise<void> {
     if (this.active()) {
+      this.timed.run(async () => {
       await this.p.send(
         JSON.stringify({
           type: CallTypes.CLOSE,
         })
       );
+      });
     }
     await this.p.close(); // TODO, configurable, give agent a certain amount of cooldown before force stopping it
     this.status = Status.DONE;

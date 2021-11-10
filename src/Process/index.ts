@@ -145,7 +145,7 @@ export class Process extends EventEmitter {
    */
   async close(): Promise<void> {
     return new Promise((res, rej) => {
-      this.p.kill('SIGTERM');
+      this.p.kill('SIGKILL');
       treeKill(this.p.pid, (err) => {
         if (err) {
           rej(err);

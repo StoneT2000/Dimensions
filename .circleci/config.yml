@@ -6,7 +6,7 @@ orbs:
 executors:
   language-build:
     docker:
-      - image: stonezt2000/dimensions_langs:latest
+      - image: stonet2000/dimensions:latest
       - image: circleci/mongo:latest
         environment:
           MONGO_INITDB_ROOT_USERNAME: root
