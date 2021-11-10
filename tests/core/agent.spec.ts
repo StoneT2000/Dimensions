@@ -41,7 +41,7 @@ describe('Testing Agents', () => {
       );
     });
   });
-  describe.only('Test docker agents', () => {
+  describe('Test docker agents', () => {
     it('should run python vs js in docker', async () => {
       const env = await dim.makeEnv(rpsenv, {
         max_cycles: 30,
