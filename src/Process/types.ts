@@ -6,7 +6,16 @@ export interface PromiseStructure {
 
 export interface ProcessOptions {
   time: {
-    perStep: 2000;
-    overage: 60000;
+    perStep: number;
+    overage: number;
   };
+  memory: {
+    limit: number 
+  }
+}
+
+export interface DockerProcessOptions extends ProcessOptions {
+  image: string;
+  name: string;
+  socketPath: string;
 }

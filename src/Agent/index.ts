@@ -8,6 +8,8 @@ import fs from 'fs';
 import { Logger } from '../Logger';
 import { Timed } from '../utils/Timed';
 import { LocalProcess } from '../Process/local';
+import { DockerProcess } from '../Process/docker';
+import path from 'path';
 
 export class Agent extends EventEmitter {
   public p: Process;
@@ -20,6 +22,7 @@ export class Agent extends EventEmitter {
       perStep: 2000,
       overage: 60000,
     },
+    location: 'local'
   };
 
   public log: Logger = new Logger();
@@ -54,7 +57,11 @@ export class Agent extends EventEmitter {
    */
   async initialize(): Promise<void> {
     // TODO: allow Docker
-    this.p = new LocalProcess(this.configs.agent);
+    if (this.configs.location === 'local') {
+      this.p = new LocalProcess(this.configs.agent, [], this.configs.processOptions);
+    } else if (this.configs.location === 'docker') {
+      this.p = new DockerProcess(this.configs.agent, [], path.dirname(this.configs.agent), this.configs.processOptions);
+    }
     await this.p.init();
     this.p.log.identifier = `[${this.id}]`;
     if (this.configs.name) {
@@ -139,9 +146,9 @@ export class Agent extends EventEmitter {
           })
         );
       });
+      await this.p.close(); // TODO, configurable, give agent a certain amount of cooldown before force stopping it
+      this.status = Status.DONE;
     }
-    await this.p.close(); // TODO, configurable, give agent a certain amount of cooldown before force stopping it
-    this.status = Status.DONE;
   }
 
   _hasMemoryLimits(): boolean {

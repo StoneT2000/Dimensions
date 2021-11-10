@@ -1,3 +1,5 @@
+import { DockerProcessOptions, ProcessOptions } from "../Process/types";
+
 export interface Configs {
   /**
    * Should be an executable that can run, receive inputs and print actions
@@ -25,6 +27,14 @@ export interface Configs {
      */
     overage: number;
   };
+  /**
+   * Where the agent is being run. Can be local, docker, or remote
+   * 
+   * @default `local`
+   */
+  location: 'local' | 'docker' | 'remote';
+
+  processOptions?: ProcessOptions | DockerProcessOptions
 }
 
 export enum Events {

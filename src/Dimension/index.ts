@@ -147,7 +147,8 @@ export class Dimension {
     closePromises.push(
       Promise.all(Array.from(this.agents.values()).map((a) => a.close()))
     );
-    closePromises.push(Process._closeAllProcesses());
     await Promise.all(closePromises);
+    await Process._closeAllProcesses();
+    
   }
 }

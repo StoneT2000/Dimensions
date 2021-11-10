@@ -41,7 +41,32 @@ describe('Testing Agents', () => {
       );
     });
   });
-  after(() => {
-    dim.cleanup();
+  describe('Test docker agents', () => {
+    it.only('should run js in docker', async () => {
+      const env = await dim.makeEnv(pendulumenv, {
+        max_steps: 30,
+      });
+      env.envProcess.log.level = 0;
+      const agent = dim.addAgent({
+        agent: path.join(__dirname, '../envs/pendulum/agents/agent.js'),
+        time: {
+          perStep: 1000,
+          overage: 0,
+        },
+        location: 'docker',
+      });
+      // await agent.initialize();
+      // await agent.p.send(JSON.stringify({type:"init", id:"3"}))
+      // await agent.p.send(JSON.stringify({type:"init", id:"3"}))
+      const r1 = await dim.runEpisode(env, [agent], 0);
+      expect(r1.results.final.data.done).to.equal(true);
+      expect(r1.results.final.data.reward).to.approximately(
+        -9.364599159415079,
+        1e-15
+      );
+    });
+  });
+  after(async () => {
+    await dim.cleanup();
   });
 });

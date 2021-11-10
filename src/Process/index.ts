@@ -1,4 +1,3 @@
-import { SpawnOptions } from 'child_process';
 import { EventEmitter } from 'events';
 import { Logger } from '../Logger';
 import { ProcessOptions, PromiseStructure } from './types';
@@ -30,24 +29,27 @@ export abstract class Process extends EventEmitter {
   };
   _stdoutPromise: Promise<string>;
 
-  public processOptions: ProcessOptions = {
+  public options: ProcessOptions = {
     time: {
       perStep: 2000,
       overage: 60000,
     },
+    memory: {
+      // 1073741824 = 1024^3 = 1 GB
+      limit: 1073741824
+    }
   };
 
   /** keep track of all processes for cleanup purposes. Maps pid to process object */
-  static allProcesses: Map<number, Process> = new Map();
+  static allProcesses: Map<number | string, Process> = new Map();
 
   constructor(
     public command: string,
     public args: string[] = [],
-    options?: SpawnOptions,
-    processOptions?: DeepPartial<ProcessOptions>
+    options?: DeepPartial<ProcessOptions>
   ) {
     super();
-    this.processOptions = deepMerge(this.processOptions, processOptions);
+    this.options = deepMerge(this.options, options);
     this._promises = {
       stdout: this._createPromiseStructure(),
       stderr: this._createPromiseStructure(),

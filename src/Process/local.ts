@@ -1,4 +1,4 @@
-import { ChildProcess, SpawnOptions } from 'child_process';
+import { ChildProcess } from 'child_process';
 import treeKill from 'tree-kill';
 import { Process } from '.';
 import spawn from 'cross-spawn';
@@ -15,10 +15,9 @@ export class LocalProcess extends Process {
   constructor(
     public command: string,
     public args: string[] = [],
-    options?: SpawnOptions,
-    processOptions?: DeepPartial<ProcessOptions>
+    options?: DeepPartial<ProcessOptions>
   ) {
-    super(command, args, options, processOptions);
+    super(command, args, options);
   }
   async init(): Promise<void> {
     this.p = spawn(this.command, this.args, {});
