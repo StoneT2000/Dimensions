@@ -30,6 +30,6 @@ RUN node -v
 RUN npm -v
 
 RUN python -m pip install --upgrade pip
-RUN pip install numpy scipy pandas matplotlib scikit-learn
+RUN pip install numpy scipy pandas matplotlib scikit-learn gym pettingzoo
 
 RUN npm i -g typescript
