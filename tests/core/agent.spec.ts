@@ -42,7 +42,7 @@ describe.only('Testing Agents', () => {
         1e-15
       );
     });
-    it('should run python vs js', async () => {
+    it.only('should run python vs js', async () => {
       const env = await dim.makeEnv(rpsenv, {
         max_cycles: 30,
       });

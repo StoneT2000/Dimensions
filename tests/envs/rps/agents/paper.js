@@ -61,10 +61,12 @@ class Agent {
 
 const agent = new Agent();
 (async () =>{
+  
   while (true) {
     const data = JSON.parse(await agent.getLine());
     const input_type = data['type'];
     const output = (d) => console.log(JSON.stringify(d));
+    
     if (input_type == 'init') {
       agent.meta['id'] = data['id'];
       agent.meta['name'] =  data['name'];

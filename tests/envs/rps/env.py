@@ -8,7 +8,7 @@ import os
 
 def env(**kwargs):
     env = raw_env(**kwargs)
-    env = wrappers.AssertOutOfBoundsWrapper(env)
+    # env = wrappers.AssertOutOfBoundsWrapper(env)
     env = wrappers.OrderEnforcingWrapper(env)
     return env
 
@@ -78,14 +78,41 @@ class raw_env(AECEnv):
         return self.state
 
     def step(self, action):
+
         if self.dones[self.agent_selection]:
             return self._was_done_step(action)
+        
+        if not ((
+            action is None and self.dones[self.agent_selection]
+        ) or self.action_spaces[self.agent_selection].contains(
+            action
+        )):
+            # validate action
+            print(f"action is not in action space: {action}", file=sys.stderr)
+            # if invalid action, set action as none and mark this agent as being done.
+            self.dones[self.agent_selection] = True
+            action = None
+        
         agent = self.agent_selection
 
         self.state[self.agent_selection] = action
 
         # collect reward if it is the last agent to act
         if self._agent_selector.is_last():
+            if self.state[self.agents[0]] is None or self.state[self.agents[1]] is None:
+                # game over, one team lost already after doing something invalid
+                rewards = (0, 0)
+
+                for i in self.agents:
+                    self.observations[i] = self.state[self.agents[1 - self.agent_name_mapping[i]]]
+                    score = self.infos[i]['score'] + self.rewards[i]
+                    # if already marked done, agent failed early and we set their score to 0.
+                    if self.dones[i]: score = -1
+                    self.infos[i] = dict(score=score)
+                    
+                    # end game by marking all as done
+                    self.dones[i] = True
+                return
 
             # same action => 0 reward each agent
             if self.state[self.agents[0]] == self.state[self.agents[1]]:
@@ -148,7 +175,6 @@ if __name__ == "__main__":
     def serialize_ma_raw(dict_obs):
         return {agent: dict_obs[agent] for agent in dict_obs}
 
-    env: raw_env = None
     agent_id_to_player_id = {}
     while (True):
         inputs = read_input()
