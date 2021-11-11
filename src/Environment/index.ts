@@ -4,7 +4,6 @@ import { Process } from '../Process';
 import { DError } from '../DimensionError/wrapper';
 import { LocalProcess } from '../Process/local';
 import * as Timed from '../utils/Timed';
-import { sleep } from '../utils';
 
 /**
  * A wrapper around a given environment executable or python gym to allow cross-language interaction
@@ -187,13 +186,11 @@ export class Environment {
    * Perform any clean up operations and close the environment
    */
   async close(): Promise<void> {
-    this.p.timed.run(async () => {
-      await this.p.send(
-        JSON.stringify({
-          type: CallTypes.CLOSE,
-        })
-      );
-    });
+    await this.p.send(
+      JSON.stringify({
+        type: CallTypes.CLOSE,
+      })
+    );
     await this.p.close();
   }
 }

@@ -8,6 +8,8 @@ import { Events } from './events';
 
 /**
  * Generic class that wraps around a process that is spawned and receives input and prints out outputs
+ * 
+ * Auto times any action performed with the process and will reject should it timeout or exit prematurely
  *
  */
 export abstract class Process extends EventEmitter {

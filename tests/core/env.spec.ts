@@ -78,7 +78,7 @@ describe('Testing Environments without agents', () => {
     });
   });
   describe('Test functions on Single Agent Environment: Pendulum', () => {
-    it('should initialize environment', async () => {
+    it.only('should initialize environment', async () => {
       const env = await dim.makeEnv(pendulumenv, {
         max_steps: 30,
       });
