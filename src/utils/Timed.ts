@@ -9,8 +9,9 @@ export interface TimedConfigs {
   };
 }
 export enum Events {
-  TIMEOUT = 'timeout',
-  ERROR = 'error',
+  TIMEOUT = 'timer_timeout',
+  // two arguments, reason, and error object
+  ERROR = 'timer_error',
 }
 /**
  * Class to time functions and reject and handle errors should the timer go off.
@@ -26,13 +27,14 @@ export class Timed extends EventEmitter {
     super();
     this.remainingOverage = configs.time.overage;
     if (this._hasTimer()) {
-      this.on(Events.TIMEOUT, () => {
-        this._rejectTimer();
+      this.on(Events.TIMEOUT, (timeout) => {
+        this._rejectTimer(new Error(`Process timed out after ${timeout}ms`));
+      });
+      this.on(Events.ERROR, () => {
+        // for prematurely rejecting in the run function and bubbling the error up
+        this._rejectTimer(new Error(`Process errored out`));
       });
     }
-    this.on(Events.ERROR, () => {
-      this._rejectTimer();
-    });
   }
   _setTimeout(fn: Function, delay: number, ...args: any[]): void {
     const timer = setTimeout(() => {
@@ -49,7 +51,7 @@ export class Timed extends EventEmitter {
     return this.configs.time.perStep !== null;
   }
 
-  public async run<T>(fn: (...args: any[]) => Promise<T>): Promise<T> {
+  public async run<T>(fn: (...args: any[]) => Promise<T>, ...args: any[]): Promise<T> {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (res, rej) => {
       if (this._hasTimer()) {
@@ -62,7 +64,7 @@ export class Timed extends EventEmitter {
       }
       this._rejectTimer = rej;
       try {
-        const output = await fn();
+        const output = await fn(args);
         const elpasedTime = this._clearTimer();
         if (this._hasTimer()) {
           if (elpasedTime > this.configs.time.perStep) {
@@ -76,9 +78,7 @@ export class Timed extends EventEmitter {
         this.currentTimeoutReason = 'Unknown';
         res(output);
       } catch (err) {
-        this.emit(Events.ERROR, `${this.currentTimeoutReason}`, err);
         rej(err);
-      } finally {
         this._clearTimer();
       }
     });

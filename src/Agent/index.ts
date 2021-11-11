@@ -6,7 +6,6 @@ import { DeepPartial } from '../utils/DeepPartial';
 import { CallTypes, Configs, Events, Status } from './types';
 import fs from 'fs';
 import { Logger } from '../Logger';
-import { Timed } from '../utils/Timed';
 import { LocalProcess } from '../Process/local';
 import { DockerProcess } from '../Process/docker';
 import path from 'path';
@@ -18,18 +17,12 @@ export class Agent extends EventEmitter {
   public configs: Configs = {
     agent: null,
     name: null,
-    time: {
-      perStep: 2000,
-      overage: 60000,
-    },
     location: 'local',
   };
 
   public log: Logger = new Logger();
 
   private static globalID = 0;
-
-  public timed: Timed;
 
   constructor(configs: DeepPartial<Configs> = {}) {
     super();
@@ -47,9 +40,6 @@ export class Agent extends EventEmitter {
     // agent_<id> is on scope of whole process.
     // player_<player_index> is on scope of a single episode
     this.id = `agent_${Agent.globalID++}`;
-
-    // initialize a timer
-    this.timed = new Timed({ time: this.configs.time });
   }
 
   /**
@@ -71,19 +61,18 @@ export class Agent extends EventEmitter {
         this.configs.processOptions
       );
     }
-    await this.p.init();
-    this.p.log.identifier = `[${this.id}]`;
-    if (this.configs.name) {
-      this.p.log.identifier = `[${this.configs.name} (${this.id})]`;
-    }
-    this.log.identifier = this.p.log.identifier;
-
     // setup timeout functionality
-    if (this.timed._hasTimer()) {
-      this.timed.on(Events.TIMEOUT, (timeout: number) => {
+    if (this.p.timed._hasTimer()) {
+      this.p.timed.on(Events.TIMEOUT, (timeout: number) => {
         this.log.error(
-          `Timed out after ${timeout}ms, reason: ${this.timed.currentTimeoutReason}`
-        ); // TODO also print the time limits
+          `Agent timed out after ${timeout}ms, reason: ${this.p.timed.currentTimeoutReason}`
+        );
+        this.status = Status.ERROR;
+        this.close();
+      });
+      this.p.timed.on(Events.ERROR, (reason: string, err: Error) => {
+        this.log.error('Agent Errored Out:', reason);
+        this.log.error('Details:', err);
         this.status = Status.ERROR;
         this.close();
       });
@@ -95,33 +84,31 @@ export class Agent extends EventEmitter {
         this.close();
       });
     }
-    this.timed.on(Events.ERROR, (reason: string, err: Error) => {
-      this.log.error('Agent Errored Out:', reason);
-      this.log.error('Details:', err);
-      this.status = Status.ERROR;
-      this.close();
-    });
+    await this.p.init();
+    this.p.log.identifier = `[${this.id}]`;
+    if (this.configs.name) {
+      this.p.log.identifier = `[${this.configs.name} (${this.id})]`;
+    }
+    this.log.identifier = this.p.log.identifier;
 
     // perform handshake to verify agent is alive
-    await this.timed.run(async () => {
-      this.timed.currentTimeoutReason =
-        'Could not send agent initialization information';
-      await this.p.send(
-        JSON.stringify({
-          name: this.configs.name,
-          id: this.id,
-          type: CallTypes.INIT,
-        })
+    this.p.timed.currentTimeoutReason =
+      'Could not send agent initialization information';
+    await this.p.send(
+      JSON.stringify({
+        name: this.configs.name,
+        id: this.id,
+        type: CallTypes.INIT,
+      })
+    );
+    this.p.timed.currentTimeoutReason =
+      'Did not receive agent id back from agent during initialization';
+    const d = await this.p.readstdout();
+    const data = JSON.parse(d);
+    if (data.id !== this.id)
+      throw new Error(
+        `Agent responded with wrong id of ${data.id} instead of ${this.id} during initialization`
       );
-      this.timed.currentTimeoutReason =
-        'Did not receive agent id back from agent during initialization';
-      const d = await this.p.readstdout();
-      const data = JSON.parse(d);
-      if (data.id !== this.id)
-        throw new Error(
-          `Agent responded with wrong id of ${data.id} instead of ${this.id} during initialization`
-        );
-    });
 
     // agent is now ready and active!
     this.status = Status.ACTIVE;
@@ -148,13 +135,11 @@ export class Agent extends EventEmitter {
    */
   async close(): Promise<void> {
     if (this.active()) {
-      this.timed.run(async () => {
-        await this.p.send(
-          JSON.stringify({
-            type: CallTypes.CLOSE,
-          })
-        );
-      });
+      await this.p.send(
+        JSON.stringify({
+          type: CallTypes.CLOSE,
+        })
+      );
       await this.p.close(); // TODO, configurable, give agent a certain amount of cooldown before force stopping it
       this.status = Status.DONE;
     }
@@ -174,25 +159,20 @@ export class Agent extends EventEmitter {
    */
   async action(data: Record<string, any>): Promise<Record<string, any> | null> {
     try {
-      const action = await this.timed.run(async () => {
-        this.timed.currentTimeoutReason =
-          'Agent did not respond with an action in time';
-        await this.p.send(
-          JSON.stringify({
-            ...data,
-            type: CallTypes.ACTION,
-          })
+      this.p.timed.currentTimeoutReason =
+        'Agent did not respond with an action in time';
+      await this.p.send(
+        JSON.stringify({
+          ...data,
+          type: CallTypes.ACTION,
+        })
+      );
+      const action: Record<string, any> = JSON.parse(await this.p.readstdout());
+      if (action.action === undefined) {
+        throw new Error(
+          `Action is malformed, expected action to be a key in agent JSON output but was not found`
         );
-        const action: Record<string, any> = JSON.parse(
-          await this.p.readstdout()
-        );
-        if (action.action === undefined) {
-          throw new Error(
-            `Action is malformed, expected action to be a key in agent JSON output but was not found`
-          );
-        }
-        return action;
-      });
+      }
       return action;
     } catch {
       return { action: null };

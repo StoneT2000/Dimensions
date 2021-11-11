@@ -1,5 +1,6 @@
 import { Logger } from '../Logger';
 import { Process } from '.';
+import { Events as ProcessEvents} from './events';
 import { DeepPartial } from '../utils/DeepPartial';
 import { DockerProcessOptions } from './types';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -50,7 +51,7 @@ export class DockerProcess extends Process {
     }
     this.docker = new Dockerode({ socketPath: this.options.socketPath });
   }
-  async init(): Promise<void> {
+  async _init(): Promise<void> {
     // throw new Error('Method not implemented.');
     await this.setupContainer(this.options.name, this.docker);
     const p = await this.containerSpawn(this.command);
@@ -64,6 +65,7 @@ export class DockerProcess extends Process {
       if (code) {
         // some failure occurred.
         this.log.error(`Process exited with code ${code}`);
+        this.emit(ProcessEvents.EXIT, code);
       }
     });
     this.p.stdout.on('readable', () => {
@@ -90,7 +92,7 @@ export class DockerProcess extends Process {
       }
     });
   }
-  async send(message: string): Promise<void> {
+  async _send(message: string): Promise<void> {
     return new Promise((res, rej) => {
       this.p.stdin.write(`${message}\n`, (err) => {
         if (err) rej(err);
@@ -98,7 +100,7 @@ export class DockerProcess extends Process {
       });
     });
   }
-  async close(): Promise<void> {
+  async _close(): Promise<void> {
     const ins = await this.container.inspect();
     // clearInterval(this.memoryWatchInterval);
     if (ins.State.Running) {
@@ -107,11 +109,11 @@ export class DockerProcess extends Process {
       await this.container.kill();
     }
   }
-  async pause(): Promise<void> {
+  async _pause(): Promise<void> {
     // await this.container.pause();
     // throw new Error('Method not implemented.');
   }
-  async resume(): Promise<void> {
+  async _resume(): Promise<void> {
     // await this.container.unpause();
   }
 

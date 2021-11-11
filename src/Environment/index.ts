@@ -3,12 +3,14 @@ import path from 'path';
 import { Process } from '../Process';
 import { DError } from '../DimensionError/wrapper';
 import { LocalProcess } from '../Process/local';
+import * as Timed from '../utils/Timed';
+import { sleep } from '../utils';
 
 /**
  * A wrapper around a given environment executable or python gym to allow cross-language interaction
  */
 export class Environment {
-  public envProcess: Process;
+  public p: Process;
   public id: string = null;
   public steps = 0;
 
@@ -39,31 +41,57 @@ export class Environment {
    */
   async setup(): Promise<Record<string, any>> {
     // start environment process.
+    
     if (path.extname(this.environment) === '.py') {
-      this.envProcess = new LocalProcess('python', [this.environment]);
+      this.p = new LocalProcess('python', [this.environment], {
+        time: {
+          perStep: 2000,
+          overage: 2000
+        }
+      });
     } else {
       throw new DError.NotSupportedError('Envionment type not supported yet');
     }
-    await this.envProcess.init();
-    this.envProcess.log.identifier = `[${this.id}]`;
+    
+    this.p.timed.currentTimeoutReason = 'Environment could not start';
+    this.p.timed.on(Timed.Events.TIMEOUT, (timeout) => {
+      this.p.log.error(
+        `Environment timed out after ${timeout}ms, reason: ${this.p.timed.currentTimeoutReason}`
+      );
+      this.p.close();
+    });
+    this.p.timed.on(Timed.Events.ERROR, (reason, err) => {
+      this.p.log.error(
+        `Environment errored out, reason: ${reason}`
+      );
+      this.p.log.error(err);
+      this.p.close();
+    });
+    
+    await this.p.init();
+
+    this.p.log.identifier = `[${this.id}]`;
     if (this.name) {
-      this.envProcess.log.identifier = `[${this.name}]`;
+      this.p.log.identifier = `[${this.name}]`;
     }
 
     // send initialization information to create a environment
-    await this.envProcess.send(
+    this.p.timed.currentTimeoutReason = 'Environment did not initialize';
+    await this.p.send(
       JSON.stringify({
         envConfigs: this.envConfigs,
         type: CallTypes.INIT,
       })
     );
+
     // read back metadata
-    const metaData = JSON.parse(await this.envProcess.readstdout());
+    const metaData = JSON.parse(await this.p.readstdout());
+
     this.metaData = metaData;
     if (this.name == undefined && this.metaData.name !== undefined)
       this.name = this.metaData.name;
     if (this.name) {
-      this.envProcess.log.identifier = `[${this.name}]`;
+      this.p.log.identifier = `[${this.name}]`;
     }
     return metaData;
   }
@@ -85,24 +113,24 @@ export class Environment {
    */
   async step(actions: AgentActions): Promise<Record<string, any>> {
     this.steps += 1;
-    await this.envProcess.send(
+    await this.p.send(
       JSON.stringify({
         actions,
         type: CallTypes.STEP,
       })
     );
-    return JSON.parse(await this.envProcess.readstdout());
+    return JSON.parse(await this.p.readstdout());
   }
   async reset(state: Record<string, any> = null): Promise<Record<string, any>> {
     this.steps = 0;
     // TODO: encode state into observations and let env optionally return that when stepping
-    await this.envProcess.send(
+    await this.p.send(
       JSON.stringify({
         state,
         type: CallTypes.RESET,
       })
     );
-    return JSON.parse(await this.envProcess.readstdout());
+    return JSON.parse(await this.p.readstdout());
   }
 
   /**
@@ -110,13 +138,13 @@ export class Environment {
    * @param seed - the seed value to use
    */
   async seed(seed: number): Promise<Record<string, any>> {
-    await this.envProcess.send(
+    await this.p.send(
       JSON.stringify({
         seed,
         type: CallTypes.SEED,
       })
     );
-    return JSON.parse(await this.envProcess.readstdout());
+    return JSON.parse(await this.p.readstdout());
   }
 
   /**
@@ -127,13 +155,13 @@ export class Environment {
    */
   async render(mode: RenderModes): Promise<Record<string, any>> {
     // TODO finish
-    await this.envProcess.send(
+    await this.p.send(
       JSON.stringify({
         mode,
         type: CallTypes.RENDER,
       })
     );
-    return JSON.parse(await this.envProcess.readstdout());
+    return JSON.parse(await this.p.readstdout());
   }
 
   /**
@@ -142,13 +170,13 @@ export class Environment {
    * @param ids - ids of agents to register
    */
   async registerAgents(ids: string[]): Promise<void> {
-    await this.envProcess.send(
+    await this.p.send(
       JSON.stringify({
         ids,
         type: CallTypes.REGISTER_AGENTS,
       })
     );
-    const data = JSON.parse(await this.envProcess.readstdout());
+    const data = JSON.parse(await this.p.readstdout());
     ids.forEach((id, i) => {
       this.agentIDToPlayerID.set(id, data.ids[i]);
     });
@@ -159,11 +187,13 @@ export class Environment {
    * Perform any clean up operations and close the environment
    */
   async close(): Promise<void> {
-    await this.envProcess.send(
-      JSON.stringify({
-        type: CallTypes.CLOSE,
-      })
-    );
-    // await this.envProcess.close(); // TODO add a timeout to the closing. If env does not close in some time limit, send interrupt signal
+    this.p.timed.run(async () => {
+      await this.p.send(
+        JSON.stringify({
+          type: CallTypes.CLOSE,
+        })
+      );
+    });
+    await this.p.close();
   }
 }

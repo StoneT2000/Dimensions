@@ -3,6 +3,8 @@ import { Logger } from '../Logger';
 import { ProcessOptions, PromiseStructure } from './types';
 import { DeepPartial } from '../utils/DeepPartial';
 import { deepMerge } from '../utils/DeepMerge';
+import * as Timed from '../utils/Timed';
+import { Events } from './events';
 
 /**
  * Generic class that wraps around a process that is spawned and receives input and prints out outputs
@@ -43,6 +45,8 @@ export abstract class Process extends EventEmitter {
   /** keep track of all processes for cleanup purposes. Maps pid to process object */
   static allProcesses: Map<number | string, Process> = new Map();
 
+  public timed: Timed.Timed;
+
   constructor(
     public command: string,
     public args: string[] = [],
@@ -54,9 +58,27 @@ export abstract class Process extends EventEmitter {
       stdout: this._createPromiseStructure(),
       stderr: this._createPromiseStructure(),
     };
+    this.timed = new Timed.Timed({
+      time: this.options.time,
+    });
+
+    this.on(Events.EXIT, (code) => {
+      // if the process exits prematurely and with an error, we print the following
+      if (code) {
+        this.timed.emit(Timed.Events.ERROR, `process exited with code ${code}`, 'check logging for this process for more details')
+        this.timed._clearTimer();
+      }
+    });
   }
-  abstract init(): Promise<void>;
-  abstract send(message: string): Promise<void>;
+  async init(): Promise<void> {
+    return this.timed.run(this._init.bind(this));
+  }
+  abstract _init(): Promise<void>;
+
+  async send(message: string): Promise<void> {
+    return this.timed.run(this._send.bind(this), message);
+  }
+  abstract _send(message: string): Promise<void>;
 
   async readstdout(): Promise<string> {
     return this.readline(0);
@@ -68,19 +90,21 @@ export abstract class Process extends EventEmitter {
    * Read a line from stdout and stderr
    */
   async readline(fd: 0 | 2 = 0): Promise<string> {
-    let arr = [];
-    if (fd == 0) {
-      arr = this._buffer.stdout;
-    } else if (fd == 2) {
-      arr = this._buffer.stderr;
-    } else {
-      throw RangeError('given fd has to be one of {0, 2}');
-    }
-    if (arr.length === 0) {
-      // await for it to fill up
-      await this._promises.stdout.promise;
-    }
-    return arr.shift();
+    return this.timed.run(async () => {
+      let arr = [];
+      if (fd == 0) {
+        arr = this._buffer.stdout;
+      } else if (fd == 2) {
+        arr = this._buffer.stderr;
+      } else {
+        throw RangeError('given fd has to be one of {0, 2}');
+      }
+      if (arr.length === 0) {
+        // await for it to fill up
+        await this._promises.stdout.promise;
+      }
+      return arr.shift();
+    });
   }
   _createPromiseStructure(): {
     promise: Promise<string>;
@@ -99,20 +123,28 @@ export abstract class Process extends EventEmitter {
       rej,
     };
   }
-
   /**
    * Attempt to close the process
    */
-  abstract close(): Promise<void>;
+  async close(): Promise<void> {
+    return this._close();
+  }
+  abstract _close(): Promise<void>;
 
   /**
    * Pauses the process
    */
-  abstract pause(): Promise<void>;
+  async pause(): Promise<void> {
+    return this._pause();
+  }
+  abstract _pause(): Promise<void>;
   /**
    * Resumes the process
    */
-  abstract resume(): Promise<void>;
+  async resume(): Promise<void> {
+    return this._resume();
+  }
+  abstract _resume(): Promise<void>;
 
   /**
    * Close all processes and clean them up

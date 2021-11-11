@@ -1,6 +1,7 @@
 import { ChildProcess } from 'child_process';
 import treeKill from 'tree-kill';
 import { Process } from '.';
+import { Events as ProcessEvents} from './events';
 import spawn from 'cross-spawn';
 import { Logger } from '../Logger';
 import { ProcessOptions } from './types';
@@ -19,7 +20,7 @@ export class LocalProcess extends Process {
   ) {
     super(command, args, options);
   }
-  async init(): Promise<void> {
+  async _init(): Promise<void> {
     this.p = spawn(this.command, this.args, {});
 
     Process.allProcesses.set(this.p.pid, this);
@@ -29,14 +30,9 @@ export class LocalProcess extends Process {
       if (code) {
         // some failure occurred.
         this.log.error(`Process exited with code ${code}`);
+        this.emit(ProcessEvents.EXIT, code);
       }
     });
-    // this.p.on('close', (code) => {
-    //   if (code) {
-    //     // some failure occurred.
-    //     this.log.error(`Process closed with code ${code}`);
-    //   }
-    // });
     this.p.stdout.on('readable', () => {
       let data: Array<string>;
       while ((data = this.p.stdout.read())) {
@@ -61,7 +57,7 @@ export class LocalProcess extends Process {
       }
     });
   }
-  async send(message: string): Promise<void> {
+  async _send(message: string): Promise<void> {
     return new Promise((res, rej) => {
       this.p.stdin.write(`${message}\n`, (err) => {
         if (err) rej(err);
@@ -69,7 +65,7 @@ export class LocalProcess extends Process {
       });
     });
   }
-  async close(): Promise<void> {
+  async _close(): Promise<void> {
     return new Promise((res, rej) => {
       this.p.kill('SIGKILL');
       treeKill(this.p.pid, (err) => {
@@ -85,14 +81,14 @@ export class LocalProcess extends Process {
   /**
    * Pauses the process
    */
-  async pause(): Promise<void> {
+  async _pause(): Promise<void> {
     if (os.platform() === 'win32') return; // TODO - can we pause a process on windows?
     this.p.kill('SIGSTOP');
   }
   /**
    * Resumes the process
    */
-  async resume(): Promise<void> {
+  async _resume(): Promise<void> {
     if (os.platform() === 'win32') return; // TODO - can we resume a paused process on windows?
     this.p.kill('SIGCONT');
   }

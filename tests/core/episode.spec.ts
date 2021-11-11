@@ -60,9 +60,11 @@ describe('Testing Episodes with Agents', () => {
       });
       const agent = dim.addAgent({
         agent: pendulumAgents.py,
-        time: {
-          perStep: 2000,
-          overage: 0,
+        processOptions: {
+          time: {
+            perStep: 2000,
+            overage: 0,
+          },
         },
       });
       const rs = [];
@@ -87,12 +89,14 @@ describe('Testing Episodes with Agents', () => {
       const env = await dim.makeEnv(pendulumenv, {
         max_steps: 30,
       });
-      env.envProcess.log.level = 0;
+      env.p.log.level = 0;
       const agent = dim.addAgent({
         agent: path.join(__dirname, '../envs/pendulum/agents/invalid_agent.py'),
-        time: {
-          perStep: 1000,
-          overage: 0,
+        processOptions: {
+          time: {
+            perStep: 1000,
+            overage: 0,
+          },
         },
       });
       const { results } = await dim.runEpisode(env, [agent], 0);
@@ -106,15 +110,17 @@ describe('Testing Episodes with Agents', () => {
       const env = await dim.makeEnv(pendulumenv, {
         max_steps: 30,
       });
-      env.envProcess.log.level = 0;
+      env.p.log.level = 0;
       const agent = dim.addAgent({
         agent: path.join(
           __dirname,
           '../envs/pendulum/agents/malformed_handshake.py'
         ),
-        time: {
-          perStep: 1000,
-          overage: 0,
+        processOptions: {
+          time: {
+            perStep: 1000,
+            overage: 0,
+          },
         },
       });
       const { results } = await dim.runEpisode(env, [agent], 0);
@@ -128,7 +134,7 @@ describe('Testing Episodes with Agents', () => {
       let env = await dim.makeEnv(pendulumenv, {
         max_steps: 30,
       });
-      env.envProcess.log.level = 0;
+      env.p.log.level = 0;
       const timerconf = {
         perStep: 20000,
         overage: 0,
@@ -138,14 +144,14 @@ describe('Testing Episodes with Agents', () => {
           __dirname,
           '../envs/pendulum/agents/malformed_action.py'
         ),
-        time: timerconf,
+        processOptions: { time: timerconf },
       });
       const agent_badjson = dim.addAgent({
         agent: path.join(
           __dirname,
           '../envs/pendulum/agents/malformed_action_badjson.py'
         ),
-        time: timerconf,
+        processOptions: { time: timerconf },
       });
       let { results } = await dim.runEpisode(env, [agent_badaction], 0);
       expect(results.outputs.length).to.equal(2); // should have a start and end observation only.
@@ -157,7 +163,7 @@ describe('Testing Episodes with Agents', () => {
       env = await dim.makeEnv(pendulumenv, {
         max_steps: 30,
       });
-      env.envProcess.log.level = 0;
+      env.p.log.level = 0;
       results = (await dim.runEpisode(env, [agent_badjson], 0)).results;
       expect(results.outputs.length).to.equal(2); // should have a start and end observation only.
       expect(results.outputs[1].info['err']).to.equal(
@@ -171,12 +177,12 @@ describe('Testing Episodes with Agents', () => {
           __dirname,
           '../envs/pendulum/agents/malformed_action_hang.py'
         ),
-        time: timerconf,
+        processOptions: { time: timerconf },
       });
       env = await dim.makeEnv(pendulumenv, {
         max_steps: 30,
       });
-      env.envProcess.log.level = 0;
+      env.p.log.level = 0;
       results = (await dim.runEpisode(env, [agent_action_hang], 0)).results;
       expect(results.outputs.length).to.equal(2); // should have a start and end observation only.
       expect(results.outputs[1].info['err']).to.equal(
@@ -189,12 +195,12 @@ describe('Testing Episodes with Agents', () => {
           __dirname,
           '../envs/pendulum/agents/malformed_action_hang2.py'
         ),
-        time: timerconf,
+        processOptions: { time: timerconf },
       });
       env = await dim.makeEnv(pendulumenv, {
         max_steps: 30,
       });
-      env.envProcess.log.level = 0;
+      env.p.log.level = 0;
       results = (await dim.runEpisode(env, [agent_action_hang2], 0)).results;
       expect(results.outputs.length).to.equal(5);
       expect(results.final.data.info['err']).to.equal(
@@ -215,14 +221,14 @@ describe('Testing Episodes with Agents', () => {
           __dirname,
           '../envs/pendulum/agents/malformed_close.py'
         ),
-        time: timerconf,
+        processOptions: { time: timerconf },
       });
       const { results } = await dim.runEpisode(env, [agent_close], 0);
       expect(results.outputs.length).to.equal(31); // should run normally
       expect((<LocalProcess>agent_close.p).p.stdin.writable).to.equal(false);
     });
   });
-  after(() => {
-    dim.cleanup();
+  after(async () => {
+    await dim.cleanup();
   });
 });
