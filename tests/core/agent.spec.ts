@@ -10,7 +10,7 @@ chai.should();
 chai.use(chaiAsPromised);
 chai.use(chaiSubset);
 
-describe.only('Testing Agents', () => {
+describe('Testing Agents', () => {
   /**
    * Test the environments created by makeEnv
    *
@@ -42,7 +42,7 @@ describe.only('Testing Agents', () => {
         1e-15
       );
     });
-    it.only('should run python vs js', async () => {
+    it('should run python vs js', async () => {
       const env = await dim.makeEnv(rpsenv, {
         max_cycles: 30,
       });
