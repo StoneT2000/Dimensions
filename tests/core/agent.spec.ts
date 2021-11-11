@@ -28,12 +28,12 @@ describe('Testing Agents', () => {
       // env.p.log.level = 0;
       const agent = dim.addAgent({
         agent: path.join(__dirname, '../envs/pendulum/agents/agent.js'),
-        processOptions: {
-          time: {
-            perStep: 1000,
-            overage: 0,
-          },
-        },
+        // processOptions: {
+        //   time: {
+        //     perStep: 1000,
+        //     overage: 0,
+        //   },
+        // },
       });
       const r1 = await dim.runEpisode(env, [agent], 0);
       expect(r1.results.final.data.done).to.equal(true);
@@ -48,22 +48,22 @@ describe('Testing Agents', () => {
       });
       const agentjs = dim.addAgent({
         agent: path.join(__dirname, '../envs/rps/agents/paper.js'),
-        processOptions: {
-          time: {
-            perStep: 1000,
-            overage: 0,
-          },
-        },
+        // processOptions: {
+        //   time: {
+        //     perStep: 1000,
+        //     overage: 0,
+        //   },
+        // },
         location: 'docker',
       });
       const agentpy = dim.addAgent({
         agent: path.join(__dirname, '../envs/rps/agents/agent.py'),
-        processOptions: {
-          time: {
-            perStep: 1000,
-            overage: 0,
-          },
-        },
+        // processOptions: {
+        //   time: {
+        //     perStep: 1000,
+        //     overage: 0,
+        //   },
+        // },
         location: 'docker',
       });
       const r1 = await dim.runEpisode(env, [agentjs, agentpy], 0);
