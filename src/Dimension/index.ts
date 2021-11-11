@@ -28,13 +28,6 @@ export class Dimension {
 
   constructor(configs: DeepPartial<Configs> = {}) {
     this.configs = deepMerge(this.configs, configs);
-    // if (!this.configs.environment) {
-    //   throw new TypeError("No environment specification or executable provided")
-    // }
-    // if (!fs.existsSync(this.configs.environment)) {
-    //   throw new DError.MissingFilesError(`no such file ${this.configs.environment}`);
-    // }
-
     this.id = `dimension_${Dimension.globalID++}`;
 
     // set up cleanup functions

@@ -69,20 +69,6 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<dl class="tsd-comment-tags">
-						<dt>classdesc</dt>
-						<dd><p>The agent is what participates in a match and contains details on the files powering the agent, the
-							process associated and many other details.</p>
-							<p>Reads in a file source for the code and copies the bot folder to a temporary directory in secure modes
-							and creates an <code>Agent</code> for use in the <a href="../modules/_index_.html#matchengine">MatchEngine</a> and <a href="../modules/_index_.html#match">Match</a></p>
-							<p>This is a class that should not be broken. If something goes wrong, this should always throw a error. It is
-							expected that agents are used knowing beforehand that the file given is validated</p>
-						</dd>
-					</dl>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
@@ -101,251 +87,99 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Enumerations</h3>
+							<h3>References</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum tsd-parent-kind-class tsd-is-static"><a href="../enums/_agent_index_.agent.agent_events.html" class="tsd-kind-icon">AGENT_<wbr>EVENTS</a></li>
-								<li class="tsd-kind-enum tsd-parent-kind-class tsd-is-static"><a href="../enums/_agent_index_.agent.status.html" class="tsd-kind-icon">Status</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Interfaces</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/_agent_index_.agent.containerexecdata.html" class="tsd-kind-icon">Container<wbr>Exec<wbr>Data</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/_agent_index_.agent.options.html" class="tsd-kind-icon">Options</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-class"><a href="../interfaces/_agent_index_.agent.streams.html" class="tsd-kind-icon">Streams</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Type aliases</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-type-alias tsd-parent-kind-class tsd-is-static"><a href="_agent_index_.agent.html#generationmetadata" class="tsd-kind-icon">Generation<wbr>Meta<wbr>Data</a></li>
-								<li class="tsd-kind-type-alias tsd-parent-kind-class tsd-is-static"><a href="_agent_index_.agent.html#generationmetadata_creatematch" class="tsd-kind-icon">Generation<wbr>Meta<wbr>Data_<wbr><wbr>Create<wbr>Match</a></li>
-								<li class="tsd-kind-type-alias tsd-parent-kind-class tsd-is-static"><a href="_agent_index_.agent.html#generationmetadata_filesonly" class="tsd-kind-icon">Generation<wbr>Meta<wbr>Data_<wbr><wbr>Files<wbr>Only</a></li>
-								<li class="tsd-kind-type-alias tsd-parent-kind-class tsd-is-static"><a href="_agent_index_.agent.html#generationmetadata_tournament" class="tsd-kind-icon">Generation<wbr>Meta<wbr>Data_<wbr><wbr>Tournament</a></li>
-								<li class="tsd-kind-type-alias tsd-parent-kind-class tsd-is-static"><a href="_agent_index_.agent.html#id" class="tsd-kind-icon">ID</a></li>
-								<li class="tsd-kind-type-alias tsd-parent-kind-class tsd-is-static"><a href="_agent_index_.agent.html#languagespecificoptions" class="tsd-kind-icon">Language<wbr>Specific<wbr>Options</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-class"><a href="_agent_index_.agent.html#eventemitter" class="tsd-kind-icon">Event<wbr>Emitter</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_agent_index_.agent.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="_agent_index_.agent.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#_buffer" class="tsd-kind-icon">_buffer</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#_cleartimer" class="tsd-kind-icon">_clear<wbr>Timer</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#_currentmovepromise" class="tsd-kind-icon">_current<wbr>Move<wbr>Promise</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#_currentmovereject" class="tsd-kind-icon">_current<wbr>Move<wbr>Reject</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#_currentmoveresolve" class="tsd-kind-icon">_current<wbr>Move<wbr>Resolve</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#_logsize" class="tsd-kind-icon">_logsize</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#_trimmed" class="tsd-kind-icon">_trimmed</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#agenttimestep" class="tsd-kind-icon">agent<wbr>Time<wbr>Step</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_agent_index_.agent.html#allowedtosendcommands" class="tsd-kind-icon">allowed<wbr>ToSend<wbr>Commands</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#cmd" class="tsd-kind-icon">cmd</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_agent_index_.agent.html#container" class="tsd-kind-icon">container</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#creationdate" class="tsd-kind-icon">creation<wbr>Date</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#currentmovecommands" class="tsd-kind-icon">current<wbr>Move<wbr>Commands</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#cwd" class="tsd-kind-icon">cwd</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#errorlogwritestream" class="tsd-kind-icon">error<wbr>Log<wbr>Write<wbr>Stream</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#ext" class="tsd-kind-icon">ext</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#file" class="tsd-kind-icon">file</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#id-1" class="tsd-kind-icon">id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_agent_index_.agent.html#log" class="tsd-kind-icon">log</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#logkey" class="tsd-kind-icon">logkey</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#memorywatchinterval" class="tsd-kind-icon">memory<wbr>Watch<wbr>Interval</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#messages" class="tsd-kind-icon">messages</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#name" class="tsd-kind-icon">name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#options-1" class="tsd-kind-icon">options</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_agent_index_.agent.html#process" class="tsd-kind-icon">process</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#src" class="tsd-kind-icon">src</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#srcnoext" class="tsd-kind-icon">src<wbr>NoExt</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#status-1" class="tsd-kind-icon">status</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#tournamentid" class="tsd-kind-icon">tournamentID</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#version" class="tsd-kind-icon">version</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#log" class="tsd-kind-icon">log</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#p" class="tsd-kind-icon">p</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_agent_index_.agent.html#status" class="tsd-kind-icon">status</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="_agent_index_.agent.html#capturerejectionsymbol" class="tsd-kind-icon">capture<wbr>Rejection<wbr>Symbol</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="_agent_index_.agent.html#capturerejections" class="tsd-kind-icon">capture<wbr>Rejections</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="_agent_index_.agent.html#defaultmaxlisteners" class="tsd-kind-icon">default<wbr>Max<wbr>Listeners</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="_agent_index_.agent.html#errormonitor" class="tsd-kind-icon">error<wbr>Monitor</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-static"><a href="_agent_index_.agent.html#globalid" class="tsd-kind-icon">globalID</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#_allowcommands" class="tsd-kind-icon">_allow<wbr>Commands</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#_compile" class="tsd-kind-icon">_compile</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#_disallowcommands" class="tsd-kind-icon">_disallow<wbr>Commands</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#_finishmove" class="tsd-kind-icon">_finish<wbr>Move</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#_getprocess" class="tsd-kind-icon">_get<wbr>Process</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#_install" class="tsd-kind-icon">_install</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#_settimeout" class="tsd-kind-icon">_set<wbr>Timeout</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#_setupmemorywatcher" class="tsd-kind-icon">_setup<wbr>Memory<wbr>Watcher</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#_setupmove" class="tsd-kind-icon">_setup<wbr>Move</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#_spawn" class="tsd-kind-icon">_spawn</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#_spawncompileprocess" class="tsd-kind-icon">_spawn<wbr>Compile<wbr>Process</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#_spawnprocess" class="tsd-kind-icon">_spawn<wbr>Process</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#_storeprocess" class="tsd-kind-icon">_store<wbr>Process</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#_terminate" class="tsd-kind-icon">_terminate</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_agent_index_.agent.html#addlistener" class="tsd-kind-icon">add<wbr>Listener</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#containerspawn" class="tsd-kind-icon">container<wbr>Spawn</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_agent_index_.agent.html#emit" class="tsd-kind-icon">emit</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_agent_index_.agent.html#eventnames" class="tsd-kind-icon">event<wbr>Names</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#getagenterrorlogfilename" class="tsd-kind-icon">get<wbr>Agent<wbr>Error<wbr>Log<wbr>Filename</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_agent_index_.agent.html#getmaxlisteners" class="tsd-kind-icon">get<wbr>Max<wbr>Listeners</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#inputdestroyed" class="tsd-kind-icon">input<wbr>Destroyed</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#isallowedtosendcommands" class="tsd-kind-icon">is<wbr>Allowed<wbr>ToSend<wbr>Commands</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#isterminated" class="tsd-kind-icon">is<wbr>Terminated</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_agent_index_.agent.html#listenercount" class="tsd-kind-icon">listener<wbr>Count</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_agent_index_.agent.html#listeners" class="tsd-kind-icon">listeners</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_agent_index_.agent.html#off" class="tsd-kind-icon">off</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_agent_index_.agent.html#on" class="tsd-kind-icon">on</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_agent_index_.agent.html#once" class="tsd-kind-icon">once</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#overmemory" class="tsd-kind-icon">over<wbr>Memory</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_agent_index_.agent.html#prependlistener" class="tsd-kind-icon">prepend<wbr>Listener</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_agent_index_.agent.html#prependoncelistener" class="tsd-kind-icon">prepend<wbr>Once<wbr>Listener</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_agent_index_.agent.html#rawlisteners" class="tsd-kind-icon">raw<wbr>Listeners</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_agent_index_.agent.html#removealllisteners" class="tsd-kind-icon">remove<wbr>All<wbr>Listeners</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_agent_index_.agent.html#removelistener" class="tsd-kind-icon">remove<wbr>Listener</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#_hasmemorylimits" class="tsd-kind-icon">_has<wbr>Memory<wbr>Limits</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#action" class="tsd-kind-icon">action</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#active" class="tsd-kind-icon">active</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_agent_index_.agent.html#addlistener" class="tsd-kind-icon">add<wbr>Listener</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#close" class="tsd-kind-icon">close</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_agent_index_.agent.html#emit" class="tsd-kind-icon">emit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_agent_index_.agent.html#eventnames" class="tsd-kind-icon">event<wbr>Names</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_agent_index_.agent.html#getmaxlisteners" class="tsd-kind-icon">get<wbr>Max<wbr>Listeners</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#initialize" class="tsd-kind-icon">initialize</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_agent_index_.agent.html#listenercount" class="tsd-kind-icon">listener<wbr>Count</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_agent_index_.agent.html#listeners" class="tsd-kind-icon">listeners</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_agent_index_.agent.html#off" class="tsd-kind-icon">off</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_agent_index_.agent.html#on" class="tsd-kind-icon">on</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_agent_index_.agent.html#once" class="tsd-kind-icon">once</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#pause" class="tsd-kind-icon">pause</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_agent_index_.agent.html#prependlistener" class="tsd-kind-icon">prepend<wbr>Listener</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_agent_index_.agent.html#prependoncelistener" class="tsd-kind-icon">prepend<wbr>Once<wbr>Listener</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_agent_index_.agent.html#rawlisteners" class="tsd-kind-icon">raw<wbr>Listeners</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#ready" class="tsd-kind-icon">ready</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_agent_index_.agent.html#removealllisteners" class="tsd-kind-icon">remove<wbr>All<wbr>Listeners</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_agent_index_.agent.html#removelistener" class="tsd-kind-icon">remove<wbr>Listener</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#resume" class="tsd-kind-icon">resume</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_agent_index_.agent.html#setmaxlisteners" class="tsd-kind-icon">set<wbr>Max<wbr>Listeners</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#setupcontainer" class="tsd-kind-icon">setup<wbr>Container</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#stop" class="tsd-kind-icon">stop</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#timeout" class="tsd-kind-icon">timeout</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#write" class="tsd-kind-icon">write</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_agent_index_.agent.html#writetoerrorlog" class="tsd-kind-icon">write<wbr>ToError<wbr>Log</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_agent_index_.agent.html#generateagents" class="tsd-kind-icon">generate<wbr>Agents</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_agent_index_.agent.html#setmaxlisteners" class="tsd-kind-icon">set<wbr>Max<wbr>Listeners</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="_agent_index_.agent.html#listenercount-1" class="tsd-kind-icon">listener<wbr>Count</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="_agent_index_.agent.html#on-1" class="tsd-kind-icon">on</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="_agent_index_.agent.html#once-1" class="tsd-kind-icon">once</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Object literals</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-object-literal tsd-parent-kind-class"><a href="_agent_index_.agent.html#streams-1" class="tsd-kind-icon">streams</a></li>
-								<li class="tsd-kind-object-literal tsd-parent-kind-class tsd-is-static"><a href="_agent_index_.agent.html#optiondefaults" class="tsd-kind-icon">Option<wbr>Defaults</a></li>
+								<li class="tsd-kind-object-literal tsd-parent-kind-class"><a href="_agent_index_.agent.html#configs" class="tsd-kind-icon">configs</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Type aliases</h2>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
-					<a name="generationmetadata" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> Generation<wbr>Meta<wbr>Data</h3>
-					<div class="tsd-signature tsd-kind-icon">Generation<wbr>Meta<wbr>Data<span class="tsd-signature-symbol">:</span> <a href="_agent_index_.agent.html#generationmetadata_creatematch" class="tsd-signature-type">GenerationMetaData_CreateMatch</a><span class="tsd-signature-symbol"> | </span><a href="_agent_index_.agent.html#generationmetadata_filesonly" class="tsd-signature-type">GenerationMetaData_FilesOnly</a><span class="tsd-signature-symbol"> | </span><a href="_agent_index_.agent.html#generationmetadata_tournament" class="tsd-signature-type">GenerationMetaData_Tournament</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1174">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1174</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
-					<a name="generationmetadata_creatematch" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> Generation<wbr>Meta<wbr>Data_<wbr><wbr>Create<wbr>Match</h3>
-					<div class="tsd-signature tsd-kind-icon">Generation<wbr>Meta<wbr>Data_<wbr><wbr>Create<wbr>Match<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>botkey<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1187">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1187</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Agent generation meta data used by <a href="_dimension_index_.dimension.html#creatematch">Dimension.createMatch</a></p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
-					<a name="generationmetadata_filesonly" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> Generation<wbr>Meta<wbr>Data_<wbr><wbr>Files<wbr>Only</h3>
-					<div class="tsd-signature tsd-kind-icon">Generation<wbr>Meta<wbr>Data_<wbr><wbr>Files<wbr>Only<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1182">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1182</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Agent Generation meta data with paths to files only</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
-					<a name="generationmetadata_tournament" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> Generation<wbr>Meta<wbr>Data_<wbr><wbr>Tournament</h3>
-					<div class="tsd-signature tsd-kind-icon">Generation<wbr>Meta<wbr>Data_<wbr><wbr>Tournament<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>botkey<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>tournamentID<span class="tsd-signature-symbol">: </span><a href="../interfaces/_tournament_ladder_index_.ladder.id.html" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol">; </span>version<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1199">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1199</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Agent generation meta data used by tournaments</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
-					<a name="id" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> ID</h3>
-					<div class="tsd-signature tsd-kind-icon">ID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1036">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1036</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Agent ID. Always a non-negative integer and all agents in a match have IDs that are strictly increasing from <code>0</code></p>
-						</div>
-						<p>For example, in a 4 agent match, the ids are <code>0, 1, 2, 3</code>.</p>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
-					<a name="languagespecificoptions" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> Language<wbr>Specific<wbr>Options</h3>
-					<div class="tsd-signature tsd-kind-icon">Language<wbr>Specific<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1133">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1133</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Language specic options mapping programming language to the agent options to use for that programing language.
-							Used to customize options such as docker image, compile time limits etc. on a per language basis</p>
-						</div>
-					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-						</ul>
-					</div>
+				<h2>References</h2>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-class">
+					<a name="eventemitter" class="tsd-anchor"></a>
+					<h3>Event<wbr>Emitter</h3>
+					Re-exports EventEmitter
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Agent<span class="tsd-signature-symbol">(</span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, options<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_agent_index_.agent.options.html" class="tsd-signature-type">Options</a><span class="tsd-signature-symbol">&gt;</span>, languageSpecificOptions<span class="tsd-signature-symbol">?: </span><a href="_agent_index_.agent.html#languagespecificoptions" class="tsd-signature-type">LanguageSpecificOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a></li>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Agent<span class="tsd-signature-symbol">(</span>configs<span class="tsd-signature-symbol">?: </span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_agent_types_.configs.html" class="tsd-signature-type">Configs</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
+								<p>Overrides EventEmitter.__constructor</p>
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L167">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L167</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L25">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L25</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>file: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>options: <span class="tsd-signature-type">Partial</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_agent_index_.agent.options.html" class="tsd-signature-type">Options</a><span class="tsd-signature-symbol">&gt;</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> languageSpecificOptions: <a href="_agent_index_.agent.html#languagespecificoptions" class="tsd-signature-type">LanguageSpecificOptions</a><span class="tsd-signature-symbol"> = {}</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> configs: <a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_agent_types_.configs.html" class="tsd-signature-type">Configs</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = {}</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a></h4>
@@ -356,434 +190,67 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="_buffer" class="tsd-anchor"></a>
-					<h3>_buffer</h3>
-					<div class="tsd-signature tsd-kind-icon">_buffer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = []</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L101">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L101</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>internal buffer to store stdout from an agent that has yet to be delimited / used</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="_cleartimer" class="tsd-anchor"></a>
-					<h3>_clear<wbr>Timer</h3>
-					<div class="tsd-signature tsd-kind-icon">_clear<wbr>Timer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol"> = noop</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L144">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L144</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Clears out the timer associated with the agent during a match</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="_currentmovepromise" class="tsd-anchor"></a>
-					<h3>_current<wbr>Move<wbr>Promise</h3>
-					<div class="tsd-signature tsd-kind-icon">_current<wbr>Move<wbr>Promise<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L134">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L134</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>a promise that resolves when the Agent&#39;s current move in the <a href="../modules/_index_.html#match">Match</a> is finished</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="_currentmovereject" class="tsd-anchor"></a>
-					<h3>_current<wbr>Move<wbr>Reject</h3>
-					<div class="tsd-signature tsd-kind-icon">_current<wbr>Move<wbr>Reject<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Function</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L138">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L138</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="_currentmoveresolve" class="tsd-anchor"></a>
-					<h3>_current<wbr>Move<wbr>Resolve</h3>
-					<div class="tsd-signature tsd-kind-icon">_current<wbr>Move<wbr>Resolve<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol"> = noop</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L137">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L137</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="_logsize" class="tsd-anchor"></a>
-					<h3>_logsize</h3>
-					<div class="tsd-signature tsd-kind-icon">_logsize<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L162">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L162</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Size of agent&#39;s logs so far</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="_trimmed" class="tsd-anchor"></a>
-					<h3>_trimmed</h3>
-					<div class="tsd-signature tsd-kind-icon">_trimmed<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L164">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L164</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="agenttimestep" class="tsd-anchor"></a>
-					<h3>agent<wbr>Time<wbr>Step</h3>
-					<div class="tsd-signature tsd-kind-icon">agent<wbr>Time<wbr>Step<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L141">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L141</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>A number that counts the number of times the agent has essentially interacted with the <a href="../modules/_index_.html#matchengine">MatchEngine</a></p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="allowedtosendcommands" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> allowed<wbr>ToSend<wbr>Commands</h3>
-					<div class="tsd-signature tsd-kind-icon">allowed<wbr>ToSend<wbr>Commands<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = true</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L156">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L156</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>whether agent is allowed to send commands. Used to help ignore extra output from agents</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="cmd" class="tsd-anchor"></a>
-					<h3>cmd</h3>
-					<div class="tsd-signature tsd-kind-icon">cmd<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = null</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L83">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L83</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The command used to run the file</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="container" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> container</h3>
-					<div class="tsd-signature tsd-kind-icon">container<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Container</span><span class="tsd-signature-symbol"> = null</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L114">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L114</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Associated docker container running the agent</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="creationdate" class="tsd-anchor"></a>
-					<h3>creation<wbr>Date</h3>
-					<div class="tsd-signature tsd-kind-icon">creation<wbr>Date<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Date</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L98">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L98</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Creation date of the agent</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="currentmovecommands" class="tsd-anchor"></a>
-					<h3>current<wbr>Move<wbr>Commands</h3>
-					<div class="tsd-signature tsd-kind-icon">current<wbr>Move<wbr>Commands<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = []</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L131">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L131</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The commands collected so far for the current move</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="cwd" class="tsd-anchor"></a>
-					<h3>cwd</h3>
-					<div class="tsd-signature tsd-kind-icon">cwd<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L80">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L80</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The current working directory of the source file. If in insecure mode, this is always a temporary directory that
-							will get deleted later.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="errorlogwritestream" class="tsd-anchor"></a>
-					<h3>error<wbr>Log<wbr>Write<wbr>Stream</h3>
-					<div class="tsd-signature tsd-kind-icon">error<wbr>Log<wbr>Write<wbr>Stream<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">WriteStream</span><span class="tsd-signature-symbol"> = null</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L146">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L146</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="ext" class="tsd-anchor"></a>
-					<h3>ext</h3>
-					<div class="tsd-signature tsd-kind-icon">ext<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L71">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L71</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The extension of the file</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="file" class="tsd-anchor"></a>
-					<h3>file</h3>
-					<div class="tsd-signature tsd-kind-icon">file<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L88">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L88</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The original file path provided</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="id-1" class="tsd-anchor"></a>
+					<a name="id" class="tsd-anchor"></a>
 					<h3>id</h3>
-					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <a href="_agent_index_.agent.html#id" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol"> = 0</span></div>
+					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L54">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L54</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L15">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L15</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>This agent&#39;s ID in a match. It is always a non-negative integer and agents in a match are always numbered
-							<code>0, 1, 2, ...n</code> where there are <code>n</code> agents.</p>
-						</div>
-					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="log" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> log</h3>
+					<h3>log</h3>
 					<div class="tsd-signature tsd-kind-icon">log<span class="tsd-signature-symbol">:</span> <a href="_logger_index_.logger.html" class="tsd-signature-type">Logger</a><span class="tsd-signature-symbol"> = new Logger()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L148">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L148</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L23">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L23</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="logkey" class="tsd-anchor"></a>
-					<h3>logkey</h3>
-					<div class="tsd-signature tsd-kind-icon">logkey<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = null</span></div>
+					<a name="p" class="tsd-anchor"></a>
+					<h3>p</h3>
+					<div class="tsd-signature tsd-kind-icon">p<span class="tsd-signature-symbol">:</span> <a href="_process_index_.process.html" class="tsd-signature-type">Process</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L153">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L153</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L14">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L14</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Key used to retrieve the error logs of this agent</p>
-						</div>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="memorywatchinterval" class="tsd-anchor"></a>
-					<h3>memory<wbr>Watch<wbr>Interval</h3>
-					<div class="tsd-signature tsd-kind-icon">memory<wbr>Watch<wbr>Interval<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> = null</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L104">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L104</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Interval that periodically watches the memory usage of the process associated with this agent</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="messages" class="tsd-anchor"></a>
-					<h3>messages</h3>
-					<div class="tsd-signature tsd-kind-icon">messages<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = []</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L167">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L167</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>List of all messages written to this agent are directly pushed to here when in detached mode</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="name" class="tsd-anchor"></a>
-					<h3>name</h3>
-					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L65">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L65</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Name of the agent</p>
-						</div>
-						<dl class="tsd-comment-tags">
-							<dt>default</dt>
-							<dd><p><code>agent_[agent.id]</code></p>
-							</dd>
-						</dl>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="options-1" class="tsd-anchor"></a>
-					<h3>options</h3>
-					<div class="tsd-signature tsd-kind-icon">options<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_agent_index_.agent.options.html" class="tsd-signature-type">Options</a><span class="tsd-signature-symbol"> = deepCopy(Agent.OptionDefaults)</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L93">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L93</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The agent&#39;s options</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="process" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> process</h3>
-					<div class="tsd-signature tsd-kind-icon">process<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ChildProcess</span><span class="tsd-signature-symbol"> = null</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L109">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L109</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The associated process running the Agent</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="src" class="tsd-anchor"></a>
-					<h3>src</h3>
-					<div class="tsd-signature tsd-kind-icon">src<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L68">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L68</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The source path to the file that runs the agent</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="srcnoext" class="tsd-anchor"></a>
-					<h3>src<wbr>NoExt</h3>
-					<div class="tsd-signature tsd-kind-icon">src<wbr>NoExt<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L74">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L74</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>file without extension</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="status-1" class="tsd-anchor"></a>
+					<a name="status" class="tsd-anchor"></a>
 					<h3>status</h3>
-					<div class="tsd-signature tsd-kind-icon">status<span class="tsd-signature-symbol">:</span> <a href="../enums/_agent_index_.agent.status.html" class="tsd-signature-type">Status</a><span class="tsd-signature-symbol"> = Agent.Status.UNINITIALIZED</span></div>
+					<div class="tsd-signature tsd-kind-icon">status<span class="tsd-signature-symbol">:</span> <a href="../enums/_agent_types_.status.html" class="tsd-signature-type">Status</a><span class="tsd-signature-symbol"> = Status.DONE</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L128">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L128</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L16">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L16</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Current status of the agent</p>
-						</div>
-					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="tournamentid" class="tsd-anchor"></a>
-					<h3>tournamentID</h3>
-					<div class="tsd-signature tsd-kind-icon">tournamentID<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_tournament_ladder_index_.ladder.id.html" class="tsd-signature-type">ID</a><span class="tsd-signature-symbol"> = null</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+					<a name="capturerejectionsymbol" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> capture<wbr>Rejection<wbr>Symbol</h3>
+					<div class="tsd-signature tsd-kind-icon">capture<wbr>Rejection<wbr>Symbol<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">keyof </span><span class="tsd-signature-type">symbol</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#capturerejectionsymbol">captureRejectionSymbol</a></p>
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L59">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L59</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>A tournmanet ID if Agent is generated from within a {@link Tournament}</p>
-						</div>
-					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="version" class="tsd-anchor"></a>
-					<h3>version</h3>
-					<div class="tsd-signature tsd-kind-icon">version<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+					<a name="capturerejections" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> capture<wbr>Rejections</h3>
+					<div class="tsd-signature tsd-kind-icon">capture<wbr>Rejections<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
+						<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#capturerejections">captureRejections</a></p>
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L159">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L159</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Agent version, used by tournament</p>
+							<p>Sets or gets the default captureRejection value for all emitters.</p>
 						</div>
 					</div>
 				</section>
@@ -792,8 +259,38 @@
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> default<wbr>Max<wbr>Listeners</h3>
 					<div class="tsd-signature tsd-kind-icon">default<wbr>Max<wbr>Listeners<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
-						<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#defaultmaxlisteners">defaultMaxListeners</a></p>
+						<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#defaultmaxlisteners">defaultMaxListeners</a></p>
 						<ul>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+					<a name="errormonitor" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> error<wbr>Monitor</h3>
+					<div class="tsd-signature tsd-kind-icon">error<wbr>Monitor<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">keyof </span><span class="tsd-signature-type">symbol</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#errormonitor">errorMonitor</a></p>
+						<ul>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>This symbol shall be used to install a listener for only monitoring <code>&#39;error&#39;</code>
+								events. Listeners installed using this symbol are called before the regular
+							<code>&#39;error&#39;</code> listeners are called.</p>
+						</div>
+						<p>Installing a listener using this symbol does not change the behavior once an
+							<code>&#39;error&#39;</code> event is emitted, therefore the process will still crash if no
+						regular <code>&#39;error&#39;</code> listener is installed.</p>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-static">
+					<a name="globalid" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagPrivate">Private</span> globalID</h3>
+					<div class="tsd-signature tsd-kind-icon">globalID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L25">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L25</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -801,402 +298,85 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="_allowcommands" class="tsd-anchor"></a>
-					<h3>_allow<wbr>Commands</h3>
+					<a name="_hasmemorylimits" class="tsd-anchor"></a>
+					<h3>_has<wbr>Memory<wbr>Limits</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">_allow<wbr>Commands<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">_has<wbr>Memory<wbr>Limits<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L831">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L831</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L148">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L148</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Allow agent to send commands again</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="_compile" class="tsd-anchor"></a>
-					<h3>_compile</h3>
+					<a name="action" class="tsd-anchor"></a>
+					<h3>action</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">_compile<span class="tsd-signature-symbol">(</span>stderrWritestream<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Writable</span>, stdoutWritestream<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Writable</span>, engineOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/_matchengine_index_.matchengine.engineoptions.html" class="tsd-signature-type">EngineOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">action<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L400">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L400</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L160">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L160</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Compile whatever is needed and validate files. Called by <a href="../modules/_index_.html#matchengine">MatchEngine</a> and has a timer set by the
-									maxCompileTime option in <a href="../interfaces/_agent_index_.agent.options.html">Agent.Options</a></p>
+									<p>Retrieve an action from the agent</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>stderrWritestream: <span class="tsd-signature-type">Writable</span></h5>
-								</li>
-								<li>
-									<h5>stdoutWritestream: <span class="tsd-signature-type">Writable</span></h5>
-								</li>
-								<li>
-									<h5>engineOptions: <a href="../interfaces/_matchengine_index_.matchengine.engineoptions.html" class="tsd-signature-type">EngineOptions</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="_disallowcommands" class="tsd-anchor"></a>
-					<h3>_disallow<wbr>Commands</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">_disallow<wbr>Commands<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L824">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L824</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Disallow an agent from sending more commands</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="_finishmove" class="tsd-anchor"></a>
-					<h3>_finish<wbr>Move</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">_finish<wbr>Move<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L857">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L857</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Stop this agent from more outputs and mark it as done for now and awaiting for updates. Effectively force agent to sync with match</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="_getprocess" class="tsd-anchor"></a>
-					<h3>_get<wbr>Process</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">_get<wbr>Process<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ChildProcess</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L747">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L747</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Get process of agent</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ChildProcess</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="_install" class="tsd-anchor"></a>
-					<h3>_install</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">_install<span class="tsd-signature-symbol">(</span>stderrWritestream<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Writable</span>, stdoutWritestream<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Writable</span>, engineOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/_matchengine_index_.matchengine.engineoptions.html" class="tsd-signature-type">EngineOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L292">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L292</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Install whatever is needed through a <code>install.sh</code> file in the root of the bot folder</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>stderrWritestream: <span class="tsd-signature-type">Writable</span></h5>
-								</li>
-								<li>
-									<h5>stdoutWritestream: <span class="tsd-signature-type">Writable</span></h5>
-								</li>
-								<li>
-									<h5>engineOptions: <a href="../interfaces/_matchengine_index_.matchengine.engineoptions.html" class="tsd-signature-type">EngineOptions</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="_settimeout" class="tsd-anchor"></a>
-					<h3>_set<wbr>Timeout</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">_set<wbr>Timeout<span class="tsd-signature-symbol">(</span>fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span>, delay<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, <span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L845">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L845</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Setup the agent timer clear out method</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>fn: <span class="tsd-signature-type">Function</span></h5>
-								</li>
-								<li>
-									<h5>delay: <span class="tsd-signature-type">number</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>args: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="_setupmemorywatcher" class="tsd-anchor"></a>
-					<h3>_setup<wbr>Memory<wbr>Watcher</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">_setup<wbr>Memory<wbr>Watcher<span class="tsd-signature-symbol">(</span>engineOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/_matchengine_index_.matchengine.engineoptions.html" class="tsd-signature-type">EngineOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L891">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L891</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Used by <a href="../modules/_index_.html#matchengine">MatchEngine</a> only. Setups the memory watcher if docker is not used.</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>engineOptions: <a href="../interfaces/_matchengine_index_.matchengine.engineoptions.html" class="tsd-signature-type">EngineOptions</a></h5>
+									<h5>data: <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>engine options to configure the agent with</p>
+										<p>typically the data provided by env.step() functions</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Record&lt;string, any&gt; that details the retrieved action from the agent or null if there is an error (agent takes no action)
+							Potential errors are agent timing out, or agent sending invalid JSON formatted action object</p>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="_setupmove" class="tsd-anchor"></a>
-					<h3>_setup<wbr>Move</h3>
+					<a name="active" class="tsd-anchor"></a>
+					<h3>active</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">_setup<wbr>Move<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">active<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L876">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L876</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="_spawn" class="tsd-anchor"></a>
-					<h3>_spawn</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">_spawn<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ChildProcess</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_agent_index_.agent.containerexecdata.html" class="tsd-signature-type">ContainerExecData</a><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L593">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L593</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L129">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L129</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Spawn the process and return the process</p>
-								</div>
 							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ChildProcess</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_agent_index_.agent.containerexecdata.html" class="tsd-signature-type">ContainerExecData</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+							<p>true when this agent is active</p>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="_spawncompileprocess" class="tsd-anchor"></a>
-					<h3>_spawn<wbr>Compile<wbr>Process</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">_spawn<wbr>Compile<wbr>Process<span class="tsd-signature-symbol">(</span>command<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ChildProcess</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_agent_index_.agent.containerexecdata.html" class="tsd-signature-type">ContainerExecData</a><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L538">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L538</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Spawns the compilation process</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>command: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>command to compile with</p>
-									</div>
-								</li>
-								<li>
-									<h5>args: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>argument for the compilation</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ChildProcess</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_agent_index_.agent.containerexecdata.html" class="tsd-signature-type">ContainerExecData</a><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="_spawnprocess" class="tsd-anchor"></a>
-					<h3>_spawn<wbr>Process</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">_spawn<wbr>Process<span class="tsd-signature-symbol">(</span>command<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ChildProcess</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_agent_index_.agent.containerexecdata.html" class="tsd-signature-type">ContainerExecData</a><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L630">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L630</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Spawns process in this.cwd accordingly and uses the configs accordingly.
-									Resolves with the process if spawned succesfully</p>
-								</div>
-								<p>Note, we are spawning detached so we can kill off all sub processes if they are made. See <a href="_agent_index_.agent.html#_terminate">_terminate</a> for
-								explanation</p>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>command: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>args: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ChildProcess</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_agent_index_.agent.containerexecdata.html" class="tsd-signature-type">ContainerExecData</a><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="_storeprocess" class="tsd-anchor"></a>
-					<h3>_store<wbr>Process</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">_store<wbr>Process<span class="tsd-signature-symbol">(</span>p<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ChildProcess</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L755">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L755</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Store process for agent</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>p: <span class="tsd-signature-type">ChildProcess</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>process to store</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="_terminate" class="tsd-anchor"></a>
-					<h3>_terminate</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">_terminate<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L770">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L770</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Terminates this agent by stopping all related processes and remove any temporary directory. this is the only function allowed to
-									set the status value to killed.</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="addlistener" class="tsd-anchor"></a>
 					<h3>add<wbr>Listener</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">add<wbr>Listener<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#addlistener">addListener</a></p>
-								<p>Overrides EventEmitter.addListener</p>
+								<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#addlistener">addListener</a></p>
 								<ul>
 								</ul>
 							</aside>
@@ -1232,50 +412,37 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="containerspawn" class="tsd-anchor"></a>
-					<h3>container<wbr>Spawn</h3>
+					<a name="close" class="tsd-anchor"></a>
+					<h3>close</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">container<wbr>Spawn<span class="tsd-signature-symbol">(</span>command<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, workingDir<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_agent_index_.agent.containerexecdata.html" class="tsd-signature-type">ContainerExecData</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">close<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L562">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L562</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L136">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L136</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Executes the given command string in the agent&#39;s container and attaches stdin, stdout, and stderr accordingly</p>
+									<p>Clean up the agent process</p>
 								</div>
 							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>command: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>the command to execute in the container</p>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> workingDir: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;/&quot;</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_agent_index_.agent.containerexecdata.html" class="tsd-signature-type">ContainerExecData</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="emit" class="tsd-anchor"></a>
 					<h3>emit</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">emit<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span>, <span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#emit">emit</a></p>
-								<p>Overrides EventEmitter.emit</p>
+								<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#emit">emit</a></p>
 								<ul>
 								</ul>
 							</aside>
@@ -1292,17 +459,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="eventnames" class="tsd-anchor"></a>
 					<h3>event<wbr>Names</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">event<wbr>Names<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#eventnames">eventNames</a></p>
-								<p>Overrides EventEmitter.eventNames</p>
+								<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#eventnames">eventNames</a></p>
 								<ul>
 								</ul>
 							</aside>
@@ -1310,34 +476,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getagenterrorlogfilename" class="tsd-anchor"></a>
-					<h3>get<wbr>Agent<wbr>Error<wbr>Log<wbr>Filename</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Agent<wbr>Error<wbr>Log<wbr>Filename<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L990">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L990</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="getmaxlisteners" class="tsd-anchor"></a>
 					<h3>get<wbr>Max<wbr>Listeners</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">get<wbr>Max<wbr>Listeners<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#getmaxlisteners">getMaxListeners</a></p>
-								<p>Overrides EventEmitter.getMaxListeners</p>
+								<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#getmaxlisteners">getMaxListeners</a></p>
 								<ul>
 								</ul>
 							</aside>
@@ -1346,82 +494,37 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="inputdestroyed" class="tsd-anchor"></a>
-					<h3>input<wbr>Destroyed</h3>
+					<a name="initialize" class="tsd-anchor"></a>
+					<h3>initialize</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">input<wbr>Destroyed<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						<li class="tsd-signature tsd-kind-icon">initialize<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L705">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L705</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L48">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L48</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Whether or not input is destroyed</p>
+									<p>Initialize the agent process</p>
 								</div>
 							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="isallowedtosendcommands" class="tsd-anchor"></a>
-					<h3>is<wbr>Allowed<wbr>ToSend<wbr>Commands</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">is<wbr>Allowed<wbr>ToSend<wbr>Commands<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L838">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L838</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Check if agent is set to be allowed to send commands. The <a href="../interfaces/_matchengine_index_.matchengine.engineoptions.html">EngineOptions</a> affect when this is flipped</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="isterminated" class="tsd-anchor"></a>
-					<h3>is<wbr>Terminated</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">is<wbr>Terminated<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L762">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L762</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Returns true if this agent was terminated and no longer send or receive emssages</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="listenercount" class="tsd-anchor"></a>
 					<h3>listener<wbr>Count</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">listener<wbr>Count<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#listenercount-1">listenerCount</a></p>
-								<p>Overrides EventEmitter.listenerCount</p>
+								<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#listenercount">listenerCount</a></p>
 								<ul>
 								</ul>
 							</aside>
@@ -1435,17 +538,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="listeners" class="tsd-anchor"></a>
 					<h3>listeners</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">listeners<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#listeners">listeners</a></p>
-								<p>Overrides EventEmitter.listeners</p>
+								<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#listeners">listeners</a></p>
 								<ul>
 								</ul>
 							</aside>
@@ -1459,17 +561,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="off" class="tsd-anchor"></a>
 					<h3>off</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">off<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#off">off</a></p>
-								<p>Overrides EventEmitter.off</p>
+								<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#off">off</a></p>
 								<ul>
 								</ul>
 							</aside>
@@ -1504,17 +605,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="on" class="tsd-anchor"></a>
 					<h3>on</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">on<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#on">on</a></p>
-								<p>Overrides EventEmitter.on</p>
+								<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#on">on</a></p>
 								<ul>
 								</ul>
 							</aside>
@@ -1549,17 +649,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="once" class="tsd-anchor"></a>
 					<h3>once</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">once<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#once">once</a></p>
-								<p>Overrides EventEmitter.once</p>
+								<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#once">once</a></p>
 								<ul>
 								</ul>
 							</aside>
@@ -1595,38 +694,32 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="overmemory" class="tsd-anchor"></a>
-					<h3>over<wbr>Memory</h3>
+					<a name="pause" class="tsd-anchor"></a>
+					<h3>pause</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">over<wbr>Memory<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">pause<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L696">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L696</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L185">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L185</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>call out agent for exceeding memory limit</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="prependlistener" class="tsd-anchor"></a>
 					<h3>prepend<wbr>Listener</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">prepend<wbr>Listener<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#prependlistener">prependListener</a></p>
-								<p>Overrides EventEmitter.prependListener</p>
+								<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#prependlistener">prependListener</a></p>
 								<ul>
 								</ul>
 							</aside>
@@ -1661,17 +754,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="prependoncelistener" class="tsd-anchor"></a>
 					<h3>prepend<wbr>Once<wbr>Listener</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">prepend<wbr>Once<wbr>Listener<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#prependoncelistener">prependOnceListener</a></p>
-								<p>Overrides EventEmitter.prependOnceListener</p>
+								<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#prependoncelistener">prependOnceListener</a></p>
 								<ul>
 								</ul>
 							</aside>
@@ -1706,17 +798,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="rawlisteners" class="tsd-anchor"></a>
 					<h3>raw<wbr>Listeners</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">raw<wbr>Listeners<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#rawlisteners">rawListeners</a></p>
-								<p>Overrides EventEmitter.rawListeners</p>
+								<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#rawlisteners">rawListeners</a></p>
 								<ul>
 								</ul>
 							</aside>
@@ -1730,17 +821,36 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="ready" class="tsd-anchor"></a>
+					<h3>ready</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">ready<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L121">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L121</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>true when this agent object is ready to send actions and receive observations</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="removealllisteners" class="tsd-anchor"></a>
 					<h3>remove<wbr>All<wbr>Listeners</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">remove<wbr>All<wbr>Listeners<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#removealllisteners">removeAllListeners</a></p>
-								<p>Overrides EventEmitter.removeAllListeners</p>
+								<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#removealllisteners">removeAllListeners</a></p>
 								<ul>
 								</ul>
 							</aside>
@@ -1754,17 +864,16 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="removelistener" class="tsd-anchor"></a>
 					<h3>remove<wbr>Listener</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">remove<wbr>Listener<span class="tsd-signature-symbol">(</span>event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span>, listener<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>args<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#removelistener">removeListener</a></p>
-								<p>Overrides EventEmitter.removeListener</p>
+								<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#removelistener">removeListener</a></p>
 								<ul>
 								</ul>
 							</aside>
@@ -1809,29 +918,23 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L670">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L670</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L182">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L182</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Resume an agent as long it is not terminated already</p>
-								</div>
-							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 					<a name="setmaxlisteners" class="tsd-anchor"></a>
 					<h3>set<wbr>Max<wbr>Listeners</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 						<li class="tsd-signature tsd-kind-icon">set<wbr>Max<wbr>Listeners<span class="tsd-signature-symbol">(</span>n<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">this</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#setmaxlisteners">setMaxListeners</a></p>
-								<p>Overrides EventEmitter.setMaxListeners</p>
+								<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#setmaxlisteners">setMaxListeners</a></p>
 								<ul>
 								</ul>
 							</aside>
@@ -1845,208 +948,6 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="setupcontainer" class="tsd-anchor"></a>
-					<h3>setup<wbr>Container</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">setup<wbr>Container<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, docker<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Dockerode</span>, engineOptions<span class="tsd-signature-symbol">: </span><a href="../interfaces/_matchengine_index_.matchengine.engineoptions.html" class="tsd-signature-type">EngineOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L258">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L258</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>name: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>docker: <span class="tsd-signature-type">Dockerode</span></h5>
-								</li>
-								<li>
-									<h5>engineOptions: <a href="../interfaces/_matchengine_index_.matchengine.engineoptions.html" class="tsd-signature-type">EngineOptions</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="stop" class="tsd-anchor"></a>
-					<h3>stop</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">stop<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L654">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L654</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Stop an agent provided it is not terminated. To terminate it, see <a href="_agent_index_.agent.html#_terminate">_terminate</a>;</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="timeout" class="tsd-anchor"></a>
-					<h3>timeout</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">timeout<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L687">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L687</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>timeout the agent</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="write" class="tsd-anchor"></a>
-					<h3>write</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">write<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><a href="_dimensionerror_agenterror_index_.agenterror.html#error" class="tsd-signature-type">Error</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L716">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L716</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Write to stdin of the process associated with the agent</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>message: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>the message</p>
-									</div>
-								</li>
-								<li>
-									<h5>callback: <span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><a href="_dimensionerror_agenterror_index_.agenterror.html#error" class="tsd-signature-type">Error</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>callback function</p>
-										<p>returns true if written, false if highWaterMark reached</p>
-									</div>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter-signature">
-											<ul class="tsd-signatures tsd-kind-type-literal">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><a href="_dimensionerror_agenterror_index_.agenterror.html#error" class="tsd-signature-type">Error</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-											</ul>
-											<ul class="tsd-descriptions">
-												<li class="tsd-description">
-													<h4 class="tsd-parameters-title">Parameters</h4>
-													<ul class="tsd-parameters">
-														<li>
-															<h5>error: <a href="_dimensionerror_agenterror_index_.agenterror.html#error" class="tsd-signature-type">Error</a></h5>
-														</li>
-													</ul>
-													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-												</li>
-											</ul>
-										</li>
-									</ul>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="writetoerrorlog" class="tsd-anchor"></a>
-					<h3>write<wbr>ToError<wbr>Log</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">write<wbr>ToError<wbr>Log<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L737">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L737</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>message: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="generateagents" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> generate<wbr>Agents</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">generate<wbr>Agents<span class="tsd-signature-symbol">(</span>files<span class="tsd-signature-symbol">: </span><a href="_agent_index_.agent.html#generationmetadata" class="tsd-signature-type">GenerationMetaData</a>, options<span class="tsd-signature-symbol">: </span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_agent_index_.agent.options.html" class="tsd-signature-type">Options</a><span class="tsd-signature-symbol">&gt;</span>, languageSpecificOptions<span class="tsd-signature-symbol">?: </span><a href="_agent_index_.agent.html#languagespecificoptions" class="tsd-signature-type">LanguageSpecificOptions</a>, agentSpecificOptions<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_agent_index_.agent.options.html" class="tsd-signature-type">Options</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L924">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L924</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Generates a list of agents for use</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>files: <a href="_agent_index_.agent.html#generationmetadata" class="tsd-signature-type">GenerationMetaData</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>List of files to use to make agents or a list of objects with a file key for the file path to the bot
-										and a name key for the name of the agent</p>
-									</div>
-								</li>
-								<li>
-									<h5>options: <a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_agent_index_.agent.options.html" class="tsd-signature-type">Options</a><span class="tsd-signature-symbol">&gt;</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Options to first override with for all agents</p>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> languageSpecificOptions: <a href="_agent_index_.agent.html#languagespecificoptions" class="tsd-signature-type">LanguageSpecificOptions</a><span class="tsd-signature-symbol"> = {}</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Options to second overrided with for agents depending on language</p>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> agentSpecificOptions: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_agent_index_.agent.options.html" class="tsd-signature-type">Options</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = []</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Options to lastly override with depending on agent&#39;s index</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
 					<a name="listenercount-1" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> listener<wbr>Count</h3>
@@ -2056,7 +957,7 @@
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_tournament_ladder_index_.ladder.html">Ladder</a>.<a href="_tournament_ladder_index_.ladder.html#listenercount-1">listenerCount</a></p>
+								<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#listenercount-1">listenerCount</a></p>
 								<ul>
 								</ul>
 							</aside>
@@ -2080,205 +981,115 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+					<a name="on-1" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> on</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">on<span class="tsd-signature-symbol">(</span>emitter<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">EventEmitter</span>, event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AsyncIterableIterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#on-1">on</a></p>
+								<ul>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>emitter: <span class="tsd-signature-type">EventEmitter</span></h5>
+								</li>
+								<li>
+									<h5>event: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">AsyncIterableIterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+					<a name="once-1" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> once</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">once<span class="tsd-signature-symbol">(</span>emitter<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">NodeEventTarget</span>, event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">once<span class="tsd-signature-symbol">(</span>emitter<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DOMEventTarget</span>, event<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#once-1">once</a></p>
+								<ul>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>emitter: <span class="tsd-signature-type">NodeEventTarget</span></h5>
+								</li>
+								<li>
+									<h5>event: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_utils_timed_.timed.html">Timed</a>.<a href="_utils_timed_.timed.html#once-1">once</a></p>
+								<ul>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>emitter: <span class="tsd-signature-type">DOMEventTarget</span></h5>
+								</li>
+								<li>
+									<h5>event: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Object literals</h2>
 				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-class">
-					<a name="streams-1" class="tsd-anchor"></a>
-					<h3>streams</h3>
-					<div class="tsd-signature tsd-kind-icon">streams<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<a name="configs" class="tsd-anchor"></a>
+					<h3>configs</h3>
+					<div class="tsd-signature tsd-kind-icon">configs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L119">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L119</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L17">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L17</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Streams associated with the agent</p>
-						</div>
-					</div>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="streams-1.err" class="tsd-anchor"></a>
-						<h3>err</h3>
-						<div class="tsd-signature tsd-kind-icon">err<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> = null</span></div>
+						<a name="configs.agent" class="tsd-anchor"></a>
+						<h3>agent</h3>
+						<div class="tsd-signature tsd-kind-icon">agent<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> = null</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L122">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L122</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L18">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L18</a></li>
 							</ul>
 						</aside>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="streams-1.in" class="tsd-anchor"></a>
-						<h3>in</h3>
-						<div class="tsd-signature tsd-kind-icon">in<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> = null</span></div>
+						<a name="configs.location" class="tsd-anchor"></a>
+						<h3>location</h3>
+						<div class="tsd-signature tsd-kind-icon">location<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"local"</span><span class="tsd-signature-symbol"> = &quot;local&quot;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L120">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L120</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L20">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L20</a></li>
 							</ul>
 						</aside>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="streams-1.out" class="tsd-anchor"></a>
-						<h3>out</h3>
-						<div class="tsd-signature tsd-kind-icon">out<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> = null</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L121">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L121</a></li>
-							</ul>
-						</aside>
-					</section>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-class tsd-is-static">
-					<a name="optiondefaults" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> Option<wbr>Defaults</h3>
-					<div class="tsd-signature tsd-kind-icon">Option<wbr>Defaults<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1158">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1158</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Default Agent options</p>
-						</div>
-					</div>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="optiondefaults.compilecommands" class="tsd-anchor"></a>
-						<h3>compile<wbr>Commands</h3>
-						<div class="tsd-signature tsd-kind-icon">compile<wbr>Commands<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1167">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1167</a></li>
-							</ul>
-						</aside>
-						<div class="tsd-type-declaration">
-							<h4>Type declaration</h4>
-							<ul class="tsd-parameters">
-							</ul>
-						</div>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="optiondefaults.detached" class="tsd-anchor"></a>
-						<h3>detached</h3>
-						<div class="tsd-signature tsd-kind-icon">detached<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> = false</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1171">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1171</a></li>
-							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="optiondefaults.id-2" class="tsd-anchor"></a>
-						<h3>id</h3>
-						<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> = null</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1161">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1161</a></li>
-							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="optiondefaults.image" class="tsd-anchor"></a>
-						<h3>image</h3>
-						<div class="tsd-signature tsd-kind-icon">image<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;docker.io/stonezt2000/dimensions_langs&quot;</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1168">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1168</a></li>
-							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="optiondefaults.loglimit" class="tsd-anchor"></a>
-						<h3>log<wbr>Limit</h3>
-						<div class="tsd-signature tsd-kind-icon">log<wbr>Limit<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 100000</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1170">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1170</a></li>
-							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="optiondefaults.logginglevel" class="tsd-anchor"></a>
-						<h3>logging<wbr>Level</h3>
-						<div class="tsd-signature tsd-kind-icon">logging<wbr>Level<span class="tsd-signature-symbol">:</span> <a href="../enums/_logger_index_.logger.level.html#info" class="tsd-signature-type">INFO</a><span class="tsd-signature-symbol"> = Logger.LEVEL.INFO</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1160">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1160</a></li>
-							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="optiondefaults.maxcompiletime" class="tsd-anchor"></a>
-						<h3>max<wbr>Compile<wbr>Time</h3>
-						<div class="tsd-signature tsd-kind-icon">max<wbr>Compile<wbr>Time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 60000</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1165">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1165</a></li>
-							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="optiondefaults.maxinstalltime" class="tsd-anchor"></a>
-						<h3>max<wbr>Install<wbr>Time</h3>
-						<div class="tsd-signature tsd-kind-icon">max<wbr>Install<wbr>Time<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 300000</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1164">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1164</a></li>
-							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="optiondefaults.name-1" class="tsd-anchor"></a>
+						<a name="configs.name" class="tsd-anchor"></a>
 						<h3>name</h3>
 						<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> = null</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1163">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1163</a></li>
-							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="optiondefaults.runcommands" class="tsd-anchor"></a>
-						<h3>run<wbr>Commands</h3>
-						<div class="tsd-signature tsd-kind-icon">run<wbr>Commands<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1166">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1166</a></li>
-							</ul>
-						</aside>
-						<div class="tsd-type-declaration">
-							<h4>Type declaration</h4>
-							<ul class="tsd-parameters">
-							</ul>
-						</div>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="optiondefaults.securemode" class="tsd-anchor"></a>
-						<h3>secure<wbr>Mode</h3>
-						<div class="tsd-signature tsd-kind-icon">secure<wbr>Mode<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> = false</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1159">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1159</a></li>
-							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="optiondefaults.tournamentid-1" class="tsd-anchor"></a>
-						<h3>tournamentID</h3>
-						<div class="tsd-signature tsd-kind-icon">tournamentID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> = null</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1162">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1162</a></li>
-							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="optiondefaults.usecachedbotfile" class="tsd-anchor"></a>
-						<h3>use<wbr>Cached<wbr>Bot<wbr>File</h3>
-						<div class="tsd-signature tsd-kind-icon">use<wbr>Cached<wbr>Bot<wbr>File<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> = false</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1169">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L1169</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L19">https://github.com/StoneT2000/Dimensions/blob/master/src/Agent/index.ts#L19</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -2303,280 +1114,124 @@
 					<li class="current tsd-kind-class tsd-parent-kind-module">
 						<a href="_agent_index_.agent.html" class="tsd-kind-icon">Agent</a>
 						<ul>
-							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
-								<a href="../enums/_agent_index_.agent.agent_events.html" class="tsd-kind-icon">AGENT_<wbr>EVENTS</a>
+							<li class=" tsd-kind-reference tsd-parent-kind-class">
+								<a href="_agent_index_.agent.html#eventemitter" class="tsd-kind-icon">Event<wbr>Emitter</a>
 							</li>
-							<li class=" tsd-kind-enum tsd-parent-kind-class tsd-is-static">
-								<a href="../enums/_agent_index_.agent.status.html" class="tsd-kind-icon">Status</a>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="../interfaces/_agent_index_.agent.containerexecdata.html" class="tsd-kind-icon">Container<wbr>Exec<wbr>Data</a>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="../interfaces/_agent_index_.agent.options.html" class="tsd-kind-icon">Options</a>
-							</li>
-							<li class=" tsd-kind-interface tsd-parent-kind-class">
-								<a href="../interfaces/_agent_index_.agent.streams.html" class="tsd-kind-icon">Streams</a>
-							</li>
-							<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
-								<a href="_agent_index_.agent.html#generationmetadata" class="tsd-kind-icon">Generation<wbr>Meta<wbr>Data</a>
-							</li>
-							<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
-								<a href="_agent_index_.agent.html#generationmetadata_creatematch" class="tsd-kind-icon">Generation<wbr>Meta<wbr>Data_<wbr><wbr>Create<wbr>Match</a>
-							</li>
-							<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
-								<a href="_agent_index_.agent.html#generationmetadata_filesonly" class="tsd-kind-icon">Generation<wbr>Meta<wbr>Data_<wbr><wbr>Files<wbr>Only</a>
-							</li>
-							<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
-								<a href="_agent_index_.agent.html#generationmetadata_tournament" class="tsd-kind-icon">Generation<wbr>Meta<wbr>Data_<wbr><wbr>Tournament</a>
-							</li>
-							<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
-								<a href="_agent_index_.agent.html#id" class="tsd-kind-icon">ID</a>
-							</li>
-							<li class=" tsd-kind-type-alias tsd-parent-kind-class tsd-is-static">
-								<a href="_agent_index_.agent.html#languagespecificoptions" class="tsd-kind-icon">Language<wbr>Specific<wbr>Options</a>
-							</li>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
 								<a href="_agent_index_.agent.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_buffer" class="tsd-kind-icon">_buffer</a>
+								<a href="_agent_index_.agent.html#id" class="tsd-kind-icon">id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_cleartimer" class="tsd-kind-icon">_clear<wbr>Timer</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_currentmovepromise" class="tsd-kind-icon">_current<wbr>Move<wbr>Promise</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_currentmovereject" class="tsd-kind-icon">_current<wbr>Move<wbr>Reject</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_currentmoveresolve" class="tsd-kind-icon">_current<wbr>Move<wbr>Resolve</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_logsize" class="tsd-kind-icon">_logsize</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_trimmed" class="tsd-kind-icon">_trimmed</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#agenttimestep" class="tsd-kind-icon">agent<wbr>Time<wbr>Step</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_agent_index_.agent.html#allowedtosendcommands" class="tsd-kind-icon">allowed<wbr>ToSend<wbr>Commands</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#cmd" class="tsd-kind-icon">cmd</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_agent_index_.agent.html#container" class="tsd-kind-icon">container</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#creationdate" class="tsd-kind-icon">creation<wbr>Date</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#currentmovecommands" class="tsd-kind-icon">current<wbr>Move<wbr>Commands</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#cwd" class="tsd-kind-icon">cwd</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#errorlogwritestream" class="tsd-kind-icon">error<wbr>Log<wbr>Write<wbr>Stream</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#ext" class="tsd-kind-icon">ext</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#file" class="tsd-kind-icon">file</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#id-1" class="tsd-kind-icon">id</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_agent_index_.agent.html#log" class="tsd-kind-icon">log</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#logkey" class="tsd-kind-icon">logkey</a>
+								<a href="_agent_index_.agent.html#p" class="tsd-kind-icon">p</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#memorywatchinterval" class="tsd-kind-icon">memory<wbr>Watch<wbr>Interval</a>
+								<a href="_agent_index_.agent.html#status" class="tsd-kind-icon">status</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#messages" class="tsd-kind-icon">messages</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+								<a href="_agent_index_.agent.html#capturerejectionsymbol" class="tsd-kind-icon">capture<wbr>Rejection<wbr>Symbol</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#name" class="tsd-kind-icon">name</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#options-1" class="tsd-kind-icon">options</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_agent_index_.agent.html#process" class="tsd-kind-icon">process</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#src" class="tsd-kind-icon">src</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#srcnoext" class="tsd-kind-icon">src<wbr>NoExt</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#status-1" class="tsd-kind-icon">status</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#tournamentid" class="tsd-kind-icon">tournamentID</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#version" class="tsd-kind-icon">version</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+								<a href="_agent_index_.agent.html#capturerejections" class="tsd-kind-icon">capture<wbr>Rejections</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
 								<a href="_agent_index_.agent.html#defaultmaxlisteners" class="tsd-kind-icon">default<wbr>Max<wbr>Listeners</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_allowcommands" class="tsd-kind-icon">_allow<wbr>Commands</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+								<a href="_agent_index_.agent.html#errormonitor" class="tsd-kind-icon">error<wbr>Monitor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-static">
+								<a href="_agent_index_.agent.html#globalid" class="tsd-kind-icon">globalID</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_compile" class="tsd-kind-icon">_compile</a>
+								<a href="_agent_index_.agent.html#_hasmemorylimits" class="tsd-kind-icon">_has<wbr>Memory<wbr>Limits</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_disallowcommands" class="tsd-kind-icon">_disallow<wbr>Commands</a>
+								<a href="_agent_index_.agent.html#action" class="tsd-kind-icon">action</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_finishmove" class="tsd-kind-icon">_finish<wbr>Move</a>
+								<a href="_agent_index_.agent.html#active" class="tsd-kind-icon">active</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_getprocess" class="tsd-kind-icon">_get<wbr>Process</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_install" class="tsd-kind-icon">_install</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_settimeout" class="tsd-kind-icon">_set<wbr>Timeout</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_setupmemorywatcher" class="tsd-kind-icon">_setup<wbr>Memory<wbr>Watcher</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_setupmove" class="tsd-kind-icon">_setup<wbr>Move</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_spawn" class="tsd-kind-icon">_spawn</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_spawncompileprocess" class="tsd-kind-icon">_spawn<wbr>Compile<wbr>Process</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_spawnprocess" class="tsd-kind-icon">_spawn<wbr>Process</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_storeprocess" class="tsd-kind-icon">_store<wbr>Process</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#_terminate" class="tsd-kind-icon">_terminate</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_agent_index_.agent.html#addlistener" class="tsd-kind-icon">add<wbr>Listener</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#containerspawn" class="tsd-kind-icon">container<wbr>Spawn</a>
+								<a href="_agent_index_.agent.html#close" class="tsd-kind-icon">close</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_agent_index_.agent.html#emit" class="tsd-kind-icon">emit</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_agent_index_.agent.html#eventnames" class="tsd-kind-icon">event<wbr>Names</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#getagenterrorlogfilename" class="tsd-kind-icon">get<wbr>Agent<wbr>Error<wbr>Log<wbr>Filename</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_agent_index_.agent.html#getmaxlisteners" class="tsd-kind-icon">get<wbr>Max<wbr>Listeners</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#inputdestroyed" class="tsd-kind-icon">input<wbr>Destroyed</a>
+								<a href="_agent_index_.agent.html#initialize" class="tsd-kind-icon">initialize</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#isallowedtosendcommands" class="tsd-kind-icon">is<wbr>Allowed<wbr>ToSend<wbr>Commands</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#isterminated" class="tsd-kind-icon">is<wbr>Terminated</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_agent_index_.agent.html#listenercount" class="tsd-kind-icon">listener<wbr>Count</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_agent_index_.agent.html#listeners" class="tsd-kind-icon">listeners</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_agent_index_.agent.html#off" class="tsd-kind-icon">off</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_agent_index_.agent.html#on" class="tsd-kind-icon">on</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_agent_index_.agent.html#once" class="tsd-kind-icon">once</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#overmemory" class="tsd-kind-icon">over<wbr>Memory</a>
+								<a href="_agent_index_.agent.html#pause" class="tsd-kind-icon">pause</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_agent_index_.agent.html#prependlistener" class="tsd-kind-icon">prepend<wbr>Listener</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_agent_index_.agent.html#prependoncelistener" class="tsd-kind-icon">prepend<wbr>Once<wbr>Listener</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_agent_index_.agent.html#rawlisteners" class="tsd-kind-icon">raw<wbr>Listeners</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_agent_index_.agent.html#ready" class="tsd-kind-icon">ready</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_agent_index_.agent.html#removealllisteners" class="tsd-kind-icon">remove<wbr>All<wbr>Listeners</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_agent_index_.agent.html#removelistener" class="tsd-kind-icon">remove<wbr>Listener</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_agent_index_.agent.html#resume" class="tsd-kind-icon">resume</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_agent_index_.agent.html#setmaxlisteners" class="tsd-kind-icon">set<wbr>Max<wbr>Listeners</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#setupcontainer" class="tsd-kind-icon">setup<wbr>Container</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#stop" class="tsd-kind-icon">stop</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#timeout" class="tsd-kind-icon">timeout</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#write" class="tsd-kind-icon">write</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#writetoerrorlog" class="tsd-kind-icon">write<wbr>ToError<wbr>Log</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="_agent_index_.agent.html#generateagents" class="tsd-kind-icon">generate<wbr>Agents</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
 								<a href="_agent_index_.agent.html#listenercount-1" class="tsd-kind-icon">listener<wbr>Count</a>
 							</li>
-							<li class=" tsd-kind-object-literal tsd-parent-kind-class">
-								<a href="_agent_index_.agent.html#streams-1" class="tsd-kind-icon">streams</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+								<a href="_agent_index_.agent.html#on-1" class="tsd-kind-icon">on</a>
 							</li>
-							<li class=" tsd-kind-object-literal tsd-parent-kind-class tsd-is-static">
-								<a href="_agent_index_.agent.html#optiondefaults" class="tsd-kind-icon">Option<wbr>Defaults</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
+								<a href="_agent_index_.agent.html#once-1" class="tsd-kind-icon">once</a>
+							</li>
+							<li class=" tsd-kind-object-literal tsd-parent-kind-class">
+								<a href="_agent_index_.agent.html#configs" class="tsd-kind-icon">configs</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_agent_index_.html#defaultseccompprofilestring" class="tsd-kind-icon">Default<wbr>Seccomp<wbr>Profile<wbr>String</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_agent_index_.html#containerbotfolder" class="tsd-kind-icon">container<wbr>Bot<wbr>Folder</a>
-					</li>
 				</ul>
 			</nav>
 		</div>
@@ -2587,8 +1242,6 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
-				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
@@ -2597,7 +1250,6 @@
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
-				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
@@ -2611,12 +1263,6 @@
 			<ul class="tsd-legend">
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
 			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
-			</ul>
 		</div>
 	</div>
 </footer>
@@ -2625,6 +1271,5 @@
 </div>
 <div class="overlay"></div>
 <script src="../assets/js/main.js"></script>
-<script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
 </body>
 </html>

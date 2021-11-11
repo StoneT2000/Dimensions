@@ -1,6 +1,6 @@
 {
-  "name": "dimensions-ai",
-  "version": "6.0.0",
+  "name": "dimensions-ai-temp",
+  "version": "0.0.1",
   "description": "A generalized AI Competition framework that enables high performance cross-platform and cross-language competitions on environments of any language",
   "main": "./lib/main/index.js",
   "types": "./lib/main/index.d.ts",
@@ -9,7 +9,7 @@
     "test": "./runtests.sh",
     "report": "nyc report",
     "codecov": "nyc report --reporter=text-lcov > coverage.lcov",
-    "docs": "typedoc --gitRevision master --theme ./theme/dimensions/ --mode modules --exclude ./src/Station/ --out docs ./src && touch ./docs/.nojekyll ",
+    "docs": "typedoc --gitRevision master --theme ./theme/dimensions/ --mode modules --out docs ./src && touch ./docs/.nojekyll ",
     "watch": "tsc -w",
     "build": "rm -rf lib && tsc -p tsconfig.json",
     "clean": "./cleanup.sh",

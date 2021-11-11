@@ -46,7 +46,6 @@ export class Agent extends EventEmitter {
    * Initialize the agent process
    */
   async initialize(): Promise<void> {
-    // TODO: allow Docker
     if (this.configs.location === 'local') {
       this.p = new LocalProcess(
         this.configs.agent,

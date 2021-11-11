@@ -72,9 +72,9 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>The Dimension framework for intiating a <a href="_design_index_.design.html">Design</a> to then run instances of a <a href="../modules/_index_.html#match">Match</a> or
-						{@link Tournament} on.</p>
+						<p>A Dimension is a factory object that can create new environment instances, new agent instances, and link them together</p>
 					</div>
+					<p>You can have multiple agents interact with one or multiple environment instances, a single agent interact with a single or multiple instances etc.</p>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
@@ -98,41 +98,26 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_dimension_index_.dimension.html#cleaningup" class="tsd-kind-icon">cleaning<wbr>Up</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#databaseplugin" class="tsd-kind-icon">database<wbr>Plugin</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#design" class="tsd-kind-icon">design</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#agents" class="tsd-kind-icon">agents</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_dimension_index_.dimension.html#engine" class="tsd-kind-icon">engine</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#id" class="tsd-kind-icon">id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#log" class="tsd-kind-icon">log</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#matches" class="tsd-kind-icon">matches</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#name" class="tsd-kind-icon">name</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#storageplugin" class="tsd-kind-icon">storage<wbr>Plugin</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#tournaments" class="tsd-kind-icon">tournaments</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_dimension_index_.dimension.html#station" class="tsd-kind-icon">Station</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-static"><a href="_dimension_index_.dimension.html#globalid" class="tsd-kind-icon">globalID</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#addagent" class="tsd-kind-icon">add<wbr>Agent</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#cleanup" class="tsd-kind-icon">cleanup</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#cleanupmatches" class="tsd-kind-icon">cleanup<wbr>Matches</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#cleanuptournaments" class="tsd-kind-icon">cleanup<wbr>Tournaments</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#creatematch" class="tsd-kind-icon">create<wbr>Match</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#createtournament" class="tsd-kind-icon">create<wbr>Tournament</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#getstation" class="tsd-kind-icon">get<wbr>Station</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#hasdatabase" class="tsd-kind-icon">has<wbr>Database</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#hasstorage" class="tsd-kind-icon">has<wbr>Storage</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#removematch" class="tsd-kind-icon">remove<wbr>Match</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#runmatch" class="tsd-kind-icon">run<wbr>Match</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_dimension_index_.dimension.html#setupsecurity" class="tsd-kind-icon">setup<wbr>Security</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#use" class="tsd-kind-icon">use</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_dimension_index_.dimension.html#gendimensionid" class="tsd-kind-icon">gen<wbr>DimensionID</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#makeenv" class="tsd-kind-icon">make<wbr>Env</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#removeagent" class="tsd-kind-icon">remove<wbr>Agent</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#runepisode" class="tsd-kind-icon">run<wbr>Episode</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Object literals</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-object-literal tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#configs" class="tsd-kind-icon">configs</a></li>
-								<li class="tsd-kind-object-literal tsd-parent-kind-class"><a href="_dimension_index_.dimension.html#statistics" class="tsd-kind-icon">statistics</a></li>
 							</ul>
 						</section>
 					</div>
@@ -144,22 +129,19 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Dimension<span class="tsd-signature-symbol">(</span>design<span class="tsd-signature-symbol">: </span><a href="_design_index_.design.html" class="tsd-signature-type">Design</a>, configs<span class="tsd-signature-symbol">?: </span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_dimension_index_.dimensionconfigs.html" class="tsd-signature-type">DimensionConfigs</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dimension_index_.dimension.html" class="tsd-signature-type">Dimension</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Dimension<span class="tsd-signature-symbol">(</span>configs<span class="tsd-signature-symbol">?: </span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_dimension_types_.configs.html" class="tsd-signature-type">Configs</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dimension_index_.dimension.html" class="tsd-signature-type">Dimension</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L186">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L186</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L27">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L27</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>design: <a href="_design_index_.design.html" class="tsd-signature-type">Design</a></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> configs: <a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_dimension_index_.dimensionconfigs.html" class="tsd-signature-type">DimensionConfigs</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = {}</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> configs: <a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_dimension_types_.configs.html" class="tsd-signature-type">Configs</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = {}</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_dimension_index_.dimension.html" class="tsd-signature-type">Dimension</a></h4>
@@ -169,156 +151,72 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="agents" class="tsd-anchor"></a>
+					<h3>agents</h3>
+					<div class="tsd-signature tsd-kind-icon">agents<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L22">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L22</a></li>
+						</ul>
+					</aside>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="cleaningup" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> cleaning<wbr>Up</h3>
-					<div class="tsd-signature tsd-kind-icon">cleaning<wbr>Up<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = null</span></div>
+					<a name="engine" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> engine</h3>
+					<div class="tsd-signature tsd-kind-icon">engine<span class="tsd-signature-symbol">:</span> <a href="_engine_index_.engine.html" class="tsd-signature-type">Engine</a><span class="tsd-signature-symbol"> = new Engine()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L186">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L186</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Indicator of whether cleanup was called already or not</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="databaseplugin" class="tsd-anchor"></a>
-					<h3>database<wbr>Plugin</h3>
-					<div class="tsd-signature tsd-kind-icon">database<wbr>Plugin<span class="tsd-signature-symbol">:</span> <a href="_plugin_database_index_.database.html" class="tsd-signature-type">Database</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L143">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L143</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The database plugin being used. Allows Dimensions to interact with a database and store <a href="../modules/_index_.html#match">Match</a>,
-							{@link Tournament}, and user data, allowing for data persistance across instances.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="design" class="tsd-anchor"></a>
-					<h3>design</h3>
-					<div class="tsd-signature tsd-kind-icon">design<span class="tsd-signature-symbol">:</span> <a href="_design_index_.design.html" class="tsd-signature-type">Design</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L189">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L189</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L27">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L27</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="id" class="tsd-anchor"></a>
 					<h3>id</h3>
-					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <a href="../modules/_dimension_index_.html#nanoid" class="tsd-signature-type">NanoID</a></div>
+					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L132">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L132</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L24">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L24</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>This dimension&#39;s ID. It is always a 6 character NanoID unless overrided through the <a href="../interfaces/_dimension_index_.dimensionconfigs.html">DimensionConfigs</a></p>
-						</div>
-					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="log" class="tsd-anchor"></a>
-					<h3>log</h3>
-					<div class="tsd-signature tsd-kind-icon">log<span class="tsd-signature-symbol">:</span> <a href="_logger_index_.logger.html" class="tsd-signature-type">Logger</a><span class="tsd-signature-symbol"> = new Logger()</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-static">
+					<a name="globalid" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> <span class="tsd-flag ts-flagPrivate">Private</span> globalID</h3>
+					<div class="tsd-signature tsd-kind-icon">globalID<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L137">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L137</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L26">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L26</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Logger</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="matches" class="tsd-anchor"></a>
-					<h3>matches</h3>
-					<div class="tsd-signature tsd-kind-icon">matches<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_dimension_index_.html#nanoid" class="tsd-signature-type">NanoID</a><span class="tsd-signature-symbol">, </span><a href="_match_index_.match.html" class="tsd-signature-type">Match</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map()</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L117">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L117</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>A map of the matches running in this Dimension</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="name" class="tsd-anchor"></a>
-					<h3>name</h3>
-					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L127">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L127</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>This Dimension&#39;s name</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="storageplugin" class="tsd-anchor"></a>
-					<h3>storage<wbr>Plugin</h3>
-					<div class="tsd-signature tsd-kind-icon">storage<wbr>Plugin<span class="tsd-signature-symbol">:</span> <a href="_plugin_storage_index_.storage.html" class="tsd-signature-type">Storage</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L149">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L149</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The storage plugin being used. Allows Dimensions to interact with a storage service and store user object data,
-							particuarly bot file uploads</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="tournaments" class="tsd-anchor"></a>
-					<h3>tournaments</h3>
-					<div class="tsd-signature tsd-kind-icon">tournaments<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_dimension_index_.html#nanoid" class="tsd-signature-type">NanoID</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Tournament</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map()</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L122">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L122</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>A map of the tournaments in this Dimension.</p>
-						</div>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
-					<a name="station" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> Station</h3>
-					<div class="tsd-signature tsd-kind-icon">Station<span class="tsd-signature-symbol">:</span> <a href="_station_index_.station.html" class="tsd-signature-type">Station</a><span class="tsd-signature-symbol"> = null</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L154">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L154</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>The Station associated with this Dimension and current node instance</p>
-						</div>
-					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="addagent" class="tsd-anchor"></a>
+					<h3>add<wbr>Agent</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Agent<span class="tsd-signature-symbol">(</span>configs<span class="tsd-signature-symbol">?: </span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">AgentConfigs</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L52">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L52</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> configs: <a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">AgentConfigs</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = {}</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="cleanup" class="tsd-anchor"></a>
 					<h3>cleanup</h3>
@@ -329,13 +227,12 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L490">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L490</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L138">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L138</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Cleanup function that cleans up any resources used and related to this dimension. For use right before
-									process exits and during testing.</p>
+									<p>Cleanup the Dimension to gracefully quit and avoid leaks</p>
 								</div>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -343,211 +240,57 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="cleanupmatches" class="tsd-anchor"></a>
-					<h3>cleanup<wbr>Matches</h3>
+					<a name="makeenv" class="tsd-anchor"></a>
+					<h3>make<wbr>Env</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">cleanup<wbr>Matches<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">make<wbr>Env<span class="tsd-signature-symbol">(</span>environment<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, envConfigs<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span>, displayName<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_environment_index_.environment.html" class="tsd-signature-type">Environment</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L505">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L505</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="cleanuptournaments" class="tsd-anchor"></a>
-					<h3>cleanup<wbr>Tournaments</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">cleanup<wbr>Tournaments<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L513">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L513</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="creatematch" class="tsd-anchor"></a>
-					<h3>create<wbr>Match</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Match<span class="tsd-signature-symbol">(</span>files<span class="tsd-signature-symbol">: </span><a href="_agent_index_.agent.html#generationmetadata_filesonly" class="tsd-signature-type">GenerationMetaData_FilesOnly</a><span class="tsd-signature-symbol"> | </span><a href="_agent_index_.agent.html#generationmetadata_creatematch" class="tsd-signature-type">GenerationMetaData_CreateMatch</a>, configs<span class="tsd-signature-symbol">?: </span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_match_index_.match.configs.html" class="tsd-signature-type">Configs</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_match_index_.match.html" class="tsd-signature-type">Match</a><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L282">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L282</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L68">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L68</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Create a match with the given files and any optional <a href="../interfaces/_match_index_.match.configs.html">Match.Configs</a>. Resolves with the initialized
-									<a href="../modules/_index_.html#match">Match</a> object as specified by the <a href="_design_index_.design.html">Design</a> of this <a href="_dimension_index_.dimension.html">Dimension</a></p>
+									<p>Creates a new environment, which runs the given environment on its own process</p>
 								</div>
-								<p>Rejects if an error occurs.</p>
+								<p>Optionally provide a display name for logging purposes.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>files: <a href="_agent_index_.agent.html#generationmetadata_filesonly" class="tsd-signature-type">GenerationMetaData_FilesOnly</a><span class="tsd-signature-symbol"> | </span><a href="_agent_index_.agent.html#generationmetadata_creatematch" class="tsd-signature-type">GenerationMetaData_CreateMatch</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>List of files or objects to use to generate agents and use for a new match</p>
-									</div>
+									<h5>environment: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> configs: <a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_match_index_.match.configs.html" class="tsd-signature-type">Configs</a><span class="tsd-signature-symbol">&gt;</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Configurations that are <a href="_design_index_.design.html">Design</a> dependent</p>
-									</div>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> envConfigs: <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> displayName: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_match_index_.match.html" class="tsd-signature-type">Match</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_environment_index_.environment.html" class="tsd-signature-type">Environment</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="createtournament" class="tsd-anchor"></a>
-					<h3>create<wbr>Tournament</h3>
+					<a name="removeagent" class="tsd-anchor"></a>
+					<h3>remove<wbr>Agent</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Tournament<span class="tsd-signature-symbol">(</span>files<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>existingId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span>, configs<span class="tsd-signature-symbol">: </span><a href="../interfaces/_tournament_ladder_index_.ladder.tournamentconfigsbase.html" class="tsd-signature-type">TournamentConfigsBase</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Tournament</span></li>
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Agent<span class="tsd-signature-symbol">(</span>agentID<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L360">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L360</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L57">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L57</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Create a tournament</p>
-								</div>
-								<dl class="tsd-comment-tags">
-									<dt>see</dt>
-									<dd><p>{@link Tournament} for the different tournament types</p>
-									</dd>
-								</dl>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>files: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>existingId<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>file<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>The initial files to make competitors in this tournament. Can also specify the name and an
-											existingID, which is the playerID. If database is used, this existingID is used to find the assocciated user with
-										this ID.</p>
-									</div>
-								</li>
-								<li>
-									<h5>configs: <a href="../interfaces/_tournament_ladder_index_.ladder.tournamentconfigsbase.html" class="tsd-signature-type">TournamentConfigsBase</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Configuration for the tournament</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Tournament</span></h4>
-							<p>a Tournament of the specified type</p>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getstation" class="tsd-anchor"></a>
-					<h3>get<wbr>Station</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Station<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_station_index_.station.html" class="tsd-signature-type">Station</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L411">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L411</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Get the station</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <a href="_station_index_.station.html" class="tsd-signature-type">Station</a></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="hasdatabase" class="tsd-anchor"></a>
-					<h3>has<wbr>Database</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">has<wbr>Database<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L470">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L470</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Returns true if dimension has a database backing it</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="hasstorage" class="tsd-anchor"></a>
-					<h3>has<wbr>Storage</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">has<wbr>Storage<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L480">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L480</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Returns true if dimension has a storage plugin backing it</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="removematch" class="tsd-anchor"></a>
-					<h3>remove<wbr>Match</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">remove<wbr>Match<span class="tsd-signature-symbol">(</span>matchID<span class="tsd-signature-symbol">: </span><a href="../modules/_dimension_index_.html#nanoid" class="tsd-signature-type">NanoID</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L418">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L418</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Removes a match by id. Returns true if removed, false if nothing was removed</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>matchID: <a href="../modules/_dimension_index_.html#nanoid" class="tsd-signature-type">NanoID</a></h5>
+									<h5>agentID: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -555,118 +298,57 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="runmatch" class="tsd-anchor"></a>
-					<h3>run<wbr>Match</h3>
+					<a name="runepisode" class="tsd-anchor"></a>
+					<h3>run<wbr>Episode</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">run<wbr>Match<span class="tsd-signature-symbol">(</span>files<span class="tsd-signature-symbol">: </span><a href="_agent_index_.agent.html#generationmetadata_filesonly" class="tsd-signature-type">GenerationMetaData_FilesOnly</a><span class="tsd-signature-symbol"> | </span><a href="_agent_index_.agent.html#generationmetadata_creatematch" class="tsd-signature-type">GenerationMetaData_CreateMatch</a>, configs<span class="tsd-signature-symbol">?: </span><a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_match_index_.match.configs.html" class="tsd-signature-type">Configs</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">run<wbr>Episode<span class="tsd-signature-symbol">(</span>env<span class="tsd-signature-symbol">: </span><a href="_environment_index_.environment.html" class="tsd-signature-type">Environment</a>, agents<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span>, seed<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span>, state<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span>, mode<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">"parallel"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"sequential"</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>episode<span class="tsd-signature-symbol">: </span><a href="_episode_index_.episode.html" class="tsd-signature-type">Episode</a><span class="tsd-signature-symbol">; </span>results<span class="tsd-signature-symbol">: </span><a href="../interfaces/_episode_index_.episoderesult.html" class="tsd-signature-type">EpisodeResult</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L326">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L326</a></li>
+									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L90">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L90</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Runs a match with the given files and any optional <a href="../interfaces/_match_index_.match.configs.html">Match.Configs</a>. It rejects if an error occurs. Some
-									errors include <a href="_dimensionerror_matcherror_index_.matchdestroyederror.html">MatchDestroyedError</a> which happens when <a href="_match_index_.match.html#destroy">Match.destroy</a> is called.</p>
-								</div>
-								<p>This also automatically stores matches into the <a href="_plugin_storage_index_.storage.html#database">Database</a> if database is active and configured to save</p>
-								<p>Resolves with the results of the match as specified by the <a href="_design_index_.design.html">Design</a> of this <a href="_dimension_index_.dimension.html">Dimension</a></p>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>files: <a href="_agent_index_.agent.html#generationmetadata_filesonly" class="tsd-signature-type">GenerationMetaData_FilesOnly</a><span class="tsd-signature-symbol"> | </span><a href="_agent_index_.agent.html#generationmetadata_creatematch" class="tsd-signature-type">GenerationMetaData_CreateMatch</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>List of files or objects to use to generate agents and use for a new match</p>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> configs: <a href="../modules/_utils_deeppartial_.html#deeppartial" class="tsd-signature-type">DeepPartial</a><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_match_index_.match.configs.html" class="tsd-signature-type">Configs</a><span class="tsd-signature-symbol">&gt;</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Configurations that are <code>Design</code> dependent. These configs are passed into <code>Design.initialize</code>
-										<code>Design.update</code> and <code>Design.storeResults</code></p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="setupsecurity" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> setup<wbr>Security</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">setup<wbr>Security<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L430">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L430</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Sets up necessary security and checks if everything is in place</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="use" class="tsd-anchor"></a>
-					<h3>use</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">use<span class="tsd-signature-symbol">(</span>plugin<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Plugin</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L446">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L446</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Uses a particular plugin in the dimensions framework.</p>
+									<p>Run an episode in the given environment and given agents in parallel mode</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>plugin: <span class="tsd-signature-type">Plugin</span></h5>
+									<h5>env: <a href="_environment_index_.environment.html" class="tsd-signature-type">Environment</a></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the plugin</p>
+										<p>The environment to use</p>
 									</div>
 								</li>
+								<li>
+									<h5>agents: <span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="_agent_index_.agent.html" class="tsd-signature-type">Agent</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>List of agents to use that can submit actions to the environment</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> seed: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = null</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>a seed to use for the environment RNG</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> state: <span class="tsd-signature-type">Record</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = null</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>a state to start from</p>
+										<p>Agents can be specified by providing an initialized agent object if that agent process is to be reused elsewhere,
+											or by paths to the agent executable, of which an agent process will be initialized and then
+										closed at the end of the episode.</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> mode: <span class="tsd-signature-type">"parallel"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"sequential"</span><span class="tsd-signature-symbol"> = &quot;parallel&quot;</span></h5>
+								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="gendimensionid" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> gen<wbr>DimensionID</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">gen<wbr>DimensionID<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L437">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L437</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Generates a 6 character nanoID string for identifying dimensions</p>
-								</div>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>episode<span class="tsd-signature-symbol">: </span><a href="_episode_index_.episode.html" class="tsd-signature-type">Episode</a><span class="tsd-signature-symbol">; </span>results<span class="tsd-signature-symbol">: </span><a href="../interfaces/_episode_index_.episoderesult.html" class="tsd-signature-type">EpisodeResult</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -679,171 +361,26 @@
 					<div class="tsd-signature tsd-kind-icon">configs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L167">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L167</a></li>
+							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L17">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L17</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Dimension configs. Set to defaults</p>
-						</div>
-					</div>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="configs.activatestation" class="tsd-anchor"></a>
-						<h3>activate<wbr>Station</h3>
-						<div class="tsd-signature tsd-kind-icon">activate<wbr>Station<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> = true</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L169">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L169</a></li>
-							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="configs.backingdatabase" class="tsd-anchor"></a>
-						<h3>backing<wbr>Database</h3>
-						<div class="tsd-signature tsd-kind-icon">backing<wbr>Database<span class="tsd-signature-symbol">:</span> <a href="../enums/_dimension_index_.databasetype.html" class="tsd-signature-type">DatabaseType</a><span class="tsd-signature-symbol"> = DatabaseType.NONE</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L176">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L176</a></li>
-							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="configs.backingstorage" class="tsd-anchor"></a>
-						<h3>backing<wbr>Storage</h3>
-						<div class="tsd-signature tsd-kind-icon">backing<wbr>Storage<span class="tsd-signature-symbol">:</span> <a href="../enums/_dimension_index_.storagetype.html" class="tsd-signature-type">StorageType</a><span class="tsd-signature-symbol"> = StorageType.NONE</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L177">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L177</a></li>
-							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="configs.createbotdirectories" class="tsd-anchor"></a>
-						<h3>create<wbr>Bot<wbr>Directories</h3>
-						<div class="tsd-signature tsd-kind-icon">create<wbr>Bot<wbr>Directories<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> = true</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L180">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L180</a></li>
-							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="configs.id-1" class="tsd-anchor"></a>
-						<h3>id</h3>
-						<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;oLBptg&quot;</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L178">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L178</a></li>
-							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="configs.logginglevel" class="tsd-anchor"></a>
-						<h3>logging<wbr>Level</h3>
-						<div class="tsd-signature tsd-kind-icon">logging<wbr>Level<span class="tsd-signature-symbol">:</span> <a href="../enums/_logger_index_.logger.level.html#info" class="tsd-signature-type">INFO</a><span class="tsd-signature-symbol"> = Logger.LEVEL.INFO</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L171">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L171</a></li>
-							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="configs.name-1" class="tsd-anchor"></a>
+						<a name="configs.name" class="tsd-anchor"></a>
 						<h3>name</h3>
-						<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></div>
+						<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;default_dimension&quot;</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L168">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L168</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L19">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L19</a></li>
 							</ul>
 						</aside>
 					</section>
 					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="configs.observe" class="tsd-anchor"></a>
-						<h3>observe</h3>
-						<div class="tsd-signature tsd-kind-icon">observe<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> = true</span></div>
+						<a name="configs.station" class="tsd-anchor"></a>
+						<h3>station</h3>
+						<div class="tsd-signature tsd-kind-icon">station<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> = false</span></div>
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L170">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L170</a></li>
-							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="configs.securemode" class="tsd-anchor"></a>
-						<h3>secure<wbr>Mode</h3>
-						<div class="tsd-signature tsd-kind-icon">secure<wbr>Mode<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> = false</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L175">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L175</a></li>
-							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="configs.stationconfigs" class="tsd-anchor"></a>
-						<h3>station<wbr>Configs</h3>
-						<div class="tsd-signature tsd-kind-icon">station<wbr>Configs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L179">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L179</a></li>
-							</ul>
-						</aside>
-						<div class="tsd-type-declaration">
-							<h4>Type declaration</h4>
-							<ul class="tsd-parameters">
-							</ul>
-						</div>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-object-literal">
-						<a name="configs.defaultmatchconfigs" class="tsd-anchor"></a>
-						<h3>default<wbr>Match<wbr>Configs</h3>
-						<div class="tsd-signature tsd-kind-icon">default<wbr>Match<wbr>Configs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L172">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L172</a></li>
-							</ul>
-						</aside>
-						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-							<a name="configs.defaultmatchconfigs.securemode-1" class="tsd-anchor"></a>
-							<h3>secure<wbr>Mode</h3>
-							<div class="tsd-signature tsd-kind-icon">secure<wbr>Mode<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> = false</span></div>
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L173">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L173</a></li>
-								</ul>
-							</aside>
-						</section>
-					</section>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-class">
-					<a name="statistics" class="tsd-anchor"></a>
-					<h3>statistics</h3>
-					<div class="tsd-signature tsd-kind-icon">statistics<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L159">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L159</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>Stats</p>
-						</div>
-					</div>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="statistics.matchescreated" class="tsd-anchor"></a>
-						<h3>matches<wbr>Created</h3>
-						<div class="tsd-signature tsd-kind-icon">matches<wbr>Created<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L161">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L161</a></li>
-							</ul>
-						</aside>
-					</section>
-					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
-						<a name="statistics.tournamentscreated" class="tsd-anchor"></a>
-						<h3>tournaments<wbr>Created</h3>
-						<div class="tsd-signature tsd-kind-icon">tournaments<wbr>Created<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L160">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L160</a></li>
+								<li>Defined in <a target="_blank" href="https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L18">https://github.com/StoneT2000/Dimensions/blob/master/src/Dimension/index.ts#L18</a></li>
 							</ul>
 						</aside>
 					</section>
@@ -863,12 +400,6 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-enum tsd-parent-kind-module">
-						<a href="../enums/_dimension_index_.databasetype.html" class="tsd-kind-icon">Database<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-enum tsd-parent-kind-module">
-						<a href="../enums/_dimension_index_.storagetype.html" class="tsd-kind-icon">Storage<wbr>Type</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-module">
@@ -877,94 +408,40 @@
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="_dimension_index_.dimension.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_dimension_index_.dimension.html#agents" class="tsd-kind-icon">agents</a>
+							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_dimension_index_.dimension.html#cleaningup" class="tsd-kind-icon">cleaning<wbr>Up</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_dimension_index_.dimension.html#databaseplugin" class="tsd-kind-icon">database<wbr>Plugin</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_dimension_index_.dimension.html#design" class="tsd-kind-icon">design</a>
+								<a href="_dimension_index_.dimension.html#engine" class="tsd-kind-icon">engine</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_dimension_index_.dimension.html#id" class="tsd-kind-icon">id</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_dimension_index_.dimension.html#log" class="tsd-kind-icon">log</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private tsd-is-static">
+								<a href="_dimension_index_.dimension.html#globalid" class="tsd-kind-icon">globalID</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_dimension_index_.dimension.html#matches" class="tsd-kind-icon">matches</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_dimension_index_.dimension.html#name" class="tsd-kind-icon">name</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_dimension_index_.dimension.html#storageplugin" class="tsd-kind-icon">storage<wbr>Plugin</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_dimension_index_.dimension.html#tournaments" class="tsd-kind-icon">tournaments</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
-								<a href="_dimension_index_.dimension.html#station" class="tsd-kind-icon">Station</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_dimension_index_.dimension.html#addagent" class="tsd-kind-icon">add<wbr>Agent</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_dimension_index_.dimension.html#cleanup" class="tsd-kind-icon">cleanup</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_dimension_index_.dimension.html#cleanupmatches" class="tsd-kind-icon">cleanup<wbr>Matches</a>
+								<a href="_dimension_index_.dimension.html#makeenv" class="tsd-kind-icon">make<wbr>Env</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_dimension_index_.dimension.html#cleanuptournaments" class="tsd-kind-icon">cleanup<wbr>Tournaments</a>
+								<a href="_dimension_index_.dimension.html#removeagent" class="tsd-kind-icon">remove<wbr>Agent</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_dimension_index_.dimension.html#creatematch" class="tsd-kind-icon">create<wbr>Match</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_dimension_index_.dimension.html#createtournament" class="tsd-kind-icon">create<wbr>Tournament</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_dimension_index_.dimension.html#getstation" class="tsd-kind-icon">get<wbr>Station</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_dimension_index_.dimension.html#hasdatabase" class="tsd-kind-icon">has<wbr>Database</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_dimension_index_.dimension.html#hasstorage" class="tsd-kind-icon">has<wbr>Storage</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_dimension_index_.dimension.html#removematch" class="tsd-kind-icon">remove<wbr>Match</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_dimension_index_.dimension.html#runmatch" class="tsd-kind-icon">run<wbr>Match</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="_dimension_index_.dimension.html#setupsecurity" class="tsd-kind-icon">setup<wbr>Security</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_dimension_index_.dimension.html#use" class="tsd-kind-icon">use</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="_dimension_index_.dimension.html#gendimensionid" class="tsd-kind-icon">gen<wbr>DimensionID</a>
+								<a href="_dimension_index_.dimension.html#runepisode" class="tsd-kind-icon">run<wbr>Episode</a>
 							</li>
 							<li class=" tsd-kind-object-literal tsd-parent-kind-class">
 								<a href="_dimension_index_.dimension.html#configs" class="tsd-kind-icon">configs</a>
-							</li>
-							<li class=" tsd-kind-object-literal tsd-parent-kind-class">
-								<a href="_dimension_index_.dimension.html#statistics" class="tsd-kind-icon">statistics</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/_dimension_index_.dimensionconfigs.html" class="tsd-kind-icon">Dimension<wbr>Configs</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/_dimension_index_.html#nanoid" class="tsd-kind-icon">NanoID</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="../modules/_dimension_index_.html#create" class="tsd-kind-icon">create</a>
-					</li>
 				</ul>
 			</nav>
 		</div>
@@ -975,8 +452,6 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
-				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
@@ -985,24 +460,18 @@
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
-				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
 			</ul>
 		</div>
 	</div>
@@ -1012,6 +481,5 @@
 </div>
 <div class="overlay"></div>
 <script src="../assets/js/main.js"></script>
-<script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
 </body>
 </html>
