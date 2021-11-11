@@ -45,7 +45,7 @@ export class Environment {
       this.p = new LocalProcess('python', [this.environment], {
         time: {
           perStep: 2000,
-          overage: 2000
+          overage: 10000
         }
       });
     } else {
