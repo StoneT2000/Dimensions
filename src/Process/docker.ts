@@ -51,6 +51,10 @@ export class DockerProcess extends Process {
     }
     this.docker = new Dockerode({ socketPath: this.options.socketPath });
   }
+  async alive(): Promise<boolean> {
+    const ins = await this.container.inspect();
+    return ins.State.Running;
+  }
   async _init(): Promise<void> {
     // throw new Error('Method not implemented.');
     await this.setupContainer(this.options.name, this.docker);

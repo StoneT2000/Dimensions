@@ -1,3 +1,5 @@
+import { EnvConfigs } from "../Environment/types";
+
 export interface Configs {
   /**
    * Name of the dimension
@@ -11,4 +13,8 @@ export interface Configs {
    * @default `false`
    */
   station: boolean;
+  /**
+   * default env configs
+   */
+  defaultEnvConfigs: EnvConfigs;
 }

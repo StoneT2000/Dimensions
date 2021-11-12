@@ -33,6 +33,7 @@ export class Timed extends EventEmitter {
       this.on(Events.ERROR, () => {
         // for prematurely rejecting in the run function and bubbling the error up
         this._rejectTimer(new Error(`Process errored out`));
+        this._clearTimer();
       });
     }
   }
@@ -78,8 +79,8 @@ export class Timed extends EventEmitter {
         this.currentTimeoutReason = 'Unknown';
         res(output);
       } catch (err) {
-        rej(err);
         this._clearTimer();
+        rej(err);
       }
     });
   }

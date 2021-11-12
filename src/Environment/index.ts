@@ -1,9 +1,11 @@
-import { AgentActions, CallTypes, RenderModes } from './types';
+import { AgentActions, CallTypes, RenderModes, EnvConfigs, EnvConfigs_DEFAULT } from './types';
 import path from 'path';
 import { Process } from '../Process';
 import { DError } from '../DimensionError/wrapper';
 import { LocalProcess } from '../Process/local';
 import * as Timed from '../utils/Timed';
+import { DeepPartial } from '../utils/DeepPartial';
+import { deepMerge } from '../utils/DeepMerge';
 
 /**
  * A wrapper around a given environment executable or python gym to allow cross-language interaction
@@ -20,6 +22,11 @@ export class Environment {
    */
   public agentIDToPlayerID: Map<string, string> = new Map();
 
+  /** maps env id to environment object */
+  static envmap: Map<string, Environment> = new Map();
+
+  public configs: EnvConfigs = EnvConfigs_DEFAULT;
+
   private static globalID = 0;
   /**
    * Create a new environment. Should call await setup() immediately
@@ -29,9 +36,11 @@ export class Environment {
   constructor(
     public environment: string,
     public envConfigs: Record<string, any> = {},
-    public name?: string
+    configs: DeepPartial<EnvConfigs> = {},
   ) {
     this.id = `env_${Environment.globalID++}`;
+    Environment.envmap.set(this.id, this);
+    this.configs = deepMerge(this.configs, configs);
   }
 
   /**
@@ -70,8 +79,8 @@ export class Environment {
     await this.p.init();
 
     this.p.log.identifier = `[${this.id}]`;
-    if (this.name) {
-      this.p.log.identifier = `[${this.name}]`;
+    if (this.configs.name) {
+      this.p.log.identifier = `[${this.configs.name}]`;
     }
 
     // send initialization information to create a environment
@@ -87,10 +96,10 @@ export class Environment {
     const metaData = JSON.parse(await this.p.readstdout());
 
     this.metaData = metaData;
-    if (this.name == undefined && this.metaData.name !== undefined)
-      this.name = this.metaData.name;
-    if (this.name) {
-      this.p.log.identifier = `[${this.name}]`;
+    if (this.configs.name == undefined && this.metaData.name !== undefined)
+      this.configs.name = this.metaData.name;
+    if (this.configs.name) {
+      this.p.log.identifier = `[${this.configs.name}]`;
     }
     return metaData;
   }
@@ -186,11 +195,15 @@ export class Environment {
    * Perform any clean up operations and close the environment
    */
   async close(): Promise<void> {
-    await this.p.send(
-      JSON.stringify({
-        type: CallTypes.CLOSE,
-      })
-    );
+    const alive = await this.p.alive();
+    if (alive) {
+      await this.p.send(
+        JSON.stringify({
+          type: CallTypes.CLOSE,
+        })
+      );
+    }
     await this.p.close();
+    Environment.envmap.delete(this.id);
   }
 }

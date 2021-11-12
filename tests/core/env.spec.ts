@@ -109,7 +109,7 @@ describe('Testing Environments without agents', () => {
       await expect(dim.makeEnv(
         path.join(__dirname, '../envs/error/env_load_error.py'),
         {},
-        'ErrorEnv'
+        {name: 'ErrorEnv'},
       )).to.be.rejectedWith(Error, /Process errored out/)
     });
   });

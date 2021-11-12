@@ -20,6 +20,9 @@ export class LocalProcess extends Process {
   ) {
     super(command, args, options);
   }
+  async alive(): Promise<boolean> {
+    return !this.p.killed && this.p.stdin.writable && this.p.stdout.readable;
+  }
   async _init(): Promise<void> {
     this.p = spawn(this.command, this.args, {});
 

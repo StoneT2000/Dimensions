@@ -110,7 +110,7 @@ export class Logger {
   }
   custom(label: string, level: Logger.LEVEL, ...message: any[]): void {
     if (this.level >= level) {
-      process.stdout.write(`${label} ${message.join(' ')}`);
+      console.log(`${label} ${message.join(' ')}`);
     }
   }
 }

@@ -8,6 +8,7 @@ import { Agent } from '../Agent';
 import { Engine } from '../Engine';
 import { Process } from '../Process';
 import { Episode, EpisodeResult } from '../Episode';
+import { EnvConfigs, EnvConfigs_DEFAULT } from '../Environment/types';
 /**
  * A Dimension is a factory object that can create new environment instances, new agent instances, and link them together
  *
@@ -17,6 +18,7 @@ export class Dimension {
   public configs: Configs = {
     station: false,
     name: 'default_dimension',
+    defaultEnvConfigs: EnvConfigs_DEFAULT
   };
 
   public agents: Map<string, Agent> = new Map();
@@ -67,10 +69,10 @@ export class Dimension {
    */
   async makeEnv(
     environment: string,
-    envConfigs?: Record<string, any>,
-    displayName?: string
+    envConfigs: Record<string, any> = {},
+    configs: DeepPartial<EnvConfigs> = {}
   ): Promise<Environment> {
-    const env = new Environment(environment, envConfigs, displayName);
+    const env = new Environment(environment, envConfigs, deepMerge(configs, this.configs.defaultEnvConfigs));
     await env.setup();
     return env;
   }
@@ -136,11 +138,18 @@ export class Dimension {
    * Cleanup the Dimension to gracefully quit and avoid leaks
    */
   async cleanup(): Promise<void> {
-    const closePromises: Promise<any>[] = [];
-    closePromises.push(
-      Promise.all(Array.from(this.agents.values()).map((a) => a.close()))
-    );
-    await Promise.all(closePromises);
-    await Process._closeAllProcesses();
+    try {
+      const closePromises: Promise<any>[] = [];
+      closePromises.push(
+        Promise.all(Array.from(this.agents.values()).map((a) => a.close())),
+        Promise.all(Array.from(Environment.envmap.values()).map((e) => e.close()))
+      );
+      await Promise.all(closePromises);
+      await Process._closeAllProcesses();
+    } catch (err) {
+      // skip any possible errors here.
+      console.error(err);
+      return;
+    }
   }
 }

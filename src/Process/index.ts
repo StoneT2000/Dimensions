@@ -68,10 +68,12 @@ export abstract class Process extends EventEmitter {
       // if the process exits prematurely and with an error, we print the following
       if (code) {
         this.timed.emit(Timed.Events.ERROR, `process exited with code ${code}`, 'check logging for this process for more details')
-        this.timed._clearTimer();
       }
     });
   }
+  // whether this process is still usable
+  abstract alive(): Promise<boolean>;
+
   async init(): Promise<void> {
     return this.timed.run(this._init.bind(this));
   }
@@ -126,7 +128,7 @@ export abstract class Process extends EventEmitter {
     };
   }
   /**
-   * Attempt to close the process
+   * Attempt to close the process. Should not raise an error if related to the process. (e.g already closed or refusing to close)
    */
   async close(): Promise<void> {
     return this._close();
