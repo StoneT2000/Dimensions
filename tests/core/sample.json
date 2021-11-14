@@ -1,0 +1,173 @@
+{
+  "seed": null,
+  "state": null,
+  "outputs": [
+    {
+      "actions": null,
+      "data": {
+        "player_0": {
+          "obs": 3
+        },
+        "player_1": {
+          "obs": 3
+        }
+      }
+    },
+    {
+      "actions": {
+        "player_0": 1,
+        "player_1": 0
+      },
+      "data": {
+        "player_0": {
+          "obs": 0,
+          "reward": 1,
+          "done": false,
+          "info": {
+            "score": 1
+          },
+          "player_id": "player_0"
+        },
+        "player_1": {
+          "obs": 1,
+          "reward": 0,
+          "done": false,
+          "info": {
+            "score": 0
+          },
+          "player_id": "player_1"
+        }
+      }
+    },
+    {
+      "actions": {
+        "player_0": 1,
+        "player_1": 0
+      },
+      "data": {
+        "player_0": {
+          "obs": 0,
+          "reward": 1,
+          "done": false,
+          "info": {
+            "score": 2
+          },
+          "player_id": "player_0"
+        },
+        "player_1": {
+          "obs": 1,
+          "reward": 0,
+          "done": false,
+          "info": {
+            "score": 0
+          },
+          "player_id": "player_1"
+        }
+      }
+    },
+    {
+      "actions": {
+        "player_0": 1,
+        "player_1": 0
+      },
+      "data": {
+        "player_0": {
+          "obs": 0,
+          "reward": 1,
+          "done": false,
+          "info": {
+            "score": 3
+          },
+          "player_id": "player_0"
+        },
+        "player_1": {
+          "obs": 1,
+          "reward": 0,
+          "done": false,
+          "info": {
+            "score": 0
+          },
+          "player_id": "player_1"
+        }
+      }
+    },
+    {
+      "actions": {
+        "player_0": 1,
+        "player_1": 0
+      },
+      "data": {
+        "player_0": {
+          "obs": 0,
+          "reward": 1,
+          "done": false,
+          "info": {
+            "score": 4
+          },
+          "player_id": "player_0"
+        },
+        "player_1": {
+          "obs": 1,
+          "reward": 0,
+          "done": false,
+          "info": {
+            "score": 0
+          },
+          "player_id": "player_1"
+        }
+      }
+    },
+    {
+      "actions": {
+        "player_0": 1,
+        "player_1": 0
+      },
+      "data": {
+        "player_0": {
+          "obs": 0,
+          "reward": 1,
+          "done": true,
+          "info": {
+            "score": 5
+          },
+          "player_id": "player_0"
+        },
+        "player_1": {
+          "obs": 1,
+          "reward": 0,
+          "done": true,
+          "info": {
+            "score": 0
+          },
+          "player_id": "player_1"
+        }
+      }
+    }
+  ],
+  "final": {
+    "actions": {
+      "player_0": 1,
+      "player_1": 0
+    },
+    "data": {
+      "player_0": {
+        "obs": 0,
+        "reward": 1,
+        "done": true,
+        "info": {
+          "score": 5
+        },
+        "player_id": "player_0"
+      },
+      "player_1": {
+        "obs": 1,
+        "reward": 0,
+        "done": true,
+        "info": {
+          "score": 0
+        },
+        "player_id": "player_1"
+      }
+    }
+  }
+}

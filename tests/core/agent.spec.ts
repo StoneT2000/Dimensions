@@ -49,6 +49,7 @@ describe('Testing Agents', () => {
         location: 'docker',
       });
       const r1 = await dim.runEpisode(env, [agentjs, agentpy], 0);
+      
       for (const playerID in r1.results.final.data) {
         expect(r1.results.final.data[playerID].done).to.equal(true);
       }

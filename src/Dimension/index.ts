@@ -116,7 +116,8 @@ export class Dimension {
     const episode = new Episode(runAgents, env);
     let results: EpisodeResult;
     if (mode === 'parallel') {
-      results = await episode.runParallel(seed, state);
+      await episode.initialize(seed, state);
+      results = await episode.runParallel();
     } else if (mode === 'sequential') {
       results = await episode.runSequential(seed, state);
     } else {

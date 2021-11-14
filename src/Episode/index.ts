@@ -17,7 +17,59 @@ export interface EpisodeResult {
  */
 export class Episode {
   public engine: Engine = new Engine();
+  public results: EpisodeResult = {
+    seed: null,
+    state: null,
+    outputs: [],
+    final: {
+      actions: null,
+      data: {}
+    },
+  };
   constructor(public agents: Agent[], public env: Environment) {}
+
+  /**
+   * Initialize and start a new episode with the given seed and state. When parameters set to null, env should use defaults
+   * 
+   * This function also is what starts the processes for all agents
+   * @param seed 
+   * @param state 
+   */
+  async initialize(
+    seed: number = null,
+    state: Record<string, any> = null
+  ): Promise<void> {
+    await this.engine.initializeAgents(this.agents);
+    if (seed !== null) {
+      await this.env.seed(seed);
+    }
+    // create new initial state
+    const data = await this.env.reset(state);
+    this.results.outputs.push({
+      actions: null,
+      data,
+    });
+  }
+  /**
+   * Step forward the environment with the given agents once.
+   */
+  async stepParallel(): Promise<boolean> {
+    let data = this.results.outputs[this.results.outputs.length - 1].data;
+    const actions = await this.engine.collectActions(
+      this.env,
+      data,
+      this.agents
+    );
+    data = await this.env.step(actions);
+    const done = this.engine.envDone(this.env, data, this.agents);
+    await this.engine.handleAgents(this.env, data, this.agents);
+    this.results.outputs.push({
+      actions,
+      data,
+    });
+    return done;
+  }
+
   async runSequential(
     seed: number = null,
     state: Record<string, any> = null
@@ -36,48 +88,12 @@ export class Episode {
    * @returns
    */
   async runParallel(
-    seed: number = null,
-    state: Record<string, any> = null
   ): Promise<EpisodeResult> {
-    await this.engine.initializeAgents(this.agents);
-
-    // output of env at each step
-    const outputs = [];
-
-    if (seed !== null) {
-      await this.env.seed(seed);
-    }
-    // create new initial state
-    let data = await this.env.reset(state);
-    outputs.push({
-      actions: null,
-      ...data,
-    });
-
     let done = false;
     while (!done) {
-      const actions = await this.engine.collectActions(
-        this.env,
-        data,
-        this.agents
-      );
-
-      data = await this.env.step(actions);
-      done = this.engine.envDone(this.env, data, this.agents);
-      await this.engine.handleAgents(this.env, data, this.agents);
-      outputs.push({
-        actions,
-        ...data,
-      });
+      done = await this.stepParallel();
     }
-    return {
-      seed,
-      state,
-      outputs,
-      final: {
-        actions: null,
-        data,
-      },
-    };
+    this.results.final = this.results.outputs[this.results.outputs.length - 1];
+    return this.results;
   }
 }

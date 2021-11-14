@@ -1,6 +1,7 @@
 import { Agent } from '../Agent';
 import { Environment } from '../Environment';
 import { AgentActions } from '../Environment/types';
+import { deepCopy } from '../utils/DeepCopy';
 
 /**
  * Class for functional management of agents and environments and any other processes
@@ -76,6 +77,7 @@ export class Engine {
   ): Promise<AgentActions> {
     const actionPromises: Promise<Record<string, any>>[] = [];
     const agentSpecificData = {};
+    data = deepCopy(data);
     agents.forEach((agent, agentIndex) => {
       const agentSpecificObsKey = `player_${agentIndex}`;
       agentSpecificData[agentSpecificObsKey] = data[agentSpecificObsKey];

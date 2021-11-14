@@ -35,6 +35,7 @@ describe('Testing Episodes with Agents', () => {
         rpsAgents.py,
         rpsAgents.py,
       ]);
+
       episode.agents.forEach((agent) => {
         expect(
           results.final.data[env.agentIDToPlayerID.get(agent.id)].done
@@ -101,7 +102,7 @@ describe('Testing Episodes with Agents', () => {
       });
       const { results } = await dim.runEpisode(env, [agent], 0);
       expect(results.outputs.length).to.equal(2); // should have a start and end observation only.
-      expect(results.outputs[1].info['err']).to.equal(
+      expect(results.outputs[1].data.info['err']).to.equal(
         'player_0 sent malformed action'
       );
     });
@@ -125,7 +126,7 @@ describe('Testing Episodes with Agents', () => {
       });
       const { results } = await dim.runEpisode(env, [agent], 0);
       expect(results.outputs.length).to.equal(2); // should have a start and end observation only.
-      expect(results.outputs[1].info['err']).to.equal(
+      expect(results.outputs[1].data.info['err']).to.equal(
         'player_0 sent malformed action'
       );
     });
@@ -155,7 +156,7 @@ describe('Testing Episodes with Agents', () => {
       });
       let { results } = await dim.runEpisode(env, [agent_badaction], 0);
       expect(results.outputs.length).to.equal(2); // should have a start and end observation only.
-      expect(results.outputs[1].info['err']).to.equal(
+      expect(results.outputs[1].data.info['err']).to.equal(
         'player_0 sent malformed action'
       );
 
@@ -166,7 +167,7 @@ describe('Testing Episodes with Agents', () => {
       env.p.log.level = 0;
       results = (await dim.runEpisode(env, [agent_badjson], 0)).results;
       expect(results.outputs.length).to.equal(2); // should have a start and end observation only.
-      expect(results.outputs[1].info['err']).to.equal(
+      expect(results.outputs[1].data.info['err']).to.equal(
         'player_0 sent malformed action'
       );
 
@@ -185,7 +186,7 @@ describe('Testing Episodes with Agents', () => {
       env.p.log.level = 0;
       results = (await dim.runEpisode(env, [agent_action_hang], 0)).results;
       expect(results.outputs.length).to.equal(2); // should have a start and end observation only.
-      expect(results.outputs[1].info['err']).to.equal(
+      expect(results.outputs[1].data.info['err']).to.equal(
         'player_0 sent malformed action'
       );
 
