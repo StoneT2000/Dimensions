@@ -2,6 +2,7 @@ import { Agent } from '../Agent';
 import { DError } from '../DimensionError/wrapper';
 import { Engine } from '../Engine';
 import { Environment } from '../Environment';
+import { genID, NanoID } from '../utils';
 
 export interface EpisodeResult {
   seed: number;
@@ -26,7 +27,21 @@ export class Episode {
       data: {},
     },
   };
-  constructor(public agents: Agent[], public env: Environment) {}
+  public id: NanoID;
+  static episodeMap: Map<string, Episode> = new Map();
+  constructor(public agents: Agent[], public env: Environment) {
+    do {
+      this.id = `eps_${genID(16)}`;
+    } while (Episode.episodeMap.has(this.id));
+    Episode.episodeMap.set(this.id, this);
+  }
+
+  /**
+   * Clean up the episode
+   */
+  async close(): Promise<void> {
+    Episode.episodeMap.delete(this.id);
+  }
 
   /**
    * Initialize and start a new episode with the given seed and state. When parameters set to null, env should use defaults

@@ -81,6 +81,25 @@ export class Dimension {
     return env;
   }
 
+  async createEpisode(
+    env: Environment,
+    agents: (Agent | string)[]
+  ): Promise<Episode> {
+    const runAgents: Agent[] = [];
+    agents.forEach((agent) => {
+      if (agent instanceof Agent) {
+        runAgents.push(agent);
+      } else {
+        const newAgent = this.addAgent({ agent });
+        runAgents.push(newAgent);
+      }
+    });
+    // register initial agents
+    await env.registerAgents(runAgents.map((a) => a.id));
+    const episode = new Episode(runAgents, env);
+    return episode;
+  }
+
   /**
    * Run an episode in the given environment and given agents in parallel mode
    *
@@ -129,6 +148,7 @@ export class Dimension {
         `${mode} is not supported or is invalid`
       );
     }
+    await episode.close();
 
     tempAgentIDs.forEach((id) => {
       this.removeAgent(id);

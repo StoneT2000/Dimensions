@@ -5,6 +5,7 @@ import chaiSubset from 'chai-subset';
 import path from 'path';
 import 'mocha';
 import { LocalProcess } from '../../src/Process/local';
+import { Episode } from '../../src/Episode';
 
 const expect = chai.expect;
 chai.should();
@@ -41,6 +42,29 @@ describe('Testing Episodes with Agents', () => {
           results.final.data[env.agentIDToPlayerID.get(agent.id)].done
         ).to.equal(true);
       });
+    });
+    it('should run step by step', async () => {
+      const env = await dim.makeEnv(rpsenv, {
+        max_cycles: 3,
+      });
+      expect(env.metaData['name']).to.equal('rps_v2');
+      const episode = await dim.createEpisode(env, [
+        rpsAgents.py,
+        rpsAgents.py,
+      ]);
+      expect(Episode.episodeMap.has(episode.id));
+      await episode.initialize();
+      let done = await episode.stepParallel();
+      expect(done).to.equal(false);
+      expect(episode.results.outputs[1].data['player_0'].info.score).to.equal(
+        0
+      );
+      expect(episode.results.outputs[1].actions['player_0']).to.equal(0);
+
+      await episode.stepParallel();
+      done = await episode.stepParallel();
+      expect(done).to.equal(true);
+      expect(episode.results.outputs.length).to.equal(4); // 4 values, 1st for init, then 1 for each step
     });
   });
   describe('Run episodes on Single Agent Environment: Pendulum', () => {
