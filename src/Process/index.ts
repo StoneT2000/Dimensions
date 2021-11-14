@@ -8,7 +8,7 @@ import { Events } from './events';
 
 /**
  * Generic class that wraps around a process that is spawned and receives input and prints out outputs
- * 
+ *
  * Auto times any action performed with the process and will reject should it timeout or exit prematurely
  *
  */
@@ -67,7 +67,11 @@ export abstract class Process extends EventEmitter {
     this.on(Events.EXIT, (code) => {
       // if the process exits prematurely and with an error, we print the following
       if (code) {
-        this.timed.emit(Timed.Events.ERROR, `process exited with code ${code}`, 'check logging for this process for more details')
+        this.timed.emit(
+          Timed.Events.ERROR,
+          `process exited with code ${code}`,
+          'check logging for this process for more details'
+        );
       }
     });
   }

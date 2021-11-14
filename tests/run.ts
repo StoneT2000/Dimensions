@@ -18,5 +18,5 @@
 // };
 // benchmark();
 
-import {Dimension} from '../lib/main/Dimension';
+import { Dimension } from '../lib/main/Dimension';
 console.log(Dimension);

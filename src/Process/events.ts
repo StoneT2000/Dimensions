@@ -10,5 +10,5 @@ export enum Events {
   /**
    * event emitted when associated process or container for process closes and is terminated
    */
-  EXIT = 'proc_exit'
+  EXIT = 'proc_exit',
 }

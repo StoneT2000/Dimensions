@@ -1,4 +1,4 @@
-import { EnvConfigs } from "../Environment/types";
+import { EnvConfigs } from '../Environment/types';
 
 export interface Configs {
   /**

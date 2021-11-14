@@ -52,7 +52,10 @@ export class Timed extends EventEmitter {
     return this.configs.time.perStep !== null;
   }
 
-  public async run<T>(fn: (...args: any[]) => Promise<T>, ...args: any[]): Promise<T> {
+  public async run<T>(
+    fn: (...args: any[]) => Promise<T>,
+    ...args: any[]
+  ): Promise<T> {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (res, rej) => {
       if (this._hasTimer()) {

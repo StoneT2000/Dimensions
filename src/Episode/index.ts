@@ -23,17 +23,17 @@ export class Episode {
     outputs: [],
     final: {
       actions: null,
-      data: {}
+      data: {},
     },
   };
   constructor(public agents: Agent[], public env: Environment) {}
 
   /**
    * Initialize and start a new episode with the given seed and state. When parameters set to null, env should use defaults
-   * 
+   *
    * This function also is what starts the processes for all agents
-   * @param seed 
-   * @param state 
+   * @param seed
+   * @param state
    */
   async initialize(
     seed: number = null,
@@ -87,8 +87,7 @@ export class Episode {
    * @param state - state to initialize with
    * @returns
    */
-  async runParallel(
-  ): Promise<EpisodeResult> {
+  async runParallel(): Promise<EpisodeResult> {
     let done = false;
     while (!done) {
       done = await this.stepParallel();

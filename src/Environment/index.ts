@@ -1,4 +1,10 @@
-import { AgentActions, CallTypes, RenderModes, EnvConfigs, EnvConfigs_DEFAULT } from './types';
+import {
+  AgentActions,
+  CallTypes,
+  RenderModes,
+  EnvConfigs,
+  EnvConfigs_DEFAULT,
+} from './types';
 import path from 'path';
 import { Process } from '../Process';
 import { DError } from '../DimensionError/wrapper';
@@ -36,7 +42,7 @@ export class Environment {
   constructor(
     public environment: string,
     public envConfigs: Record<string, any> = {},
-    configs: DeepPartial<EnvConfigs> = {},
+    configs: DeepPartial<EnvConfigs> = {}
   ) {
     this.id = `env_${Environment.globalID++}`;
     Environment.envmap.set(this.id, this);
@@ -49,18 +55,18 @@ export class Environment {
    */
   async setup(): Promise<Record<string, any>> {
     // start environment process.
-    
+
     if (path.extname(this.environment) === '.py') {
       this.p = new LocalProcess('python', [this.environment], {
         time: {
           perStep: 2000,
-          overage: 10000
-        }
+          overage: 10000,
+        },
       });
     } else {
       throw new DError.NotSupportedError('Envionment type not supported yet');
     }
-    
+
     this.p.timed.currentTimeoutReason = 'Environment could not start';
     this.p.timed.on(Timed.Events.TIMEOUT, (timeout) => {
       this.p.log.error(
@@ -69,13 +75,11 @@ export class Environment {
       this.p.close();
     });
     this.p.timed.on(Timed.Events.ERROR, (reason, err) => {
-      this.p.log.error(
-        `Environment errored out, reason: ${reason}`
-      );
+      this.p.log.error(`Environment errored out, reason: ${reason}`);
       this.p.log.error(err);
       this.p.close();
     });
-    
+
     await this.p.init();
 
     this.p.log.identifier = `[${this.id}]`;

@@ -18,16 +18,15 @@ export enum CallTypes {
   REGISTER_AGENTS = 'register_agents',
 }
 
-
 export interface EnvConfigs {
   name?: string;
   /**
    * For python envs, this is just selecting which python interpreter to use
-   * 
+   *
    * For others, this is selecting what binary/command to use to run a given env file
    */
   command: string;
 }
 export const EnvConfigs_DEFAULT: EnvConfigs = {
-  command: 'python'
-}
+  command: 'python',
+};

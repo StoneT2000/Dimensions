@@ -18,7 +18,7 @@ export class Dimension {
   public configs: Configs = {
     station: false,
     name: 'default_dimension',
-    defaultEnvConfigs: EnvConfigs_DEFAULT
+    defaultEnvConfigs: EnvConfigs_DEFAULT,
   };
 
   public agents: Map<string, Agent> = new Map();
@@ -72,7 +72,11 @@ export class Dimension {
     envConfigs: Record<string, any> = {},
     configs: DeepPartial<EnvConfigs> = {}
   ): Promise<Environment> {
-    const env = new Environment(environment, envConfigs, deepMerge(configs, this.configs.defaultEnvConfigs));
+    const env = new Environment(
+      environment,
+      envConfigs,
+      deepMerge(configs, this.configs.defaultEnvConfigs)
+    );
     await env.setup();
     return env;
   }
@@ -143,7 +147,9 @@ export class Dimension {
       const closePromises: Promise<any>[] = [];
       closePromises.push(
         Promise.all(Array.from(this.agents.values()).map((a) => a.close())),
-        Promise.all(Array.from(Environment.envmap.values()).map((e) => e.close()))
+        Promise.all(
+          Array.from(Environment.envmap.values()).map((e) => e.close())
+        )
       );
       await Promise.all(closePromises);
       await Process._closeAllProcesses();

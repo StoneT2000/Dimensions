@@ -106,11 +106,13 @@ describe('Testing Environments without agents', () => {
      * We expect user provided environments to **never** error. Should it raise some error and hang, we must eventually close it.
      */
     it('should handle when environment is not valid python / cannot load', async () => {
-      await expect(dim.makeEnv(
-        path.join(__dirname, '../envs/error/env_load_error.py'),
-        {},
-        {name: 'ErrorEnv'},
-      )).to.be.rejectedWith(Error, /Process errored out/)
+      await expect(
+        dim.makeEnv(
+          path.join(__dirname, '../envs/error/env_load_error.py'),
+          {},
+          { name: 'ErrorEnv' }
+        )
+      ).to.be.rejectedWith(Error, /Process errored out/);
     });
   });
   after(async () => {

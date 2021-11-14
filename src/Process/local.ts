@@ -1,7 +1,7 @@
 import { ChildProcess } from 'child_process';
 import treeKill from 'tree-kill';
 import { Process } from '.';
-import { Events as ProcessEvents} from './events';
+import { Events as ProcessEvents } from './events';
 import spawn from 'cross-spawn';
 import { Logger } from '../Logger';
 import { ProcessOptions } from './types';

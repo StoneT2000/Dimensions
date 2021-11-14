@@ -1,6 +1,6 @@
 import { Logger } from '../Logger';
 import { Process } from '.';
-import { Events as ProcessEvents} from './events';
+import { Events as ProcessEvents } from './events';
 import { DeepPartial } from '../utils/DeepPartial';
 import { DockerProcessOptions } from './types';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
