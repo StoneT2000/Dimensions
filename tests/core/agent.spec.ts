@@ -42,11 +42,11 @@ describe('Testing Agents', () => {
       });
       const agentjs = dim.addAgent({
         agent: path.join(__dirname, '../envs/rps/agents/paper.js'),
-        location: 'docker',
+        location: 'local',
       });
       const agentpy = dim.addAgent({
         agent: path.join(__dirname, '../envs/rps/agents/agent.py'),
-        location: 'docker',
+        location: 'local',
       });
       const r1 = await dim.runEpisode(env, [agentjs, agentpy], 0);
 
