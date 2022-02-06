@@ -20,9 +20,7 @@ class PendulumEnv(gym.Env):
         self.viewer = None
 
         high = np.array([1.0, 1.0, self.max_speed], dtype=np.float32)
-        self.action_space = spaces.Box(
-            low=-self.max_torque, high=self.max_torque, shape=(1,), dtype=np.float32
-        )
+        self.action_space = spaces.Box(low=-self.max_torque, high=self.max_torque, shape=(1,), dtype=np.float32)
         self.observation_space = spaces.Box(low=-high, high=high, dtype=np.float32)
 
         self.seed()
@@ -32,14 +30,15 @@ class PendulumEnv(gym.Env):
         return [seed]
 
     def validate_action(self, u):
-        assert 'actions' in u
-        u = u['actions']
+        assert "actions" in u
+        u = u["actions"]
         assert isinstance(u, list) == False, "Did not receive a proper action"
         assert u is not None
+
     def step(self, u):
         self.validate_action(u)
-        u = u['actions']
-        
+        u = u["actions"]
+
         # should be validating the action format here
         u = np.array([float(u)])
 
@@ -58,10 +57,7 @@ class PendulumEnv(gym.Env):
         self.last_u = u  # for rendering
         costs = angle_normalize(th) ** 2 + 0.1 * thdot ** 2 + 0.001 * (u ** 2)
 
-        newthdot = (
-            thdot
-            + (-3 * g / (2 * l) * np.sin(th + np.pi) + 3.0 / (m * l ** 2) * u) * dt
-        )
+        newthdot = thdot + (-3 * g / (2 * l) * np.sin(th + np.pi) + 3.0 / (m * l ** 2) * u) * dt
         newth = th + newthdot * dt
         newthdot = np.clip(newthdot, -self.max_speed, self.max_speed)
 
@@ -114,13 +110,12 @@ class PendulumEnv(gym.Env):
             self.viewer = None
 
 
-
 def angle_normalize(x):
     return ((x + np.pi) % (2 * np.pi)) - np.pi
 
 
-
 if __name__ == "__main__":
+
     def read_input():
         """
         Reads input from stdin
@@ -129,6 +124,7 @@ if __name__ == "__main__":
             return input()
         except EOFError as eof:
             raise SystemExit(eof)
+
     def output(data):
         json.dump(data, sys.stdout)
         sys.stdout.write("\n")
@@ -141,28 +137,28 @@ if __name__ == "__main__":
 
     env = None
     obs, reward, done, info = None, None, None, None
-    while (True):
+    while True:
         inputs = read_input()
-        data = json.loads(inputs) # load into a dict with information
+        data = json.loads(inputs)  # load into a dict with information
         input_type = data["type"]
         if input_type == "init":
             args = data["envConfigs"]
-            if args is None: args = {}
+            if args is None:
+                args = {}
             env = PendulumEnv(**args)
             output(dict(env.metadata))
         elif input_type == "step":
             try:
                 obs, reward, done, info = env.step(data)
+                out = dict(obs=serialize_np(obs), reward=reward, done=done, info=info)
+                output(out)
             except AssertionError as err:
                 # if agent sends some malformed action, mark them as done and return the error in the info as well
                 done = True
-                info=dict(err="player_0 sent malformed action")
+                info = dict(err="player_0 sent malformed action")
                 print(info["err"], file=sys.stderr)
                 out = dict(obs=serialize_np(obs), reward=reward, done=done, info=info)
                 output(out)
-                exit()
-            out = dict(obs=serialize_np(obs), reward=reward, done=done, info=info)
-            output(out)
         elif input_type == "seed":
             seed = data["seed"]
             obs = env.seed(int(seed))
@@ -174,7 +170,7 @@ if __name__ == "__main__":
             out = dict(obs=(serialize_np(obs)))
             output(out)
         elif input_type == "register_agents":
-            assert len(data['ids']) == 1
+            assert len(data["ids"]) == 1
             output(dict(ids=["player_0"]))
         elif input_type == "close":
             exit()

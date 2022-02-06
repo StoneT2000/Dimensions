@@ -52,6 +52,14 @@ export class Timed extends EventEmitter {
     return this.configs.time.perStep !== null;
   }
 
+  /**
+   * Wraps a timer around a function call
+   *
+   * @param fn - function to run with a wrapped timer over
+   * @param args function arguments
+   * @returns promise. Resolves with function output if function does not throw an error and is performed within time bound (time perstep + remainingOverage).
+   * Rejects otherwise.
+   */
   public async run<T>(
     fn: (...args: any[]) => Promise<T>,
     ...args: any[]
@@ -69,6 +77,7 @@ export class Timed extends EventEmitter {
       this._rejectTimer = rej;
       try {
         const output = await fn(args);
+
         const elpasedTime = this._clearTimer();
         if (this._hasTimer()) {
           if (elpasedTime > this.configs.time.perStep) {

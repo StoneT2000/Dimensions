@@ -9,6 +9,7 @@ import { Logger } from '../Logger';
 import { LocalProcess } from '../Process/local';
 import { DockerProcess } from '../Process/docker';
 import path from 'path';
+import * as Timed from '../utils/Timed';
 
 export class Agent extends EventEmitter {
   public p: Process;
@@ -62,14 +63,15 @@ export class Agent extends EventEmitter {
     }
     // setup timeout functionality
     if (this.p.timed._hasTimer()) {
-      this.p.timed.on(Events.TIMEOUT, (timeout: number) => {
+      this.p.timed.on(Timed.Events.TIMEOUT, (timeout: number) => {
+        // Super useful console.trace();
         this.log.error(
           `Agent timed out after ${timeout}ms, reason: ${this.p.timed.currentTimeoutReason}`
         );
         this.status = Status.ERROR;
         this.close();
       });
-      this.p.timed.on(Events.ERROR, (reason: string, err: Error) => {
+      this.p.timed.on(Timed.Events.ERROR, (reason: string, err: Error) => {
         this.log.error('Agent Errored Out:', reason);
         this.log.error('Details:', err);
         this.status = Status.ERROR;
@@ -78,7 +80,9 @@ export class Agent extends EventEmitter {
     }
     if (this._hasMemoryLimits()) {
       this.on(Events.OUTOFMEMORY, () => {
-        this.log.error('Out of memory'); // TODO also print the memory limit
+        this.log.error(
+          `Out of memory after exceeding ${this.configs.processOptions.memory.limit} bytes`
+        );
         this.status = Status.ERROR;
         this.close();
       });
@@ -108,6 +112,9 @@ export class Agent extends EventEmitter {
       throw new Error(
         `Agent responded with wrong id of ${data.id} instead of ${this.id} during initialization`
       );
+    if (data.name) {
+      this.configs.name = data.name;
+    }
 
     // agent is now ready and active!
     this.status = Status.ACTIVE;
@@ -118,7 +125,7 @@ export class Agent extends EventEmitter {
    * @returns true when this agent object is ready to send actions and receive observations
    */
   async ready(): Promise<boolean> {
-    return this.p !== undefined; // TODO change this
+    return this.p !== undefined && this.status == Status.ACTIVE;
   }
 
   /**
@@ -159,13 +166,15 @@ export class Agent extends EventEmitter {
   async action(data: Record<string, any>): Promise<Record<string, any> | null> {
     try {
       this.p.timed.currentTimeoutReason =
-        'Agent did not respond with an action in time';
+        'Agent did not receive request for action';
       await this.p.send(
         JSON.stringify({
           ...data,
           type: CallTypes.ACTION,
         })
       );
+      this.p.timed.currentTimeoutReason =
+        'Agent did not respond with an action in time';
       const action: Record<string, any> = JSON.parse(await this.p.readstdout());
       if (action.action === undefined) {
         throw new Error(

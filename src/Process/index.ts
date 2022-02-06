@@ -65,7 +65,7 @@ export abstract class Process extends EventEmitter {
     });
 
     this.on(Events.EXIT, (code) => {
-      // if the process exits prematurely and with an error, we print the following
+      // if the process exits prematurely and with an error, we force any timed functions to halt and the print the following
       if (code) {
         this.timed.emit(
           Timed.Events.ERROR,

@@ -25,7 +25,7 @@ if __name__ == "__main__":
         if input_type == "init":
             agent_id = data["id"]
             agent_name = data["name"]
-            output(dict(id=agent_id))
+            output(dict(id=agent_id, name="rock_agent"))
             # {"type": "init", "name": "abc", "id": 3}
         elif input_type == "action":
             if 'reward' not in data:

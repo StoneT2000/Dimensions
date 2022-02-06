@@ -154,12 +154,12 @@ describe('Testing Episodes with Agents', () => {
         'player_0 sent malformed action'
       );
     });
-    it('should handle receiving malformed actions (incorrect key, bad json, hanging) and not hang', async () => {
+    it.only('should handle receiving malformed actions (incorrect key, bad json, hanging) and not hang', async () => {
       // this should print an error within env
-      let env = await dim.makeEnv(pendulumenv, {
+      const env = await dim.makeEnv(pendulumenv, {
         max_steps: 30,
       });
-      env.p.log.level = 0;
+      env.p.log.level = 10;
       const timerconf = {
         perStep: 20000,
         overage: 0,
@@ -184,18 +184,15 @@ describe('Testing Episodes with Agents', () => {
         'player_0 sent malformed action'
       );
 
-      // make a new env since old one exited due to bad action.
-      env = await dim.makeEnv(pendulumenv, {
-        max_steps: 30,
-      });
-      env.p.log.level = 0;
+      await env.reset();
+
       results = (await dim.runEpisode(env, [agent_badjson], 0)).results;
       expect(results.outputs.length).to.equal(2); // should have a start and end observation only.
       expect(results.outputs[1].data.info['err']).to.equal(
         'player_0 sent malformed action'
       );
 
-      timerconf.perStep = 10;
+      timerconf.perStep = 20;
       timerconf.overage = 1000;
       const agent_action_hang = dim.addAgent({
         agent: path.join(
@@ -204,17 +201,15 @@ describe('Testing Episodes with Agents', () => {
         ),
         processOptions: { time: timerconf },
       });
-      env = await dim.makeEnv(pendulumenv, {
-        max_steps: 30,
-      });
-      env.p.log.level = 0;
+      await env.reset();
+
       results = (await dim.runEpisode(env, [agent_action_hang], 0)).results;
       expect(results.outputs.length).to.equal(2); // should have a start and end observation only.
       expect(results.outputs[1].data.info['err']).to.equal(
         'player_0 sent malformed action'
       );
 
-      // this agent hangs after 3 steps instead of start
+      // // this agent hangs after 3 steps instead of start
       const agent_action_hang2 = dim.addAgent({
         agent: path.join(
           __dirname,
@@ -222,10 +217,7 @@ describe('Testing Episodes with Agents', () => {
         ),
         processOptions: { time: timerconf },
       });
-      env = await dim.makeEnv(pendulumenv, {
-        max_steps: 30,
-      });
-      env.p.log.level = 0;
+      await env.reset();
       results = (await dim.runEpisode(env, [agent_action_hang2], 0)).results;
       expect(results.outputs.length).to.equal(5);
       expect(results.final.data.info['err']).to.equal(
