@@ -31,6 +31,7 @@ describe('Testing Episodes with Agents', () => {
       const env = await dim.makeEnv(rpsenv, {
         max_cycles: 21,
       });
+      // env.p.log.level = 10;
       expect(env.metaData['name']).to.equal('rps_v2');
       const { episode, results } = await dim.runEpisode(env, [
         rpsAgents.py,
@@ -154,7 +155,7 @@ describe('Testing Episodes with Agents', () => {
         'player_0 sent malformed action'
       );
     });
-    it.only('should handle receiving malformed actions (incorrect key, bad json, hanging) and not hang', async () => {
+    it('should handle receiving malformed actions (incorrect key, bad json, hanging) and not hang', async () => {
       // this should print an error within env
       const env = await dim.makeEnv(pendulumenv, {
         max_steps: 30,

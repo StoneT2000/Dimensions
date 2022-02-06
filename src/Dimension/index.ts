@@ -101,12 +101,13 @@ export class Dimension {
   }
 
   /**
-   * Run an episode in the given environment and given agents in parallel mode
+   * Run an episode in the given environment and given agents in parallel or sequential mode
    *
    * @param env - The environment to use
    * @param agents - List of agents to use that can submit actions to the environment
    * @param seed - a seed to use for the environment RNG
    * @param state - a state to start from
+   * @param mode - 'parallel' or 'sequential'. Parallel is when all agents simultaneously take actions. Sequential is when agents take action one after another.
    *
    * Agents can be specified by providing an initialized agent object if that agent process is to be reused elsewhere,
    * or by paths to the agent executable, of which an agent process will be initialized and then
