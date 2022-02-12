@@ -1,6 +1,6 @@
 {
   "name": "dimensions-ai-temp",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A generalized AI Competition framework that enables high performance cross-platform and cross-language competitions on environments of any language",
   "main": "./lib/main/index.js",
   "types": "./lib/main/index.d.ts",
