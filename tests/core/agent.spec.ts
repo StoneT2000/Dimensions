@@ -4,6 +4,7 @@ import chaiAsPromised from 'chai-as-promised';
 import chaiSubset from 'chai-subset';
 import path from 'path';
 import 'mocha';
+import { SingleAgentEpisodeResult } from '../../src/Episode';
 
 const expect = chai.expect;
 chai.should();
@@ -29,12 +30,10 @@ describe('Testing Agents', () => {
       const agent = dim.addAgent({
         agent: path.join(__dirname, '../envs/pendulum/agents/agent.js'),
       });
-      const r1 = await dim.runEpisode(env, [agent], 0);
-      expect(r1.results.final.data.done).to.equal(true);
-      expect(r1.results.final.data.reward).to.approximately(
-        -9.364599159415079,
-        1e-15
-      );
+      const r1 = (await dim.runEpisode(env, [agent], 0))
+        .results as SingleAgentEpisodeResult;
+      expect(r1.final.data.done).to.equal(true);
+      expect(r1.final.data.reward).to.approximately(-9.364599159415079, 1e-15);
     });
     it('should run python vs js', async () => {
       const env = await dim.makeEnv(rpsenv, {
@@ -48,13 +47,14 @@ describe('Testing Agents', () => {
         agent: path.join(__dirname, '../envs/rps/agents/agent.py'),
         location: 'local',
       });
-      const r1 = await dim.runEpisode(env, [agentjs, agentpy], 0);
+      const r1 = (await dim.runEpisode(env, [agentjs, agentpy], 0))
+        .results as SingleAgentEpisodeResult;
 
-      for (const playerID in r1.results.final.data) {
-        expect(r1.results.final.data[playerID].done).to.equal(true);
+      for (const playerID in r1.final.data) {
+        expect(r1.final.data[playerID].done).to.equal(true);
       }
       // paper beats rock 30/30 times.
-      expect(r1.results.final.data['player_0'].info.score).to.equal(30);
+      expect(r1.final.data['player_0'].info.score).to.equal(30);
     });
   });
   describe('Test docker agents', () => {
@@ -70,12 +70,13 @@ describe('Testing Agents', () => {
         agent: path.join(__dirname, '../envs/rps/agents/agent.py'),
         location: 'docker',
       });
-      const r1 = await dim.runEpisode(env, [agentjs, agentpy], 0);
-      for (const playerID in r1.results.final.data) {
-        expect(r1.results.final.data[playerID].done).to.equal(true);
+      const r1 = (await dim.runEpisode(env, [agentjs, agentpy], 0))
+        .results as SingleAgentEpisodeResult;
+      for (const playerID in r1.final.data) {
+        expect(r1.final.data[playerID].done).to.equal(true);
       }
       // paper beats rock 30/30 times.
-      expect(r1.results.final.data['player_0'].info.score).to.equal(30);
+      expect(r1.final.data['player_0'].info.score).to.equal(30);
     });
     it('should run js in docker', async () => {
       const env = await dim.makeEnv(pendulumenv, {
@@ -91,12 +92,10 @@ describe('Testing Agents', () => {
         },
         location: 'docker',
       });
-      const r1 = await dim.runEpisode(env, [agent], 0);
-      expect(r1.results.final.data.done).to.equal(true);
-      expect(r1.results.final.data.reward).to.approximately(
-        -9.364599159415079,
-        1e-15
-      );
+      const r1 = (await dim.runEpisode(env, [agent], 0))
+        .results as SingleAgentEpisodeResult;
+      expect(r1.final.data.done).to.equal(true);
+      expect(r1.final.data.reward).to.approximately(-9.364599159415079, 1e-15);
     });
     describe('Test error handling', () => {
       it('should handle invalid docker images', async () => {

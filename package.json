@@ -27,6 +27,7 @@
   "author": "StoneT2000",
   "license": "MIT",
   "dependencies": {
+    "async-mutex": "^0.3.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "colors": "^1.4.0",

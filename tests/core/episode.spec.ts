@@ -5,7 +5,11 @@ import chaiSubset from 'chai-subset';
 import path from 'path';
 import 'mocha';
 import { LocalProcess } from '../../src/Process/local';
-import { Episode } from '../../src/Episode';
+import {
+  Episode,
+  MultiAgentEpisodeResult,
+  SingleAgentEpisodeResult,
+} from '../../src/Episode';
 
 const expect = chai.expect;
 chai.should();
@@ -40,7 +44,9 @@ describe('Testing Episodes with Agents', () => {
 
       episode.agents.forEach((agent) => {
         expect(
-          results.final.data[env.agentIDToPlayerID.get(agent.id)].done
+          (results as MultiAgentEpisodeResult).final.data[
+            env.agentIDToPlayerID.get(agent.id)
+          ].done
         ).to.equal(true);
       });
     });
@@ -74,11 +80,12 @@ describe('Testing Episodes with Agents', () => {
         max_steps: 30,
       });
       const { results } = await dim.runEpisode(env, [pendulumAgents.py], 0);
-      expect(results.final.data.done).to.equal(true);
-      expect(results.final.data.reward).to.approximately(
-        -9.364599159415079,
-        1e-15
+      expect((results as SingleAgentEpisodeResult).final.data.done).to.equal(
+        true
       );
+      expect(
+        (results as SingleAgentEpisodeResult).final.data.reward
+      ).to.approximately(-9.364599159415079, 1e-15);
     });
     it('should run multiple episodes with the same agent without resetting the agent', async () => {
       const env = await dim.makeEnv(pendulumenv, {
@@ -100,11 +107,12 @@ describe('Testing Episodes with Agents', () => {
         if (i > 1) {
           expect(rs[i].results.final).to.eql(rs[i - 1].results.final);
         }
-        expect(r1.results.final.data.done).to.equal(true);
-        expect(r1.results.final.data.reward).to.approximately(
-          -9.364599159415079,
-          1e-15
-        );
+        expect(
+          (r1.results as SingleAgentEpisodeResult).final.data.done
+        ).to.equal(true);
+        expect(
+          (r1.results as SingleAgentEpisodeResult).final.data.reward
+        ).to.approximately(-9.364599159415079, 1e-15);
       }
     });
   });
@@ -126,10 +134,10 @@ describe('Testing Episodes with Agents', () => {
         },
       });
       const { results } = await dim.runEpisode(env, [agent], 0);
-      expect(results.outputs.length).to.equal(2); // should have a start and end observation only.
-      expect(results.outputs[1].data.info['err']).to.equal(
-        'player_0 sent malformed action'
-      );
+      expect((results as SingleAgentEpisodeResult).outputs.length).to.equal(2); // should have a start and end observation only.
+      expect(
+        (results as SingleAgentEpisodeResult).outputs[1].data.info['err']
+      ).to.equal('player_0 sent malformed action');
     });
     it('should handle not receiving back agent id and hanging', async () => {
       // this should print an error for agent
@@ -150,10 +158,10 @@ describe('Testing Episodes with Agents', () => {
         },
       });
       const { results } = await dim.runEpisode(env, [agent], 0);
-      expect(results.outputs.length).to.equal(2); // should have a start and end observation only.
-      expect(results.outputs[1].data.info['err']).to.equal(
-        'player_0 sent malformed action'
-      );
+      expect((results as SingleAgentEpisodeResult).outputs.length).to.equal(2); // should have a start and end observation only.
+      expect(
+        (results as SingleAgentEpisodeResult).outputs[1].data.info['err']
+      ).to.equal('player_0 sent malformed action');
     });
     it('should handle receiving malformed actions (incorrect key, bad json, hanging) and not hang', async () => {
       // this should print an error within env
@@ -180,18 +188,18 @@ describe('Testing Episodes with Agents', () => {
         processOptions: { time: timerconf },
       });
       let { results } = await dim.runEpisode(env, [agent_badaction], 0);
-      expect(results.outputs.length).to.equal(2); // should have a start and end observation only.
-      expect(results.outputs[1].data.info['err']).to.equal(
-        'player_0 sent malformed action'
-      );
+      expect((results as SingleAgentEpisodeResult).outputs.length).to.equal(2); // should have a start and end observation only.
+      expect(
+        (results as SingleAgentEpisodeResult).outputs[1].data.info['err']
+      ).to.equal('player_0 sent malformed action');
 
       await env.reset();
 
       results = (await dim.runEpisode(env, [agent_badjson], 0)).results;
-      expect(results.outputs.length).to.equal(2); // should have a start and end observation only.
-      expect(results.outputs[1].data.info['err']).to.equal(
-        'player_0 sent malformed action'
-      );
+      expect((results as SingleAgentEpisodeResult).outputs.length).to.equal(2); // should have a start and end observation only.
+      expect(
+        (results as SingleAgentEpisodeResult).outputs[1].data.info['err']
+      ).to.equal('player_0 sent malformed action');
 
       timerconf.perStep = 20;
       timerconf.overage = 1000;
@@ -205,10 +213,10 @@ describe('Testing Episodes with Agents', () => {
       await env.reset();
 
       results = (await dim.runEpisode(env, [agent_action_hang], 0)).results;
-      expect(results.outputs.length).to.equal(2); // should have a start and end observation only.
-      expect(results.outputs[1].data.info['err']).to.equal(
-        'player_0 sent malformed action'
-      );
+      expect((results as SingleAgentEpisodeResult).outputs.length).to.equal(2); // should have a start and end observation only.
+      expect(
+        (results as SingleAgentEpisodeResult).outputs[1].data.info['err']
+      ).to.equal('player_0 sent malformed action');
 
       // // this agent hangs after 3 steps instead of start
       const agent_action_hang2 = dim.addAgent({
@@ -220,10 +228,10 @@ describe('Testing Episodes with Agents', () => {
       });
       await env.reset();
       results = (await dim.runEpisode(env, [agent_action_hang2], 0)).results;
-      expect(results.outputs.length).to.equal(5);
-      expect(results.final.data.info['err']).to.equal(
-        'player_0 sent malformed action'
-      );
+      expect((results as SingleAgentEpisodeResult).outputs.length).to.equal(5);
+      expect(
+        (results as SingleAgentEpisodeResult).final.data.info['err']
+      ).to.equal('player_0 sent malformed action');
     });
     it('should handle agents that do not exit themselves', async () => {
       // this should print an error within env
@@ -242,7 +250,7 @@ describe('Testing Episodes with Agents', () => {
         processOptions: { time: timerconf },
       });
       const { results } = await dim.runEpisode(env, [agent_close], 0);
-      expect(results.outputs.length).to.equal(31); // should run normally
+      expect((results as SingleAgentEpisodeResult).outputs.length).to.equal(31); // should run normally
       expect((<LocalProcess>agent_close.p).p.stdin.writable).to.equal(false);
     });
   });

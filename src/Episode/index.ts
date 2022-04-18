@@ -3,12 +3,35 @@ import { DError } from '../DimensionError/wrapper';
 import { Engine } from '../Engine';
 import { Environment } from '../Environment';
 import { genID, NanoID } from '../utils';
-
+export interface EpisodePlayerObsRewardDoneInfo {
+  obs: any;
+  reward: number;
+  done: boolean;
+  info: Record<string, any> & { score: number };
+  player_id?: string;
+}
+export interface SingleAgentEpisodePlayerFrame {
+  actions: any;
+  data: EpisodePlayerObsRewardDoneInfo;
+}
+export interface MultiAgentEpisodePlayerFrame {
+  actions: Record<string, any>;
+  data: Record<string, EpisodePlayerObsRewardDoneInfo>;
+}
 export interface EpisodeResult {
   seed: number;
   state: Record<string, any>;
-  outputs: Record<string, any>[];
-  final: Record<string, any>;
+}
+export interface MultiAgentEpisodeResult extends EpisodeResult {
+  outputs: MultiAgentEpisodePlayerFrame[];
+  final: MultiAgentEpisodePlayerFrame;
+}
+export interface SingleAgentEpisodeResult extends EpisodeResult {
+  /**
+   * Each episode frame with each element keyed by player id
+   */
+  outputs: SingleAgentEpisodePlayerFrame[];
+  final: SingleAgentEpisodePlayerFrame;
 }
 
 /**
@@ -18,14 +41,11 @@ export interface EpisodeResult {
  */
 export class Episode {
   public engine: Engine = new Engine();
-  public results: EpisodeResult = {
+  public results: SingleAgentEpisodeResult | MultiAgentEpisodeResult = {
     seed: null,
     state: null,
     outputs: [],
-    final: {
-      actions: null,
-      data: {},
-    },
+    final: null,
   };
   public id: NanoID;
   static episodeMap: Map<string, Episode> = new Map();
@@ -59,7 +79,7 @@ export class Episode {
       await this.env.seed(seed);
     }
     // create new initial state
-    const data = await this.env.reset(state);
+    const data = (await this.env.reset(state)) as any;
     this.results.outputs.push({
       actions: null,
       data,
@@ -75,12 +95,12 @@ export class Episode {
       data,
       this.agents
     );
-    data = await this.env.step(actions);
+    data = (await this.env.step(actions)) as any;
     const done = this.engine.envDone(this.env, data, this.agents);
     await this.engine.handleAgents(this.env, data, this.agents);
     this.results.outputs.push({
       actions,
-      data,
+      data: data as any,
     });
     return done;
   }
@@ -88,7 +108,7 @@ export class Episode {
   async runSequential(
     seed: number = null,
     state: Record<string, any> = null
-  ): Promise<EpisodeResult> {
+  ): Promise<SingleAgentEpisodeResult | MultiAgentEpisodeResult> {
     // await this.engine.initializeAgents(this.agents);
     seed;
     state;
@@ -102,7 +122,9 @@ export class Episode {
    * @param state - state to initialize with
    * @returns
    */
-  async runParallel(): Promise<EpisodeResult> {
+  async runParallel(): Promise<
+    SingleAgentEpisodeResult | MultiAgentEpisodeResult
+  > {
     let done = false;
     while (!done) {
       done = await this.stepParallel();

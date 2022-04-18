@@ -122,6 +122,7 @@ export class Dimension {
   ): Promise<{
     episode: Episode;
     results: EpisodeResult;
+    agents: Agent[];
   }> {
     const tempAgentIDs: Set<string> = new Set();
     const runAgents: Agent[] = [];
@@ -157,6 +158,7 @@ export class Dimension {
     return {
       episode,
       results,
+      agents: runAgents,
     };
   }
 
