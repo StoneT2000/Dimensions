@@ -1,4 +1,3 @@
-import { Agent } from '../../Agent';
 import { Player } from '..';
 
 /**
@@ -16,12 +15,12 @@ export abstract class RankSystem<Configs, RankState> {
   abstract resetRank(rankState: RankState): RankState;
 
   /**
-   * Given an array of rank states and parallel array of the rankings each of the players associated with the rank
+   * Given an array of rank states and parallel array of the scores (higher the better) each of the players associated with the rank
    * states received, return a new array of updated rank states in the same order.
    */
   abstract updateRanks(
     rankStates: Array<RankState>,
-    relativeRanks: Array<number>
+    scores: Array<number>
   ): Array<RankState>;
 
   /**
@@ -57,9 +56,9 @@ export abstract class RankSystem<Configs, RankState> {
   ): string;
 }
 
-import * as TS from './TrueSkillSystem';
-import * as EL from './ELOSystem';
-import * as WS from './WinsSystem';
+// import * as TS from './TrueSkillSystem';
+// import * as EL from './ELOSystem';
+import * as WS from './Wins';
 
 /**
  * Rank System enums and namespaces for the kind of ranking systems you can choose for a {@link Tournament}
@@ -67,20 +66,20 @@ import * as WS from './WinsSystem';
 
 export namespace RankSystem {
   /* eslint-disable */
-  export import TrueSkillSystem = TS.TrueSkillSystem;
-  export import TrueSkill = TS.TrueSkill;
-  export import ELOSystem = EL.ELOSystem;
-  export import ELO = EL.ELO;
-  export import Wins = WS.Wins;
+  // export import TrueSkillSystem = TS.TrueSkillSystem;
+  // export import TrueSkill = TS.TrueSkill;
+  // export import ELOSystem = EL.ELOSystem;
+  // export import ELO = EL.ELO;
+  // export import Wins = WS.Wins;
   export import WinsSystem = WS.WinsSystem;
   /* eslint-enable */
 
   /** The results interface that must be returned by a result handler for a {@link Tournament} */
   export interface Results {
     /**
-     * Array of {@link Agent.ID}s and their ranks in a {@link Match}. ranks can be the same number of players
+     * Array of {@link Agent.ID}s and their ranks in a {@link Match}. ranks can be the same number if players
      * are considered to have tied or achieved equal standing
      */
-    ranks: Array<{ rank: number; agentID: Agent.ID }>;
+    ranks: Array<{ rank: number; agentID: string }>;
   }
 }

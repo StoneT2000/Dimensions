@@ -106,8 +106,8 @@ export class TrueSkillSystem extends RankSystem<
         ` | ` +
         `μ=%-6s, σ=%-6s`.yellow +
         ` | %-8s`,
-      player.tournamentID.name + (player.disabled ? ' X' : ''),
-      player.tournamentID.id,
+      player.name + (player.active ? '' : ' X'),
+      player.id,
       (rankState.rating.mu - rankState.rating.sigma * 3).toFixed(7),
       rankState.rating.mu.toFixed(3),
       rankState.rating.sigma.toFixed(3),

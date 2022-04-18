@@ -1,4 +1,3 @@
-// uses resovoir sampling
 export const chooseKRandomElements = <T>(
   arr: Array<T>,
   k: number

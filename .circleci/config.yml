@@ -6,35 +6,35 @@ orbs:
 executors:
   language-build:
     docker:
-      - image: stonezt2000/dimensions_langs:latest
-      - image: circleci/mongo:latest
-        environment:
-          MONGO_INITDB_ROOT_USERNAME: root
-          MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      - image: stonet2000/dimensions:latest
+      # - image: circleci/mongo:latest
+      #   environment:
+      #     MONGO_INITDB_ROOT_USERNAME: root
+      #     MONGO_INITDB_ROOT_PASSWORD: rootpassword
 
 commands:
   setup_services:
     steps:
-      - checkout
       - setup_remote_docker:
           version: 19.03.8
-      - run: apk add docker-cli
+      # - run: apt-get update
+      # - run: apt-get install docker-ce docker-ce-cli containerd.io
       - run:
           name: Pull standard images for Dimensions
-          command: docker pull docker.io/stonezt2000/dimensions_langs
-      - run:
-          name: Pull other images used for testing
-          command: ./pull_all_test_docker_images.sh
-      - run:
-          name: install dockerize
-          command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-          environment:
-            DOCKERIZE_VERSION: v0.3.0
-      - run:
-          name: Wait for db
-          command: |
-            dockerize -timeout 1m \
-              -wait tcp://localhost:27017 `# mongo`
+          command: docker pull docker.io/stonet2000/dimensions
+      # - run:
+      #     name: Pull other images used for testing
+      #     command: ./pull_all_test_docker_images.sh
+      # - run:
+      #     name: install dockerize
+      #     command: wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+      #     environment:
+      #       DOCKERIZE_VERSION: v0.3.0
+      # - run:
+      #     name: Wait for db
+      #     command: |
+      #       dockerize -timeout 1m \
+      #         -wait tcp://localhost:27017 `# mongo`
 
 jobs:
   lint:
@@ -51,11 +51,10 @@ jobs:
       name: language-build
     steps:
       - setup_services
+      - checkout
       - node/with-cache:
           steps:
             - run: npm install
-            # peer deps
-            - run: npm install mongoose
             - run: npm run test
       - run: npm run codecov
       - store_artifacts:

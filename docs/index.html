@@ -70,194 +70,55 @@
 				<p><a href="https://badge.fury.io/js/dimensions-ai"><img src="https://badge.fury.io/js/dimensions-ai.svg" alt="npm version"></a></p>
 				<p>This is an <strong>open sourced</strong> <strong>generic</strong> <strong>Artificial Intelligence competition framework</strong>, intended to provide you the fully scalable infrastructure needed to run your own AI competition with no hassle.</p>
 				<p>All you need to do?</p>
-				<p>Code a <strong>competition design</strong> and code a <strong>bot</strong></p>
-				<p>Dimensions handles the rest, including match and tournament running, security, scalability and a local API and website through which you can monitor and control the entire system.</p>
-				<p>The framework was built with the goals of being <strong>generalizable</strong> and <strong>accessible</strong>. That&#39;s why Dimensions utilizes an I/O based model to run competitions and pit AI agents against each other (or themselves!), allowing it to be generic and language agnostic so anyone from any background can compete in your competition design.</p>
-				<p>It generalizes to many scenarios, and is able to recreate a range of systems from the <a href="https://halite.io/">Halite 3 AI competition</a>, <a href="https://battlecode.org">Battlecode 2020</a>, to a generalized <a href="https://gym.openai.com/">Open AI Gym</a> that is open to machine learning in all languages in addition to Python through simple stdio.</p>
-				<p>This was inspired by <a href="battlecode.org/">Battlecode</a> and <a href="https://halite.io/">Halite</a></p>
+				<p>Code an <strong>environment</strong> and code a <strong>bot</strong></p>
+				<p>Dimensions handles the rest, including match and tournament running, security, and scalability.</p>
+				<p>The framework was built with the goals of being <strong>generalizable</strong> and <strong>accessible</strong>. That&#39;s why Dimensions utilizes an I/O based model to run competitions and pit AI agents against each other (or themselves!), allowing it to be generic and language agnostic so anyone from any background can compete in your environment.</p>
 				<p>Keep reading to learn how to <a href="#getting-started">get started</a> and make a tournament like this:</p>
-				<p><img src="assets/dimensions-trueskill-RPS.gif" alt="dimensions-trueskill-RPS"></p>
-				<p>Of which the <a href="https://github.com/StoneT2000/Dimensions/blob/master/tests/kits/js/normal/rock.js">AI bots</a> are all coded in about 10 lines or less (ignoring the starter kit)</p>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> kit = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./kit'</span>);
-<span class="hljs-keyword">const</span> agent = <span class="hljs-keyword">new</span> kit.Agent();
-agent.initialize().then(<span class="hljs-keyword">async</span> () =&gt; {
-  <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'R'</span>); <span class="hljs-comment">// tell the match you want to play Rock in the game</span>
-    agent.endTurn(); <span class="hljs-comment">// end turn</span>
-    <span class="hljs-keyword">await</span> agent.update(); <span class="hljs-comment">// wait for updates</span>
-  }
-});</code></pre>
-				<p>As another proof of concept of how seamless and generalizable this framework is, see <a href="https://github.com/StoneT2000/dimensions-halite3">the recreation of Halite 3</a> using this framework.</p>
-				<p>Follow these links to jump straight to <a href="https://stonet2000.github.io/Dimensions/index.html">Documentation</a>, <a href="#contributing">Contributing</a>, <a href="#development">Development</a> or <a href="#plans">Plans</a> curated by the owner and the community.</p>
-				<p>Also checkout the blog post introducing the motivation for Dimensions and thoughts about it here: <a href="https://stonet2000.github.io/blog/posts/Dimensions/index.html">https://stonet2000.github.io/blog/posts/Dimensions/index.html</a></p>
 				<a href="#features" id="features" style="color: inherit; text-decoration: none;">
 					<h2>Features</h2>
 				</a>
-				<ul>
-					<li>Easy to build an AI competition that is language agnostic, allowing any kind of bot in any language to compete in your competition</li>
-					<li>Run many kinds of AI competitions and run different kinds of formats like round robin or using Trueskill in a ladder tournament (like a leaderboard).</li>
-					<li>Wrap your own AI competition built without the dimensions framework to make use of its competition running features such as Trueskill ranking like the <a href="https://github.com/StoneT2000/Halite-4-Tournament-Runner">Halite 4 wrapper</a> used by competitors in the Halite 4 challenge on Kaggle.</li>
-					<li>Comes with an API served locally that gives access to data on ongoing matches and tournaments and allows for direct control of matches and tournaments through the API. See this page for details on this API: <a href="https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API">https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API</a></li>
-					<li>Supports plugins like the <a href="https://github.com/StoneT2000/Dimensions/wiki/Plugin#supported-plugins">MongoDB</a> plugin that takes three lines of code to automatically integrate and scale up your tournament and integrate an automatic user authentication and login system. See <a href="https://github.com/StoneT2000/Dimensions/wiki/Scaling">this</a> for complete info on how to scale up.</li>
-					<li>Ensures malicious bots cannot cause harm to your servers through <code>secureMode</code>. See <a href="https://github.com/StoneT2000/Dimensions/wiki/Security">this wiki page</a> for details.</li>
-					<li>Built with Typescript, meaning flexibility in coding any design, and easily integrates into a frontend replay viewer to reconstruct matches for viewing using minimal replay data storage.</li>
-				</ul>
-				<a href="#requirements" id="requirements" style="color: inherit; text-decoration: none;">
-					<h2>Requirements</h2>
+				<p>TODO</p>
+				<a href="#tutorial-todo-name" id="tutorial-todo-name" style="color: inherit; text-decoration: none;">
+					<h2>Tutorial? TODO name</h2>
 				</a>
-				<p>At the moment, MacOS and Linux are 100% supported. Windows platforms might not work and it is highly suggested to install <a href="https://docs.microsoft.com/en-us/windows/wsl/install-win10">WSL</a>. It&#39;s also suggested to use Node 12.x or above. Lower versions are untested.</p>
-				<a href="#getting-started" id="getting-started" style="color: inherit; text-decoration: none;">
-					<h2>Getting Started</h2>
-				</a>
-				<p>This guide will take you through how to start and run a competition built with Javascript/Typescript. To see how to use this framework to run an AI competition built without the dimensions framework, see <a href="https://github.com/StoneT2000/Dimensions/wiki/Custom-Competition-Design">this wiki page</a>.</p>
-				<p>First, install the <code>dimensions-ai</code> package</p>
-				<pre><code>npm <span class="hljs-keyword">install</span> dimensions-ai</code></pre><p>Create a new file called <code>run.js</code> and inside it we need to first <code>require</code> the package</p>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> Dimension = <span class="hljs-built_in">require</span>(<span class="hljs-string">'dimensions-ai'</span>);</code></pre>
-				<p>In order to start writing AI to compete against each other in a competition, you need to do two things.</p>
+				<p>Environments need to implement the following </p>
+				<p>&quot;step&quot;</p>
+				<p>For single agent env, must be gym compliant</p>
+				<p>receive -&gt; {&quot;type&quot;: &quot;step&quot;, &quot;actions&quot;: action_schema | null}</p>
+				<p>env must also deal with when agent returns null</p>
+				<p>Environment should never raise an error. It should always expect well formed input of the above schema...</p>
+				<p>Multiagent</p>
+				<p>receive -&gt; {&quot;type&quot;: &quot;step&quot;, &quot;actions&quot;: { player_id: action_schema | null } }
+				send -&gt; { player_id: {&quot;obs&quot;: obs_schema, &quot;reward&quot;: None | float, &quot;info&quot;: None | dict} }</p>
+				<p>It should handle input such that if action provided is not quite correct (e.g. should be a array but got a string), then </p>
+				<p>Single agent: print the error out and then exit</p>
+				<p>Multi agent: </p>
 				<ol>
-					<li>Design the competition</li>
-					<li>Design an AI starter kit</li>
+					<li>probably mark the the agent with the bad action is being done and auto loses or something</li>
+					<li>freeze that agent by marking it as done, other agents continue</li>
 				</ol>
-				<p>You need to design a competition to allow people to compete and facilitate the matches. More info on that soon. it is highly suggested to design an AI starter kit so people can get straight into competing.</p>
-				<p>If you already have a design, feel free to skip to the section on running a <a href="#run-a-match">match</a> and a <a href="#run-a-tournament">tournament</a></p>
-				<a href="#designing-the-competition" id="designing-the-competition" style="color: inherit; text-decoration: none;">
-					<h3>Designing The Competition</h3>
-				</a>
-				<p>It is suggested to design the competition in Javascript / Typescript using the Dimensions framework. See <a href="https://github.com/StoneT2000/Dimensions/wiki/Creating-a-Design">https://github.com/StoneT2000/Dimensions/wiki/Creating-a-Design</a> for a tutorial on creating a design.</p>
-				<p>You can also create a custom design outside of the framework, see <a href="https://github.com/StoneT2000/Dimensions/wiki/Custom-Competition-Design">https://github.com/StoneT2000/Dimensions/wiki/Custom-Competition-Design</a> for a tutorial on that.</p>
-				<a href="#designing-an-ai-starter-kit" id="designing-an-ai-starter-kit" style="color: inherit; text-decoration: none;">
-					<h3>Designing an AI Starter Kit</h3>
-				</a>
-				<p>Example starter kits can be found in the <a href="https://github.com/StoneT2000/Dimensions/tree/master/templates/starter-kits/">/templates/starter-kits</a> folder and you can just copy these and tweak them accordingly to your own design.</p>
-				<p>See <a href="https://github.com/StoneT2000/Dimensions/wiki/Creating-a-Starter-kit">https://github.com/StoneT2000/Dimensions/wiki/Creating-a-Starter-kit</a> for a tutorial on creating a starter kit.</p>
-				<a href="#run-a-match" id="run-a-match" style="color: inherit; text-decoration: none;">
-					<h3>Run a Match</h3>
-				</a>
-				<p>Now with a design done and a starter kit created, all you have to do is write a quick AI that does something and then run a match as follows:</p>
-				<p>First initialize your design and pass it a name. Then create a new <code>dimension</code> with <code>Dimension.create</code>.</p>
-				<pre><code class="language-js"><span class="hljs-keyword">let</span> RPSDesign = <span class="hljs-keyword">new</span> RockPaperScissorsDesign(<span class="hljs-string">'RPS!'</span>);
-<span class="hljs-keyword">let</span> myDimension = Dimension.create(RPSDesign);</code></pre>
-				<p>We can now run our first match by passing in an array of paths to the bot codes, each of which will generate into a new agent that participates in the match. You can then also pass in any configurations you want accessible through <code>match.configs</code> in the life cycle functions of your <code>design</code>.</p>
-				<pre><code class="language-js"><span class="hljs-keyword">let</span> results = <span class="hljs-keyword">await</span> myDimension.runMatch(
-  [
-    <span class="hljs-string">'./examples/rock-paper-scissors/bots/paper.js'</span>,
-    <span class="hljs-string">'./examples/rock-paper-scissors/bots/rock.js'</span>,
-  ],
-  {
-    <span class="hljs-attr">bestOf</span>: <span class="hljs-number">5</span>, <span class="hljs-comment">// a configuration accessible in match through match.configs.bestOf</span>
-  }
-);</code></pre>
-				<p>You can now log the results, of which are the same results returned by your <code>design&#39;s</code> <code>getResult</code> function.</p>
-				<pre><code class="language-js"><span class="hljs-built_in">console</span>.log(results);</code></pre>
-				<p>Notice that your console will also print something about a station. It&#39;ll give you a link to the <code>Station</code>, a local server that gives you access to an API to access and control your Dimension, Matches, Tournaments and more. Check out <a href="https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API">https://github.com/StoneT2000/Dimensions/wiki/Dimensions-Station-API</a> for details on the API.</p>
-				<p>If you want to view the API from a website, see this repo: <a href="https://github.com/StoneT2000/Dimensions-web">https://github.com/StoneT2000/Dimensions-web</a></p>
-				<a href="#run-a-tournament" id="run-a-tournament" style="color: inherit; text-decoration: none;">
-					<h3>Run a Tournament</h3>
-				</a>
-				<p>This framework also provides tournament running features, which currently include <a href="https://stonet2000.github.io/Dimensions/classes/_tournament_elimination_index_.elimination.html">Elimination</a>, and a flexible <a href="https://stonet2000.github.io/Dimensions/classes/_tournament_ladder_index_.ladder.html">Ladder</a> type tournaments. Additionally, there are various ranking systems used, such as Win/Tie/Loss and Trueskill. This section takes your through a really brief rundown of how to run a tournament. See <a href="https://github.com/StoneT2000/Dimensions/wiki/Running-Tournaments">this wiki page</a> for more in depth details on setting up the various kinds of tournaments</p>
-				<p>Here is how you run a tournament. First, you will need a <code>resultHandler</code> function. This function must be given to the tournament to indicate how the results of a <code>match</code> should be interpreted. Recall that these results are returned by the <code>getResult</code> function in your design class. It is suggested to provide these result handlers in your <code>Design</code>.</p>
-				<p>Next, you need to pass in some required configurations, namely <code>type, rankSystem, agentsPerMatch, resultHandler</code>. The following code snippet shows an example.</p>
-				<pre><code class="language-js"><span class="hljs-keyword">let</span> RPSDesign = <span class="hljs-keyword">new</span> RockPaperScissorsDesign(<span class="hljs-string">'RPS!'</span>);
-<span class="hljs-keyword">let</span> myDimension = Dimension.create(RPSDesign);
-<span class="hljs-keyword">let</span> Tournament = Dimension.Tournament;
-<span class="hljs-keyword">let</span> simpleBot = <span class="hljs-string">'./bots/rock.js'</span>;
-<span class="hljs-keyword">let</span> botSources = [simpleBot, simpleBot, simpleBot, simpleBot, simpleBot];
-
-<span class="hljs-keyword">let</span> RPSTournament = myDimension.createTournament(botSources, {
-  <span class="hljs-attr">name</span>: <span class="hljs-string">'A Best of 329 Rock Paper Scissors Tournament'</span>, <span class="hljs-comment">// give it a name</span>
-  <span class="hljs-attr">type</span>: Tournament.Type.LADDER, <span class="hljs-comment">// Create a Ladder Tournament</span>
-  <span class="hljs-attr">rankSystem</span>: Tournament.RankSystem.TRUESKILL, <span class="hljs-comment">// Use Trueskill to rank bots</span>
-  <span class="hljs-attr">agentsPerMatch</span>: [<span class="hljs-number">2</span>], <span class="hljs-comment">// specify how many bots can play at a time</span>
-  <span class="hljs-attr">defaultMatchConfigs</span>: {
-    <span class="hljs-attr">bestOf</span>: <span class="hljs-number">329</span>,
-    <span class="hljs-attr">loggingLevel</span>: Dimension.Logger.Level.NONE, <span class="hljs-comment">// turn off match logging</span>
-  },
-  <span class="hljs-attr">resultHandler</span>: <span class="hljs-function">(<span class="hljs-params">results</span>) =&gt;</span> {
-    <span class="hljs-keyword">let</span> ranks = [];
-    <span class="hljs-keyword">if</span> (results.winner === <span class="hljs-string">'Tie'</span>) {
-      ranks = [
-        { <span class="hljs-attr">rank</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">agentID</span>: <span class="hljs-number">0</span> },
-        { <span class="hljs-attr">rank</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">agentID</span>: <span class="hljs-number">1</span> },
-      ];
-    } <span class="hljs-keyword">else</span> {
-      <span class="hljs-keyword">let</span> loserID = (results.winnerID + <span class="hljs-number">1</span>) % <span class="hljs-number">2</span>;
-      ranks = [
-        { <span class="hljs-attr">rank</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">agentID</span>: results.winnerID },
-        { <span class="hljs-attr">rank</span>: <span class="hljs-number">2</span>, <span class="hljs-attr">agentID</span>: loserID },
-      ];
-    }
-    <span class="hljs-keyword">return</span> {
-      <span class="hljs-attr">ranks</span>: ranks,
-    };
-  },
-});
-
-RPSTournament.run();</code></pre>
-				<p>Once running, the console will display a live leaderboard of the tournament running, showing the current ranks and scores of all the bots, similar to the gif shown at the beginning of this document.</p>
-				<p>Documentation / guides on the tournaments and how to use them can be found <a href="https://github.com/StoneT2000/Dimensions/wiki/Running-Tournaments">https://github.com/StoneT2000/Dimensions/wiki/Running-Tournaments</a>. Full documentation on Tournaments can be found <a href="https://stonet2000.github.io/Dimensions/interfaces/_tournament_index_.tournament.tournamentconfigsbase.html">here</a>.</p>
-				<p>Note that different tournament types have different tournament configurations and different rank systems have different ranking configurations, all of which can be found on the documentation.</p>
-				<a href="#more-stuff" id="more-stuff" style="color: inherit; text-decoration: none;">
-					<h3>More Stuff!</h3>
-				</a>
-				<p>The <a href="https://github.com/StoneT2000/Dimensions/wiki">wiki</a> is populated with more basic and advanced example usages of this framework. This ranges from how to <a href="https://github.com/StoneT2000/Dimensions/wiki/Configuration#engine-options">configure the match engine</a>, <a href="https://github.com/StoneT2000/Dimensions/wiki/Running-Tournaments">configuring various tournaments and rank systems</a>, to tips on designing a successful competition.</p>
-				<a href="#strong-recommendations" id="strong-recommendations" style="color: inherit; text-decoration: none;">
-					<h3>Strong Recommendations</h3>
-				</a>
-				<p>In a production setting, it is strongly recommended to create a Dimension in <code>secureMode</code> to decrease the likelihood of user uploaded bot code of causing any significant harm to a server. By default, <code>secureMode</code> is set to false, but you will always get a warning about it. Setting it to true only requires you to install <a href="https://www.docker.com/get-started">Docker</a>.</p>
-				<a href="#plugins" id="plugins" style="color: inherit; text-decoration: none;">
-					<h2>Plugins</h2>
-				</a>
-				<p>Plugins intend to be a simple &quot;drag and drop.&quot; Dimensions can <code>use</code> a plugin and the plugin will automatically configure the dimension as needed. See here for more <a href="https://github.com/StoneT2000/Dimensions/wiki/Plugin#supported-plugins">info on the available plugins</a>. See here for how to <a href="https://github.com/StoneT2000/Dimensions/wiki/Plugin#developing-a-plugin">develop a plugin</a></p>
-				<p>For example, here&#39;s two lines of code that integrate MongoDB as a database:</p>
-				<pre><code class="language-js"><span class="hljs-keyword">let</span> mongo = <span class="hljs-keyword">new</span> Dimension.MongoDB(<span class="hljs-string">'mongodb://localhost:27017/dimensions'</span>);
-<span class="hljs-keyword">await</span> myDimension.use(mongo);</code></pre>
-				<a href="#contributing" id="contributing" style="color: inherit; text-decoration: none;">
-					<h2>Contributing</h2>
-				</a>
-				<p>Everyone is more than welcome to contribute to this project! You can open an issue or submit a PR</p>
-				<p>Check out the issues for this repository to get an idea on something you can help out with!</p>
+				<p>Agents need to implement the following</p>
+				<p>&quot;init&quot;
+					receive -&gt; {&quot;type&quot;: &quot;init&quot;, &quot;id&quot;: string, &quot;name&quot;: string}
+				output -&gt; id</p>
+				<p>Tells the agent their id and given name</p>
+				<p>&quot;action&quot;
+					receive -&gt; {&quot;type&quot;: &quot;action&quot;, &quot;obs&quot;: observation (defined by schema)&quot;, &quot;reward&quot; : None | float, &quot;info&quot;: None | dict}
+				output -&gt; {&quot;action&quot;: any}</p>
+				<p>&quot;close&quot;</p>
 				<a href="#development" id="development" style="color: inherit; text-decoration: none;">
 					<h2>Development</h2>
 				</a>
-				<p>This is all written in <a href="https://www.typescriptlang.org/">TypeScript</a></p>
-				<p>First install all necessary packages and pull necessary docker images for testing with</p>
-				<pre><code>npm <span class="hljs-keyword">install</span>
-./pull_all_test_docker_images.sh</code></pre><p>Start development by running</p>
-				<pre><code>npm <span class="hljs-keyword">run</span><span class="bash"> watch</span></code></pre><p>to watch for code changes in the <code>src</code> folder and reload the build folder.</p>
-				<p>Tests are built with <a href="https://mochajs.org/">Mocha</a> and <a href="https://www.chaijs.com/">Chai</a>. You will need mongodb setup serving through port <code>27017</code> to run database plugin tests.</p>
-				<p>If that is setup, run tests with</p>
-				<pre><code>npm <span class="hljs-keyword">run</span><span class="bash"> <span class="hljs-built_in">test</span></span></code></pre><p>Run</p>
-				<pre><code>npm <span class="hljs-keyword">run</span><span class="bash"> build</span></code></pre><p>to build the entire library.</p>
-				<p>Run</p>
-				<pre><code>npm <span class="hljs-keyword">run</span><span class="bash"> docs</span></code></pre><p>to generate documentation</p>
-				<a href="#plans" id="plans" style="color: inherit; text-decoration: none;">
-					<h2>Plans</h2>
+				<p>To setup the repo and/or build from source, first using <a href="">conda</a> to instantiate a new conda environment with all python requirements installed</p>
+				<pre><code>conda create -f environment.yml
+conda <span class="hljs-built_in">activate</span> <span class="hljs-built_in">dimensions</span></code></pre><p>Then install the JS/TS requirements</p>
+				<pre><code><span class="hljs-built_in">npm</span> i</code></pre><p>Run</p>
+				<pre><code>npm <span class="hljs-built_in">test</span></code></pre><p>to run all test suites</p>
+				<a href="#building" id="building" style="color: inherit; text-decoration: none;">
+					<h3>Building</h3>
 				</a>
-				<ul>
-					<li>Make it easier to create a <code>Design</code> (design a competition)<ul>
-							<li>Make README easier to READ, and reduce the initial &quot;getting-used-to-framework&quot; curve.</li>
-						</ul>
-					</li>
-					<li>Make it easier for users to dive deeper into the <code>MatchEngine</code>, <code>Matches</code>, <code>Dimensions</code> to give them greater flexibility over the backend infrastructure<ul>
-							<li>At the moment, there are plans for a parallel command stream option, where all agents send commands whenever they want and the engine just sends them to the update function</li>
-							<li>Allow users to tinker the MatchEngine to their needs somehow. (Extend it as a class and pass it to Dimensions)</li>
-						</ul>
-					</li>
-					<li>Security Designs to help ensure that users won&#39;t create <code>Designs</code> susceptible to cheating and match breaking behavior from bots participating in a <code>Match</code><ul>
-							<li>Give some guidelines</li>
-							<li>Add some options and default values for certain configurations, e.g.<ul>
-									<li>Max command limit per <code>timeStep</code> (for a game of rock paper scissors, this would be 1, it wouldn&#39;t make sense to flood the <code>MatchEngine</code> with several commands, which could break the <code>Match</code>)</li>
-								</ul>
-							</li>
-						</ul>
-					</li>
-					<li>Add visualizers for rock paper scissors example and domination example (and others if possible)</li>
-					<li>Generalize a match visualizer</li>
-					<li>Add more example <code>Designs</code> and starter kits for other popular ai games<ul>
-							<li>Recreate Kaggle Simulation&#39;s xConnect</li>
-						</ul>
-					</li>
-				</ul>
+				<p>To build the package, run</p>
+				<pre><code>npm <span class="hljs-builtin-name">run</span> build</code></pre>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -273,10 +134,13 @@ RPSTournament.run();</code></pre>
 						<a href="modules/_agent_index_.html">&quot;<wbr>Agent/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_design_index_.html">&quot;<wbr>Design/index&quot;</a>
+						<a href="modules/_agent_types_.html">&quot;<wbr>Agent/types&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_dimension_index_.html">&quot;<wbr>Dimension/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_dimension_types_.html">&quot;<wbr>Dimension/types&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_dimensionerror_agenterror_index_.html">&quot;<wbr>Dimension<wbr>Error/<wbr>Agent<wbr>Error/index&quot;</a>
@@ -297,85 +161,34 @@ RPSTournament.run();</code></pre>
 						<a href="modules/_dimensionerror_wrapper_.html">&quot;<wbr>Dimension<wbr>Error/wrapper&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
+						<a href="modules/_engine_index_.html">&quot;<wbr>Engine/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_environment_index_.html">&quot;<wbr>Environment/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_environment_types_.html">&quot;<wbr>Environment/types&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_episode_index_.html">&quot;<wbr>Episode/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
 						<a href="modules/_logger_index_.html">&quot;<wbr>Logger/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_match_index_.html">&quot;<wbr>Match/index&quot;</a>
+						<a href="modules/_process_docker_.html">&quot;<wbr>Process/docker&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_matchengine_index_.html">&quot;<wbr>Match<wbr>Engine/index&quot;</a>
+						<a href="modules/_process_events_.html">&quot;<wbr>Process/events&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_plugin_database_index_.html">&quot;<wbr>Plugin/<wbr>Database/index&quot;</a>
+						<a href="modules/_process_index_.html">&quot;<wbr>Process/index&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_plugin_database_utils_.html">&quot;<wbr>Plugin/<wbr>Database/utils&quot;</a>
+						<a href="modules/_process_local_.html">&quot;<wbr>Process/local&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_plugin_storage_index_.html">&quot;<wbr>Plugin/<wbr>Storage/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_plugin_index_.html">&quot;<wbr>Plugin/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_supportedplugins_filesystemstorage_index_.html">&quot;<wbr>Supported<wbr>Plugins/<wbr>File<wbr>System<wbr>Storage/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_supportedplugins_firestore_index_.html">&quot;<wbr>Supported<wbr>Plugins/<wbr>Fire<wbr>Store/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_supportedplugins_gclouddatastore_index_.html">&quot;<wbr>Supported<wbr>Plugins/GCloud<wbr>Data<wbr>Store/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_supportedplugins_gcloudstorage_index_.html">&quot;<wbr>Supported<wbr>Plugins/GCloud<wbr>Storage/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_supportedplugins_mongodb_index_.html">&quot;<wbr>Supported<wbr>Plugins/<wbr>MongoDB/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_supportedplugins_mongodb_models_match_.html">&quot;<wbr>Supported<wbr>Plugins/<wbr>MongoDB/models/match&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_supportedplugins_mongodb_models_tournamentconfig_.html">&quot;<wbr>Supported<wbr>Plugins/<wbr>MongoDB/models/tournament<wbr>Config&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_supportedplugins_mongodb_models_user_.html">&quot;<wbr>Supported<wbr>Plugins/<wbr>MongoDB/models/user&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_tournament_elo_index_.html">&quot;<wbr>Tournament/ELO/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_tournament_elimination_index_.html">&quot;<wbr>Tournament/<wbr>Elimination/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_tournament_ladder_index_.html">&quot;<wbr>Tournament/<wbr>Ladder/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_tournament_ranksystem_elosystem_index_.html">&quot;<wbr>Tournament/<wbr>Rank<wbr>System/ELOSystem/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_tournament_ranksystem_trueskillsystem_index_.html">&quot;<wbr>Tournament/<wbr>Rank<wbr>System/<wbr>True<wbr>Skill<wbr>System/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_tournament_ranksystem_winssystem_index_.html">&quot;<wbr>Tournament/<wbr>Rank<wbr>System/<wbr>Wins<wbr>System/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_tournament_ranksystem_index_.html">&quot;<wbr>Tournament/<wbr>Rank<wbr>System/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_tournament_scheduler_index_.html">&quot;<wbr>Tournament/<wbr>Scheduler/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_tournament_scheduler_utils_.html">&quot;<wbr>Tournament/<wbr>Scheduler/utils&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_tournament_tournamentstatus_index_.html">&quot;<wbr>Tournament/<wbr>Tournament<wbr>Status/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_tournament_tournamenttypes_index_.html">&quot;<wbr>Tournament/<wbr>Tournament<wbr>Types/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_tournament_index_.html">&quot;<wbr>Tournament/index&quot;</a>
+						<a href="modules/_process_types_.html">&quot;<wbr>Process/types&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_index_.html">&quot;index&quot;</a>
@@ -390,16 +203,10 @@ RPSTournament.run();</code></pre>
 						<a href="modules/_utils_deeppartial_.html">&quot;utils/<wbr>Deep<wbr>Partial&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_utils_lrufilecache_.html">&quot;utils/LRUFile<wbr>Cache&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
 						<a href="modules/_utils_system_.html">&quot;utils/<wbr>System&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_utils_typeguards_.html">&quot;utils/<wbr>Type<wbr>Guards&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_utils_varlock_.html">&quot;utils/<wbr>Var<wbr>Lock&quot;</a>
+						<a href="modules/_utils_timed_.html">&quot;utils/<wbr>Timed&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_utils_index_.html">&quot;utils/index&quot;</a>
@@ -408,37 +215,7 @@ RPSTournament.run();</code></pre>
 						<span>Externals</span>
 					</li>
 					<li class=" tsd-kind-module tsd-is-external">
-						<a href="modules/_security_seccomp_default_.html">&quot;<wbr>Security/seccomp/default&quot;</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="modules/_station_error_index_.html">&quot;<wbr>Station/error/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="modules/_station_handlebotupload_index_.html">&quot;<wbr>Station/handle<wbr>Bot<wbr>Upload/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="modules/_station_index_.html">&quot;<wbr>Station/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="modules/_station_routes_api_dimensions_auth_index_.html">&quot;<wbr>Station/routes/api/dimensions/auth/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="modules/_station_routes_api_dimensions_index_.html">&quot;<wbr>Station/routes/api/dimensions/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="modules/_station_routes_api_dimensions_match_agent_index_.html">&quot;<wbr>Station/routes/api/dimensions/match/agent/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="modules/_station_routes_api_dimensions_match_index_.html">&quot;<wbr>Station/routes/api/dimensions/match/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="modules/_station_routes_api_dimensions_tournament_index_.html">&quot;<wbr>Station/routes/api/dimensions/tournament/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="modules/_station_routes_api_dimensions_user_index_.html">&quot;<wbr>Station/routes/api/dimensions/user/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module tsd-is-external">
-						<a href="modules/_station_routes_api_status_.html">&quot;<wbr>Station/routes/api/status&quot;</a>
+						<a href="modules/_process_seccomp_default_.html">&quot;<wbr>Process/seccomp/default&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -454,8 +231,6 @@ RPSTournament.run();</code></pre>
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
-				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
@@ -463,14 +238,13 @@ RPSTournament.run();</code></pre>
 				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
-				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
-			</ul>
-			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
 			</ul>
 		</div>
 	</div>
@@ -480,6 +254,5 @@ RPSTournament.run();</code></pre>
 </div>
 <div class="overlay"></div>
 <script src="assets/js/main.js"></script>
-<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
 </body>
 </html>

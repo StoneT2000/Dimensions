@@ -1,0 +1,24 @@
+name: dimensions
+channels:
+  - conda-forge
+  - pytorch
+dependencies:
+  - python
+  - numpy
+  - scipy
+  - pandas
+  - matplotlib
+  - black
+  - flake8
+  - pytest
+  - pytest-cov
+  - pre-commit
+  - pip
+  - pytorch
+  - torchvision
+  - torchaudio
+  - scikit-learn
+  - tqdm
+  - pip:
+    - gym
+    - pettingzoo

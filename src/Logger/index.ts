@@ -13,6 +13,7 @@ export class Logger {
    * @default Bold Green
    */
   public identifierColor = colors.bold.green;
+
   /**
    * Logger Constructor
    * @param level - The logging level to use
@@ -109,7 +110,7 @@ export class Logger {
   }
   custom(label: string, level: Logger.LEVEL, ...message: any[]): void {
     if (this.level >= level) {
-      console.log(`${label}`, ...message);
+      console.log(`${label} ${message.join(' ')}`);
     }
   }
 }

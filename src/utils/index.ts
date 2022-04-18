@@ -1,5 +1,5 @@
 import { customAlphabet } from 'nanoid';
-import { NanoID } from '../Dimension';
+export type NanoID = string; // make opaque
 
 /**
  * Pick stuff
@@ -34,59 +34,6 @@ for (let i = 4; i <= 22; i++) {
 export const genID = (n: number): NanoID => {
   return idGenFunctionMap.get(n)();
 };
-
-export const stripFunctions = <T extends { [x in string]: any }>(
-  object: T
-): NoFunctions<T> => {
-  const seen = new Set<any>();
-  const helper = (object: T): NoFunctions<T> => {
-    for (const key in object) {
-      if (!seen.has(key)) {
-        seen.add(key);
-        if (typeof object[key] === 'function') {
-          delete object[key];
-          continue;
-        } else if (
-          object[key] !== null &&
-          object[key] !== undefined &&
-          object[key].constructor.name === 'Array'
-        ) {
-          continue;
-        }
-        helper(object[key]);
-      }
-    }
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    return object;
-  };
-  return helper(object);
-};
-
-export type NoFunctions<T> = T extends object
-  ? T extends Function
-    ? null
-    : { [K in keyof T]: NoFunctions<T[K]> }
-  : T;
-
-export const stripNull = <T extends { [x in string]: any }>(object: T): T => {
-  const seen = new Set<any>();
-  const helper = (object: T): T => {
-    for (const key in object) {
-      if (!seen.has(key)) {
-        seen.add(key);
-        if (object[key] === null) {
-          delete object[key];
-        } else {
-          helper(object[key]);
-        }
-      }
-    }
-    return object;
-  };
-  return helper(object);
-};
-
 /**
  * Async function that resolves after `ms` milliseconds
  * @param ms - number of milliseconds to sleep for

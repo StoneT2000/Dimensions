@@ -1,1213 +1,196 @@
-import { ChildProcess } from 'child_process';
-import path from 'path';
-import os from 'os';
-import fs, { WriteStream } from 'fs';
-import treekill from 'tree-kill';
-import { Logger } from '../Logger';
-import {
-  AgentFileError,
-  AgentDirectoryError,
-  AgentMissingIDError,
-  AgentInstallTimeoutError,
-  AgentCompileTimeoutError,
-  AgentCompileError,
-  AgentInstallError,
-} from '../DimensionError';
-import { Tournament } from '../Tournament';
-import { MatchEngine } from '../MatchEngine';
-import { deepMerge } from '../utils/DeepMerge';
-import { processIsRunning, dockerCopy } from '../utils/System';
-import { deepCopy } from '../utils/DeepCopy';
-import { DeepPartial } from '../utils/DeepPartial';
-import { Writable, Readable, Stream, Duplex } from 'stream';
+import * as DError from '../DimensionError';
 import { EventEmitter } from 'events';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import Dockerode, { HostConfig } from 'dockerode';
-import { isChildProcess, AgentClassTypeGuards } from '../utils/TypeGuards';
-import pidusage from 'pidusage';
-import DefaultSeccompProfileJSON from '../Security/seccomp/default.json';
-import { noop } from '../utils';
-import spawn from 'cross-spawn';
-import processExists from 'process-exists';
+import { Process } from '../Process';
+import { deepMerge } from '../utils/DeepMerge';
+import { DeepPartial } from '../utils/DeepPartial';
+import { CallTypes, Configs, Events, Status } from './types';
+import fs from 'fs';
+import { Logger } from '../Logger';
+import { LocalProcess } from '../Process/local';
+import { DockerProcess } from '../Process/docker';
+import path from 'path';
+import * as Timed from '../utils/Timed';
 
-const DefaultSeccompProfileString = JSON.stringify(DefaultSeccompProfileJSON);
-
-const containerBotFolder = '/code';
-
-/**
- * @class Agent
- * @classdesc The agent is what participates in a match and contains details on the files powering the agent, the
- * process associated and many other details.
- *
- * Reads in a file source for the code and copies the bot folder to a temporary directory in secure modes
- * and creates an `Agent` for use in the {@link MatchEngine} and {@link Match}
- *
- * This is a class that should not be broken. If something goes wrong, this should always throw a error. It is
- * expected that agents are used knowing beforehand that the file given is validated
- */
 export class Agent extends EventEmitter {
-  /**
-   * This agent's ID in a match. It is always a non-negative integer and agents in a match are always numbered
-   * `0, 1, 2, ...n` where there are `n` agents.
-   */
-  public id: Agent.ID = 0;
-
-  /**
-   * A tournmanet ID if Agent is generated from within a {@link Tournament}
-   */
-  public tournamentID: Tournament.ID = null;
-
-  /**
-   * Name of the agent
-   * @default `agent_[agent.id]`
-   */
-  public name: string;
-
-  /** The source path to the file that runs the agent */
-  public src: string;
-
-  /** The extension of the file */
-  public ext: string;
-
-  /** file without extension */
-  public srcNoExt: string;
-
-  /**
-   * The current working directory of the source file. If in insecure mode, this is always a temporary directory that
-   * will get deleted later.
-   */
-  public cwd: string;
-
-  /** The command used to run the file */
-  public cmd: string = null;
-
-  /**
-   * The original file path provided
-   */
-  public file: string;
-
-  /**
-   * The agent's options
-   */
-  public options: Agent.Options = deepCopy(Agent.OptionDefaults);
-
-  /**
-   * Creation date of the agent
-   */
-  public creationDate: Date;
-
-  /** internal buffer to store stdout from an agent that has yet to be delimited / used */
-  public _buffer: Array<string> = [];
-
-  /** Interval that periodically watches the memory usage of the process associated with this agent */
-  public memoryWatchInterval = null;
-
-  /**
-   * The associated process running the Agent
-   */
-  private process: ChildProcess = null;
-
-  /**
-   * Associated docker container running the agent
-   */
-  private container: Dockerode.Container = null;
-
-  /**
-   * Streams associated with the agent
-   */
-  public streams: Agent.Streams = {
-    in: null,
-    out: null,
-    err: null,
+  public p: Process;
+  public id: string = null;
+  public status: Status = Status.DONE;
+  public configs: Configs = {
+    agent: null,
+    name: null,
+    location: 'local',
   };
 
-  /**
-   * Current status of the agent
-   */
-  public status: Agent.Status = Agent.Status.UNINITIALIZED;
+  public log: Logger = new Logger();
 
-  /** The commands collected so far for the current move */
-  public currentMoveCommands: Array<string> = [];
+  private static globalID = 0;
 
-  /** a promise that resolves when the Agent's current move in the {@link Match} is finished */
-  public _currentMovePromise: Promise<void>;
-
-  /* istanbul ignore next */
-  public _currentMoveResolve: Function = noop; // set as a dummy function
-  public _currentMoveReject: Function;
-
-  /** A number that counts the number of times the agent has essentially interacted with the {@link MatchEngine} */
-  public agentTimeStep = 0;
-
-  /** Clears out the timer associated with the agent during a match */
-  public _clearTimer: Function = noop;
-
-  errorLogWriteStream: WriteStream = null;
-
-  private log = new Logger();
-
-  /**
-   * Key used to retrieve the error logs of this agent
-   */
-  public logkey: string = null;
-
-  /** whether agent is allowed to send commands. Used to help ignore extra output from agents */
-  private allowedToSendCommands = true;
-
-  /** Agent version, used by tournament */
-  public version = 0;
-
-  /** Size of agent's logs so far */
-  public _logsize = 0;
-
-  public _trimmed = false;
-
-  /** List of all messages written to this agent are directly pushed to here when in detached mode */
-  public messages: Array<string> = [];
-
-  constructor(
-    file: string,
-    options: Partial<Agent.Options>,
-    languageSpecificOptions: Agent.LanguageSpecificOptions = {}
-  ) {
+  constructor(configs: DeepPartial<Configs> = {}) {
     super();
-    this.creationDate = new Date();
-    this.options = deepMerge(this.options, deepCopy(options));
-
-    this.log.level = this.options.loggingLevel;
-
-    if (!this.options.detached) {
-      this.ext = path.extname(file);
-      if (languageSpecificOptions[this.ext]) {
-        this.options = deepMerge(
-          this.options,
-          deepCopy(languageSpecificOptions[this.ext])
-        );
-      }
-      this.cwd = path.dirname(file);
-      this.src = path.basename(file);
-      this.srcNoExt = this.src.slice(0, -this.ext.length);
-
-      // check if folder is valid
-      if (!fs.existsSync(this.cwd)) {
-        throw new AgentDirectoryError(
-          `${this.cwd} directory does not exist, check if directory provided through the file is correct`,
-          this.id
-        );
-      }
-
-      // check if file exists
-      if (!fs.existsSync(file)) {
-        throw new AgentFileError(
-          `${file} does not exist, check if file path provided is correct`,
-          this.id
-        );
-      }
-
-      this.file = file;
-
-      switch (this.ext) {
-        case '.py':
-          this.cmd = 'python';
-          break;
-        case '.js':
-        case '.ts':
-          this.cmd = 'node';
-          break;
-        case '.java':
-          this.cmd = 'java';
-          break;
-        case '.php':
-          this.cmd = 'php';
-          break;
-        case '.c':
-        case '.cpp':
-        case '.go':
-          this.cmd = '';
-          break;
-        default:
-      }
+    this.configs = deepMerge(this.configs, configs);
+    if (!this.configs.agent) {
+      throw new TypeError('No agent executable provided');
     }
+    if (!fs.existsSync(this.configs.agent)) {
+      throw new DError.MissingFilesError(`no such file ${this.configs.agent}`);
+    }
+    // ensure we have proper settings
+    // TODO: check windows
+    fs.chmodSync(this.configs.agent, '755');
 
-    if (this.options.id !== null) {
-      this.id = options.id;
-    } else {
-      throw new AgentMissingIDError(
-        `No id provided for agent using ${file}`,
-        this.id
+    // agent_<id> is on scope of whole process.
+    // player_<player_index> is on scope of a single episode
+    this.id = `agent_${Agent.globalID++}`;
+  }
+
+  /**
+   * Initialize the agent process
+   */
+  async initialize(): Promise<void> {
+    if (this.configs.location === 'local') {
+      this.p = new LocalProcess(
+        this.configs.agent,
+        [],
+        this.configs.processOptions
+      );
+    } else if (this.configs.location === 'docker') {
+      this.p = new DockerProcess(
+        this.configs.agent,
+        [],
+        path.dirname(this.configs.agent),
+        this.configs.processOptions
       );
     }
-    if (this.options.name) {
-      this.name = this.options.name;
-    } else {
-      this.name = `agent_${this.id}`;
-    }
-    if (this.options.tournamentID) {
-      this.tournamentID = options.tournamentID;
-      this.name = this.tournamentID.name;
-    }
-
-    this.log.system(`Created agent: ${this.name}`);
-
-    // set agent as ready
-    this.status = Agent.Status.READY;
-  }
-
-  async setupContainer(
-    name: string,
-    docker: Dockerode,
-    engineOptions: MatchEngine.EngineOptions
-  ): Promise<void> {
-    const HostConfig: HostConfig = {
-      // apply seccomp profile for security
-      SecurityOpt: [`seccomp=${DefaultSeccompProfileString}`],
-    };
-    if (engineOptions.memory.active) {
-      HostConfig.Memory = engineOptions.memory.limit;
-    }
-    const container = await docker.createContainer({
-      Image: this.options.image,
-      name: name,
-      OpenStdin: true,
-      StdinOnce: true,
-      HostConfig,
-    });
-    this.log.system(`Created container ${name}`);
-
-    // store container
-    this.container = container;
-    await container.start();
-    this.log.system(`Started container ${name}`);
-
-    // copy bot directory into container
-    await dockerCopy(this.cwd + '/.', name, '/code');
-    this.log.system(`Copied bot into container ${name}`);
-  }
-
-  /**
-   * Install whatever is needed through a `install.sh` file in the root of the bot folder
-   */
-  _install(
-    stderrWritestream: Writable,
-    stdoutWritestream: Writable,
-    engineOptions: MatchEngine.EngineOptions
-  ): Promise<void> {
-    // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve, reject) => {
-      // if there is a install.sh file, use it
-      if (fs.existsSync(path.join(this.cwd, 'install.sh'))) {
-        let stdout: Readable;
-        let stderr: Readable;
-        const installTimer = setTimeout(() => {
-          const msg = 'Agent went over install time during the install stage\n';
-          this.writeToErrorLog(msg);
-          reject(new AgentInstallTimeoutError(msg, this.id));
-        }, this.options.maxInstallTime);
-
-        const chunks = [];
-        const handleClose = (code: number) => {
-          clearTimeout(installTimer);
-          if (code === 0) {
-            resolve();
-          } else {
-            let msg = `A install time error occured. Install step for agent ${
-              this.id
-            } exited with code: ${code}; Installing ${path.join(
-              this.cwd,
-              'install.sh'
-            )}; Install Output:\n${chunks.join('')}`;
-            if (code === 137) {
-              msg += `\nAgent likely ran out of memory, exceeded ${
-                engineOptions.memory.limit / 1000000
-              } MB`;
-            }
-            this.writeToErrorLog(msg + '\n');
-            reject(new AgentInstallError(msg, this.id));
-          }
-        };
-
-        const handleError = (err: Error) => {
-          clearTimeout(installTimer);
-          reject(err);
-        };
-
-        if (this.options.secureMode) {
-          try {
-            const exec = await this.container.exec({
-              Cmd: ['/bin/sh', '-c', 'chmod u+x install.sh'],
-              WorkingDir: containerBotFolder,
-            });
-            await exec.start({});
-            const data = await this.containerSpawn(
-              path.join(containerBotFolder, 'install.sh')
-            );
-            stderr = data.err;
-            stdout = data.out;
-            data.stream.on('end', async () => {
-              const endRes = await data.exec.inspect();
-              handleClose(endRes.ExitCode);
-            });
-            data.stream.on('error', (err) => {
-              handleError(err);
-            });
-          } catch (err) {
-            handleError(err);
-            return;
-          }
-        } else {
-          const p = spawn('sh', ['install.sh'], {
-            cwd: this.cwd,
-          });
-          p.on('error', (err) => {
-            handleError(err);
-          });
-          p.on('close', (code) => {
-            handleClose(code);
-          });
-          stderr = p.stderr;
-          stdout = p.stdout;
-        }
-
-        stdout.on('data', (chunk) => {
-          chunks.push(chunk);
-        });
-        stderr.on('data', (chunk) => {
-          chunks.push(chunk);
-        });
-
-        if (stderrWritestream) {
-          stderr.pipe(stderrWritestream, {
-            end: false,
-          });
-        }
-        if (stdoutWritestream) {
-          stdout.pipe(stdoutWritestream, {
-            end: false,
-          });
-        }
-      } else {
-        resolve();
-      }
-    });
-  }
-
-  /**
-   * Compile whatever is needed and validate files. Called by {@link MatchEngine} and has a timer set by the
-   * maxCompileTime option in {@link Agent.Options}
-   */
-  async _compile(
-    stderrWritestream: Writable,
-    stdoutWritestream: Writable,
-    engineOptions: MatchEngine.EngineOptions
-  ): Promise<void> {
-    // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve, reject) => {
-      let p: ChildProcess | Agent.ContainerExecData;
-      let stdout: Readable;
-      let stderr: Readable;
-      const compileTimer = setTimeout(() => {
-        const msg = 'Agent went over compile time during the compile stage\n';
-        this.writeToErrorLog(msg);
-        reject(new AgentCompileTimeoutError(msg, this.id));
-      }, this.options.maxCompileTime);
-      if (this.options.compileCommands[this.ext]) {
-        const cmd1 = this.options.compileCommands[this.ext][0];
-        const restofCmds = this.options.compileCommands[this.ext].slice(1);
-        p = await this._spawnCompileProcess(cmd1, [...restofCmds, this.src]);
-      } else {
-        switch (this.ext) {
-          case '.py':
-          case '.php':
-          case '.js':
-            clearTimeout(compileTimer);
-            resolve();
-            return;
-          case '.ts':
-            // expect user to provide a tsconfig.json
-            p = await this._spawnCompileProcess('tsc', []);
-            break;
-          case '.go':
-            p = await this._spawnCompileProcess('go', [
-              'build',
-              '-o',
-              `${this.srcNoExt}.out`,
-              this.src,
-            ]);
-            break;
-          case '.cpp':
-            p = await this._spawnCompileProcess('g++', [
-              '-std=c++11',
-              '-O3',
-              '-o',
-              `${this.srcNoExt}.out`,
-              this.src,
-            ]);
-            break;
-          case '.c':
-            p = await this._spawnCompileProcess('gcc', [
-              '-O3',
-              '-o',
-              `${this.srcNoExt}.out`,
-              this.src,
-            ]);
-            break;
-          case '.java':
-            p = await this._spawnCompileProcess('javac', [this.src]);
-            break;
-          default:
-            this.log.system(`${this.ext} not recognized, skipping compilation`);
-            // reject(
-            //   new NotSupportedError(
-            //     `Language with extension ${this.ext} is not supported at the moment`
-            //   )
-            // );
-            clearTimeout(compileTimer);
-            resolve();
-            return;
-        }
-      }
-      const chunks = [];
-      const handleClose = (code: number) => {
-        clearTimeout(compileTimer);
-        if (code === 0) {
-          resolve();
-        } else {
-          let msg = `A compile time error occured. Compile step for agent ${
-            this.id
-          } exited with code: ${code}; Compiling ${
-            this.file
-          }; Compile Output:\n${chunks.join('')}`;
-          if (code === 137) {
-            msg += `\nAgent likely ran out of memory, exceeded ${
-              engineOptions.memory.limit / 1000000
-            } MB`;
-          }
-          this.writeToErrorLog(msg + '\n');
-          reject(new AgentCompileError(msg, this.id));
-        }
-      };
-      const handleError = (err: Error) => {
-        clearTimeout(compileTimer);
-        reject(err);
-      };
-      if (isChildProcess(p)) {
-        stdout = p.stdout;
-        stderr = p.stderr;
-        p.on('error', (err) => {
-          handleError(err);
-        });
-        p.on('close', (code) => {
-          handleClose(code);
-        });
-      } else {
-        stdout = p.out;
-        stderr = p.err;
-        const containerExec = p.exec;
-        p.stream.on('error', (err) => {
-          handleError(err);
-        });
-        p.stream.on('end', async () => {
-          const endRes = await containerExec.inspect();
-          handleClose(endRes.ExitCode);
-        });
-      }
-
-      stdout.on('data', (chunk) => {
-        chunks.push(chunk);
+    // setup timeout functionality
+    if (this.p.timed._hasTimer()) {
+      this.p.timed.on(Timed.Events.TIMEOUT, (timeout: number) => {
+        // Super useful console.trace();
+        this.log.error(
+          `Agent timed out after ${timeout}ms, reason: ${this.p.timed.currentTimeoutReason}`
+        );
+        this.status = Status.ERROR;
+        this.close();
       });
-      stderr.on('data', (chunk) => {
-        chunks.push(chunk);
+      this.p.timed.on(Timed.Events.ERROR, (reason: string, err: Error) => {
+        this.log.error('Agent Errored Out:', reason);
+        this.log.error('Details:', err);
+        this.status = Status.ERROR;
+        this.close();
       });
-      if (stderrWritestream) {
-        stderr.pipe(stderrWritestream, {
-          end: false,
-        });
-      }
-      if (stdoutWritestream) {
-        stdout.pipe(stdoutWritestream, {
-          end: false,
-        });
-      }
-    });
-  }
-
-  /**
-   * Spawns the compilation process
-   * @param command - command to compile with
-   * @param args - argument for the compilation
-   */
-  async _spawnCompileProcess(
-    command: string,
-    args: Array<string>
-  ): Promise<ChildProcess | Agent.ContainerExecData> {
-    return new Promise((resolve, reject) => {
-      if (this.options.secureMode) {
-        this.containerSpawn(`${command} ${args.join(' ')}`, containerBotFolder)
-          .then(resolve)
-          .catch(reject);
-      } else {
-        const p = spawn(command, [...args], {
-          cwd: this.cwd,
-        }).on('error', (err) => {
-          reject(err);
-        });
-        resolve(p);
-      }
-    });
-  }
-
-  /**
-   * Executes the given command string in the agent's container and attaches stdin, stdout, and stderr accordingly
-   * @param command - the command to execute in the container
-   */
-  async containerSpawn(
-    command: string,
-    workingDir = '/'
-  ): Promise<Agent.ContainerExecData> {
-    const exec = await this.container.exec({
-      Cmd: ['/bin/sh', '-c', command],
-      AttachStdin: true,
-      AttachStdout: true,
-      AttachStderr: true,
-      WorkingDir: workingDir,
-    });
-
-    const stream = await exec.start({ stdin: true, hijack: true });
-    const instream = new Stream.PassThrough();
-    const outstream = new Stream.PassThrough();
-    const errstream = new Stream.PassThrough();
-    instream.pipe(stream);
-    this.container.modem.demuxStream(stream, outstream, errstream);
-
-    return {
-      in: instream,
-      out: outstream,
-      err: errstream,
-      stream,
-      exec,
-    };
-  }
-
-  /**
-   * Spawn the process and return the process
-   */
-  async _spawn(): Promise<ChildProcess | Agent.ContainerExecData> {
-    if (this.options.runCommands[this.ext]) {
-      return this._spawnProcess(this.options.runCommands[this.ext][0], [
-        ...this.options.runCommands[this.ext].slice(1),
-        this.src,
-      ]);
-    } else {
-      switch (this.ext) {
-        case '.py':
-        case '.js':
-        case '.php': {
-          const p = this._spawnProcess(this.cmd, [this.src]);
-          return p;
-        }
-        case '.ts':
-          return this._spawnProcess(this.cmd, [this.srcNoExt + '.js']);
-        case '.java':
-          return this._spawnProcess(this.cmd, [this.srcNoExt]);
-        case '.c':
-        case '.cpp':
-        case '.go':
-          return this._spawnProcess('./' + this.srcNoExt + '.out', []);
-        default:
-          this.log.system(
-            `${this.ext} not recognized, directly executing file`
-          );
-          return this._spawnProcess('./' + this.src, []);
-        // throw new NotSupportedError(
-        //   `Language with extension ${this.ext} is not supported yet`
-        // );
-      }
     }
+    if (this._hasMemoryLimits()) {
+      this.on(Events.OUTOFMEMORY, () => {
+        this.log.error(
+          `Out of memory after exceeding ${this.configs.processOptions.memory.limit} bytes`
+        );
+        this.status = Status.ERROR;
+        this.close();
+      });
+    }
+    await this.p.init();
+    this.p.log.identifier = `[${this.id}]`;
+    if (this.configs.name) {
+      this.p.log.identifier = `[${this.configs.name} (${this.id})]`;
+    }
+    this.log.identifier = this.p.log.identifier;
+
+    // perform handshake to verify agent is alive
+    this.p.timed.currentTimeoutReason =
+      'Could not send agent initialization information';
+    await this.p.send(
+      JSON.stringify({
+        name: this.configs.name,
+        id: this.id,
+        type: CallTypes.INIT,
+      })
+    );
+    this.p.timed.currentTimeoutReason =
+      'Did not receive agent id back from agent during initialization';
+    const d = await this.p.readstdout();
+    const data = JSON.parse(d);
+    if (data.id !== this.id)
+      throw new Error(
+        `Agent responded with wrong id of ${data.id} instead of ${this.id} during initialization`
+      );
+    if (data.name) {
+      this.configs.name = data.name;
+    }
+
+    // agent is now ready and active!
+    this.status = Status.ACTIVE;
   }
 
   /**
-   * Spawns process in this.cwd accordingly and uses the configs accordingly.
-   * Resolves with the process if spawned succesfully
    *
-   * Note, we are spawning detached so we can kill off all sub processes if they are made. See {@link _terminate} for
-   * explanation
+   * @returns true when this agent object is ready to send actions and receive observations
    */
-  _spawnProcess(
-    command: string,
-    args: Array<string>
-  ): Promise<ChildProcess | Agent.ContainerExecData> {
-    return new Promise((resolve, reject) => {
-      if (this.options.secureMode) {
-        this.containerSpawn(`${command} ${args.join(' ')}`, containerBotFolder)
-          .then(resolve)
-          .catch(reject);
-      } else {
-        const p = spawn(command, args, {
-          cwd: this.cwd,
-          detached: false,
-        }).on('error', (err) => {
-          reject(err);
-        });
-        resolve(p);
-      }
-    });
+  async ready(): Promise<boolean> {
+    return this.p !== undefined && this.status == Status.ACTIVE;
   }
 
   /**
-   * Stop an agent provided it is not terminated. To terminate it, see {@link _terminate};
-   */
-  async stop(): Promise<void> {
-    if (!this.isTerminated()) {
-      if (this.options.secureMode) {
-        await this.container.pause();
-      } else {
-        if (os.platform() !== 'win32') {
-          this.process.kill('SIGSTOP');
-        }
-      }
-      this.status = Agent.Status.STOPPED;
-    }
-  }
-
-  /**
-   * Resume an agent as long it is not terminated already
-   */
-  async resume(): Promise<void> {
-    if (!this.isTerminated()) {
-      this._allowCommands();
-      if (this.options.secureMode) {
-        // await this.container.unpause();
-      } else {
-        if (os.platform() !== 'win32') {
-          this.process.kill('SIGCONT');
-        }
-      }
-      this.status = Agent.Status.RUNNING;
-    }
-  }
-
-  /**
-   * timeout the agent
-   */
-  timeout(): void {
-    const msg = 'Agent timed out';
-    this.writeToErrorLog(msg);
-    this.emit(Agent.AGENT_EVENTS.TIMEOUT);
-  }
-
-  /**
-   * call out agent for exceeding memory limit
-   */
-  overMemory(): void {
-    const msg = 'Agent exceeded memory limit';
-    this.writeToErrorLog(msg);
-    this.emit(Agent.AGENT_EVENTS.EXCEED_MEMORY_LIMIT);
-  }
-
-  /**
-   * Whether or not input is destroyed
-   */
-  inputDestroyed(): boolean {
-    return this.streams.in.destroyed;
-  }
-
-  /**
-   * Write to stdin of the process associated with the agent
-   * @param message - the message
-   * @param callback - callback function
    *
-   * returns true if written, false if highWaterMark reached
+   * @returns true when this agent is active
    */
-  write(message: string, callback: (error: Error) => void): boolean {
-    // in detached mode, simply keep track of messages sent.
-    if (this.options.detached) {
-      this.messages.push(message);
-      process.nextTick(callback);
-      return true;
-    }
+  active(): boolean {
+    return this.status === Status.ACTIVE;
+  }
 
-    /**
-     * the following few lines are based on the suggestion at
-     * https://nodejs.org/api/stream.html#stream_writable_write_chunk_encoding_callback
-     */
-    if (!this.streams.in.write(message)) {
-      return false;
-    } else {
-      process.nextTick(callback);
+  /**
+   * Clean up the agent process
+   */
+  async close(): Promise<void> {
+    if (this.active()) {
+      await this.p.send(
+        JSON.stringify({
+          type: CallTypes.CLOSE,
+        })
+      );
+      await this.p.close(); // TODO, configurable, give agent a certain amount of cooldown before force stopping it
+      this.status = Status.DONE;
     }
+  }
+
+  _hasMemoryLimits(): boolean {
+    // TODO implement
     return true;
   }
 
-  writeToErrorLog(message: string): void {
-    if (this.errorLogWriteStream) {
-      this._logsize += message.length;
-      this.errorLogWriteStream.write(message);
-    }
-  }
-
   /**
-   * Get process of agent
-   */
-  _getProcess(): ChildProcess {
-    return this.process;
-  }
-
-  /**
-   * Store process for agent
-   * @param p - process to store
-   */
-  _storeProcess(p: ChildProcess): void {
-    this.process = p;
-  }
-
-  /**
-   * Returns true if this agent was terminated and no longer send or receive emssages
-   */
-  isTerminated(): boolean {
-    return this.status === Agent.Status.KILLED;
-  }
-
-  /**
-   * Terminates this agent by stopping all related processes and remove any temporary directory. this is the only function allowed to
-   * set the status value to killed.
-   */
-  _terminate(): Promise<void> {
-    this.status = Agent.Status.KILLED;
-    // eslint-disable-next-line no-async-promise-executor
-    return new Promise(async (resolve, reject) => {
-      if (this.options.secureMode) {
-        if (this.container) {
-          try {
-            const ins = await this.container.inspect();
-            this._clearTimer();
-            clearInterval(this.memoryWatchInterval);
-            if (ins.State.Running) {
-              await this.container.kill();
-              await this.container.remove();
-            }
-            resolve();
-          } catch (err) {
-            if (err.statusCode !== 409 && err.reason !== 'no such container') {
-              reject(err);
-            } else {
-              resolve();
-            }
-          }
-        } else {
-          resolve();
-        }
-      } else {
-        if (this.process) {
-          let exists = true;
-          if (os.platform() === 'win32') {
-            // fix bug where on windows, would throw error when treekill fails
-            exists = await processExists(this.process.pid);
-          }
-          if (exists) {
-            treekill(this.process.pid, 'SIGKILL', (err) => {
-              this._clearTimer();
-              clearInterval(this.memoryWatchInterval);
-
-              if (err) {
-                reject(err);
-              } else {
-                resolve();
-              }
-            });
-          }
-        } else {
-          resolve();
-        }
-      }
-    });
-  }
-
-  /**
-   * Disallow an agent from sending more commands
-   */
-  _disallowCommands(): void {
-    this.allowedToSendCommands = false;
-  }
-
-  /**
-   * Allow agent to send commands again
-   */
-  _allowCommands(): void {
-    this.allowedToSendCommands = true;
-  }
-
-  /**
-   * Check if agent is set to be allowed to send commands. The {@link EngineOptions} affect when this is flipped
-   */
-  isAllowedToSendCommands(): boolean {
-    return this.allowedToSendCommands;
-  }
-
-  /**
-   * Setup the agent timer clear out method
-   */
-  _setTimeout(fn: Function, delay: number, ...args: any[]): void {
-    const timer = setTimeout(() => {
-      fn(...args);
-    }, delay);
-    this._clearTimer = () => {
-      clearTimeout(timer);
-    };
-  }
-
-  /**
-   * Stop this agent from more outputs and mark it as done for now and awaiting for updates. Effectively force agent to sync with match
-   */
-  async _finishMove(): Promise<void> {
-    this._clearTimer();
-
-    // Resolve move and tell engine in `getCommands` this agent is done outputting commands and awaits input
-    this._currentMoveResolve();
-
-    // stop the process for now from sending more output and disallow commmands to ignore rest of output
-    if (this.options.secureMode) {
-      // TODO: Implement
-      // await this.container.pause();
-    } else {
-      if (os.platform() !== 'win32') {
-        this.process.kill('SIGSTOP');
-      }
-    }
-    this._disallowCommands();
-  }
-
-  // Start an Agent's move and setup the promise structures
-  _setupMove(): void {
-    // allows agent to send commands; increment time; clear past commands; reset the promise structure
-    this.allowedToSendCommands = true;
-    this.agentTimeStep++;
-    this.currentMoveCommands = [];
-    this._currentMovePromise = new Promise((resolve, reject) => {
-      this._currentMoveResolve = resolve;
-      this._currentMoveReject = reject;
-    });
-  }
-
-  /**
-   * Used by {@link MatchEngine} only. Setups the memory watcher if docker is not used.
-   * @param engineOptions - engine options to configure the agent with
-   */
-  _setupMemoryWatcher(engineOptions: MatchEngine.EngineOptions): void {
-    const checkAgentMemoryUsage = () => {
-      // setting { maxage: 0 } because otherwise pidusage leaves interval "memory leaks" and process doesn't exit fast
-      if (os.platform() !== 'win32' && processIsRunning(this.process.pid)) {
-        pidusage(this.process.pid, {
-          maxage: 0,
-          usePs: engineOptions.memory.usePs,
-        })
-          .then((stat) => {
-            if (stat.memory > engineOptions.memory.limit) {
-              this.overMemory();
-            }
-          })
-          .catch((err) => {
-            this.log.system(err);
-          });
-      }
-    };
-    checkAgentMemoryUsage();
-    this.memoryWatchInterval = setInterval(
-      checkAgentMemoryUsage,
-      engineOptions.memory.checkRate
-    );
-  }
-
-  /**
-   * Generates a list of agents for use
-   * @param files List of files to use to make agents or a list of objects with a file key for the file path to the bot
-   *              and a name key for the name of the agent
-   * @param options - Options to first override with for all agents
-   * @param languageSpecificOptions - Options to second overrided with for agents depending on language
-   * @param agentSpecificOptions - Options to lastly override with depending on agent's index
-   */
-  static generateAgents(
-    files: Agent.GenerationMetaData,
-    options: DeepPartial<Agent.Options>,
-    languageSpecificOptions: Agent.LanguageSpecificOptions = {},
-    agentSpecificOptions: Array<DeepPartial<Agent.Options>> = []
-  ): Array<Agent> {
-    if (files.length === 0) {
-      throw new AgentFileError(
-        'No files provided to generate agents with!',
-        -1
-      );
-    }
-    const agents: Array<Agent> = [];
-
-    if (AgentClassTypeGuards.isGenerationMetaData_FilesOnly(files)) {
-      files.forEach((file, index: number) => {
-        let configs = deepCopy(options);
-        configs = deepMerge(
-          configs,
-          deepCopy(
-            agentSpecificOptions[index] ? agentSpecificOptions[index] : {}
-          )
-        );
-        configs.id = index;
-        agents.push(
-          new Agent(file, <Agent.Options>configs, languageSpecificOptions)
-        );
-      });
-    } else if (AgentClassTypeGuards.isGenerationMetaData_CreateMatch(files)) {
-      files.forEach((info, index: number) => {
-        let configs = deepCopy(options);
-        configs = deepMerge(
-          configs,
-          deepCopy(
-            agentSpecificOptions[index] ? agentSpecificOptions[index] : {}
-          )
-        );
-        configs.id = index;
-        configs.name = info.name;
-        agents.push(
-          new Agent(info.file, <Agent.Options>configs, languageSpecificOptions)
-        );
-      });
-    } else {
-      files.forEach((info, index: number) => {
-        let configs = deepCopy(options);
-        configs = deepMerge(
-          configs,
-          deepCopy(
-            agentSpecificOptions[index] ? agentSpecificOptions[index] : {}
-          )
-        );
-        configs.id = index;
-        configs.tournamentID = info.tournamentID;
-        const newAgent = new Agent(
-          info.file,
-          <Agent.Options>configs,
-          languageSpecificOptions
-        );
-        newAgent.version = info.version;
-        agents.push(newAgent);
-      });
-    }
-    return agents;
-  }
-
-  getAgentErrorLogFilename(): string {
-    return `agent_${this.id}.log`;
-  }
-}
-
-export namespace Agent {
-  /**
-   * Stream data for any process
-   */
-  export interface Streams {
-    in: Writable;
-    out: Readable;
-    err: Readable;
-  }
-
-  /**
-   * data related to executing a command in a container, with stream data, and the exec object
-   */
-  export interface ContainerExecData extends Streams {
-    exec: Dockerode.Exec;
-    stream: Duplex;
-  }
-
-  /**
-   * Status enums for an Agent
-   */
-  export enum Status {
-    /** When agent is just created */
-    UNINITIALIZED = 'uninitialized', // just created agent
-    /** Agent is ready too be used by the {@link MatchEngine} in a {@link Match} */
-    READY = 'ready',
-    /** Agent is currently running */
-    RUNNING = 'running',
-    /** Agent crashed somehow */
-    CRASHED = 'crashed',
-    /** Agent is finished and no longer in use after {@link Match} ended or was prematurely killed */
-    KILLED = 'killed',
-    /** Agent is currently not running */
-    STOPPED = 'stopped',
-  }
-
-  /**
-   * Agent ID. Always a non-negative integer and all agents in a match have IDs that are strictly increasing from `0`
+   * Retrieve an action from the agent
    *
-   * For example, in a 4 agent match, the ids are `0, 1, 2, 3`.
+   * @param data - typically the data provided by env.step() functions
+   * @returns Record<string, any> that details the retrieved action from the agent or null if there is an error (agent takes no action)
+   * Potential errors are agent timing out, or agent sending invalid JSON formatted action object
    */
-  export type ID = number;
-
-  /**
-   * Agent options interface
-   */
-  export interface Options {
-    /** Name of agent */
-    name: string;
-
-    /**
-     * Whether or not to spawn agent securely and avoid malicious activity
-     *
-     * When set to true, the agent's file and the directory containing the file are copied over to a temporary directory
-     * of which there is restricted access. By default this is false
-     *
-     * @default `false` (always inherited from the match configs, see {@link Match.Configs})
-     */
-    secureMode: boolean;
-
-    /** A specified ID to use for the agent */
-    id: ID;
-
-    /** A specified tournament ID linking an agent to the {@link Tournament} and {@link Player} it belongs to */
-    tournamentID: Tournament.ID;
-
-    /** Logging level of this agent */
-    loggingLevel: Logger.LEVEL;
-
-    /**
-     * Maximium time allowed for an agent to spend on the installing step
-     * @default 5 minutes (300,000 ms)
-     */
-    maxInstallTime: number;
-
-    /**
-     * Maximum time allowed to be spent compiling
-     * @default 1 minute (60,000 ms)
-     */
-    maxCompileTime: number;
-
-    /**
-     * Map from extension type to set of commands used to compile this agent instead of the defaults. When there is no
-     * mapping default commands are used
-     *
-     * @default `null`
-     */
-    compileCommands: { [x in string]: Array<string> };
-
-    /**
-     * Map from extension type to set of commands used to run this agent instead of the defaults. When there is no
-     * mapping default commands are used
-     *
-     * @default `null`
-     */
-    runCommands: { [x in string]: Array<string> };
-
-    /**
-     * Image to use for docker container if Agent is being run in secureMode. The default is a standard image provided
-     * by Dimensions that has all supported languages built in so agents can use them. The requirement for these images
-     * is that they have bash installed.
-     *
-     * It is highly recommended
-     * to use the {@link Match.Configs.languageSpecificAgentOptions} field and set specific images for each programming
-     * language in a production environment to reduce overhead caused by docker.
-     *
-     * @default `docker.io/stonezt2000/dimensions_langs`
-     */
-    image: string;
-
-    /**
-     * Whether or not to try and use a cached bot file. This is only relevant if a storage service is used as it helps
-     * reduce the number of times a bot file is downloaded.
-     *
-     * @default `false`
-     */
-    useCachedBotFile: boolean;
-
-    /**
-     * Limit of agent logs in bytes.
-     *
-     * @default `1e5 - 100 kb`
-     */
-    logLimit: number;
-
-    /**
-     * Whether agent is to be run in detached mode. In detached mode, the agent simply stores messages that is written to it and clears the message queue
-     * when a turn is finished
-     *
-     * @default `false`
-     */
-    detached: boolean;
+  async action(data: Record<string, any>): Promise<Record<string, any> | null> {
+    try {
+      this.p.timed.currentTimeoutReason =
+        'Agent did not receive request for action';
+      await this.p.send(
+        JSON.stringify({
+          ...data,
+          type: CallTypes.ACTION,
+        })
+      );
+      this.p.timed.currentTimeoutReason =
+        'Agent did not respond with an action in time';
+      const action: Record<string, any> = JSON.parse(await this.p.readstdout());
+      if (action.action === undefined) {
+        throw new Error(
+          `Action is malformed, expected action to be a key in agent JSON output but was not found`
+        );
+      }
+      return action;
+    } catch {
+      return { action: null };
+    }
   }
 
-  /**
-   * Language specic options mapping programming language to the agent options to use for that programing language.
-   * Used to customize options such as docker image, compile time limits etc. on a per language basis
-   */
-  export type LanguageSpecificOptions = {
-    [x in string]?: DeepPartial<Agent.Options>;
-  };
-
-  /**
-   * Agent events
-   */
-  export enum AGENT_EVENTS {
-    /**
-     * Event emitted by process of {@link Agent} when memory limit is exceeded
-     */
-    EXCEED_MEMORY_LIMIT = 'exceedMemoryLimit',
-    /**
-     * Event emitted by process of {@link Agent} when it times out.
-     */
-    TIMEOUT = 'timeout',
-    /**
-     * event emitted when associated process or container for agent closes and agent effectively is terminated
-     */
-    CLOSE = 'close',
+  async resume(): Promise<void> {
+    return this.p.resume();
   }
-
-  /**
-   * Default Agent options
-   */
-  export const OptionDefaults: Agent.Options = {
-    secureMode: false,
-    loggingLevel: Logger.LEVEL.INFO,
-    id: null,
-    tournamentID: null,
-    name: null,
-    maxInstallTime: 300000,
-    maxCompileTime: 60000,
-    runCommands: {},
-    compileCommands: {},
-    image: 'docker.io/stonezt2000/dimensions_langs',
-    useCachedBotFile: false,
-    logLimit: 1e5,
-    detached: false,
-  };
-
-  export type GenerationMetaData =
-    | GenerationMetaData_CreateMatch
-    | GenerationMetaData_FilesOnly
-    | GenerationMetaData_Tournament;
-
-  /**
-   * Agent Generation meta data with paths to files only
-   */
-  export type GenerationMetaData_FilesOnly = Array<string>;
-
-  /**
-   * Agent generation meta data used by {@link Dimension.createMatch}
-   */
-  export type GenerationMetaData_CreateMatch = Array<{
-    /** file path */
-    file: string;
-    /** name of bot */
-    name: string;
-    /** botkey for bots in storage */
-    botkey?: string;
-  }>; // used in createMatch
-
-  /**
-   * Agent generation meta data used by tournaments
-   */
-  export type GenerationMetaData_Tournament = Array<{
-    /** file path */
-    file: string;
-    /** tournament ID containing playerId, username, and bot name */
-    tournamentID: Tournament.ID;
-    /** botkey for bots in storage */
-    botkey?: string;
-    /** track version # of the bot used */
-    version: number;
-  }>; // used by tournaments
+  async pause(): Promise<void> {
+    return this.p.pause();
+  }
 }
