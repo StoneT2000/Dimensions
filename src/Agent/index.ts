@@ -775,6 +775,7 @@ export class Agent extends EventEmitter {
     this.status = Agent.Status.KILLED;
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
+      this.errorLogWriteStream?.close();
       if (this.options.secureMode) {
         if (this.container) {
           try {
@@ -814,6 +815,8 @@ export class Agent extends EventEmitter {
                 resolve();
               }
             });
+          } else {
+            resolve();
           }
         } else {
           resolve();

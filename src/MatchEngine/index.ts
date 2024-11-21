@@ -287,7 +287,9 @@ export class MatchEngine {
         // store logs below limit only
         if (agent._logsize < agent.options.logLimit) {
           agent._logsize += data.length;
-          errorLogWriteStream.write(`${data}`);
+          if (!errorLogWriteStream.destroyed) {
+            errorLogWriteStream.write(`${data}`);
+          }
         } else {
           if (agent._trimmed === false) {
             agent._trimmed = true;
